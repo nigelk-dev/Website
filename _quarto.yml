@@ -7,7 +7,7 @@ project:
 
 website:
   title: "Nigel Kent"
-  site-url: https://nigel.kent.ie
+  site-url: https://nigelkent.ie
   repo-url: https://github.com/nigelk-dev/Website
   navbar:
     left:
@@ -24,7 +24,7 @@ website:
         href: https://github.com/nigelk-dev/MEC1019_Sustainable_Processes
         aria-label: MEC1019 repository on GitHub
   page-footer:
-    center: "© Nigel Kent · [nigel.kent.ie](https://nigel.kent.ie)"
+    center: "© Nigel Kent · [nigelkent.ie](https://nigelkent.ie)"
 
 format:
   html:
