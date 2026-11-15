@@ -3,14 +3,14 @@
 Personal website built with [Quarto](https://quarto.org) and published to
 GitHub Pages at <https://nigelkent.ie>.
 
-Course materials for **MEC1019: Sustainable Processes** are pulled from
+The **MEC1019: Sustainable Processes** Markdown notes and interactive applets are pulled from
 [nigelk-dev/MEC1019_Sustainable_Processes](https://github.com/nigelk-dev/MEC1019_Sustainable_Processes)
 at build time (on every push to `main`, daily, or on manual run).
 
 ## Local preview
 
 ```bash
-scripts/fetch-mec1019.sh   # copy course files into mec1019/materials/
+scripts/fetch-mec1019.sh   # copy notes + applets into mec1019/notes/
 quarto preview
 ```
 

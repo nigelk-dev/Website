@@ -8,5 +8,4 @@ Welcome. This site hosts teaching materials and projects.
 ## Courses
 
 [**MEC1019: Sustainable Processes**](mec1019/index.qmd)
-: Design project — an introduction to microcontrollers (Arduino), circuits,
-  pulse width modulation, voltage dividers, potentiometers and relays.
+: Design project — study notes and interactive applets on microcontrollers

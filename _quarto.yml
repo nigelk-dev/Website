@@ -2,7 +2,8 @@ project:
   type: website
   output-dir: _site
   resources:
-    - "mec1019/materials/**"
+    # Standalone HTML applets (and their CSS/JS) copied as-is
+    - "mec1019/notes/applets/**"
 
 website:
   title: "Nigel Kent"
@@ -12,16 +13,38 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - text: "MEC1019"
-        menu:
-          - href: mec1019/index.qmd
-            text: Course overview
-          - href: mec1019/microcontrollers.qmd
-            text: Microcontrollers
+      - href: mec1019/index.qmd
+        text: "MEC1019"
     right:
       - icon: github
         href: https://github.com/nigelk-dev/MEC1019_Sustainable_Processes
         aria-label: MEC1019 repository on GitHub
+  sidebar:
+    - title: "MEC1019"
+      style: docked
+      contents:
+        - href: mec1019/index.qmd
+          text: Course overview
+        - section: "Microcontroller notes"
+          contents:
+            - href: mec1019/notes/01-arduino-basics-and-leds.md
+              text: "1 · Arduino basics and LEDs"
+            - href: mec1019/notes/02-analogwrite-dividers-and-potentiometers.md
+              text: "2 · analogWrite, dividers, pots"
+            - href: mec1019/notes/03-loops-pwm-and-alarms.md
+              text: "3 · Loops, PWM and alarms"
+            - href: mec1019/notes/05-voltage-dividers.md
+              text: "5 · Voltage dividers"
+            - href: mec1019/notes/06-potentiometers.md
+              text: "6 · Potentiometers"
+            - href: mec1019/notes/07-relays.md
+              text: "7 · Relays"
+            - href: mec1019/notes/08-res-battery-switchover.md
+              text: "8 · RES with battery backup"
+            - href: mec1019/notes/finished-circuit.md
+              text: "Finished circuit"
+        - href: mec1019/applets.qmd
+          text: Interactive applets
   page-footer:
     center: "© Nigel Kent · [nigelkent.ie](https://nigelkent.ie)"
 
