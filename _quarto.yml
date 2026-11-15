@@ -2,7 +2,6 @@ project:
   type: website
   output-dir: _site
   resources:
-    - CNAME
     - "mec1019/materials/**"
 
 website:
