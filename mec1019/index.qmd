@@ -1,0 +1,30 @@
+---
+title: "MEC1019: Sustainable Processes"
+subtitle: "Design project"
+---
+
+This course builds up, step by step, the electronics and programming needed
+for the design project: controlling a circuit with an Arduino microcontroller
+and switching between power sources with relays.
+
+## Materials
+
+| Part | Topic | Slides |
+|------|-------|--------|
+| 1 | Arduino basics, LEDs, digital signals, `for` loops | [PDF](materials/microcontrollers-part-1.pdf) |
+| 2 | `analogWrite`, voltage resolution, Ohm's law | [PDF](materials/microcontrollers-part-2.pdf) |
+| 3 | Loops, `if` statements, buzzer alarm, PWM | [PDF](materials/microcontrollers-part-3.pdf) |
+| 5 | Voltage dividers | [PDF](materials/microcontrollers-part-5-voltage-dividers0.pdf) |
+| 6 | Potentiometers | [PDF](materials/microcontrollers-part-6-potentiometers.pdf) |
+| 7 | Relays | [PDF](materials/microcontrollers-part-7.pdf) |
+| 8 | Wiring the finished circuit (RES + battery via relay) | [PDF](materials/microcontrollers-part-8.pdf) |
+| — | Finished circuit | [PowerPoint](materials/finished-circuit.pptx) |
+
+See the [Microcontrollers](microcontrollers.qmd) page for a summary of each
+part with the slides embedded.
+
+::: {.callout-note}
+Materials are pulled automatically from the
+[MEC1019_Sustainable_Processes](https://github.com/nigelk-dev/MEC1019_Sustainable_Processes)
+repository each time the site is built.
+:::

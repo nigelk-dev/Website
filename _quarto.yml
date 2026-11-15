@@ -1,0 +1,34 @@
+project:
+  type: website
+  output-dir: _site
+  resources:
+    - CNAME
+    - "mec1019/materials/**"
+
+website:
+  title: "Nigel Kent"
+  site-url: https://nigel.kent.ie
+  repo-url: https://github.com/nigelk-dev/Website
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - text: "MEC1019"
+        menu:
+          - href: mec1019/index.qmd
+            text: Course overview
+          - href: mec1019/microcontrollers.qmd
+            text: Microcontrollers
+    right:
+      - icon: github
+        href: https://github.com/nigelk-dev/MEC1019_Sustainable_Processes
+        aria-label: MEC1019 repository on GitHub
+  page-footer:
+    center: "© Nigel Kent · [nigel.kent.ie](https://nigel.kent.ie)"
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    toc: true
