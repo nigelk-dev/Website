@@ -33,6 +33,7 @@ them here, or open one on its own:
 |---|---|
 | [Breadboard continuity lab](notes/applets/breadboard.html) | Part 1 (and any circuit you build) |
 | [Arduino code runner (active line highlighted)](notes/applets/code-runner.html) | Every sketch in the notes |
+| [LED circuit explorer (resistor slider, current flow, burn-out)](notes/applets/led-circuit.html) | Part 1 |
 | [LED series-resistor calculator](notes/applets/led-resistor.html) | Part 1 |
 | [Blink sequencer (`digitalWrite`, `for` loops, buzzer)](notes/applets/blink-sequencer.html) | Parts 1, 3 |
 | [PWM and `analogWrite()` visualiser](notes/applets/pwm.html) | Parts 2, 3 |

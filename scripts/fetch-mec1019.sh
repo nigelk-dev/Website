@@ -24,8 +24,10 @@ rm -rf "$dest"
 mkdir -p "$dest/applets"
 
 cp -R "$src/images" "$dest/images"
-find "$src/applets" -maxdepth 1 -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) \
-  -exec cp {} "$dest/applets/" \;
+# Applets with their CSS/JS and any vendored libraries (e.g. vendor/katex/);
+# skip the Python helper that generates sketches.js.
+cp -R "$src/applets/." "$dest/applets/"
+find "$dest/applets" -type f -name '*.py' -delete
 
 python3 - "$src" "$dest" <<'PY'
 import json, pathlib, re, sys
