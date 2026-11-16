@@ -1,0 +1,103 @@
+# Electrical drives · Chapter 7 · Capacitors and Inductors
+- type: mcq
+  q: When a DC supply is first switched onto a capacitor, which comes first?
+  options:
+    - text: The current
+      correct: true
+      why: $i = C\,dV_c/dt$, so the current is largest when the voltage is changing fastest, at switch-on. The voltage then builds up and the current falls to zero.
+    - text: The voltage across the capacitor
+      why: The capacitor voltage cannot change instantly; it builds up as charge flows in.
+
+- type: mcq
+  q: As the switching frequency of a square wave increases, how does an **inductor** behave?
+  options:
+    - text: More like an open circuit
+      correct: true
+      why: Its voltage no longer decays to zero, so it drops more voltage and offers more impedance.
+    - text: More like a short circuit
+      why: That is what a capacitor does at high frequency.
+    - text: The same at all frequencies
+      why: An inductor's opposition (reactance) rises with frequency.
+
+- type: numeric
+  q: A sine wave has a frequency of {f} Hz. What are its period and angular frequency?
+  vars:
+    f: [50, 10, 400, 10]
+  parts:
+    - label: "Period T ="
+      answer: 1000 / f
+      unit: ms
+    - label: "ω ="
+      answer: 2 * pi * f
+      unit: rad/s
+  solution: |
+    T = 1/f = 1/{f} = **{=1000 / f} ms**; ω = 2πf = 2π × {f} = **{=2 * pi * f} rad/s**
+
+- type: mcq
+  q: In a purely **capacitive** AC circuit, how are current and voltage related?
+  options:
+    - text: Current leads voltage by 90°
+      correct: true
+      why: If $V = A\sin(\omega t)$ then $i = AC\omega\cos(\omega t)$, which peaks a quarter cycle before the voltage.
+    - text: Current lags voltage by 90°
+      why: That is an inductor.
+    - text: Current and voltage are in phase
+      why: That is a resistor.
+    - text: Current leads voltage by 180°
+
+- type: cloze
+  q: |
+    A handy memory aid is **CIVIL**: in a **C**apacitor, **I** leads **V**; **V** leads **I** in an inductor (**L**).
+    So in a purely inductive circuit the current [[lags ~ leads]] the voltage by [[90]]°.
+
+- type: numeric
+  q: Calculate the reactance of a {C} µF capacitor at {f} Hz.
+  vars:
+    C: [10, 1, 100, 1]
+    f: [50, 50, 5000, 50]
+  answer: 1 / (2 * pi * f * C * 1e-6)
+  unit: Ω
+  hint: $X_C = \dfrac{1}{2\pi f C}$, with $C$ in farads.
+  solution: |
+    X_C = 1 / (2π × {f} × {C} × 10⁻⁶) = **{=1 / (2 * pi * f * C * 1e-6)} Ω**
+
+- type: numeric
+  q: Calculate the reactance of a {L} mH inductor at {f} Hz, and at double that frequency.
+  vars:
+    L: [100, 10, 500, 10]
+    f: [50, 50, 1000, 50]
+  parts:
+    - label: "At f:"
+      answer: 2 * pi * f * L / 1000
+      unit: Ω
+    - label: "At 2f:"
+      answer: 4 * pi * f * L / 1000
+      unit: Ω
+  solution: |
+    X_L = 2πfL = 2π × {f} × {=L / 1000} = **{=2 * pi * f * L / 1000} Ω**. Reactance is proportional to frequency, so at 2f it doubles to **{=4 * pi * f * L / 1000} Ω**.
+
+- type: cloze
+  q: |
+    [[Resistance ~ Reactance ~ Impedance]] opposes current without depending on frequency.
+    [[Reactance ~ Resistance ~ Impedance]] is the frequency-dependent opposition of capacitors and inductors, with a 90° phase shift.
+    [[Impedance ~ Resistance ~ Reactance]] is the total opposition to AC current. All three are measured in [[ohms|ohm|Ω]].
+
+- type: mcq
+  q: Which expression describes a sine wave of amplitude 10 V and frequency 60 Hz, shifted **forward** by 30°?
+  options:
+    - text: $10\sin(377\,t + \pi/6)$
+      correct: true
+      why: $\omega = 2\pi \times 60 \approx 377$ rad/s and 30° = $\pi/6$ rad; a forward shift adds to the phase.
+    - text: $10\sin(60\,t + 30)$
+      why: The argument needs $\omega = 2\pi f$, not $f$, and the phase in matching units.
+    - text: $10\sin(377\,t - \pi/6)$
+      why: Subtracting the phase shifts the wave backwards (it lags).
+    - text: $60\sin(10\,t + \pi/6)$
+
+- type: mcq
+  q: A resistor is driven by $V_s = A\sin(\omega t)$. What is the current?
+  options:
+    - text: $\dfrac{A}{R}\sin(\omega t)$, in phase with the voltage
+      correct: true
+    - text: $\dfrac{A}{R}\cos(\omega t)$, leading by 90°
+    - text: $AR\sin(\omega t)$

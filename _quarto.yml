@@ -154,5 +154,7 @@ format:
       light: cosmo
       dark: darkly
     css: styles.css
-    include-after-body: _includes/applet-embed.html
+    include-after-body:
+      - _includes/applet-embed.html
+      - _includes/knowledge-check.html
     toc: true

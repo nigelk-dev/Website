@@ -1,0 +1,97 @@
+# Electrical drives · Chapter 4 · DC Motor Connections
+- type: order
+  q: A DC motor is **self-regulating**. Put the chain of events after the load increases in order.
+  items:
+    - The load torque increases
+    - The motor slows down
+    - The back e.m.f. falls
+    - The armature current rises
+    - The motor torque rises until it matches the load
+  explain: When the load falls the chain runs the other way. The motor automatically draws just enough current for its load.
+
+- type: mcq
+  q: Why are field windings used instead of permanent magnets in **larger** DC motors?
+  options:
+    - text: Electromagnets can produce a stronger flux between the poles, so the motor can deliver more power
+      correct: true
+    - text: Field windings need no power
+      why: Field windings do consume power; their advantage is the stronger flux.
+    - text: Permanent magnets cannot be made large enough to fit
+    - text: Field windings make the motor run without a commutator
+      why: Wound-field DC motors still need a commutator.
+
+- type: multi
+  q: Which are ways of connecting the field and armature windings of a DC motor? Select all that apply.
+  options:
+    - text: Separately excited
+      correct: true
+    - text: Series wound
+      correct: true
+    - text: Shunt wound
+      correct: true
+    - text: Compound wound (short or long shunt)
+      correct: true
+    - text: Star connected
+      why: Star and delta are three-phase AC connections.
+
+- type: cloze
+  q: |
+    A **series** field winding carries the full [[armature current ~ supply voltage]], so it has [[few ~ many]] turns of
+    [[thick ~ fine]] wire to keep its resistance low. A **shunt** field winding is connected across the full
+    [[supply voltage ~ armature current]], so it has [[many ~ few]] turns of [[fine ~ thick]] wire to keep its current small.
+
+- type: mcq
+  q: Why must a **series** motor never be run without a load?
+  options:
+    - text: At no load the current, and so the flux, is very small, so the speed rises dangerously high
+      correct: true
+      why: Speed is inversely proportional to flux, and in a series motor the flux comes from the armature current.
+    - text: It would draw an excessive starting current
+      why: The danger at no load is overspeed, not overcurrent.
+    - text: Its torque would reverse
+    - text: The field winding would overheat
+      why: At no load the current is small, so the winding runs cool; the problem is speed.
+
+- type: cloze
+  q: |
+    In a **series** motor $\phi \propto i_a$, so the torque is proportional to [[i_a² ~ i_a ~ √i_a]].
+    In a **shunt** motor $\phi$ is nearly constant, so the torque is proportional to [[i_a ~ i_a² ~ √i_a]].
+
+- type: mcq
+  q: Which motor suits a **crane hoist** (high starting torque, speed that falls with load)?
+  options:
+    - text: A series motor
+      correct: true
+      why: Torque $\propto i_a^2$ gives a high starting torque, and the speed falls as the load increases.
+    - text: A shunt motor
+      why: A shunt motor runs at nearly constant speed, which suits a lathe rather than a hoist.
+  explain: |
+    For a **lathe**, choose a shunt motor: it has a nearly constant speed from no load to full load.
+
+- type: numeric
+  q: A {V} V shunt motor has an armature resistance of {R} Ω and draws an armature current of {I} A. Find the back e.m.f. and the power developed in the armature.
+  vars:
+    V: [240, 110, 440, 10]
+    R: [0.5, 0.2, 1.0, 0.1]
+    I: [20, 5, 40, 5]
+  parts:
+    - label: "Back e.m.f.:"
+      answer: V - I * R
+      unit: V
+    - label: "Power developed:"
+      answer: (V - I * R) * I / 1000
+      unit: kW
+  solution: |
+    ε_b = V_s − I_a R_a = {V} − {I} × {R} = **{=V - I * R} V**; P = ε_b I_a = {=V - I * R} × {I} = **{=(V - I * R) * I / 1000} kW**
+
+- type: numeric
+  q: A {V} V shunt motor with a shunt field resistance of {Rsh} Ω draws a supply current of {Is} A. What is the armature current?
+  vars:
+    V: [240, 110, 440, 10]
+    Rsh: [120, 80, 240, 20]
+    Is: [22, 10, 50, 1]
+  answer: Is - V / Rsh
+  unit: A
+  hint: The shunt field current is $I_{sh} = V_s/R_{sh}$, and $I_a = I_s - I_{sh}$.
+  solution: |
+    I_sh = V_s / R_sh = {V} / {Rsh} = {=V / Rsh} A; I_a = I_s − I_sh = {Is} − {=V / Rsh} = **{=Is - V / Rsh} A**

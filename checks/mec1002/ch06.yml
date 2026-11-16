@@ -1,0 +1,110 @@
+# Electrical drives · Chapter 6 · Servo Systems
+- type: mcq
+  q: What distinguishes a **closed-loop** servo system from an open-loop one?
+  options:
+    - text: It measures the actual output and feeds it back to compare with the desired output
+      correct: true
+      why: Feedback of the measured output, compared with the desired output to give an error, is what closes the loop.
+    - text: It uses a driver for high-current switching
+      why: Drivers appear in open-loop systems too.
+    - text: It uses a PLC instead of a microcontroller
+      why: Either can be used in open or closed loop.
+    - text: The controller and driver are on a single board
+      why: Single-board controllers appear in both open- and closed-loop systems.
+
+- type: order
+  q: Put the blocks of a **closed-loop** speed servo in signal order, starting from the desired speed.
+  items:
+    - Desired speed compared with the measured speed to give an error
+    - Controller (PLC or microcontroller)
+    - Driver (high-current switching)
+    - Motor
+    - Encoder measures the output and feeds it back
+
+- type: mcq
+  q: Why is a separate **driver** usually needed between a microcontroller and a DC motor?
+  options:
+    - text: The microcontroller's outputs supply only tens of milliamps; the motor needs much more
+      correct: true
+    - text: The microcontroller's outputs are too high a voltage for the motor
+    - text: The driver measures the motor speed
+      why: That is the job of the encoder.
+
+- type: cloze
+  q: |
+    An **absolute** encoder does not lose its [[position]] when power is removed. An **incremental** encoder is
+    [[cheaper ~ more accurate ~ slower]] and less complex.
+
+- type: mcq
+  q: In a two-channel quadrature encoder, channels A and B are 90° out of phase. What does this let the circuitry work out?
+  options:
+    - text: The direction of rotation
+      correct: true
+      why: Whether A leads B or B leads A tells you which way the shaft is turning. Counting the edges of both channels (quadcounts) also gives four times the resolution.
+    - text: The absolute position of the shaft
+      why: An incremental encoder only counts changes; it needs a reference such as the index pulse.
+    - text: The motor torque
+    - text: The supply voltage
+
+- type: mcq
+  q: What is the purpose of the **index channel (Z)** on some incremental encoders?
+  options:
+    - text: One pulse per revolution gives a fixed reference point, for example when initialising after power-up
+      correct: true
+    - text: It doubles the resolution
+    - text: It shows the direction of rotation
+      why: Direction comes from the phase relationship of channels A and B.
+
+- type: numeric
+  q: An optical encoder has {c} counts per revolution. What is its angular resolution, and what is it when read in quadrature (quadcounts)?
+  vars:
+    c: [1024, 256, 2048, 256]
+  parts:
+    - label: "Single channel:"
+      answer: 360 / c
+      unit: °
+    - label: "Quadcounts:"
+      answer: 360 / (4 * c)
+      unit: °
+  solution: |
+    360° / {c} = **{=360 / c} °**. With quadcounts there are 4 × {c} = {=4 * c|4} counts per revolution, so 360° / {=4 * c|4} = **{=360 / (4 * c)} °**.
+
+- type: mcq
+  q: Why is **Gray code** preferred over plain binary on absolute encoders?
+  options:
+    - text: Only one bit changes between adjacent positions, so misaligned read heads can only be one step out
+      correct: true
+      why: In plain binary several bits can change at once (for example 0111 → 1000); if they do not all switch at the same moment, the encoder can briefly read a completely wrong position.
+    - text: It needs fewer tracks on the disk
+      why: Gray code and binary need the same number of tracks for the same resolution.
+    - text: It gives a higher resolution
+    - text: It can be read without a light source
+
+- type: cloze
+  q: |
+    To measure **speed**, the encoder circuitry measures the change in angular [[position ~ torque ~ current]] and the
+    [[time]] taken for that change, so $\omega \approx \Delta\theta/\Delta t$.
+
+- type: numeric
+  q: |
+    The flywheel in the worked example has $J$ = 0.23 × 10⁻³ kg·m². What torque is needed to accelerate it
+    from rest to {n} rpm in {t} s?
+  vars:
+    n: [17000, 5000, 20000, 1000]
+    t: [3.5, 2, 10, 0.5]
+  answer: 0.23e-3 * pi / 30 * n / t * 1000
+  unit: mN·m
+  hint: $T_m = J\alpha$, with $\alpha = \dfrac{\pi}{30}\cdot\dfrac{\Delta n}{\Delta t}$ in rad/s².
+  solution: |
+    α = (π/30) × {n} / {t} = {=pi / 30 * n / t} rad/s²; T_m = Jα = 0.23 × 10⁻³ × {=pi / 30 * n / t} = **{=0.23e-3 * pi / 30 * n / t * 1000} mN·m**.
+    (Halving the time doubles the acceleration, so it doubles the torque.)
+
+- type: order
+  q: Put the six steps of the electromechanical system design approach in order.
+  items:
+    - Overview (layout, ambient conditions, size restrictions)
+    - Load requirement (operating times, forces and torques)
+    - Mechanical drive (belt, chain, screw; bearings)
+    - Gearhead (gears, lubrication, backlash)
+    - Motor selection (torque, speed, service life)
+    - Controller type (feedback sensor, compatibility, control strategy)

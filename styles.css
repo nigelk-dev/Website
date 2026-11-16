@@ -136,3 +136,99 @@ body.quarto-dark .wordcloud {
     margin-inline: auto;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Knowledge checks (scripts/checks.py + _includes/knowledge-check.html)
+   --------------------------------------------------------------------------- */
+.kc-quiz { --kc-ok: #198754; --kc-no: #dc3545; --kc-info: var(--bs-primary, #2780e3);
+  margin: 1rem 0 2rem; counter-reset: kc-opt; }
+.kc-scorebar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem;
+  padding: .6rem .9rem; margin-bottom: 1rem; border: 1px solid var(--bs-border-color);
+  border-radius: 8px; background: rgba(127, 127, 127, .06); }
+.kc-score { font-weight: 600; }
+.kc-meter { flex: 1 1 8rem; height: .5rem; border-radius: 99px; background: rgba(127, 127, 127, .2); overflow: hidden; }
+.kc-meter > span { display: block; height: 100%; width: 0; background: var(--kc-ok); transition: width .3s; }
+.kc-scorebar.kc-complete { border-color: var(--kc-ok); }
+
+.kc-q { position: relative; margin: 0 0 1rem; padding: .9rem 1rem .8rem; border: 1px solid var(--bs-border-color);
+  border-left: 4px solid var(--bs-border-color); border-radius: 8px; }
+.kc-q.kc-solved { border-left-color: var(--kc-ok); }
+.kc-q.kc-solved::after { content: "✓"; position: absolute; top: .55rem; right: .8rem; color: var(--kc-ok); font-weight: 700; }
+.kc-stem > :last-child { margin-bottom: .5rem; }
+.kc-note { font-size: .85rem; opacity: .75; margin: 0 0 .4rem; }
+
+/* hidden until the widget shows them (and shown if scripts are off) */
+.kc-why, .kc-explain, .kc-solution, .kc-hint, .kc-answer { display: none; }
+.kc-shown { display: block !important; }
+.kc-data { display: none; }
+.kc-explain, .kc-solution, .kc-answer, .kc-hint { margin-top: .6rem; padding: .55rem .8rem; border-radius: 6px;
+  background: rgba(127, 127, 127, .08); }
+.kc-explain::before, .kc-solution::before, .kc-answer::before, .kc-hint::before {
+  display: block; font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; opacity: .7; margin-bottom: .2rem; }
+.kc-explain::before { content: "Why"; }
+.kc-solution::before { content: "Worked solution"; }
+.kc-answer::before { content: "Model answer"; }
+.kc-hint::before { content: "Hint"; }
+.kc-explain > :last-child, .kc-solution > :last-child, .kc-answer > :last-child, .kc-hint > :last-child,
+.kc-why > :last-child, .kc-opt > :last-child, .kc-item > :last-child { margin-bottom: 0; }
+
+/* options */
+.kc-opts { display: grid; gap: .4rem; }
+.kc-opt { counter-increment: kc-opt; position: relative; padding: .45rem .7rem .45rem 2.3rem; border: 1px solid var(--bs-border-color);
+  border-radius: 6px; cursor: pointer; transition: border-color .15s, background .15s; }
+.kc-opts { counter-reset: kc-opt; }
+.kc-opt::before { content: counter(kc-opt, upper-alpha); position: absolute; left: .7rem; top: .45rem; font-weight: 700; opacity: .6; }
+.kc-opt:hover, .kc-opt:focus-visible { border-color: var(--kc-info); outline: none; }
+.kc-opt.kc-selected { border-color: var(--kc-info); background: rgba(39, 128, 227, .1); }
+.kc-opt.kc-right { border-color: var(--kc-ok); background: rgba(25, 135, 84, .12); }
+.kc-opt.kc-wrong { border-color: var(--kc-no); background: rgba(220, 53, 69, .1); }
+.kc-opt[aria-disabled="true"] { cursor: default; }
+.kc-why { margin-top: .3rem; font-size: .92rem; opacity: .9; }
+.kc-opt p { margin-bottom: .25rem; }
+
+/* inputs */
+.kc-inputs { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; margin: .3rem 0 .2rem; }
+.kc-part { display: inline-flex; align-items: center; gap: .4rem; flex-wrap: wrap; margin: 0; }
+.kc-part-label { font-size: .92rem; }
+.kc-input, .kc-select, .kc-text { font: inherit; color: inherit; background: transparent;
+  border: 1px solid var(--bs-border-color); border-radius: 5px; padding: .2rem .45rem; }
+.kc-inputs .kc-input { width: 9rem; }
+.kc-select { padding: .15rem .3rem; background-color: var(--bs-body-bg); }
+.kc-text { display: block; width: 100%; margin: .3rem 0; }
+.kc-input:focus, .kc-select:focus, .kc-text:focus { outline: 2px solid var(--kc-info); outline-offset: 1px; }
+.kc-in-ok { border-color: var(--kc-ok) !important; background: rgba(25, 135, 84, .12); }
+.kc-in-no { border-color: var(--kc-no) !important; background: rgba(220, 53, 69, .1); }
+.kc-in-shown { border-style: dashed !important; border-color: var(--kc-info) !important; }
+.kc-unit { opacity: .8; }
+.kc-blank { white-space: nowrap; }
+.kc-blank .kc-input { padding: 0 .3rem; margin: 0 .1rem; }
+pre.kc-code { padding: .7rem .9rem; border-radius: 6px; background: rgba(127, 127, 127, .1); line-height: 1.8; overflow-x: auto; }
+pre.kc-code .kc-input { font-family: inherit; font-size: inherit; }
+
+/* order */
+.kc-items { display: grid; gap: .35rem; }
+.kc-item { display: flex; align-items: center; gap: .6rem; padding: .35rem .6rem; border: 1px solid var(--bs-border-color); border-radius: 6px; }
+.kc-item > p { margin: 0; }
+.kc-item.kc-right { border-color: var(--kc-ok); background: rgba(25, 135, 84, .12); }
+.kc-item.kc-wrong { border-color: var(--kc-no); background: rgba(220, 53, 69, .1); }
+.kc-move { display: inline-flex; gap: .2rem; flex: none; }
+.kc-move .kc-btn { padding: 0 .45rem; line-height: 1.6; }
+
+/* controls and feedback */
+.kc-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-top: .6rem; }
+.kc-btn { font: inherit; font-size: .9rem; padding: .25rem .8rem; border-radius: 5px; cursor: pointer;
+  border: 1px solid var(--bs-border-color); background: transparent; color: inherit; }
+.kc-btn:hover:not(:disabled) { border-color: var(--kc-info); }
+.kc-btn:disabled { opacity: .45; cursor: default; }
+.kc-btn.kc-primary { background: var(--kc-info); border-color: var(--kc-info); color: #fff; }
+.kc-btn[hidden], .kc-self[hidden] { display: none; }
+.kc-self { display: inline-flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+.kc-self-label { font-size: .9rem; opacity: .8; }
+.kc-yes { border-color: var(--kc-ok); }
+.kc-no-btn { border-color: var(--kc-no); }
+.kc-feedback { margin-top: .4rem; font-size: .92rem; min-height: 0; }
+.kc-feedback.kc-ok { color: var(--kc-ok); font-weight: 600; }
+.kc-feedback.kc-no { color: var(--kc-no); }
+.kc-feedback.kc-info { opacity: .85; }
+.kc-reset { margin-left: auto; }
+body.quarto-dark .kc-quiz { --kc-ok: #3fb950; --kc-no: #f47067; }

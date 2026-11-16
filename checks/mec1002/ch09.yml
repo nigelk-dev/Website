@@ -1,0 +1,117 @@
+# Electrical drives · Chapter 9 · AC Power
+- type: numeric
+  q: A sinusoidal voltage has a peak value of {Vm} V. What is its rms value?
+  vars:
+    Vm: [325, 100, 400, 5]
+  answer: Vm / sqrt(2)
+  unit: V
+  solution: |
+    V_rms = V_m / √2 = {Vm} × 0.707 = **{=Vm / sqrt(2)} V**. (325 V peak is the 230 V European mains.)
+
+- type: mcq
+  q: What **average** power does a pure capacitor or pure inductor consume from an AC supply?
+  options:
+    - text: Zero
+      correct: true
+      why: Voltage and current are 90° apart, so energy flows in for half the time and back to the supply for the other half.
+    - text: $V_{rms}I_{rms}$
+      why: That is the apparent power $S$, not the real power.
+    - text: $I^2X$
+      why: That is the reactive power $Q$, which is exchanged with the supply rather than consumed.
+
+- type: cloze
+  q: |
+    Real (active) power $P$ is measured in [[W ~ VA ~ VAR]], reactive power $Q$ in [[VAR ~ W ~ VA]],
+    and apparent power $S$ in [[VA ~ W ~ VAR]].
+
+- type: multi
+  q: Which expressions equal the **power factor**? Select all that apply.
+  options:
+    - text: $P/S$
+      correct: true
+    - text: $\cos\varphi$
+      correct: true
+    - text: $R/|Z|$
+      correct: true
+    - text: $Q/P$
+      why: That is $\tan\varphi$.
+    - text: $\sin\varphi$
+      why: $S\sin\varphi = Q$; the power factor is the cosine.
+
+- type: numeric
+  q: A load draws {I} A from a {V} V supply at a power factor of {pf} lagging. Find $S$, $P$ and $Q$.
+  vars:
+    I: [10, 2, 40, 1]
+    V: [230, 110, 400, 10]
+    pf: [0.8, 0.5, 0.95, 0.05]
+  parts:
+    - label: "S ="
+      answer: I * V / 1000
+      unit: kVA
+    - label: "P ="
+      answer: I * V * pf / 1000
+      unit: kW
+    - label: "Q ="
+      answer: I * V * sqrt(1 - pf * pf) / 1000
+      unit: kVAR
+  hint: $\sin\varphi = \sqrt{1 - \cos^2\varphi}$.
+  solution: |
+    S = IV = {I} × {V} = **{=I * V / 1000} kVA**; P = S cos φ = {=I * V / 1000} × {pf} = **{=I * V * pf / 1000} kW**;
+    sin φ = {=sqrt(1 - pf * pf)}, so Q = S sin φ = **{=I * V * sqrt(1 - pf * pf) / 1000} kVAR**
+
+- type: mcq
+  q: Is the power factor of a motor (an inductive load) leading or lagging, and how is it corrected?
+  options:
+    - text: Lagging; connect capacitors in parallel
+      correct: true
+      why: The current lags in an inductive load; capacitors supply reactive power in the opposite sense.
+    - text: Lagging; connect inductors in series
+      why: More inductance would make the power factor worse.
+    - text: Leading; connect capacitors in parallel
+    - text: Leading; connect inductors in parallel
+
+- type: numeric
+  q: How much real power can an {S} kVA generator deliver to a load with a power factor of {pf}?
+  vars:
+    S: [800, 100, 1000, 50]
+    pf: [0.5, 0.4, 1, 0.05]
+  answer: S * pf
+  unit: kW
+  solution: |
+    P = S × pf = {S} × {pf} = **{=S * pf} kW**
+  explain: |
+    Generators, cables and transformers are rated in kVA (current and voltage), so a low power factor wastes rated capacity
+    and increases losses for the same useful power. That is why supply authorities want a high power factor.
+
+- type: mcq
+  q: In the worked example, why was the power factor corrected to **0.96** rather than to unity?
+  options:
+    - text: The last few percent need disproportionately more capacitance (127 µF instead of 52 µF), which costs more than it saves
+      correct: true
+    - text: Unity power factor is physically impossible
+    - text: A power factor above 0.96 damages motors
+    - text: Supply authorities penalise unity power factor
+
+- type: numeric
+  q: A {R} Ω resistor and an inductor of reactance {X} Ω are in series across {V} V. Find the current, the power factor and the real power.
+  vars:
+    R: [20, 10, 40, 5]
+    X: [15, 5, 40, 5]
+    V: [100, 50, 240, 10]
+  parts:
+    - label: "Current:"
+      answer: V / hypot(R, X)
+      unit: A
+    - label: "Power factor:"
+      answer: R / hypot(R, X)
+    - label: "Real power:"
+      answer: (V / hypot(R, X)) ** 2 * R
+      unit: W
+  solution: |
+    |Z| = √({R}² + {X}²) = {=hypot(R, X)} Ω; i = {V} / {=hypot(R, X)} = **{=V / hypot(R, X)} A**;
+    pf = R/|Z| = **{=R / hypot(R, X)}** lagging; P = i²R = **{=(V / hypot(R, X)) ** 2 * R} W**
+
+- type: cloze
+  q: |
+    A capacitor must supply $Q$ VAR at voltage $V$ and frequency $f$. Since $Q = V^2/X_C$, $X_C$ = [[V²/Q|V^2/Q|V*V/Q]],
+    and with $X_C = 1/(2\pi f C)$ the capacitance is $C$ = [[Q/(2πfV²) ~ 2πfV²/Q ~ V²/(2πfQ)]].

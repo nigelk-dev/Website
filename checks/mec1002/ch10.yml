@@ -1,0 +1,103 @@
+# Electrical drives · Chapter 10 · Transformers
+- type: numeric
+  q: A transformer has {N1} primary turns and {N2} secondary turns and is supplied at {V1} V. What is the secondary voltage?
+  vars:
+    N1: [400, 100, 1000, 50]
+    N2: [100, 50, 2000, 50]
+    V1: [240, 110, 400, 10]
+  answer: V1 * N2 / N1
+  unit: V
+  solution: |
+    V₂ = V₁ N₂/N₁ = {V1} × {N2}/{N1} = **{=V1 * N2 / N1} V** (step-up if N₂ > N₁, step-down if N₂ < N₁)
+
+- type: mcq
+  q: In an ideal transformer the secondary voltage is **ten times** the primary voltage. How does the secondary current compare?
+  options:
+    - text: It is one tenth of the primary current
+      correct: true
+      why: An ideal transformer has no losses, so $S = IV$ is the same on both sides; if $V$ rises ten-fold, $I$ falls ten-fold.
+    - text: It is ten times the primary current
+      why: That would give a hundred times the power out, from nothing.
+    - text: It is the same as the primary current
+
+- type: mcq
+  q: Why does a transformer only work with AC, not a steady DC supply?
+  options:
+    - text: The secondary e.m.f. is induced only by a changing flux, and steady DC gives a constant flux
+      correct: true
+      why: By Faraday's law, no change in flux means no induced e.m.f. (apart from a pulse at switch-on).
+    - text: DC would melt the core
+    - text: DC cannot pass through copper windings
+    - text: The turns ratio is undefined for DC
+
+- type: cloze
+  q: |
+    In the non-ideal equivalent circuit, $R_p + jX_p$ represents the primary winding [[resistance]] and [[leakage]] reactance;
+    $R_s + jX_s$ does the same for the secondary; and $R_c\,//\,jX_c$ represents the [[core]] losses
+    (magnetising flux, [[hysteresis ~ copper ~ friction]] and [[eddy|eddy current|eddy currents]] currents).
+
+- type: mcq
+  q: Why can the parallel core branch usually be left out when analysing a transformer on **full load**?
+  options:
+    - text: The no-load current is only about 3–5% of the full-load current, so leaving it out introduces little error
+      correct: true
+    - text: The core losses are zero on full load
+      why: Core losses are roughly constant at any load; they are just small compared with the full-load current's effects.
+    - text: The core branch is short-circuited on full load
+
+- type: numeric
+  q: A secondary winding resistance of {R2} Ω is referred to the primary of a {V1} V / {V2} V transformer. What is its referred value?
+  vars:
+    R2: [0.01, 0.01, 0.1, 0.01]
+    V1: [2000, 1000, 11000, 1000]
+    V2: [200, 100, 400, 100]
+  answer: R2 * (V1 / V2) ** 2
+  unit: Ω
+  hint: Referring an impedance multiplies it by the **square** of the voltage ratio.
+  solution: |
+    R₂′ = R₂ (V₁/V₂)² = {R2} × ({V1}/{V2})² = **{=R2 * (V1 / V2) ** 2} Ω**
+
+- type: cloze
+  q: |
+    The [[copper ~ core]] ($I^2R$) losses depend on the load, varying with the [[square ~ cube ~ square root]] of the current.
+    The [[core ~ copper]] losses (hysteresis and eddy currents) are approximately [[constant ~ zero ~ proportional to load]] at any load.
+
+- type: numeric
+  q: A {S} kVA transformer has total losses of {L} kW on full load. What is its full-load efficiency at **unity** power factor?
+  vars:
+    S: [500, 100, 1000, 50]
+    L: [6.74, 1, 15, 0.01]
+  answer: 100 * S / (S + L)
+  unit: "%"
+  tol: 0.2
+  solution: |
+    Output = {S} kW (unity pf), so η = {S} / ({S} + {L}) = **{=100 * S / (S + L)|4} %**
+
+- type: numeric
+  q: |
+    A 5 : 1 step-down transformer is supplied at 1000 V and its secondary is loaded with a {RL} Ω resistor.
+    Find the secondary current, the primary current and the primary power.
+  vars:
+    RL: [10, 5, 50, 5]
+  parts:
+    - label: "I₂ ="
+      answer: 200 / RL
+      unit: A
+    - label: "I₁ ="
+      answer: 200 / RL / 5
+      unit: A
+    - label: "P₁ ="
+      answer: 200 / RL / 5
+      unit: kW
+  solution: |
+    V₂ = 1000/5 = 200 V, so I₂ = 200/{RL} = **{=200 / RL} A**, I₁ = I₂/5 = **{=200 / RL / 5} A** and P₁ = {=200 / RL / 5} × 1000 = **{=200 / RL / 5} kW**
+
+- type: mcq
+  q: Why are transformer cores **laminated**?
+  options:
+    - text: To reduce eddy current losses by breaking up the current paths in the core
+      correct: true
+    - text: To reduce copper losses in the windings
+      why: Copper losses are in the windings, not the core.
+    - text: To make the core lighter
+    - text: To increase the turns ratio

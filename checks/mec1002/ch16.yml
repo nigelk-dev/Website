@@ -1,0 +1,83 @@
+# Electrical drives · Chapter 16 · Single-Phase Motors
+- type: cloze
+  q: |
+    For a centrifugal pump (above the low-speed "stiction" region), the torque is proportional to [[N² ~ N ~ N³]]
+    and the power is proportional to [[N³ ~ N² ~ N]].
+
+- type: numeric
+  q: A pump's speed is reduced to {k}% of its original value. Roughly what percentage of the original power does it now need?
+  vars:
+    k: [80, 50, 95, 5]
+  answer: 100 * (k / 100) ** 3
+  unit: "%"
+  solution: |
+    P ∝ N³, so P/P₀ = ({=k / 100})³ = **{=100 * (k / 100) ** 3} %**. (At 80% speed that is about half the power.)
+
+- type: order
+  q: An induction motor drives a pump and extra load is applied. Put what happens next in order.
+  items:
+    - The extra load slows the motor slightly
+    - The slip increases
+    - On the steep part of the curve, the motor torque rises a lot
+    - The extra torque accelerates the load back
+    - Motor torque and load torque are equal again at the operating point
+
+- type: mcq
+  q: Which NEMA design class suits a **punch press with a flywheel**?
+  options:
+    - text: Class D
+      correct: true
+      why: Very high locked-rotor and breakdown torque and high slip (5–8%), so the speed drops under peak loads and the flywheel releases its stored energy.
+    - text: Class A
+    - text: Class B
+      why: Class B is the general-purpose design with normal torque and low slip.
+    - text: Class C
+      why: Class C suits starting under load, such as conveyors.
+
+- type: mcq
+  q: Which NEMA design class suits a **conveyor that must start fully loaded**?
+  options:
+    - text: Class C
+      correct: true
+      why: Designed for starting under load (conveyors, crushers, reciprocating compressors).
+    - text: Class D
+      why: Class D is for high-slip, flywheel loads such as punch presses.
+    - text: Class B
+
+- type: mcq
+  q: Why does a single-phase induction motor with **only a main winding** not start on its own?
+  options:
+    - text: A single winding gives a field that pulses along one axis without rotating, so there is no net torque at standstill
+      correct: true
+      why: If the rotor is spun by hand it will keep running, in either direction.
+    - text: The rotor is too heavy
+    - text: Single-phase supplies have no frequency
+    - text: The winding has too much resistance
+
+- type: cloze
+  q: |
+    In a **capacitor-start** motor, a [[centrifugal]] switch disconnects the auxiliary winding and capacitor once the motor is
+    up to speed. In a **capacitor-run** motor they stay in circuit [[while running|permanently|all the time|always]].
+
+- type: cloze
+  q: |
+    A **split-phase** motor's auxiliary winding uses [[thinner ~ thicker]] wire, so it is mainly [[resistive ~ inductive]],
+    while the main winding is mainly [[inductive ~ resistive]]. The two currents have different phase angles, which with the
+    90° spacing of the windings gives a roughly rotating field.
+
+- type: reveal
+  q: Why is the **shaded-pole** motor so common, and what does the shading ring do?
+  answer: |
+    It is very cheap and simple: one winding, no switches or capacitors. The shading ring is a short-circuited copper loop
+    around part of each pole. The current induced in it opposes changes in the flux through the shaded part (Lenz's law),
+    delaying the flux there, so the field sweeps across the pole and gives a weak rotating field.
+
+- type: mcq
+  q: In which direction does a shaded-pole motor rotate?
+  options:
+    - text: From the unshaded part of each pole towards the shaded part
+      correct: true
+      why: That is the way the field sweeps across the pole; the direction is fixed by the construction.
+    - text: From the shaded part towards the unshaded part
+    - text: Either way, depending on how it is started
+      why: That is true of a plain single-winding motor, but the shading ring fixes the direction.

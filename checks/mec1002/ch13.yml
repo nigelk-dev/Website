@@ -1,0 +1,99 @@
+# Electrical drives · Chapter 13 · Induction Motors
+- type: multi
+  q: Why is the three-phase induction motor the most widely used motor in industry? Select all that apply.
+  options:
+    - text: Simple and extremely rugged
+      correct: true
+    - text: Low cost, very reliable, minimal maintenance
+      correct: true
+    - text: Self-starting from rest
+      correct: true
+    - text: Runs at exactly synchronous speed
+      why: An induction motor always runs slightly below synchronous speed; that is a synchronous motor.
+    - text: Needs brushes and a commutator
+      why: A squirrel cage induction motor has neither, which is part of why it is so reliable.
+
+- type: mcq
+  q: Why can an induction motor's rotor **never** run at synchronous speed?
+  options:
+    - text: With no relative motion between the field and the rotor, no e.m.f. or current is induced, so there is no torque
+      correct: true
+      why: Even friction alone would then slow the rotor back below synchronous speed.
+    - text: The bearings would overheat
+    - text: The supply frequency limits it
+      why: The supply frequency sets the synchronous speed itself; the rotor lags behind it because it needs slip to make torque.
+    - text: The rotor has more poles than the stator
+
+- type: numeric
+  # the running speed is worked out from a random slip, so it is always just below synchronous
+  q: A {P}-pole motor runs from a {f} Hz supply at {=120 * f / P * (1 - s / 100)|4} rpm. Find the synchronous speed, the slip and the rotor frequency.
+  vars:
+    P: [6, 2, 8, 2]
+    f: [50, 50, 60, 10]
+    s: [4, 2, 6, 0.5]
+  parts:
+    - label: "N_s ="
+      answer: 120 * f / P
+      unit: rpm
+    - label: "Slip s ="
+      answer: s
+      unit: "%"
+      tol: 3
+    - label: "f_r ="
+      answer: s / 100 * f
+      unit: Hz
+      tol: 3
+  solution: |
+    N_s = 60f/p = 60 × {f} / {=P / 2} = **{=120 * f / P|4} rpm**; s = (N_s − N_r)/N_s = **{=s} %**; f_r = s f = **{=s / 100 * f} Hz**
+
+- type: mcq
+  q: What is the rotor frequency of an induction motor at **standstill** (the instant of starting)?
+  options:
+    - text: Equal to the supply frequency
+      correct: true
+      why: At standstill $N_r = 0$, so $s = 1$ and $f_r = sf = f$.
+    - text: Zero
+      why: That would be at synchronous speed, where $s = 0$.
+    - text: Half the supply frequency
+
+- type: mcq
+  q: Which rotor type would you choose for a **crane hoist**?
+  options:
+    - text: Wound rotor (slip ring)
+      correct: true
+      why: External rotor resistance gives a high starting torque with a lower starting current, and allows the speed to be adjusted.
+    - text: Squirrel cage
+      why: Simple and rugged, but its starting torque can't be raised with external resistance.
+
+- type: multi
+  q: Which are disadvantages of the wound rotor motor compared with the squirrel cage motor? Select all that apply.
+  options:
+    - text: More complicated construction and higher cost
+      correct: true
+    - text: Frequent maintenance of brushes and slip rings
+      correct: true
+    - text: Lower efficiency, from power lost in the external resistance
+      correct: true
+    - text: Lower starting torque
+      why: The opposite; added rotor resistance gives a higher starting torque.
+
+- type: cloze
+  q: |
+    The **electrical** losses in an AC motor are $i^2R$ ([[copper]]) loss, [[eddy current|eddy|eddy-current]] loss and
+    [[hysteresis]] loss. The **mechanical** losses are [[friction]] and [[windage]].
+
+- type: mcq
+  q: How do modern drives give an induction motor a variable speed?
+  options:
+    - text: By varying the frequency of the applied voltage, which changes the synchronous speed
+      correct: true
+      why: Full-load slip is only 2–6%, so the speed follows the synchronous speed closely.
+    - text: By adding resistance to the stator
+    - text: By reversing two phases
+      why: That reverses the direction, not the speed.
+    - text: By changing the number of rotor bars
+
+- type: cloze
+  q: |
+    A uniform air gap keeps the [[flux]], and the forces on the rotor, even all the way round. Skewing the bars of a squirrel
+    cage rotor smooths the [[torque]] and reduces noise and [[cogging]].

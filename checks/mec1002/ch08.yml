@@ -1,0 +1,113 @@
+# Electrical drives · Chapter 8 · Phasors and Impedance
+- type: cloze
+  q: |
+    Multiplying a phasor by $j$ rotates it 90° [[anticlockwise ~ clockwise]], a 90° [[lead ~ lag]].
+    Multiplying by $-j$ rotates it 90° [[clockwise ~ anticlockwise]], a 90° [[lag ~ lead]].
+    Multiplying by $j$ twice rotates it through [[180]]°, which is why $j^2 = -1$.
+
+- type: mcq
+  q: In a **series** circuit, why is the current used as the reference phasor?
+  options:
+    - text: The same current flows through every component, so each voltage drop can be drawn relative to it
+      correct: true
+      why: $iR$ is in phase with it, $jiX_L$ leads by 90° and $-jiX_C$ lags by 90°.
+    - text: The current is always larger than the voltage
+    - text: The supply voltage is unknown in a series circuit
+    - text: By convention the current is always at 0° in every circuit
+      why: In a parallel circuit the voltage is the natural reference, because it is common to every branch.
+
+- type: numeric
+  q: A {R} Ω resistor is in series with an inductor of reactance {X} Ω. Find the magnitude and angle of the impedance $Z = R + jX_L$.
+  vars:
+    R: [20, 5, 50, 5]
+    X: [15, 5, 50, 5]
+  parts:
+    - label: "|Z| ="
+      answer: hypot(R, X)
+      unit: Ω
+    - label: "Angle φ ="
+      answer: atand(X / R)
+      unit: °
+  solution: |
+    Z = {R} + j{X} Ω; |Z| = √({R}² + {X}²) = **{=hypot(R, X)} Ω**; φ = tan⁻¹({X}/{R}) = **{=atand(X / R)}°**
+
+- type: mcq
+  q: In a series **RC** circuit, how does the supply voltage relate to the current?
+  options:
+    - text: It lags the current by an angle between 0° and 90°
+      correct: true
+      why: $Z = R - jX_C$ has a negative angle, so the voltage lags the current (the current leads) by $\tan^{-1}(X_C/R)$.
+    - text: It leads the current by an angle between 0° and 90°
+      why: That is a series RL circuit.
+    - text: It leads the current by exactly 90°
+      why: Exactly 90° needs a purely reactive circuit, with no resistance.
+    - text: They are in phase
+
+- type: numeric
+  q: A {R} Ω resistor is in series with a capacitor of reactance {X} Ω across a {V} V supply. Find the current, and the phase angle of the impedance.
+  vars:
+    R: [50, 10, 100, 10]
+    X: [50, 10, 100, 10]
+    V: [100, 50, 240, 10]
+  parts:
+    - label: "Current:"
+      answer: V / hypot(R, X)
+      unit: A
+    - label: "Angle φ ="
+      answer: -atand(X / R)
+      unit: °
+  hint: For a capacitor $Z = R - jX_C$, so the angle is negative.
+  solution: |
+    |Z| = √({R}² + {X}²) = {=hypot(R, X)} Ω; i = {V} / {=hypot(R, X)} = **{=V / hypot(R, X)} A**;
+    φ = tan⁻¹(−{X}/{R}) = **{=-atand(X / R)}°** (the current leads the voltage).
+
+- type: cloze
+  q: |
+    Impedances combine like resistors, but with [[complex]] arithmetic: in [[series ~ parallel]]
+    $Z_{TOT} = Z_1 + Z_2 + \cdots$, and in [[parallel ~ series]] $1/Z_{TOT} = 1/Z_1 + 1/Z_2 + \cdots$.
+
+- type: mcq
+  q: A series RLC circuit has $R$ = 12 Ω, $X_L$ = 47.1 Ω and $X_C$ = 31.85 Ω. Overall, is it inductive or capacitive?
+  options:
+    - text: Inductive, so the current lags the voltage
+      correct: true
+      why: $X_L > X_C$, so the net reactance is positive (inductive).
+    - text: Capacitive, so the current leads the voltage
+    - text: Purely resistive
+      why: That happens only when $X_L = X_C$.
+
+- type: numeric
+  q: In the same circuit across 100 V, $X_L$ and $X_C$ are made **equal**. What current flows now?
+  answer: 100 / 12
+  unit: A
+  solution: |
+    The reactances cancel, so $Z = R = 12\ \Omega$ and $i = 100/12 = 8.3$ A, in phase with the voltage. This is **series resonance**: the current is at its maximum.
+
+- type: numeric
+  q: |
+    A coil with $R$ = 12 Ω and $X_L$ = 31.4 Ω carries 6.85 A from a 230 V supply.
+    Find the voltage drops across its resistance and its inductance.
+  parts:
+    - label: "V_R ="
+      answer: 6.85 * 12
+      unit: V
+    - label: "V_L ="
+      answer: 6.85 * 31.4
+      unit: V
+  solution: |
+    $V_R = iR = 6.85 \times 12 = 82.2$ V and $V_L = iX_L = 6.85 \times 31.4 = 215$ V.
+  explain: |
+    They do **not** add to 230 V arithmetically, because they are 90° apart: $\sqrt{82.2^2 + 215^2} = 230$ V.
+    Phasors must be added as vectors.
+
+- type: numeric
+  q: A capacitor draws {I} A from a {V} V, {f} Hz supply. What is its capacitance?
+  vars:
+    I: [2, 0.5, 5, 0.5]
+    V: [120, 110, 240, 10]
+    f: [60, 50, 60, 10]
+  answer: I / (2 * pi * f * V) * 1e6
+  unit: µF
+  hint: First find $X_C = V/i$, then $C = \dfrac{1}{2\pi f X_C}$.
+  solution: |
+    X_C = V/i = {V}/{I} = {=V / I} Ω; C = 1 / (2π × {f} × {=V / I}) = **{=I / (2 * pi * f * V) * 1e6} µF**

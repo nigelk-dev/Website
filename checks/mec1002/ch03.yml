@@ -1,0 +1,104 @@
+# Electrical drives · Chapter 3 · DC Motor Start-up
+- type: cloze
+  q: |
+    The mechanical equation of the motor and load is $J\,\dfrac{d\omega}{dt} = T_m - D\,\omega(t)$.
+    Here $J$ is the [[inertia|moment of inertia|rotor inertia]], $d\omega/dt$ is the angular [[acceleration]],
+    $T_m$ is the [[motor ~ load ~ friction]] torque and $D\omega$ is the [[viscous friction|friction|viscous]] torque.
+
+- type: mcq
+  q: Why does the armature current **fall** as a DC motor speeds up?
+  options:
+    - text: The back e.m.f. rises with speed, leaving less voltage to drive current through $R_a$
+      correct: true
+      why: $i_a = (v_{in} - K_b\omega)/R_a$, so as $\omega$ rises the current falls.
+    - text: The armature resistance rises with speed
+      why: $R_a$ is (roughly) constant; it is the back e.m.f. that changes.
+    - text: The supply voltage drops as the motor accelerates
+      why: The supply is taken as constant; the voltage across $R_a$ falls because the back e.m.f. rises.
+    - text: Friction torque falls as speed rises
+      why: Viscous friction actually rises with speed, and it does not set the current directly.
+
+- type: mcq
+  q: In the first-order model $\omega(t) = \dfrac{v_{in}K}{\alpha}\left(1 - e^{-\alpha t}\right)$, which expression is $\alpha$?
+  options:
+    - text: $\alpha = \dfrac{D}{J} + \dfrac{K_mK_b}{J R_a}$
+      correct: true
+    - text: $\alpha = \dfrac{K_m}{J R_a}$
+      why: That is $K$, the gain term.
+    - text: $\alpha = \dfrac{J}{D}$
+      why: This leaves out the electrical damping from the back e.m.f.
+    - text: $\alpha = \dfrac{K_mK_b}{D R_a}$
+  explain: $K = \dfrac{K_m}{J R_a}$, and the time constant is $\tau = 1/\alpha$.
+
+- type: numeric
+  q: What percentage of its final speed has the motor reached after **one** time constant, and after **five**?
+  parts:
+    - label: "After 1 τ:"
+      answer: 100 * (1 - exp(-1))
+      unit: "%"
+      tol: 1
+    - label: "After 5 τ:"
+      answer: 100 * (1 - exp(-5))
+      unit: "%"
+      tol: 0.2
+  solution: |
+    $1 - e^{-1} \approx 63.2\%$ after one time constant; $1 - e^{-5} \approx 99.3\%$ after five.
+
+- type: mcq
+  q: With negligible friction, the load inertia $J$ is **doubled**. What happens?
+  options:
+    - text: The time constant doubles; the final speed is unchanged
+      correct: true
+      why: With $D \approx 0$, $\alpha \approx K_mK_b/(JR_a)$, so $\tau = 1/\alpha$ doubles, while $\omega_\infty \approx v_{in}/K_b$ does not involve $J$.
+    - text: The time constant halves; the final speed doubles
+    - text: The time constant doubles; the final speed halves
+      why: The final speed $\approx v_{in}/K_b$ does not depend on $J$.
+    - text: Nothing changes
+      why: More inertia means slower acceleration, so the time constant must change.
+
+- type: mcq
+  q: What effect does **increasing the viscous friction $D$** have?
+  options:
+    - text: The final speed falls and the time constant gets shorter
+      correct: true
+      why: $\alpha$ increases while $K$ is unchanged, so $\omega_\infty = v_{in}K/\alpha$ falls and $\tau = 1/\alpha$ shortens.
+    - text: The final speed falls and the time constant gets longer
+    - text: The final speed rises
+    - text: No effect on the final speed
+
+- type: mcq
+  q: In SI units, how are $K_m$ (N·m/A) and $K_b$ (V/(rad/s)) related?
+  options:
+    - text: They are numerically equal
+      correct: true
+      why: Both express the same electromechanical coupling.
+    - text: $K_m = 2\pi K_b$
+    - text: $K_m = K_b / 60$
+      why: Factors like this appear only when speed is in rpm rather than rad/s.
+    - text: They are unrelated
+
+- type: reveal
+  q: Give two reasons for characterising a motor from its **measured** step response.
+  answer: |
+    Any two of:
+
+    - it gives the response of the whole system (motor plus load and drive), not just the motor;
+    - the operating point may differ from the rated point;
+    - the motor's data may not be available, so the constants must be found experimentally.
+
+- type: numeric
+  q: A motor and load reach 63% of their final speed of {w} rad/s in {t} ms at $v_{in}$ = {v} V. Find $\alpha$ and $K$.
+  vars:
+    w: [300, 100, 600, 50]
+    t: [50, 20, 200, 10]
+    v: [12, 6, 24, 6]
+  parts:
+    - label: "α ="
+      answer: 1000 / t
+      unit: s⁻¹
+    - label: "K ="
+      answer: 1000 / t * w / v
+      unit: rad·s⁻²·V⁻¹
+  hint: 63% of the final speed is reached after one time constant, $\tau = 1/\alpha$. The final speed is $\omega_\infty = v_{in}K/\alpha$.
+  solution: |
+    α = 1/τ = 1 / {=t / 1000} s = **{=1000 / t} s⁻¹**; K = α ω∞ / v_in = {=1000 / t} × {w} / {v} = **{=1000 / t * w / v} rad·s⁻²·V⁻¹**

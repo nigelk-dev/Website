@@ -1,0 +1,87 @@
+# Electrical drives · Chapter 12 · Star–Delta Circuits
+- type: mcq
+  q: Why is a delta-connected system often analysed by converting it to a **star equivalent**?
+  options:
+    - text: Each phase becomes a simple single-phase circuit from line to neutral; solve one phase and shift the others by ±120°
+      correct: true
+    - text: Star circuits have no losses
+    - text: Delta circuits cannot be solved with phasors
+    - text: The line current is different in star
+      why: The equivalent star is chosen so the line currents and voltages are the same.
+
+- type: numeric
+  q: A balanced delta load has $Z_\Delta$ = {R} + j{X} Ω. What is its star equivalent?
+  vars:
+    R: [27, 6, 60, 3]
+    X: [9, 3, 30, 3]
+  parts:
+    - label: "Real part:"
+      answer: R / 3
+      unit: Ω
+    - label: "Imaginary part:"
+      answer: X / 3
+      unit: Ω
+  solution: |
+    Z_Y = Z_Δ / 3 = **{=R / 3} + j{=X / 3} Ω**
+
+- type: numeric
+  q: A delta source has a line voltage of {V} V. What is the phase voltage of its star equivalent?
+  vars:
+    V: [400, 380, 690, 10]
+  answer: V / sqrt(3)
+  unit: V
+  solution: |
+    V_p = V_l / √3 = {V} / √3 = **{=V / sqrt(3)} V**
+
+- type: numeric
+  q: The line current to a balanced delta load is {Il} A. What current flows in each delta load impedance?
+  vars:
+    Il: [23.7, 5, 60, 0.1]
+  answer: Il / sqrt(3)
+  unit: A
+  hint: In delta, each line current is the phasor difference of two phase currents 120° apart.
+  solution: |
+    I_l = √3 I_p, so I_p = {Il} / √3 = **{=Il / sqrt(3)} A**
+
+# The worked example with random values: delta source, line impedance, delta load
+- type: numeric
+  q: |
+    A {V} V (line) delta source supplies a balanced delta load $Z_\Delta$ = {R} + j{X} Ω per phase through lines of
+    impedance {Rl} + j{Xl} Ω. Find the line current and the total power lost in the lines.
+  vars:
+    V: [400, 380, 690, 10]
+    R: [27, 15, 60, 3]
+    X: [9, 3, 30, 3]
+    Rl: [0.2, 0.1, 1, 0.1]
+    Xl: [0.2, 0.1, 1, 0.1]
+  parts:
+    - label: "Line current:"
+      answer: V / sqrt(3) / hypot(Rl + R / 3, Xl + X / 3)
+      unit: A
+    - label: "Line losses:"
+      answer: 3 * (V / sqrt(3) / hypot(Rl + R / 3, Xl + X / 3)) ** 2 * Rl
+      unit: W
+  hint: Convert to star ($Z_Y = Z_\Delta/3$, $V_p = V_l/\sqrt{3}$), then add the line impedance in series for one phase.
+  solution: |
+    Z_Y = {=R / 3} + j{=X / 3} Ω; per phase Z = ({Rl} + {=R / 3}) + j({Xl} + {=X / 3}) Ω, |Z| = {=hypot(Rl + R / 3, Xl + X / 3)} Ω.
+    I_l = ({V}/√3) / {=hypot(Rl + R / 3, Xl + X / 3)} = **{=V / sqrt(3) / hypot(Rl + R / 3, Xl + X / 3)} A**.
+    Line losses P = 3 I_l² R_line = **{=3 * (V / sqrt(3) / hypot(Rl + R / 3, Xl + X / 3)) ** 2 * Rl} W**
+
+- type: numeric
+  q: |
+    If the line impedance were zero, the full {V} V would appear across each delta impedance $Z_\Delta$ = {R} + j{X} Ω.
+    What power would the load take?
+  vars:
+    V: [400, 380, 690, 10]
+    R: [27, 15, 60, 3]
+    X: [9, 3, 30, 3]
+  answer: 3 * (V / hypot(R, X)) ** 2 * R / 1000
+  unit: kW
+  solution: |
+    I_p = {V} / √({R}² + {X}²) = {=V / hypot(R, X)} A; P = 3 I_p² R = 3 × {=V / hypot(R, X)}² × {R} = **{=3 * (V / hypot(R, X)) ** 2 * R / 1000} kW**
+
+- type: reveal
+  q: Why do long transmission lines use **higher** voltages?
+  answer: |
+    For the same power, a higher voltage means a lower current. The line losses are $3I_l^2R_{line}$, so they fall with the
+    **square** of the current, and the voltage dropped along the line is smaller too.

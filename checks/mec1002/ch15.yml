@@ -1,0 +1,97 @@
+# Electrical drives · Chapter 15 · Speed–Torque Curve
+- type: order
+  q: |
+    Put the four key torque points in the order they appear on the speed–torque curve as the motor runs up from
+    **standstill** towards synchronous speed.
+  items:
+    - Starting (locked-rotor) torque
+    - Pull-up torque (the minimum during run-up)
+    - Pull-out (breakdown) torque, the maximum
+    - Rated (full-load) torque, near synchronous speed
+
+- type: mcq
+  q: What happens if the load torque exceeds the motor's **pull-out (breakdown) torque**?
+  options:
+    - text: The motor can no longer hold its speed; it slows abruptly and stalls
+      correct: true
+    - text: The motor speeds up beyond synchronous speed
+    - text: The motor runs on at a slightly lower speed
+      why: That is what happens with loads below the pull-out torque, on the stable part of the curve.
+    - text: Nothing; the pull-out torque only matters at starting
+
+- type: numeric
+  q: A motor has a rated torque of {T} N·m. Using the typical ratio, roughly what is its starting torque?
+  vars:
+    T: [100, 10, 400, 10]
+  answer: 1.5 * T
+  unit: N·m
+  tol: 5
+  solution: |
+    The starting torque is typically about 1.5 × rated torque: 1.5 × {T} ≈ **{=1.5 * T} N·m** (it varies between motors).
+
+- type: mcq
+  q: Is a high starting torque more important for a **centrifugal fan** or a **crane**?
+  options:
+    - text: The crane
+      correct: true
+      why: It must lift its full load from rest. A centrifugal fan needs almost no torque at low speed.
+    - text: The centrifugal fan
+      why: A fan's torque rises with speed squared, so it needs very little at start.
+
+- type: mcq
+  q: What can go wrong if the load needs more torque than the motor's **pull-up torque** partway through run-up?
+  options:
+    - text: The motor hangs at that speed instead of reaching full speed
+      correct: true
+    - text: The motor reverses
+    - text: The motor overspeeds
+    - text: Nothing, as long as the starting torque is high enough
+      why: The pull-up torque is the minimum during run-up, so it can be the limiting point even with a good starting torque.
+
+- type: mcq
+  q: Why is the speed–torque curve nearly a straight line just below synchronous speed?
+  options:
+    - text: At small slip $R_r'/s$ dominates the rotor impedance, so the rotor current and torque are roughly proportional to slip
+      correct: true
+    - text: The rotor reactance dominates at small slip
+      why: At small slip $R_r'/s$ is large, so resistance dominates.
+    - text: The magnetising current is zero there
+
+- type: numeric
+  q: |
+    A 4-pole, 50 Hz motor gives its rated {T} N·m at {N} rpm. Treating the curve as linear near synchronous speed,
+    roughly what speed would it run at with a load of {L} N·m?
+  vars:
+    T: [100, 50, 200, 10]
+    N: [1450, 1410, 1480, 10]
+    L: [60, 10, 90, 10]
+  answer: 1500 - (1500 - N) * L / T
+  unit: rpm
+  tol: 0.5
+  hint: In the linear region the slip is proportional to the torque, so the speed drop below 1500 rpm scales with the load.
+  solution: |
+    Slip speed at rated torque = 1500 − {N} = {=1500 - N|4} rpm. At {L} N·m it is {=1500 - N|4} × {L}/{T} = {=(1500 - N) * L / T} rpm,
+    so N ≈ 1500 − {=(1500 - N) * L / T} = **{=1500 - (1500 - N) * L / T|4} rpm**
+
+- type: mcq
+  q: As the load on an induction motor is reduced from full load, what happens to its speed?
+  options:
+    - text: The slip falls, so the speed rises towards (but never reaches) synchronous speed
+      correct: true
+    - text: The speed falls
+    - text: The speed stays exactly constant
+    - text: The speed rises above synchronous speed
+      why: Above synchronous speed the machine would be generating, which needs a driving load.
+
+- type: multi
+  q: Which tests are used to find a motor's equivalent-circuit parameters, and hence its speed–torque curve? Select all that apply.
+  options:
+    - text: DC test
+      correct: true
+    - text: No-load test
+      correct: true
+    - text: Locked-rotor test
+      correct: true
+    - text: Short-circuit test of the supply
+    - text: Insulation resistance (megger) test
+      why: That checks insulation, not the circuit parameters.

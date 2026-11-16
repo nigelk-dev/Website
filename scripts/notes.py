@@ -143,6 +143,22 @@ def inline_applet(name, desc, embed_md):
     return f"**Interactive: {name}.** {desc.strip()}\n\n{embed_md}"
 
 
+# ---------------------------------------------------------------- knowledge checks
+
+def with_checks(course, num, text):
+    """Add the chapter's interactive knowledge check (checks/<course>/chNN.yml,
+    see scripts/checks.py). It replaces a static "Knowledge Check" section
+    where the notes have one, and otherwise goes at the end."""
+    from checks import knowledge_check  # needs PyYAML
+    kc = knowledge_check(course, num)
+    if not kc:
+        return text
+    static = re.compile(r"^## Knowledge Check\s*\n.*?(?=^## |\Z)", flags=re.S | re.M | re.I)
+    if static.search(text):
+        return static.sub(lambda m: kc + "\n\n", text, count=1)
+    return re.sub(r"(?:\n---\s*)+\Z", "", text.rstrip()) + "\n\n" + kc + "\n"
+
+
 # ---------------------------------------------------------------- MEC1019
 
 MEC1019_PAGES = re.compile(r"https://nigelk-dev\.github\.io/MEC1019_Sustainable_Processes/notes/applets/")
@@ -223,6 +239,7 @@ def mec1019(src, dest, excluded):
     dest = Path(dest)
     for num, name in enumerate(MEC1019_FILES, 1):
         title, text = mec1019_note(Path(src) / name, excluded)
+        text = with_checks("mec1019", num, text)
         aliases = ["/mec1019/index.html", "/mec1019/applets.html"] if num == 1 else None
         fm = chapter_front_matter(title, num, part_of(MEC1019_PARTS, num), aliases)
         (dest / name).write_text(fm + text + "\n", encoding="utf-8")
@@ -376,6 +393,7 @@ def mec1002_lecture(md, lec_dir):
     if leftover:
         print(f"warning: {md}: links not embedded: {leftover}", file=sys.stderr)
 
+    text = with_checks("mec1002", num, text)
     text = no_lectures(text)
     text = "\n".join(blank_line_before_lists(text.splitlines()))
     text = re.sub(r"\n---\n(?:[ \t]*\n)*---\n", "\n---\n", text)  # rules left back to back
@@ -477,6 +495,7 @@ def mec1043_1062_chapter(md, applets_dir, parts):
             placements.append((places[i] if i < len(places) else "\0", block))
         text = place_inline(head.rstrip(), placements, md.name)
 
+    text = with_checks("mec1043-1062", num, text)
     text = no_lectures(text)
     text = re.sub(r"\n{3,}", "\n\n", text).strip("\n")
     aliases = ["/mec1043-1062/index.html", "/mm453/index.html"] if num == 1 else None

@@ -29,6 +29,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The knowledge checks (checks/*/*.yml) are read with PyYAML; stop the
+      # build if any question is malformed or an answer does not evaluate.
+      - name: Check the knowledge-check questions
+        run: |
+          python3 -c "import yaml" 2>/dev/null || sudo apt-get install -y python3-yaml
+          python3 scripts/checks.py
+
       # The three course repositories are private: reading them needs a token
       # saved as the repository secret NOTES_TOKEN (a fine-grained token with
       # read-only Contents access to all three). Without one, the course pages

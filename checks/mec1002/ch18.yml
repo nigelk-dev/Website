@@ -1,0 +1,118 @@
+# Electrical drives · Chapter 18 · Motor Starting
+- type: multi
+  q: Which are the problems in selecting a motor? Select all that apply.
+  options:
+    - text: Usually more than one type of motor is suitable, so a choice must be made
+      correct: true
+    - text: The motor must start and accelerate the load, not just run it
+      correct: true
+    - text: Some limitations apply whatever the motor type (underwater, heat, dust)
+      correct: true
+    - text: Motors are only made in a few power ratings
+      why: Motors are made in a very wide range of ratings.
+
+- type: mcq
+  q: A motor's power rating is essentially a **thermal** rating. What does that mean for short overloads?
+  options:
+    - text: It can be overloaded briefly, because the windings take time to heat up
+      correct: true
+      why: For example a 10 kW motor delivering 20 kW for a minute or two, as long as the temperature limit is not exceeded.
+    - text: It can never exceed its rating, even briefly
+    - text: Overloads are fine for any length of time if the motor is cooled
+    - text: The rating only applies at start-up
+
+- type: numeric
+  q: An induction motor has a full-load current of {I} A. Started direct on line, it draws {k} times this. What is the starting current?
+  vars:
+    I: [20, 5, 100, 5]
+    k: [6, 5, 8, 0.5]
+  answer: I * k
+  unit: A
+  solution: |
+    {k} × {I} = **{=I * k} A**
+  explain: |
+    At standstill $s = 1$, so $R_r'/s$ is at its smallest and the impedance is at its minimum. The current is limited only by
+    the winding impedance, typically 5–8 times the full-load current.
+
+- type: numeric
+  q: A motor draws {Is} A and gives {Ts} N·m when started direct on line. Roughly what starting current and torque does a **star–delta** starter give?
+  vars:
+    Is: [120, 30, 600, 30]
+    Ts: [150, 30, 600, 30]
+  parts:
+    - label: "Current:"
+      answer: Is / 3
+      unit: A
+    - label: "Torque:"
+      answer: Ts / 3
+      unit: N·m
+  hint: In star each winding sees $1/\sqrt{3}$ of the line voltage, and torque is proportional to voltage squared.
+  solution: |
+    Both fall to about a third: current ≈ {Is}/3 = **{=Is / 3} A**, torque ≈ {Ts}/3 = **{=Ts / 3} N·m**
+
+- type: mcq
+  q: Why is a star–delta starter a poor choice for a conveyor that must start **fully loaded**?
+  options:
+    - text: It cuts the starting torque to about a third, which may not start the load
+      correct: true
+      why: A soft starter with enough torque, or a VFD, would be better.
+    - text: It draws more starting current than DOL
+      why: It draws about a third of the DOL current.
+    - text: It cannot reverse the motor
+
+- type: cloze
+  q: |
+    A soft starter uses [[TRIACs|TRIAC|thyristors|SCRs]] fired partway through each half cycle. Firing [[earlier ~ later]]
+    increases the conduction angle, gradually raising the voltage until full voltage is applied.
+
+- type: order
+  q: Put the three stages of a **variable frequency drive** in order, from the supply to the motor.
+  items:
+    - Rectifier (AC to DC)
+    - Filter (capacitor smooths the DC)
+    - Inverter (PWM switching makes AC of adjustable frequency and voltage)
+
+- type: numeric
+  q: A {P}-pole motor is fed by a VFD at {f} Hz. What is its synchronous speed?
+  vars:
+    P: [4, 2, 8, 2]
+    f: [30, 10, 60, 5]
+  answer: 120 * f / P
+  unit: rpm
+  solution: |
+    N_s = 60f/p = 60 × {f} / {=P / 2} = **{=120 * f / P|4} rpm**. The motor runs just below this; the drive keeps V/f roughly constant to hold the flux.
+
+- type: mcq
+  q: Which disadvantage applies to a VFD but **not** to the other starters?
+  options:
+    - text: It injects harmonics into the supply
+      correct: true
+      why: They can disturb other electronic equipment and worsen the power factor. It is also the most expensive option.
+    - text: It gives a high starting current
+      why: A VFD gives the gentlest start of all.
+    - text: It cannot vary the speed
+      why: Varying the speed is exactly what it does.
+
+- type: multi
+  q: Which environmental aspects are considered when selecting a motor? Select all that apply.
+  options:
+    - text: Ingress of solids and dust
+      correct: true
+    - text: Ingress of water
+      correct: true
+    - text: The cooling arrangement
+      correct: true
+    - text: The cooling circuit power
+      correct: true
+    - text: The colour of the motor housing
+
+- type: mcq
+  q: A **lift** motor must produce torque at standstill and control speed smoothly. Which starting method can do this?
+  options:
+    - text: A VFD
+      correct: true
+      why: It gives controlled torque at zero and low speed, with smooth acceleration, deceleration and positioning. (Lifts also have a mechanical brake.)
+    - text: Direct on line
+    - text: Star–delta
+    - text: Soft starter
+      why: A soft starter only ramps the voltage at fixed frequency; it can't control speed.

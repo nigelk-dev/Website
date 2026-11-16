@@ -1,0 +1,108 @@
+# Electrical drives · Chapter 2 · DC Motor Characteristics
+- type: multi
+  q: Which motor data depend **strongly on the winding**? Select all that apply.
+  options:
+    - text: Terminal resistance $R_a$
+      correct: true
+    - text: Torque constant $K_m$
+      correct: true
+    - text: Speed constant $K_b$
+      correct: true
+    - text: Terminal inductance $L$
+      correct: true
+    - text: Speed–torque gradient
+      why: Almost independent of the winding.
+    - text: Mechanical time constant $\tau_m$
+      why: Almost independent of the winding.
+    - text: Rotor inertia $J$
+      why: Almost independent of the winding.
+
+- type: numeric
+  q: A motor has a torque constant of {Km} mN·m/A. What current does it draw to produce {T} mN·m, ignoring the no-load current?
+  vars:
+    Km: [25, 10, 60, 5]
+    T: [100, 50, 300, 10]
+  answer: T / Km
+  unit: A
+  solution: |
+    i_a = T_m / K_m = {T} / {Km} = **{=T / Km} A**
+
+- type: numeric
+  q: A motor has a speed constant of {Ks} rpm/V. What is its approximate no-load speed at {V} V?
+  vars:
+    Ks: [400, 100, 800, 50]
+    V: [12, 6, 48, 6]
+  answer: Ks * V
+  unit: rpm
+  solution: |
+    n₀ = K_s × V = {Ks} × {V} = **{=Ks * V|4} rpm**
+
+- type: mcq
+  q: How does **increasing the supply voltage** change a DC motor's speed–torque line?
+  options:
+    - text: It moves up, parallel to itself
+      correct: true
+      why: The no-load speed rises in proportion to the voltage while the gradient $\Delta n/\Delta T_m$ is unchanged.
+    - text: It becomes steeper
+      why: The gradient depends on the motor's construction, not on the supply voltage.
+    - text: It becomes flatter
+      why: The gradient depends on the motor's construction, not on the supply voltage.
+    - text: It pivots about the stall torque
+      why: The stall torque rises with voltage too, so the whole line moves.
+
+- type: cloze
+  q: |
+    A **strong** motor has a [[flat ~ steep]] speed–torque line, so its speed is [[insensitive ~ very sensitive]] to load.
+    A **weak** motor has a [[steep ~ flat]] line and slows down much more under load.
+
+- type: cloze
+  q: |
+    Compared with a high-resistance winding, a **low-resistance** winding uses [[thick ~ thin]] wire with
+    [[few ~ many]] turns. It has a [[low ~ high]] rated voltage, draws [[high ~ low]] currents, and has a
+    [[high ~ low]] specific speed and a [[low ~ high]] specific torque.
+
+- type: numeric
+  q: A motor runs at {n} rpm and delivers {T} mN·m. What is its mechanical output power?
+  vars:
+    n: [6000, 1000, 9000, 500]
+    T: [50, 20, 200, 10]
+  answer: pi / 30 * n * T / 1000
+  unit: W
+  hint: Convert mN·m to N·m, and rpm to rad/s with $\omega = \pi n/30$.
+  solution: |
+    P = (π/30) × n × T = (π/30) × {n} × {=T / 1000} = **{=pi / 30 * n * T / 1000} W**
+
+- type: mcq
+  q: At what torque does a DC motor deliver its **maximum mechanical power**?
+  options:
+    - text: At half the stall torque (and half the no-load speed)
+      correct: true
+    - text: At the stall torque
+      why: At stall the speed is zero, so the output power is zero.
+    - text: At no load
+      why: At no load the torque is (almost) zero, so the output power is too.
+    - text: At the torque of maximum efficiency
+      why: Maximum efficiency is reached at a much lighter load.
+  explain: The efficiency there is just under 50%, because the copper loss equals the mechanical power.
+
+- type: reveal
+  q: Why is maximum efficiency reached at a much lighter load than maximum power?
+  answer: |
+    Copper loss grows with the **square** of the current (and so of the torque), while useful power rises more slowly and then falls.
+    Efficiency is highest at light load, where the copper loss is small compared with the output; by half the stall torque the losses equal the output.
+
+# e (the efficiency) is drawn at random and the torque shown is worked out
+# from it, so every set of numbers is physically possible.
+- type: numeric
+  q: A {V} V motor draws {I} A at {n} rpm while delivering {=e / 100 * V * I * 30000 / (pi * n)} mN·m. What is its efficiency?
+  vars:
+    V: [24, 12, 48, 12]
+    I: [2, 1, 4, 0.5]
+    n: [4000, 2000, 6000, 500]
+    e: [78.5, 55, 90, 0.5]
+  answer: e
+  unit: "%"
+  tol: 1.5
+  solution: |
+    P_mech = (π/30) × {n} × {=e / 100 * V * I * 30 / (pi * n)} N·m = {=e / 100 * V * I} W; P_in = {V} × {I} = {=V * I} W;
+    η = {=e / 100 * V * I} / {=V * I} = **{=e} %**

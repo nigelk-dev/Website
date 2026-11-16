@@ -1,0 +1,110 @@
+# Electrical drives · Chapter 1 · Electromagnetic Induction
+- type: cloze
+  q: |
+    Complete Faraday's law, $\varepsilon = -N\,\dfrac{\Delta\Phi}{\Delta t}$: the induced e.m.f. equals
+    the number of [[turns]] in the coil times the rate of change of magnetic [[flux]] through it,
+    measured in [[webers|weber|Wb]]. The minus sign expresses [[Lenz's law|Lenz|Lenzs law|Lenz law]].
+  explain: |
+    $\varepsilon$ is in volts, $N$ is the number of turns and $\Phi$ is the flux in webers (Wb).
+    The minus sign says the induced e.m.f. opposes the change that produces it.
+
+- type: mcq
+  q: A magnet is held **stationary** inside a coil. Is an e.m.f. induced?
+  options:
+    - text: No
+      correct: true
+      why: An e.m.f. is induced only when the flux through the coil is **changing**. A stationary magnet gives a constant flux, so $\Delta\Phi/\Delta t = 0$.
+    - text: Yes, because the coil is in a magnetic field
+      why: Being in a field is not enough; the flux linking the coil has to change.
+    - text: Yes, but only if the coil has many turns
+      why: $N$ multiplies the rate of change of flux. If that rate is zero, so is the e.m.f., however many turns there are.
+
+- type: mcq
+  q: By Lenz's law, what force does the induced current in a coil exert on a magnet that is moved **towards** it?
+  options:
+    - text: It repels the magnet, opposing the motion
+      correct: true
+      why: The induced current flows so as to oppose the change in flux, so the coil's field pushes back on the approaching magnet.
+    - text: It attracts the magnet, pulling it in faster
+      why: That would increase the change in flux and the current further, creating energy from nothing.
+    - text: No force; the current only heats the coil
+      why: The induced current produces its own magnetic field, which does exert a force on the magnet.
+
+- type: numeric
+  q: The flux through a {N}-turn coil changes from {p1} mWb to {p2} mWb in {dt} s. What is the size of the induced e.m.f.?
+  vars:
+    N: [200, 100, 500, 50]
+    p1: [2, 1, 4, 1]
+    p2: [8, 5, 12, 1]
+    dt: [0.1, 0.05, 0.5, 0.05]
+  answer: N * (p2 - p1) * 1e-3 / dt
+  unit: V
+  hint: Convert mWb to Wb (× 10⁻³) and use $|\varepsilon| = N\,\Delta\Phi/\Delta t$.
+  solution: |
+    |ε| = N × ΔΦ / Δt = {N} × ({p2} − {p1}) × 10⁻³ Wb / {dt} s = **{=N * (p2 - p1) * 1e-3 / dt} V**
+
+- type: reveal
+  q: Why must the minus sign be in Faraday's law? What would happen without it?
+  answer: |
+    Without it, the induced current would **reinforce** the change: the force would help the magnet move,
+    increasing the change, inducing more current, and so on. The system would generate energy from nothing,
+    violating conservation of energy.
+
+- type: numeric
+  q: |
+    A wire {L} m long carries {I} A in a field of {B} T. What is the force on it when it is at right angles
+    to the field, and when it is at {th}° to the field?
+  vars:
+    B: [0.4, 0.1, 1.0, 0.1]
+    I: [5, 1, 10, 1]
+    L: [0.2, 0.1, 0.5, 0.05]
+    th: [30, 10, 80, 5]
+  parts:
+    - label: "At 90°:"
+      answer: B * I * L
+      unit: N
+    - label: "At the given angle:"
+      answer: B * I * L * sind(th)
+      unit: N
+  hint: $F = BiL\sin\theta$, where $\theta$ is the angle between the wire and the field.
+  solution: |
+    F = BiL sin θ = {B} × {I} × {L} × sin 90° = **{=B * I * L} N**.
+    At {th}°: {=B * I * L} × sin {th}° = **{=B * I * L * sind(th)} N**.
+
+- type: multi
+  q: When is the force on a current-carrying wire in a magnetic field **zero**? Select all that apply.
+  options:
+    - text: When the current is parallel to the field
+      correct: true
+      why: $\theta = 0^\circ$, so $\sin\theta = 0$.
+    - text: When the current flows exactly opposite to the field direction
+      correct: true
+      why: $\theta = 180^\circ$, so $\sin\theta = 0$ again.
+    - text: When there is no magnetic field
+      correct: true
+      why: $B = 0$ makes $F = BiL\sin\theta = 0$.
+    - text: When the wire is at right angles to the field
+      why: That is when the force is **largest**, since $\sin 90^\circ = 1$.
+
+- type: mcq
+  q: In which direction does the force $\vec{F} = L(\vec{i} \times \vec{B})$ act?
+  options:
+    - text: At right angles to both the current and the field
+      correct: true
+      why: A cross product is perpendicular to both of the vectors it is formed from.
+    - text: Along the direction of the current
+    - text: Along the direction of the magnetic field
+    - text: Halfway between the current and the field
+
+- type: multi
+  q: Which are typical applications of **permanent magnet DC motors**? Select all that apply.
+  options:
+    - text: Pumps and fans
+      correct: true
+    - text: Robots and toys
+      correct: true
+    - text: Electric cars
+      correct: true
+    - text: Power-station generators
+      why: These are very large machines; permanent magnet DC motors are generally low-power.
+  explain: Permanent magnet DC motors are simple and generally low-power, so they suit pumps, fans, robots, toys and electric cars.

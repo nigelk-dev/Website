@@ -1,0 +1,458 @@
+<script>
+// Interactive knowledge checks (markup written by scripts/checks.py).
+// Each .kc-q holds its question as normal page content plus a JSON block
+// (.kc-data) with what is needed to check answers.
+(function () {
+  // ---- expressions: the same vocabulary as scripts/checks.py
+  var R = Math.PI / 180;
+  var F = {
+    sqrt: Math.sqrt, sin: Math.sin, cos: Math.cos, tan: Math.tan,
+    asin: Math.asin, acos: Math.acos, atan: Math.atan, atan2: Math.atan2,
+    sind: function (x) { return Math.sin(x * R); }, cosd: function (x) { return Math.cos(x * R); },
+    tand: function (x) { return Math.tan(x * R); }, asind: function (x) { return Math.asin(x) / R; },
+    acosd: function (x) { return Math.acos(x) / R; }, atand: function (x) { return Math.atan(x) / R; },
+    exp: Math.exp, ln: Math.log, log10: Math.log10, abs: Math.abs, min: Math.min, max: Math.max,
+    floor: Math.floor, ceil: Math.ceil, round: Math.round, hypot: Math.hypot, pi: Math.PI
+  };
+  function evaluate(expr, env) {
+    if (typeof expr === 'number') return expr;
+    var names = Object.keys(F).concat(Object.keys(env));
+    var vals = names.map(function (k) { return k in env ? env[k] : F[k]; });
+    return Number(Function.apply(null, names.concat('"use strict"; return (' + expr + ');')).apply(null, vals));
+  }
+  var SUP = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+  function trim(s) { return s.indexOf('.') >= 0 ? s.replace(/0+$/, '').replace(/\.$/, '') : s; }
+  function fmt(x, sig) {
+    sig = sig || 3;
+    if (x === 0) return '0';
+    if (!isFinite(x)) return String(x);
+    var e = Math.floor(Math.log10(Math.abs(x)));
+    if (e >= 6 || e <= -4) {
+      var m = Number((x / Math.pow(10, e)).toFixed(sig - 1));
+      if (Math.abs(m) >= 10) { m /= 10; e += 1; }
+      return trim(m.toFixed(sig - 1)) + '×10' + String(e).split('').map(function (c) { return SUP[c]; }).join('');
+    }
+    var d = Math.max(sig - 1 - e, 0);
+    return trim((Math.round(x * Math.pow(10, d)) / Math.pow(10, d)).toFixed(d));
+  }
+
+  // ---- helpers
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function button(text, cls, fn) {
+    var b = el('button', 'kc-btn' + (cls ? ' ' + cls : ''), text);
+    b.type = 'button';
+    b.addEventListener('click', fn);
+    return b;
+  }
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function show(e, on) { if (e) e.classList.toggle('kc-shown', on !== false); }
+  function norm(s) {
+    return String(s).toLowerCase().replace(/[‘’]/g, "'").replace(/[“”]/g, '"')
+      .replace(/[–—−]/g, '-').replace(/\s+/g, ' ').trim().replace(/\.$/, '');
+  }
+  function num(s) {
+    s = String(s).trim().replace(/\s/g, '').replace(/,(?=\d{3}\b)/g, '').replace(',', '.')
+      .replace(/[×x]10\^?([−-]?\d+)/i, 'e$1').replace('−', '-');
+    return /^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(s) ? parseFloat(s) : NaN;
+  }
+  function close(v, a, tolPct) {
+    if (a === 0) return Math.abs(v) <= 1e-9 + tolPct / 100 * 1e-3;
+    return Math.abs(v - a) <= Math.abs(a) * tolPct / 100 + 1e-12;
+  }
+
+  // ---- one quiz (a chapter's knowledge check)
+  function setupQuiz(quiz) {
+    var qs = Array.prototype.slice.call(quiz.querySelectorAll('.kc-q'));
+    var solved = {};
+    var bar = el('div', 'kc-scorebar');
+    var label = el('span', 'kc-score');
+    var meter = el('span', 'kc-meter'); var fill = el('span'); meter.appendChild(fill);
+    bar.appendChild(label); bar.appendChild(meter);
+    bar.appendChild(button('Start again', 'kc-reset', function () {
+      qs.forEach(function (q) { q._reset(); });
+      solved = {}; update();
+    }));
+    quiz.insertBefore(bar, quiz.firstChild);
+    function update() {
+      var n = Object.keys(solved).length;
+      label.textContent = n + ' of ' + qs.length + ' answered correctly' + (n === qs.length ? ' — well done!' : '');
+      fill.style.width = (100 * n / qs.length) + '%';
+      bar.classList.toggle('kc-complete', n === qs.length);
+    }
+    qs.forEach(function (q, i) {
+      var data = JSON.parse(q.querySelector('.kc-data').textContent);
+      var api = {
+        solve: function () { solved[i] = true; q.classList.add('kc-solved'); update(); },
+      };
+      try { (TYPES[data.type] || function () {})(q, data, api); }
+      catch (e) { console.error('knowledge check', i + 1, e); }
+    });
+    update();
+  }
+
+  // Common parts of a question: a feedback line and the controls row
+  function frame(q) {
+    var controls = el('div', 'kc-controls');
+    var fb = el('div', 'kc-feedback'); fb.setAttribute('aria-live', 'polite');
+    q.appendChild(controls); q.appendChild(fb);
+    function say(text, kind) {
+      fb.textContent = text;
+      fb.className = 'kc-feedback' + (kind ? ' kc-' + kind : '');
+    }
+    return { controls: controls, say: say };
+  }
+  function explainOf(q) { return q.querySelector(':scope > .kc-explain'); }
+
+  var TYPES = {};
+
+  // Multiple choice (one answer) and select-all-that-apply
+  function choice(multi) {
+    return function (q, data, api) {
+      var box = q.querySelector('.kc-opts');
+      var opts = shuffle(Array.prototype.slice.call(box.querySelectorAll(':scope > .kc-opt')));
+      opts.forEach(function (o) { box.appendChild(o); });
+      var f = frame(q), done = false, checkBtn, revealBtn;
+      var stemText = (q.querySelector('.kc-stem') || q).textContent;
+      if (multi && !/select all/i.test(stemText)) {
+        var hint = el('p', 'kc-note', 'Select all that apply, then check.');
+        box.parentNode.insertBefore(hint, box);
+      }
+      function correct(o) { return o.dataset.c === '1'; }
+      function finish(msg) {
+        done = true;
+        q.classList.add('kc-done');
+        show(explainOf(q));
+        opts.forEach(function (o) { o.setAttribute('aria-disabled', 'true'); o.tabIndex = -1; });
+        if (checkBtn) checkBtn.disabled = true;
+        if (revealBtn) revealBtn.hidden = true;
+        f.say(msg, msg.charAt(0) === '✓' ? 'ok' : 'info');
+      }
+      function pick(o) {
+        if (done) return;
+        if (multi) {
+          o.classList.toggle('kc-selected');
+          o.setAttribute('aria-pressed', o.classList.contains('kc-selected'));
+          opts.forEach(function (x) { x.classList.remove('kc-right', 'kc-wrong', 'kc-missed'); });
+          f.say('');
+          return;
+        }
+        show(o.querySelector('.kc-why'));
+        if (correct(o)) {
+          o.classList.add('kc-right');
+          api.solve();
+          finish('✓ Correct.');
+        } else {
+          o.classList.add('kc-wrong');
+          o.setAttribute('aria-disabled', 'true');
+          f.say('✗ Not this one. Try again.', 'no');
+          revealBtn.hidden = false;
+        }
+      }
+      opts.forEach(function (o) {
+        o.tabIndex = 0;
+        o.setAttribute('role', 'button');
+        o.addEventListener('click', function (ev) { if (!ev.target.closest('a')) pick(o); });
+        o.addEventListener('keydown', function (ev) {
+          if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pick(o); }
+        });
+      });
+      if (multi) {
+        checkBtn = button('Check', 'kc-primary', function () {
+          var ok = 0, wrong = 0, missed = 0, total = opts.filter(correct).length;
+          opts.forEach(function (o) {
+            var sel = o.classList.contains('kc-selected');
+            o.classList.remove('kc-right', 'kc-wrong', 'kc-missed');
+            if (sel && correct(o)) { ok++; o.classList.add('kc-right'); }
+            else if (sel) { wrong++; o.classList.add('kc-wrong'); }
+            else if (correct(o)) missed++;
+          });
+          if (!wrong && !missed) {
+            opts.forEach(function (o) { if (correct(o)) show(o.querySelector('.kc-why')); });
+            api.solve(); finish('✓ Correct: all ' + total + ' found.');
+          } else {
+            f.say('✗ ' + ok + ' of ' + total + ' correct choices selected' +
+                  (wrong ? ', plus ' + wrong + ' that should not be' : '') + '. Try again.', 'no');
+            revealBtn.hidden = false;
+          }
+        });
+        f.controls.appendChild(checkBtn);
+      }
+      revealBtn = button('Show answer', '', function () {
+        opts.forEach(function (o) {
+          if (correct(o)) { o.classList.add('kc-right'); show(o.querySelector('.kc-why')); }
+          else if (o.classList.contains('kc-selected')) o.classList.add('kc-wrong');
+        });
+        finish('The correct answer' + (multi ? 's are' : ' is') + ' highlighted.');
+      });
+      revealBtn.hidden = true;
+      f.controls.appendChild(revealBtn);
+      q._reset = function () {
+        done = false; q.classList.remove('kc-done', 'kc-solved');
+        opts.forEach(function (o) {
+          o.classList.remove('kc-right', 'kc-wrong', 'kc-missed', 'kc-selected');
+          o.removeAttribute('aria-disabled'); o.tabIndex = 0;
+          show(o.querySelector('.kc-why'), false);
+        });
+        show(explainOf(q), false);
+        if (checkBtn) checkBtn.disabled = false;
+        revealBtn.hidden = true; f.say('');
+      };
+    };
+  }
+  TYPES.mcq = choice(false);
+  TYPES.multi = choice(true);
+
+  // Calculations, optionally with random "New numbers"
+  TYPES.numeric = function (q, data, api) {
+    var env = {}, vars = data.vars || {};
+    Object.keys(vars).forEach(function (k) { env[k] = vars[k][0]; });
+    q.kcValues = env;  // the values in use (read by the site's automated test)
+    var f = frame(q), tries = 0, done = false;
+    var sol = q.querySelector(':scope > .kc-solution'), hint = q.querySelector(':scope > .kc-hint');
+    var row = el('div', 'kc-inputs');
+    var inputs = data.parts.map(function (p) {
+      var wrap = el('label', 'kc-part');
+      if (p.label) wrap.appendChild(el('span', 'kc-part-label', p.label));
+      var inp = el('input', 'kc-input');
+      inp.type = 'text'; inp.inputMode = 'decimal'; inp.autocomplete = 'off';
+      inp.setAttribute('aria-label', p.label || 'Answer');
+      inp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') check(); });
+      inp.addEventListener('input', function () { inp.classList.remove('kc-in-ok', 'kc-in-no'); });
+      wrap.appendChild(inp);
+      if (p.unit) wrap.appendChild(el('span', 'kc-unit', p.unit));
+      row.appendChild(wrap);
+      return inp;
+    });
+    q.insertBefore(row, f.controls);
+    function answers() { return data.parts.map(function (p) { return evaluate(p.answer, env); }); }
+    function check() {
+      if (done) return;
+      var want = answers(), allOk = true, blank = false;
+      inputs.forEach(function (inp, k) {
+        var v = num(inp.value);
+        if (inp.value.trim() === '') blank = true;
+        var ok = !isNaN(v) && close(v, want[k], data.parts[k].tol);
+        inp.classList.toggle('kc-in-ok', ok); inp.classList.toggle('kc-in-no', !ok && inp.value.trim() !== '');
+        if (!ok) allOk = false;
+      });
+      if (blank && !allOk) { f.say('Enter ' + (inputs.length > 1 ? 'every answer' : 'a number') + ' first.', 'info'); return; }
+      tries++;
+      if (allOk) {
+        done = true; q.classList.add('kc-done'); api.solve();
+        show(sol); show(explainOf(q)); solBtn.hidden = true; checkBtn.disabled = true;
+        f.say('✓ Correct.', 'ok');
+      } else {
+        var bad = inputs.filter(function (i) { return i.classList.contains('kc-in-no'); }).length;
+        f.say('✗ ' + (inputs.length > 1 ? bad + ' of ' + inputs.length + ' answers not right yet' : 'Not quite') +
+              '. Check your working and units' + (hint ? ' (hint below)' : '') + ', then try again.', 'no');
+        show(hint); solBtn.hidden = !sol;
+      }
+    }
+    var checkBtn = button('Check', 'kc-primary', check);
+    var solBtn = button('Show solution', '', function () {
+      done = true; q.classList.add('kc-done'); checkBtn.disabled = true;
+      inputs.forEach(function (inp, k) {
+        if (!inp.classList.contains('kc-in-ok')) { inp.value = fmt(answers()[k], 4); inp.classList.add('kc-in-shown'); }
+      });
+      show(sol); show(explainOf(q)); solBtn.hidden = true;
+      f.say('The answer and worked solution are shown below.', 'info');
+    });
+    solBtn.hidden = true;
+    f.controls.appendChild(checkBtn); f.controls.appendChild(solBtn);
+    function refresh() {
+      q.querySelectorAll('.kc-v').forEach(function (s) {
+        if (s.dataset.k) s.textContent = fmt(env[s.dataset.k], 6);
+        else if (s.dataset.e) s.textContent = fmt(evaluate(s.dataset.e, env), +s.dataset.s || 3);
+      });
+    }
+    function reset() {
+      done = false; tries = 0; q.classList.remove('kc-done', 'kc-solved');
+      inputs.forEach(function (i) { i.value = ''; i.classList.remove('kc-in-ok', 'kc-in-no', 'kc-in-shown'); });
+      show(sol, false); show(hint, false); show(explainOf(q), false);
+      checkBtn.disabled = false; solBtn.hidden = true; f.say('');
+    }
+    if (Object.keys(vars).length) {
+      f.controls.appendChild(button('New numbers', 'kc-new', function () {
+        var before = JSON.stringify(env);
+        for (var t = 0; t < 20 && JSON.stringify(env) === before; t++) {
+          Object.keys(vars).forEach(function (k) {
+            var v = vars[k], n = Math.round((v[2] - v[1]) / v[3]);
+            env[k] = Number((v[1] + v[3] * Math.floor(Math.random() * (n + 1))).toPrecision(12));
+          });
+        }
+        refresh(); reset();
+        f.say('New values: try the calculation again.', 'info');
+      }));
+    }
+    q._reset = function () {
+      Object.keys(vars).forEach(function (k) { env[k] = vars[k][0]; });
+      refresh(); reset();
+    };
+  };
+
+  // Fill in the blanks (typed, or chosen from a list)
+  TYPES.cloze = function (q, data, api) {
+    var f = frame(q), done = false;
+    var fields = Array.prototype.map.call(q.querySelectorAll('.kc-blank'), function (span) {
+      var spec = data.blanks[+span.dataset.i], field;
+      var inCode = !!span.closest('.kc-code');
+      if (spec.choice) {
+        field = el('select', 'kc-select');
+        field.appendChild(el('option', '', '…'));
+        shuffle(spec.choice.slice()).forEach(function (c) { var o = el('option', '', c); o.value = c; field.appendChild(o); });
+        field.addEventListener('change', function () { field.classList.remove('kc-in-ok', 'kc-in-no'); });
+      } else {
+        field = el('input', 'kc-input kc-blank-input');
+        field.type = 'text'; field.autocomplete = 'off'; field.spellcheck = false;
+        var longest = spec.accept.reduce(function (a, s) { return Math.max(a, s.length); }, 3);
+        field.style.width = (Math.min(longest, 28) + 3) + 'ch';
+        field.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') check(); });
+        field.addEventListener('input', function () { field.classList.remove('kc-in-ok', 'kc-in-no'); });
+      }
+      field.setAttribute('aria-label', 'Blank ' + (+span.dataset.i + 1));
+      span.appendChild(field);
+      return { field: field, spec: spec, code: inCode };
+    });
+    function right(b) {
+      var v = b.field.value;
+      if (b.spec.choice) return v === b.spec.choice[0];
+      var squash = function (s) { return b.code ? norm(s).replace(/\s+/g, '') : norm(s); };
+      return b.spec.accept.some(function (a) {
+        var n = num(a), m = num(v);
+        if (!isNaN(n) && !isNaN(m)) return close(m, n, 1);
+        return squash(a) === squash(v);
+      });
+    }
+    function check() {
+      if (done) return;
+      var ok = 0, empty = 0;
+      fields.forEach(function (b) {
+        var good = right(b), isEmpty = !b.field.value || b.field.value === '…';
+        if (isEmpty) empty++;
+        b.field.classList.toggle('kc-in-ok', good);
+        b.field.classList.toggle('kc-in-no', !good && !isEmpty);
+        if (good) ok++;
+      });
+      if (ok === fields.length) {
+        done = true; q.classList.add('kc-done'); api.solve(); checkBtn.disabled = true; revealBtn.hidden = true;
+        show(explainOf(q)); f.say('✓ All correct.', 'ok');
+      } else {
+        f.say((empty === fields.length ? 'Fill in the blanks first.' :
+               '✗ ' + ok + ' of ' + fields.length + ' correct. Fix the ones marked and check again.'), empty === fields.length ? 'info' : 'no');
+        if (empty < fields.length) revealBtn.hidden = false;
+      }
+    }
+    var checkBtn = button('Check', 'kc-primary', check);
+    var revealBtn = button('Show answers', '', function () {
+      fields.forEach(function (b) {
+        if (!right(b)) { b.field.value = b.spec.choice ? b.spec.choice[0] : b.spec.accept[0]; b.field.classList.add('kc-in-shown'); }
+        b.field.classList.remove('kc-in-no');
+      });
+      done = true; q.classList.add('kc-done'); checkBtn.disabled = true; revealBtn.hidden = true;
+      show(explainOf(q)); f.say('The answers are filled in.', 'info');
+    });
+    revealBtn.hidden = true;
+    f.controls.appendChild(checkBtn); f.controls.appendChild(revealBtn);
+    q._reset = function () {
+      done = false; q.classList.remove('kc-done', 'kc-solved');
+      fields.forEach(function (b) { b.field.value = b.spec.choice ? '…' : ''; if (b.spec.choice) b.field.selectedIndex = 0; b.field.classList.remove('kc-in-ok', 'kc-in-no', 'kc-in-shown'); });
+      checkBtn.disabled = false; revealBtn.hidden = true; show(explainOf(q), false); f.say('');
+    };
+  };
+
+  // Put in order
+  TYPES.order = function (q, data, api) {
+    var box = q.querySelector('.kc-items'), f = frame(q), done = false;
+    var items = Array.prototype.slice.call(box.querySelectorAll(':scope > .kc-item'));
+    items.forEach(function (it) {
+      var ctl = el('span', 'kc-move');
+      ctl.appendChild(button('↑', 'kc-up', function () { move(it, -1); }));
+      ctl.appendChild(button('↓', 'kc-down', function () { move(it, 1); }));
+      ctl.querySelectorAll('button').forEach(function (b, k) { b.setAttribute('aria-label', k ? 'Move down' : 'Move up'); });
+      it.insertBefore(ctl, it.firstChild);
+    });
+    function current() { return Array.prototype.slice.call(box.querySelectorAll(':scope > .kc-item')); }
+    function scramble() {
+      var order;
+      do { order = shuffle(items.slice()); } while (order.every(function (it, k) { return +it.dataset.i === k; }));
+      order.forEach(function (it) { box.appendChild(it); });
+    }
+    function move(it, d) {
+      if (done) return;
+      var list = current(), k = list.indexOf(it), j = k + d;
+      if (j < 0 || j >= list.length) return;
+      if (d < 0) box.insertBefore(it, list[j]); else box.insertBefore(list[j], it);
+      list.forEach(function (x) { x.classList.remove('kc-right', 'kc-wrong'); });
+      f.say('');
+      it.querySelector(d < 0 ? '.kc-up' : '.kc-down').focus();
+    }
+    var checkBtn = button('Check order', 'kc-primary', function () {
+      var list = current(), ok = 0;
+      list.forEach(function (it, k) {
+        var good = +it.dataset.i === k;
+        it.classList.toggle('kc-right', good); it.classList.toggle('kc-wrong', !good);
+        if (good) ok++;
+      });
+      if (ok === list.length) {
+        done = true; q.classList.add('kc-done'); api.solve(); checkBtn.disabled = true; revealBtn.hidden = true;
+        show(explainOf(q)); f.say('✓ Correct order.', 'ok');
+      } else {
+        f.say('✗ ' + ok + ' of ' + list.length + ' in the right place. Keep rearranging.', 'no');
+        revealBtn.hidden = false;
+      }
+    });
+    var revealBtn = button('Show answer', '', function () {
+      items.forEach(function (it) { box.appendChild(it); it.classList.remove('kc-wrong'); it.classList.add('kc-right'); });
+      done = true; q.classList.add('kc-done'); checkBtn.disabled = true; revealBtn.hidden = true;
+      show(explainOf(q)); f.say('This is the correct order.', 'info');
+    });
+    revealBtn.hidden = true;
+    f.controls.appendChild(checkBtn); f.controls.appendChild(revealBtn);
+    scramble();
+    q._reset = function () {
+      done = false; q.classList.remove('kc-done', 'kc-solved');
+      items.forEach(function (it) { it.classList.remove('kc-right', 'kc-wrong'); });
+      scramble(); checkBtn.disabled = false; revealBtn.hidden = true; show(explainOf(q), false); f.say('');
+    };
+  };
+
+  // Explain in your own words, then compare with the model answer
+  TYPES.reveal = function (q, data, api) {
+    var f = frame(q), ans = q.querySelector(':scope > .kc-answer');
+    var area = el('textarea', 'kc-text');
+    area.rows = 3; area.placeholder = 'Write your answer (optional), then compare it with the model answer.';
+    area.setAttribute('aria-label', 'Your answer');
+    q.insertBefore(area, f.controls);
+    var self = el('span', 'kc-self');
+    self.appendChild(el('span', 'kc-self-label', 'Did you get it?'));
+    var yes = button('Yes, I had it', 'kc-yes', function () {
+      api.solve(); self.hidden = true; f.say('✓ Marked as correct.', 'ok');
+    });
+    var no = button('Not quite', 'kc-no-btn', function () {
+      self.hidden = true; f.say('Read the answer again, then try the question later.', 'info');
+    });
+    self.appendChild(yes); self.appendChild(no); self.hidden = true;
+    var showBtn = button('Show answer', 'kc-primary', function () {
+      show(ans); show(explainOf(q)); showBtn.hidden = true; self.hidden = false; q.classList.add('kc-done');
+    });
+    f.controls.appendChild(showBtn); f.controls.appendChild(self);
+    q._reset = function () {
+      q.classList.remove('kc-done', 'kc-solved'); area.value = '';
+      show(ans, false); show(explainOf(q), false); showBtn.hidden = false; self.hidden = true; f.say('');
+    };
+  };
+
+  function init() { document.querySelectorAll('.kc-quiz').forEach(setupQuiz); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>

@@ -1,0 +1,87 @@
+# Electrical drives · Chapter 14 · Equivalent Circuit
+- type: reveal
+  q: Why is the rotor resistance in the equivalent circuit written as $R_r/s$?
+  answer: |
+    The rotor e.m.f. is $sE_r$ and its reactance is $sX_r$, both proportional to slip. Dividing
+    $I_r = sE_r/(R_r + jsX_r)$ top and bottom by $s$ gives $I_r = E_r/(R_r/s + jX_r)$: the same current, from a fixed
+    e.m.f. $E_r$ and reactance $X_r$, through a slip-dependent resistance $R_r/s$.
+
+- type: cloze
+  q: |
+    The resistance $R_r'/s$ is split into two parts: $R_r'$ represents the rotor [[copper loss ~ mechanical power ~ core loss]],
+    and $\dfrac{1-s}{s}R_r'$ represents the [[mechanical power developed ~ copper loss ~ core loss]].
+
+- type: mcq
+  q: How is the rotor copper loss $P_r$ related to the air-gap power $P_{ag}$?
+  options:
+    - text: $P_r = sP_{ag}$
+      correct: true
+      why: $P_{ag} = 3I_r'^2R_r'/s$ and $P_r = 3I_r'^2R_r'$, so $P_r = sP_{ag}$.
+    - text: $P_r = (1 - s)P_{ag}$
+      why: That is the developed (mechanical) power.
+    - text: $P_r = P_{ag}/s$
+    - text: $P_r = P_{ag}$
+
+- type: mcq
+  q: Why can the developed torque be calculated as $T_{dev} = P_{ag}/\omega_s$?
+  options:
+    - text: $P_{dev} = (1 - s)P_{ag}$ and $\omega_r = (1 - s)\omega_s$, so the $(1 - s)$ factors cancel in $P_{dev}/\omega_r$
+      correct: true
+    - text: Because the rotor runs at synchronous speed
+      why: It doesn't; it runs at $(1 - s)\omega_s$.
+    - text: Because the slip is negligible
+      why: The result is exact, not an approximation for small slip.
+
+- type: numeric
+  q: A motor has an air-gap power of {Pag} kW and a slip of {s}. Find the rotor copper loss and the developed power.
+  vars:
+    Pag: [10, 2, 50, 1]
+    s: [0.05, 0.01, 0.08, 0.01]
+  parts:
+    - label: "Rotor copper loss:"
+      answer: s * Pag
+      unit: kW
+    - label: "Developed power:"
+      answer: (1 - s) * Pag
+      unit: kW
+  solution: |
+    P_r = s P_ag = {s} × {Pag} = **{=s * Pag} kW**; P_dev = (1 − s) P_ag = **{=(1 - s) * Pag} kW**
+
+- type: numeric
+  q: A {P}-pole, {f} Hz motor has an air-gap power of {Pag} kW. What is its developed torque?
+  vars:
+    P: [4, 2, 8, 2]
+    f: [50, 50, 60, 10]
+    Pag: [15, 2, 50, 1]
+  answer: Pag * 1000 / (120 * f / P * pi / 30)
+  unit: N·m
+  hint: Find $N_s = 120f/P$, convert it to rad/s with $\omega_s = \frac{\pi}{30}N_s$, then $T = P_{ag}/\omega_s$.
+  solution: |
+    N_s = 120 × {f} / {P} = {=120 * f / P|4} rpm, so ω_s = {=120 * f / P * pi / 30} rad/s and T_dev = {=Pag * 1000|4} / {=120 * f / P * pi / 30} = **{=Pag * 1000 / (120 * f / P * pi / 30)} N·m**
+
+- type: mcq
+  q: A torque calculation gives 16.4 N·m where about 150 N·m was expected. What mistake was made?
+  options:
+    - text: The power in watts was divided by the speed in rpm instead of rad/s
+      correct: true
+      why: $\omega = \frac{\pi}{30}N$, so using rpm makes the result too small by $30/\pi \approx 9.55$.
+    - text: The slip was left out
+    - text: kW was used instead of W
+      why: That would make the answer 1000 times too small, not about 9.5 times.
+    - text: The number of poles was doubled
+
+- type: cloze
+  q: |
+    Moving the magnetising branch to the supply terminals makes the calculation much [[simpler ~ harder]],
+    but costs some [[accuracy ~ power ~ speed]], because the stator impedance no longer carries the magnetising current.
+
+- type: mcq
+  q: Why does adding resistance to a wound rotor's circuit **raise** the starting torque?
+  options:
+    - text: At standstill the rotor is dominated by reactance; extra resistance improves the rotor power factor, so more of the air-gap power is real
+      correct: true
+    - text: The extra resistance increases the rotor current
+      why: It limits the current; the gain comes from a better power factor.
+    - text: It raises the synchronous speed
+    - text: It reduces the slip at starting
+      why: At standstill the slip is 1 regardless.

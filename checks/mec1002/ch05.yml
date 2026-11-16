@@ -1,0 +1,119 @@
+# Electrical drives · Chapter 5 · DC Motor Control
+- type: multi
+  q: From $N = K\dfrac{V_s - i_aR_a}{\Phi}$, which quantities can be varied to control the speed of a field-wound DC motor? Select all that apply.
+  options:
+    - text: The flux $\Phi$ (flux control)
+      correct: true
+    - text: The armature circuit resistance (rheostatic control)
+      correct: true
+    - text: The applied voltage $V_s$ (voltage control)
+      correct: true
+    - text: The number of poles
+      why: The number of poles is fixed when the motor is built.
+    - text: The supply frequency
+      why: This is a DC motor; supply frequency controls the speed of AC machines.
+
+- type: mcq
+  q: In **flux control** of a shunt motor, what happens to the speed when the field current is reduced?
+  options:
+    - text: It increases
+      correct: true
+      why: $N \propto 1/\Phi$, so less field current means less flux and a higher speed.
+    - text: It decreases
+      why: Speed is inversely proportional to flux.
+    - text: It stays the same
+  explain: The method is efficient because the field current is small, so the $I_{sh}^2R$ loss in the field rheostat is small.
+
+- type: mcq
+  q: What is the main disadvantage of controlling a **series** motor's speed with a resistance in series with the supply?
+  options:
+    - text: The full motor current passes through the resistance, so there is a large $i^2R$ loss
+      correct: true
+    - text: The speed can only be increased, never reduced
+    - text: The motor can no longer be reversed
+    - text: The flux becomes zero at low speed
+
+- type: cloze
+  q: |
+    A **field diverter** is a variable resistance connected in [[parallel ~ series]] with the series field.
+    It diverts current away from the field, which [[reduces ~ increases]] the flux and so [[increases ~ reduces]] the speed.
+
+- type: mcq
+  q: |
+    In the H-bridge below, SW1 and SW4 drive the motor clockwise and SW2 and SW3 drive it anticlockwise.
+    Which pair must **never** be closed together?
+  options:
+    - text: SW1 and SW3 (switches on the same side)
+      correct: true
+      why: That connects the supply straight to ground through the two switches, a short circuit.
+    - text: SW1 and SW4
+      why: That is the normal pair for driving one way.
+    - text: SW2 and SW3
+      why: That is the normal pair for driving the other way.
+  explain: SW2 and SW4 together are just as bad. Closing both switches on one side of the bridge short-circuits the supply.
+
+- type: numeric
+  q: A {V} V supply is switched by PWM at a {D}% duty cycle. What average voltage does the motor see?
+  vars:
+    V: [12, 5, 48, 1]
+    D: [25, 5, 95, 5]
+  answer: D / 100 * V
+  unit: V
+  solution: |
+    V̄ = D × V_s = {=D / 100} × {V} = **{=D / 100 * V} V**
+
+- type: numeric
+  q: A motor needs an average of {Vm} V from a {V} V supply. What PWM duty cycle is needed?
+  vars:
+    Vm: [6, 1, 11, 0.5]
+    V: [12, 12, 24, 12]
+  answer: 100 * Vm / V
+  unit: "%"
+  solution: |
+    D = V̄ / V_s = {Vm} / {V} = **{=100 * Vm / V} %**
+
+- type: multi
+  q: Why can't a microcontroller drive a motor directly from an output pin? Select all that apply.
+  options:
+    - text: Its outputs can only deliver small currents (typically 20–50 mA)
+      correct: true
+    - text: Its outputs are digital (on/off) only
+      correct: true
+      why: PWM through a driver gives the variable average voltage instead.
+    - text: Microcontrollers cannot produce square waves
+      why: They can; that is how PWM is generated.
+    - text: Motors need an AC supply
+      why: DC motors run from DC; the problem is the current.
+
+- type: mcq
+  q: Which stepper motor has a **soft-iron, non-magnetised toothed rotor** that is pulled into the position of least reluctance?
+  options:
+    - text: Variable reluctance
+      correct: true
+      why: Its rotor has a different number of teeth from the stator poles.
+    - text: Permanent magnet
+      why: A permanent magnet stepper has a magnetised rotor that aligns with the stator poles.
+    - text: Hybrid
+      why: A hybrid stepper has a toothed, offset, **magnetised** rotor, combining both types for higher resolution.
+
+- type: multi
+  q: Which are advantages of a **brushless DC** motor over a brushed one? Select all that apply.
+  options:
+    - text: No brushes to wear or spark, so a longer life
+      correct: true
+    - text: Better power-to-weight ratio and higher efficiency
+      correct: true
+    - text: Windings on the stator, so better heat dissipation
+      correct: true
+    - text: It needs no electronic controller
+      why: A BLDC motor needs electronic commutation, so a controller is essential.
+
+- type: mcq
+  q: When would you choose a **stepper motor** over a BLDC motor?
+  options:
+    - text: For light loads and slow motion that must stop in exact positions with simple, cheap open-loop control
+      correct: true
+      why: For example 3D printers, camera sliders and small positioning stages.
+    - text: For high speed and high power at good efficiency
+      why: That is where BLDC motors shine.
+    - text: Whenever the motor must run for a long time

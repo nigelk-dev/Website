@@ -1,0 +1,85 @@
+# Electrical drives · Chapter 17 · Synchronous Motors
+- type: mcq
+  q: How does the rotor of a synchronous motor differ from that of an induction motor?
+  options:
+    - text: It is energised with DC (or uses permanent magnets), so its poles lock onto the rotating stator field
+      correct: true
+    - text: Its currents are induced by the stator field
+      why: That is the induction motor.
+    - text: It has no poles
+    - text: It is fed with three-phase AC through slip rings
+
+- type: numeric
+  q: A {P}-pole synchronous motor runs from a {f} Hz supply. What is its speed at **full load**?
+  vars:
+    P: [4, 2, 12, 2]
+    f: [50, 50, 60, 10]
+  answer: 120 * f / P
+  unit: rpm
+  solution: |
+    N_s = 60f/p = 60 × {f} / {=P / 2} = **{=120 * f / P|4} rpm**, the same at no load and full load: a synchronous motor runs at synchronous speed at every load up to its pull-out torque.
+
+- type: order
+  q: A synchronous motor with a squirrel cage (damper) winding is started. Put the steps in order.
+  items:
+    - The three-phase supply is switched on to the stator
+    - The rotor accelerates as an induction motor on its squirrel cage
+    - The rotor nears synchronous speed
+    - The DC field is switched on
+    - The rotor pulls into step and runs at synchronous speed
+  explain: |
+    A pure synchronous motor can't start on its own: at switch-on the field rotates so fast that the rotor is pulled first one way,
+    then the other, giving no net torque.
+
+- type: cloze
+  q: |
+    The **load angle** is the angle by which the rotor [[lags ~ leads]] the stator field; it grows with [[load ~ speed ~ voltage]].
+    The developed power is greatest at a load angle of [[90]]°. Beyond that, the rotor decouples from the field and the motor stalls.
+
+- type: mcq
+  q: With negligible armature resistance, which expression gives the developed power of a synchronous motor?
+  options:
+    - text: $P_{dev} = 3\dfrac{V_bV_s}{X_s}\sin\alpha$
+      correct: true
+    - text: $P_{dev} = 3\dfrac{V_bV_s}{X_s}\cos\alpha$
+      why: The cosine would make the power greatest at zero load angle, which is wrong.
+    - text: $P_{dev} = \dfrac{V_s^2}{X_s}$
+    - text: $P_{dev} = 3V_sI_s$
+
+- type: numeric
+  q: A synchronous motor has $V_s$ = $V_b$ = {V} V per phase, $X_s$ = {X} Ω and runs at {N} rpm. What is its pull-out torque?
+  vars:
+    V: [400, 230, 690, 10]
+    X: [10, 5, 30, 1]
+    N: [1500, 750, 3000, 750]
+  answer: 3 * V * V / X / (N * pi / 30)
+  unit: N·m
+  hint: The maximum power is at α = 90° (sin α = 1). Then $T = P/\omega_s$ with $\omega_s$ in rad/s.
+  solution: |
+    P_max = 3 × {V} × {V} / {X} = {=3 * V * V / X / 1000} kW; ω_s = {N} × π/30 = {=N * pi / 30} rad/s;
+    T_max = **{=3 * V * V / X / (N * pi / 30)} N·m**
+
+- type: mcq
+  q: In a motor, the back e.m.f. is 3671 V against a supply of 3810.5 V. Does the back e.m.f. lead or lag the supply?
+  options:
+    - text: It lags, by the load angle (about 2.5° here)
+      correct: true
+      why: In a motor the rotor, and so the back e.m.f., lags the supply.
+    - text: It leads
+      why: A leading e.m.f. means the machine is generating.
+    - text: They are in phase
+
+- type: mcq
+  q: Which rotor would you use for a **hydro-electric** generator?
+  options:
+    - text: Salient pole
+      correct: true
+      why: Water turbines run slowly, so a large rotor with many poles gives the right frequency at low speed.
+    - text: Cylindrical
+      why: Cylindrical rotors suit fast steam turbines (1500–3000 rpm), where they withstand the high centrifugal forces.
+
+- type: reveal
+  q: Why is the need for a DC supply a disadvantage of the wound-field synchronous motor?
+  answer: |
+    It needs a second, separate DC supply (usually with slip rings and brushes to feed the rotor) as well as the
+    three-phase supply. That adds cost, complexity and maintenance compared with an induction motor.

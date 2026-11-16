@@ -13,3 +13,9 @@
 /mec1043-1062/notes/
 
 **/*.quarto_ipynb
+
+# Old local copy from before the course was renamed MEC1043/1062
+/mm453/
+
+# Python bytecode
+__pycache__/
