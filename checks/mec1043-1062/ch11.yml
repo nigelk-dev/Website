@@ -1,0 +1,92 @@
+# Manufacturing Automation · Chapter 11 · Network Protocols: OSI, TCP/IP and Data Integrity
+- type: order
+  q: Put the seven OSI layers in order, from layer 1 (bottom) to layer 7 (top).
+  items:
+    - Physical
+    - Data link
+    - Network
+    - Transport
+    - Session
+    - Presentation
+    - Application
+
+- type: cloze
+  q: |
+    Match each address to its layer: **MAC** addresses belong to layer [[2]] (data link, hop-to-hop),
+    **IP** addresses to layer [[3]] (network, end-to-end), and **ports** to layer [[4]] (transport, service-to-service).
+
+- type: cloze
+  q: |
+    A MAC address has [[48]] bits (12 hex digits). An IPv4 address has [[32]] bits, written as [[4]] octets of 0–255.
+    Ports run from 0 to [[65535]].
+
+- type: mcq
+  q: Which layer handles **encryption and compression**?
+  options:
+    - text: Presentation
+      correct: true
+    - text: Session
+      why: The session layer manages sessions, passwords and permissions.
+    - text: Transport
+    - text: Application
+
+- type: mcq
+  q: How do **TCP** and **UDP** differ?
+  options:
+    - text: TCP guarantees end-to-end delivery; UDP has no checks and leaves error checking to the upper layers
+      correct: true
+    - text: UDP guarantees delivery; TCP does not
+    - text: TCP is used only for email
+    - text: UDP works at the network layer
+      why: Both TCP and UDP are transport-layer protocols.
+
+- type: order
+  q: Put the encapsulation steps in order as data goes down the TCP/IP stack.
+  items:
+    - The transport layer adds source and destination ports, forming a segment
+    - The internet layer adds source and destination IP addresses, forming a packet
+    - The network access layer adds MAC addresses and a trailer, forming a frame
+
+- type: multi
+  q: As a frame hops M1 → R1 → R2 → M2, which fields **change at every hop**? Select all that apply.
+  options:
+    - text: The source and destination MAC addresses
+      correct: true
+    - text: The source and destination IP addresses
+      why: The IP addresses stay the same from end to end.
+    - text: The source and destination ports
+      why: The ports stay the same too.
+
+- type: cloze
+  q: |
+    Work out the checksum of the two 8-bit words 11110000 and 00011000. Adding them gives a carry out, so
+    with end-around carry the sum is [[00001001]], and the checksum (its one's complement) is [[11110110]].
+  explain: |
+    11110000 + 00011000 = 1 00001000; wrapping the carry back in gives 00001001. Inverting every bit gives 11110110.
+    The receiver adds the data and checksum and gets 11111111, whose complement is 00000000, so it accepts.
+
+- type: mcq
+  q: The receiver adds the received data words and the checksum and gets **11111111**. What does it do?
+  options:
+    - text: Accept the data, because the complement is 00000000
+      correct: true
+    - text: Reject the data
+    - text: Ask for the checksum again
+
+- type: cloze
+  q: |
+    Find the CRC for the data **1101** with the generator **1011** ($x^3 + x + 1$). Append [[3]] zeros, divide modulo 2, and the
+    remainder is [[001]]. The transmitted data is [[1101001]].
+  explain: For an n-bit generator, append n − 1 zeros. XOR the generator down the message (modulo-2 division) to get the remainder.
+
+- type: multi
+  q: Which statements about data integrity checks are true? Select all that apply.
+  options:
+    - text: Checksums protect the headers at the transport and internet layers
+      correct: true
+    - text: A CRC protects the whole frame at the network access layer
+      correct: true
+    - text: A CRC remainder of 000 at the receiver means accept
+      correct: true
+    - text: A checksum can detect every possible error
+      why: Some errors cancel out; for example, two bit flips in the same position of different words can go unnoticed.

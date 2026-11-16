@@ -1,0 +1,65 @@
+# Manufacturing Automation · Chapter 17 · Feedtracks and Escapements
+- type: mcq
+  q: How is a gravity feedtrack kept fairly full without excessive over-feeding?
+  options:
+    - text: High- and low-level sensors on the track switch the feeder on and off
+      correct: true
+      why: The feed rate depends on the number of parts on the track, but constant over-feeding wears the bowl and damages parts.
+    - text: The bowl runs at maximum amplitude all the time
+    - text: The track is made steeper
+    - text: The escapement is removed
+
+- type: numeric
+  q: Parts {L} mm long fall down a **vertical** feedtrack. Find the time per part and the maximum feed rate.
+  vars:
+    L: [20, 5, 80, 5]
+  parts:
+    - label: "Time per part:"
+      answer: 1000 * sqrt(2 * L / 1000 / 9.81)
+      unit: ms
+    - label: "Feed rate:"
+      answer: 1 / sqrt(2 * L / 1000 / 9.81)
+      unit: parts/s
+  hint: Each part falls through its own length, so $t = \sqrt{2L/g}$ with $L$ in metres.
+  solution: |
+    t = √(2 × {=L / 1000} / 9.81) = **{=1000 * sqrt(2 * L / 1000 / 9.81)} ms**, so the feed rate is 1/t = **{=1 / sqrt(2 * L / 1000 / 9.81)} parts/s**
+
+- type: numeric
+  q: |
+    A part with $\mu$ = {mu} runs in a V-track whose sides are at {th}° to the vertical. What is the effective coefficient of friction?
+  vars:
+    mu: [0.2, 0.1, 0.5, 0.05]
+    th: [45, 20, 60, 5]
+  answer: mu / sind(th)
+  hint: $N = mg/(2\sin\theta)$ on each side, so $F = 2\mu N = \mu mg/\sin\theta$.
+  solution: |
+    μ_eff = μ / sin θ = {mu} / sin {th}° = **{=mu / sind(th)}**
+
+- type: numeric
+  q: A part with $\mu$ = {mu} runs on twin wires 120° apart. What is the effective coefficient of friction?
+  vars:
+    mu: [0.2, 0.1, 0.5, 0.05]
+  answer: 2 * mu
+  solution: |
+    2N cos 60° = mg, so N = mg and F = 2μN = 2μmg: μ_eff = 2 × {mu} = **{=2 * mu}**
+
+- type: cloze
+  q: |
+    Powered feedtracks are either [[vibratory]], driven like a bowl feeder by an electromagnet and inclined springs, or
+    [[air-assisted|air assisted|air]], with positioned jets driving the parts along.
+
+- type: mcq
+  q: What is the job of an **escapement**?
+  options:
+    - text: To let parts leave the feedtrack at the required rate, avoiding congestion at the workhead
+      correct: true
+    - text: To orient the parts
+      why: That is the job of the orientation tooling.
+    - text: To reject faulty parts
+    - text: To lift parts out of the hopper
+
+- type: cloze
+  q: |
+    Match the escapement: a [[drum ~ slide ~ ratchet]] escapement suits a change of direction in a confined space; a
+    [[slide ~ drum ~ star wheel]] escapement is for parts that don't interlock; and a [[ratchet ~ drum ~ slide]] escapement
+    must never push parts back up the track.

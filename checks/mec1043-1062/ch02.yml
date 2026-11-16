@@ -1,0 +1,87 @@
+# Manufacturing Automation · Chapter 2 · Boolean Algebra and Truth Tables
+- type: numeric
+  q: A truth table covers every combination of {n} binary inputs. How many rows does it have?
+  vars:
+    n: [3, 2, 8, 1]
+  answer: 2 ** n
+  unit: rows
+  tol: 0
+  solution: |
+    Each input doubles the number of combinations: 2^{n} = **{=2 ** n|4}** rows.
+
+- type: mcq
+  q: |
+    In the switch-with-lock table, why is the process output $P$ also included as an **input**?
+  options:
+    - text: When the lock is on, P keeps its previous state, so the new state P′ depends on the old state P
+      correct: true
+      why: Input P is the state of the output in the **previous scan cycle**; this is how memory is modelled.
+    - text: Because P is wired to a physical switch
+    - text: To double the number of rows for safety
+    - text: Every truth table must include its outputs as inputs
+      why: Only when the output must remember its previous state.
+
+- type: cloze
+  q: |
+    For the switch with lock: when $L = 0$ (lock on), $P'$ = [[P ~ S ~ 0 ~ 1]]; when $L = 1$ (lock off), $P'$ = [[S ~ P ~ 0 ~ 1]].
+
+- type: boolean
+  q: |
+    Write the **simplified** expression for the switch with lock, starting from the sum of products
+    $P' = \overline{S}.\overline{L}.P + S.\overline{L}.P + S.L.\overline{P} + S.L.P$.
+  vars: [S, L, P]
+  output: P′
+  answer: "!L.P + S.L"
+  minimal: true
+  solution: |
+    Distributive law: $(\overline{S} + S).\overline{L}.P + S.L.(\overline{P} + P)$; inclusion: $\overline{S} + S = 1$;
+    characteristic: $P' = \overline{L}.P + S.L$.
+
+- type: boolean
+  q: |
+    Latching with Go and Stop buttons: Stop (S) takes precedence; once Go (G) is pressed the output latches on until Stop is pressed.
+    Write $P'$ in terms of G, S and P.
+  vars: [G, S, P]
+  output: P′
+  answer: "!S.(P + G)"
+  solution: |
+    If $S = 1$ then $P' = 0$; if $S = 0$ then $P' = P + G$. So $P' = \overline{S}.(P + G)$.
+
+- type: cloze
+  q: |
+    Complete the gate outputs for **A = 1, B = 0**: AND $A.B$ = [[0]], OR $A + B$ = [[1]], NOT $\overline{A}$ = [[0]].
+
+- type: mcq
+  q: How is a **sum-of-products** expression built from a truth table?
+  options:
+    - text: OR together the rows where the output is 1, each written as an AND of its inputs (barred where the input is 0)
+      correct: true
+    - text: AND together the rows where the output is 0
+      why: That is the idea behind a product of sums, not a sum of products.
+    - text: Add up the binary values of each row
+    - text: Use only the rows where every input is 1
+
+- type: mcq
+  q: Which law gives $X.Y + X.\overline{Y} = X$?
+  options:
+    - text: Consistency
+      correct: true
+    - text: De Morgan
+      why: De Morgan swaps AND and OR under a bar, e.g. $\overline{X.Y} = \overline{X} + \overline{Y}$.
+    - text: Idempotent
+      why: Idempotent is $X.X = X$ and $X + X = X$.
+    - text: Absorptive
+      why: Absorptive is $X + X.Y = X$.
+
+- type: boolean
+  q: Use De Morgan's theorem to write $\overline{A + B}$ without a bar over the whole expression.
+  vars: [A, B]
+  answer: "!A.!B"
+  solution: $\overline{A + B} = \overline{A}.\overline{B}$
+
+- type: boolean
+  q: Simplify $X + \overline{X}.Y$ (the reflective law).
+  vars: [X, Y]
+  answer: "X + Y"
+  minimal: true
+  solution: $X + \overline{X}.Y = X + Y$

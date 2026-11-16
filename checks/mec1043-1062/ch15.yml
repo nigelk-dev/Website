@@ -1,0 +1,99 @@
+# Manufacturing Automation · Chapter 15 · Non-Vibratory Hopper Feeders and Magazines
+- type: numeric
+  q: |
+    A reciprocating tube hopper has a hopper angle $\Phi$ = {phi}°. Find the friction coefficient above which parts **jam**,
+    and the one above which they won't **slide** down the wall.
+  vars:
+    phi: [45, 20, 80, 5]
+  parts:
+    - label: "Jamming limit μ ="
+      answer: (1 - cosd(phi)) / sind(phi)
+    - label: "Sliding limit μ ="
+      answer: 1 / tand(phi)
+  solution: |
+    Jamming: μ < (1 − cos {phi}°)/sin {phi}° = **{=(1 - cosd(phi)) / sind(phi)}**; sliding: μ < cot {phi}° = **{=1 / tand(phi)}**.
+    The lower of the two governs.
+
+- type: numeric
+  q: At what hopper angle do the jamming and sliding limits cross?
+  answer: 60
+  unit: °
+  tol: 0.5
+  explain: Below 60° the jamming limit $\mu < (1-\cos\Phi)/\sin\Phi$ governs; above 60° the sliding limit $\mu < \cot\Phi$ governs.
+
+- type: multi
+  q: Which are design guidelines for a reciprocating tube hopper? Select all that apply.
+  options:
+    - text: The hopper should ideally be half full
+      correct: true
+    - text: The delivery tube should rise above the maximum fill level
+      correct: true
+    - text: The tube's internal profile should only accept correctly oriented parts
+      correct: true
+    - text: The delivery tube's linear velocity should be below 0.6 m/s
+      correct: true
+    - text: The hopper angle should always be 90°
+      why: At 90° the parts couldn't slide down the wall.
+
+- type: order
+  q: Put the five phases of the centreboard's motion in order.
+  items:
+    - Accelerate uniformly from rest to mid-height
+    - Decelerate uniformly to stop at maximum height
+    - Dwell at maximum height while the parts slide off the track
+    - Accelerate downwards uniformly to mid-height
+    - Decelerate uniformly to stop at the fully down position
+
+- type: mcq
+  q: How is the phase-2 deceleration of the centreboard chosen?
+  options:
+    - text: So the normal reaction between part and track is zero at maximum height, ensuring the part starts to slide
+      correct: true
+    - text: As fast as the motor allows
+    - text: So the parts hop off the track
+    - text: To match the conveyor speed
+
+- type: numeric
+  q: |
+    A centrifugal hopper has radius {r} m, base friction $\mu_b$ = {mb} and wall friction $\mu_w$ = {mw}. Parts are {L} mm long and the
+    efficiency is {E}. Find the part velocity at the wall and the feed rate.
+  vars:
+    r: [0.3, 0.1, 0.5, 0.05]
+    mb: [0.4, 0.2, 0.8, 0.1]
+    mw: [0.3, 0.2, 0.8, 0.1]
+    L: [20, 10, 50, 5]
+    E: [0.6, 0.3, 0.9, 0.1]
+  parts:
+    - label: "v ="
+      answer: sqrt(mb * 9.81 * r / mw)
+      unit: m/s
+    - label: "Feed rate:"
+      answer: E / (L / 1000) * sqrt(mb * 9.81 * r / mw)
+      unit: parts/s
+  hint: At equilibrium wall friction balances base friction, so $v = \sqrt{\mu_b g r/\mu_w}$. Feed rate $= (E/L)\,v$.
+  solution: |
+    v = √({mb} × 9.81 × {r} / {mw}) = **{=sqrt(mb * 9.81 * r / mw)} m/s**; feed rate = {E} / {=L / 1000} m × v = **{=E / (L / 1000) * sqrt(mb * 9.81 * r / mw)} parts/s**
+
+- type: numeric
+  q: Centrifugal hopper efficiency is highest at about what percentage of the maximum rotational frequency $n_{max}$?
+  answer: 25
+  unit: "%"
+  tol: 0
+
+- type: cloze
+  q: |
+    Match the feeder: the [[stationary hook ~ bladed wheel ~ tumbling barrel]] is gentle, so it is used for delicate parts; the
+    [[tumbling barrel ~ stationary hook ~ magnetic disk]] works best about a quarter full with a rubber lining; and the
+    [[magnetic disk ~ bladed wheel ~ revolving hook]] is for ferromagnetic parts.
+
+- type: multi
+  q: Which are advantages of **magazines** (preloaded stacks of parts)? Select all that apply.
+  options:
+    - text: They accept good parts only, acting as an inspection device
+      correct: true
+    - text: No feed track is needed
+      correct: true
+    - text: They avoid blockages and so machine downtime
+      correct: true
+    - text: They hold very large numbers of parts
+      why: Magazines hold relatively few parts and may need frequent reloading.

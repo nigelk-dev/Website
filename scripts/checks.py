@@ -23,6 +23,13 @@ Question types (every question has `type` and `q`, the question in Markdown;
            with the same blanks, shown under q.
   order    items: [...] in the correct order; shown shuffled.
   reveal   answer: model answer in Markdown; the learner marks themselves.
+  boolean  vars: [A, B, ...], answer: an expression such as "!L.P + S.L"; the
+           learner's expression is accepted if it has the same truth table.
+           minimal: true also asks for no more literals than the answer.
+           dont_care: an expression true on the rows that may be either.
+           output: the name shown before "=" (default "Output").
+           Syntax: . * & AND, + | OR, ! ~ NOT or a trailing ', brackets,
+           and single-letter names may be written side by side (SL = S.L).
 
   python3 scripts/checks.py            validate every checks/*/*.yml
 """
@@ -39,7 +46,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 CHECKS = ROOT / "checks"
 
-TYPES = {"mcq", "multi", "numeric", "cloze", "order", "reveal"}
+TYPES = {"mcq", "multi", "numeric", "cloze", "order", "reveal", "boolean"}
 
 
 class Loader(yaml.SafeLoader):
@@ -112,6 +119,94 @@ def fmt(x, sig=3):
 
 def _trim(s):
     return s.rstrip("0").rstrip(".") if "." in s else s
+
+
+# ---------------------------------------------------------------- Boolean expressions
+# The same grammar as the widget: OR of AND-terms of (possibly negated) factors.
+
+BOOL_TOKEN = re.compile(r"\s*(?:(AND|OR|NOT)\b|([A-Za-z][A-Za-z0-9_]*)|([01])|(.))")
+
+
+def bool_parse(text, names):
+    """-> (function of a dict of values, number of literals). Raises ValueError."""
+    toks = []
+    for m in BOOL_TOKEN.finditer(text):
+        word, name, const, ch = m.groups()
+        if word:
+            toks.append({"AND": ".", "OR": "+", "NOT": "!"}[word])
+        elif name:
+            if name in names:
+                toks.append(("v", name))
+            elif all(c in names for c in name):  # SL = S.L for one-letter names
+                for i, c in enumerate(name):
+                    toks += ([".", ("v", c)] if i else [("v", c)])
+            else:
+                raise ValueError(f"unknown name {name!r}")
+        elif const:
+            toks.append(("c", const == "1"))
+        elif ch and not ch.isspace():
+            toks.append({"*": ".", "&": ".", "·": ".", "|": "+", "~": "!", "¬": "!", "′": "'", "’": "'"}.get(ch, ch))
+    pos = [0]
+    lits = [0]
+
+    def peek():
+        return toks[pos[0]] if pos[0] < len(toks) else None
+
+    def take():
+        t = peek()
+        pos[0] += 1
+        return t
+
+    def expr():
+        terms = [term()]
+        while peek() == "+":
+            take()
+            terms.append(term())
+        return lambda env: any(t(env) for t in terms)
+
+    def term():
+        facs = [factor()]
+        while True:
+            t = peek()
+            if t == ".":
+                take()
+                facs.append(factor())
+            elif t == "!" or t == "(" or isinstance(t, tuple):
+                facs.append(factor())
+            else:
+                return lambda env: all(f(env) for f in facs)
+
+    def factor():
+        t = peek()
+        if t == "!":
+            take()
+            f = factor()
+            g = lambda env: not f(env)
+        elif t == "(":
+            take()
+            g = expr()
+            if take() != ")":
+                raise ValueError("missing )")
+        elif isinstance(t, tuple):
+            take()
+            if t[0] == "v":
+                lits[0] += 1
+                g = (lambda n: lambda env: env[n])(t[1])
+            else:
+                g = (lambda v: lambda env: v)(t[1])
+        else:
+            raise ValueError(f"unexpected {t!r}")
+        while peek() == "'":
+            take()
+            g = (lambda h: lambda env: not h(env))(g)
+        return g
+
+    if not toks:
+        raise ValueError("empty expression")
+    f = expr()
+    if pos[0] != len(toks):
+        raise ValueError(f"unexpected {toks[pos[0]]!r}")
+    return f, lits[0]
 
 
 # ---------------------------------------------------------------- rendering
@@ -187,7 +282,8 @@ def data_block(obj):
 
 def render_question(n, q, where):
     t = q["type"]
-    env = {k: float(v[0]) for k, v in (q.get("vars") or {}).items()}
+    vars_ = q.get("vars") if isinstance(q.get("vars"), dict) else {}
+    env = {k: float(v[0]) for k, v in vars_.items()}
     data = {"type": t}
     parts = []
 
@@ -224,6 +320,14 @@ def render_question(n, q, where):
         parts.append(div("kc-items", "\n\n".join(items), 1))
     elif t == "reveal":
         parts.append(div("kc-answer", str(q["answer"]), 0))
+    elif t == "boolean":
+        _, lits = bool_parse(str(q["answer"]), q["vars"])
+        data.update(vars=list(q["vars"]), answer=str(q["answer"]), output=q.get("output", "Output"),
+                    literals=lits if q.get("minimal") else None, dc=q.get("dont_care"))
+        if q.get("dont_care"):
+            bool_parse(str(q["dont_care"]), q["vars"])
+        if q.get("solution"):
+            parts.append(div("kc-solution", str(q["solution"]), 0))
 
     if q.get("explain"):
         parts.append(div("kc-explain", fill_vars(str(q["explain"]), env, where), 0))
@@ -304,6 +408,11 @@ def validate_question(q, where):
     elif t == "reveal":
         if not q.get("answer"):
             errs.append(f"{where}: reveal without answer")
+    elif t == "boolean":
+        try:
+            bool_parse(str(q.get("answer", "")), q.get("vars") or [])
+        except ValueError as e:
+            errs.append(f"{where}: answer: {e}")
     return errs
 
 

@@ -1,0 +1,85 @@
+# Manufacturing Automation · Chapter 12 · Fieldbus, Profibus and Industrial Ethernet
+- type: order
+  q: Put one cycle of a **master–slave** fieldbus exchange in order.
+  items:
+    - The master sends a request message to the sensor
+    - The sensor replies with its current value
+    - The controller processes the value
+    - The master sends the actuator a message with the new set value
+    - The master starts querying the sensor again
+  explain: Because the cycle is fixed, a fieldbus is **deterministic**.
+
+- type: multi
+  q: Which are **disadvantages** of a fieldbus compared with conventional point-to-point wiring? Select all that apply.
+  options:
+    - text: Complexity needs qualified staff for operation and maintenance
+      correct: true
+    - text: Longer response times, because slaves are polled one after another
+      correct: true
+    - text: A failure of the bus breaks communication between all components
+      correct: true
+    - text: Much more wiring and larger switch cabinets
+      why: The opposite; a fieldbus needs less wiring and smaller cabinets.
+    - text: It can't carry analogue signals
+      why: One cable carries digital, binary and analogue signals.
+
+- type: cloze
+  q: PROFIBUS stands for [[PROcess FIeld BUS|process field bus|process fieldbus]]. Its two main variants are Profibus [[DP]] (Decentralised Periphery) and Profibus [[PA]] (Process Automation).
+
+- type: cloze
+  q: |
+    Profibus [[DP ~ PA]] reaches up to 12 Mbit/s over 100 m (but only 9.6 kbit/s at 1200 m) and has no power on the bus.
+    Profibus [[PA ~ DP]] runs at a fixed 31.25 kbit/s and can optionally power simple instruments over the bus at 9–32 V.
+
+- type: numeric
+  q: How many components can Profibus DP address in total, and how many per segment?
+  parts:
+    - label: "Total:"
+      answer: 126
+      tol: 0
+    - label: "Per segment:"
+      answer: 32
+      tol: 0
+
+- type: mcq
+  q: Why is standard (IEEE) Ethernet described as **not deterministic**?
+  options:
+    - text: All devices are equal and send when the line is free, so collisions and waiting times are random
+      correct: true
+    - text: It is too slow
+      why: Ethernet is generally faster than fieldbus.
+    - text: It uses a master–slave scheme
+      why: That is how a fieldbus works, and it is what makes a fieldbus deterministic.
+    - text: It can't carry more than one protocol
+
+- type: multi
+  q: How does **industrial** Ethernet differ from office Ethernet? Select all that apply.
+  options:
+    - text: Components need higher protection against dust, water, lubricants and wider temperatures
+      correct: true
+    - text: Line (daisy-chain) topologies are common rather than stars
+      correct: true
+    - text: Communication must be controlled so the network is deterministic and fail-safe
+      correct: true
+    - text: It can't use switches
+      why: Industrial networks use switches too, often with ring closures for redundancy.
+
+- type: mcq
+  q: Which category of Industrial Ethernet can achieve cycle times **below 1 ms**?
+  options:
+    - text: Proprietary Ethernet communication, with manufacturer-specific hardware and software extensions
+      correct: true
+    - text: Standard IP communication
+      why: IP-based communication can't achieve the classic real-time properties of fieldbuses.
+    - text: Standard Ethernet communication addressed by MAC address
+
+- type: mcq
+  q: Which is an advantage of **fieldbus** over Ethernet-based networks?
+  options:
+    - text: It is deterministic and less sensitive to electrical noise
+      correct: true
+    - text: It is faster
+      why: Speed is an Ethernet advantage.
+    - text: The same network serves IT and automation
+      why: That is an Ethernet advantage.
+    - text: Easier integration with wireless networks

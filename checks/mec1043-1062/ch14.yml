@@ -1,0 +1,94 @@
+# Manufacturing Automation · Chapter 14 · Vibratory Bowl Feeders
+- type: cloze
+  q: |
+    In a vibratory bowl feeder, an [[electromagnet]] in the base moves the bowl vertically, and [[leaf springs|leaf spring|springs]]
+    around the circumference couple this with a torsional oscillation. Parts travel up a [[helical|spiral]] track to the outlet.
+
+- type: numeric
+  q: |
+    A part sits on a track with $\theta$ = {th}°, vibration angle $\Psi$ = {psi}° and $\mu_s$ = {mu}. What value must
+    $a_0\omega^2/g$ exceed for **forward sliding**?
+  vars:
+    th: [0, 0, 5, 1]
+    psi: [30, 10, 45, 5]
+    mu: [0.2, 0.1, 0.8, 0.1]
+  answer: (mu * cosd(th) + sind(th)) / (cosd(psi) + mu * sind(psi))
+  hint: $\dfrac{a_0\omega^2}{g} > \dfrac{\mu_s\cos\theta + \sin\theta}{\cos\Psi + \mu_s\sin\Psi}$
+  solution: |
+    ({mu} × cos {th}° + sin {th}°) / (cos {psi}° + {mu} × sin {psi}°) = **{=(mu * cosd(th) + sind(th)) / (cosd(psi) + mu * sind(psi))}**
+
+- type: numeric
+  q: For the same track ($\theta$ = {th}°, $\Psi$ = {psi}°), what value must $a_0\omega^2/g$ exceed for the part to **hop**?
+  vars:
+    th: [0, 0, 5, 1]
+    psi: [30, 10, 45, 5]
+  answer: cosd(th) / sind(psi)
+  hint: Hopping starts when the normal reaction $N$ falls to zero.
+  solution: |
+    a₀ω²/g > cos θ / sin Ψ = cos {th}° / sin {psi}° = **{=cosd(th) / sind(psi)}**
+
+- type: mcq
+  q: In terms of the normal components, when does a part **hop**?
+  options:
+    - text: When $A_n/g_n > 1$
+      correct: true
+    - text: When $A_n/g_n < 1$
+    - text: When $\tan\Psi = \tan\theta/\mu_s$
+      why: That is the cut-off where forward and backward sliding balance.
+    - text: Only when $\theta > 0$
+
+- type: multi
+  q: Which changes generally **increase** a vibratory bowl's feed rate? Select all that apply.
+  options:
+    - text: Lowering the drive frequency (with the amplitude raised to keep the acceleration)
+      correct: true
+      why: Conveying velocity is inversely proportional to frequency.
+    - text: Raising $A_n/g_n$ above 1, short of excessive hopping
+      correct: true
+    - text: Increasing the coefficient of friction, e.g. with a rubber lining
+      correct: true
+    - text: Increasing the track angle $\theta$
+      why: Feed rate is usually highest at $\theta = 0$.
+    - text: Making the parts hop as high as possible
+      why: Excessive hopping makes parts land erratically.
+
+- type: mcq
+  q: Bowl tracks are inclined at 3–4°. For feed-rate calculations with a **full** bowl, what track angle should be assumed?
+  options:
+    - text: 0°, because parts at the bottom push the parts along the track
+      correct: true
+    - text: 3–4°
+    - text: 45°
+    - text: 90°
+
+- type: numeric
+  q: |
+    Leaf springs inclined at {a}° to the horizontal are attached to the bowl at a radius of {r1} mm. What is the vibration angle
+    at the edge of a {D} mm diameter bowl?
+  vars:
+    a: [60, 50, 75, 5]
+    r1: [100, 60, 120, 10]
+    D: [300, 260, 500, 20]
+  answer: atand(r1 / (D / 2) * tand(90 - a))
+  unit: °
+  hint: The vibration angle at the springs is $90^\circ$ minus the spring angle, and $\tan\Psi_2 = (r_1/r_2)\tan\Psi_1$.
+  solution: |
+    Ψ₁ = 90° − {a}° = {=90 - a}° at {r1} mm. At r₂ = {=D / 2} mm: Ψ₂ = arctan(({r1}/{=D / 2}) × tan {=90 - a}°) = **{=atand(r1 / (D / 2) * tand(90 - a))}°**
+
+- type: numeric
+  q: Typical coefficients of friction are 0.2 for steel on steel and 0.8 for steel on rubber. How many times larger is the rubber value?
+  answer: 4
+  tol: 0
+
+- type: multi
+  q: Which measures combat **load sensitivity** (feed rate changing as the bowl empties)? Select all that apply.
+  options:
+    - text: Regular bowl refills
+      correct: true
+    - text: Overfeeding
+      correct: true
+    - text: Varying the vibration amplitude with load
+      correct: true
+    - text: Increasing the bowl's spring stiffness
+      correct: true
+    - text: Raising the track angle

@@ -1,0 +1,62 @@
+# Manufacturing Automation · Chapter 1 · Introduction to Industrial Logic Control
+- type: multi
+  q: Which of these inputs are **decisions by attributes** (discrete values)? Select all that apply.
+  options:
+    - text: Photo-eye beam blocked / clear
+      correct: true
+    - text: Part colour red / green / blue
+      correct: true
+    - text: Limit switch made / not made
+      correct: true
+    - text: Oven temperature 182.4 °C
+      why: A temperature can take any value in a range, so it is a decision by variables.
+    - text: Line pressure 1004 mbar
+      why: A continuous reading, so a decision by variables.
+
+- type: cloze
+  q: |
+    A decision by **variables** can be turned into an **attribute** by applying a [[threshold|limit|setpoint]]:
+    for example, if $t \le 100$ the output is ON, otherwise it is OFF. The continuous range becomes the attribute of being
+    [[below ~ above ~ equal to]], or not below, the threshold.
+
+- type: multi
+  q: Which types of control system are commonly used in industry to automate processes? Select all that apply.
+  options:
+    - text: Programmable logic controllers (PLCs)
+      correct: true
+    - text: Digital electronics
+      correct: true
+    - text: Logic control systems
+      correct: true
+    - text: Manual hand-written job sheets
+      why: Useful in a workshop, but not an automatic control system.
+
+- type: mcq
+  q: |
+    A furnace's flame goes out and re-ignition keeps failing. Why does a realistic automatic ignition need a **timer**?
+  options:
+    - text: So that if ignition hasn't succeeded after x seconds, the gas is turned off
+      correct: true
+      why: Without a time limit, unburnt gas would keep flowing into the furnace. This is solved fully in Chapter 6.
+    - text: To ignite the gas at a fixed time each day
+    - text: To measure the furnace temperature
+    - text: Truth tables can't describe on/off decisions
+      why: They can; what truth tables can't capture is the time dependence.
+
+- type: mcq
+  q: For a control problem with **no time dependence**, where does the design analysis start?
+  options:
+    - text: With a truth table covering every input combination
+      correct: true
+    - text: With a response diagram
+      why: Response diagrams are for behaviour over time, such as timers and delays.
+    - text: With the ladder logic directly
+      why: Ladder logic is how the design is implemented, after the analysis.
+    - text: With a SCADA screen design
+
+- type: reveal
+  q: Why do even simple-looking processes, like the forging furnace, need a **systematic** analysis?
+  answer: |
+    Several inputs interact (flame present, ignition, power, manual override, time), so there are many combinations of
+    states. The control signals have to be set correctly **whatever state** the system is in, including faults, and only a
+    systematic analysis of every combination makes sure nothing is missed.

@@ -1,0 +1,70 @@
+# Manufacturing Automation · Chapter 10 · Network Topology, Transmission Media and Components
+- type: mcq
+  q: Which topology keeps working if **one section of the network is broken**?
+  options:
+    - text: Ring
+      correct: true
+      why: Every device can reach every other over two channels, clockwise and anticlockwise.
+    - text: Star
+      why: In a star the whole system goes down if the central computer fails.
+    - text: Point-to-point
+    - text: Line
+      why: A break in a line cuts off every device beyond it.
+
+- type: mcq
+  q: What is the main weakness of a **star** topology?
+  options:
+    - text: The whole system goes down if the central computer crashes, so redundancy is usually built in
+      correct: true
+    - text: Data flow is hard to track
+      why: Tracking and prioritising data flow is actually easy in a star.
+    - text: It can only connect two devices
+      why: That is point-to-point.
+
+- type: mcq
+  q: Which topology do classic fieldbus systems such as **PROFIBUS** use?
+  options:
+    - text: Line (bus)
+      correct: true
+    - text: Ring
+    - text: Star
+    - text: Tree
+      why: A tree, an "expanded" star, is typical of office Ethernet with switches.
+
+- type: cloze
+  q: |
+    Compare the media: [[fibre optic ~ coaxial ~ twisted pair]] has the highest data rate and noise immunity but is hardest to
+    install; [[twisted pair ~ coaxial ~ fibre optic]] is cheapest and easiest to install but has the most attenuation; and
+    [[coaxial ~ twisted pair ~ fibre optic]] sits in between, with a shielded centre conductor.
+
+- type: mcq
+  q: Why are the wires in a twisted-pair cable twisted?
+  options:
+    - text: The twisting cancels electromagnetic interference
+      correct: true
+    - text: To make the cable stronger
+    - text: To carry light instead of electricity
+      why: That is fibre optic.
+    - text: To increase the cable's length
+
+- type: cloze
+  q: |
+    Match the device: a [[repeater ~ hub ~ router]] amplifies an attenuated signal; a [[hub ~ switch ~ bridge]] is a multi-port
+    repeater that sends every signal to every host; a [[switch ~ hub ~ gateway]] learns which hosts are on each port and handles
+    traffic **within** a network; a [[router ~ switch ~ repeater]] uses a routing table to handle traffic **between** networks;
+    and a [[gateway ~ bridge ~ hub]] connects two different network types, such as IT and OT.
+
+- type: mcq
+  q: Why is a **hub** poor for bandwidth and security?
+  options:
+    - text: It sends every signal to every host
+      correct: true
+    - text: It amplifies signals too much
+    - text: It only has two ports
+    - text: It blocks all traffic between hosts
+
+- type: numeric
+  q: Twisted pair is quoted at a maximum of 10 Mbps, and coaxial cable at up to 80 times faster. What is coaxial's maximum rate?
+  answer: 800
+  unit: Mbps
+  tol: 0

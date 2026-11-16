@@ -1,0 +1,77 @@
+# Manufacturing Automation · Chapter 16 · Part Orientation
+- type: cloze
+  q: |
+    [[Passive ~ Active]] orientation tooling rejects wrongly oriented parts back into the bowl; [[active ~ passive]] tooling
+    physically reorients them.
+
+- type: mcq
+  q: How is jamming of thin parts at a **wiper blade** reduced?
+  options:
+    - text: By setting the blade at an acute angle to the bowl wall
+      correct: true
+    - text: By setting the blade at right angles to the wall
+    - text: By removing the blade
+    - text: By increasing the vibration amplitude
+
+- type: cloze
+  q: |
+    Match the device: a [[pressure break ~ scallop cutout ~ V-cutout]] retains washers lying flat on a ledge; a
+    [[scallop cutout ~ pressure break ~ narrowed track]] rejects cup-shaped parts standing on their tops; and a
+    [[narrowed track ~ wiper blade ~ pressure break]] lets only one row of lengthwise parts through.
+
+- type: numeric
+  q: An orientation system receives {n} parts and feeds out {k} correctly oriented ones. What is its efficiency?
+  vars:
+    n: [500, 200, 1000, 50]
+    k: [180, 50, 190, 10]
+  answer: 100 * k / n
+  unit: "%"
+  solution: |
+    Efficiency = correctly oriented out ÷ total in = {k} / {n} = **{=100 * k / n} %**
+
+- type: multi
+  q: What does the efficiency of an orientation system depend on? Select all that apply.
+  options:
+    - text: The orientation of parts before they enter the feed track (their natural resting aspects)
+      correct: true
+    - text: The design of the orientation system
+      correct: true
+    - text: The colour of the parts
+    - text: The supply voltage
+  explain: The design is set first by part geometry, then refined by trial and error.
+
+- type: numeric
+  q: |
+    A uniform square prism has a {a} mm square cross-section and is {L} mm long. Using the energy barriers, what is the probability
+    $P_S$ that it comes to rest on a **side**?
+  vars:
+    a: [10, 10, 10, 1]
+    L: [20, 10, 40, 5]
+  answer: 4 * (hypot(L / 2, a / 2) - a / 2) / (4 * (hypot(L / 2, a / 2) - a / 2) + 2 * (hypot(L / 2, a / 2) - L / 2))
+  tol: 2
+  hint: |
+    $E = mg\left(\sqrt{(a/2)^2 + (b/2)^2} - b/2\right)$, where $b$ is the dimension perpendicular to the resting face.
+    On a side $b$ is the cross-section; on an end $b$ is the length. Then $P_S = 4E_{SE}/(4E_{SE} + 2E_{ES})$; $mg$ cancels.
+  solution: |
+    Half-diagonal = √(({L}/2)² + ({a}/2)²) = {=hypot(L / 2, a / 2)} mm.
+    E_SE ∝ {=hypot(L / 2, a / 2)} − {=a / 2} = {=hypot(L / 2, a / 2) - a / 2}; E_ES ∝ {=hypot(L / 2, a / 2)} − {=L / 2} = {=hypot(L / 2, a / 2) - L / 2}.
+    P_S = 4 × {=hypot(L / 2, a / 2) - a / 2} / (4 × {=hypot(L / 2, a / 2) - a / 2} + 2 × {=hypot(L / 2, a / 2) - L / 2}) = **{=4 * (hypot(L / 2, a / 2) - a / 2) / (4 * (hypot(L / 2, a / 2) - a / 2) + 2 * (hypot(L / 2, a / 2) - L / 2))}**
+
+- type: mcq
+  q: A part has a 0.8 probability of lying on its side. Roughly what is the probability it travels **side-first** rather than end-first?
+  options:
+    - text: About 0.4
+      correct: true
+      why: The resting probabilities give the aspect, not the orientation; travelling side-first is roughly half the side-resting probability.
+    - text: 0.8
+    - text: 0.2
+    - text: 1.0
+
+- type: mcq
+  q: How is the best orientation tooling usually found?
+  options:
+    - text: Experimentally, guided by data for standard parts
+      correct: true
+    - text: From a single formula
+    - text: It is always the same for every part
+    - text: By the PLC program

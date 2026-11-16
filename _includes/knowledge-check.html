@@ -426,6 +426,110 @@
     };
   };
 
+  // Boolean expressions, checked by truth table
+  function boolParse(text, names) {
+    var toks = [], re = /\s*(?:(AND|OR|NOT)\b|([A-Za-z][A-Za-z0-9_]*)|([01])|(\S))/g, m;
+    var sym = { '*': '.', '&': '.', '·': '.', '|': '+', '~': '!', '¬': '!', '′': "'", '’': "'" };
+    while ((m = re.exec(text)) && m[0] !== '') {
+      if (m[1]) toks.push({ AND: '.', OR: '+', NOT: '!' }[m[1]]);
+      else if (m[2]) {
+        if (names.indexOf(m[2]) >= 0) toks.push({ v: m[2] });
+        else if (m[2].split('').every(function (c) { return names.indexOf(c) >= 0; }))
+          m[2].split('').forEach(function (c, i) { if (i) toks.push('.'); toks.push({ v: c }); });
+        else throw new Error('unknown name "' + m[2] + '" (the inputs are ' + names.join(', ') + ')');
+      } else if (m[3]) toks.push({ c: m[3] === '1' });
+      else if (m[4]) toks.push(sym[m[4]] || m[4]);
+    }
+    if (!toks.length) throw new Error('enter an expression');
+    var pos = 0, lits = 0;
+    function peek() { return toks[pos]; }
+    function take() { return toks[pos++]; }
+    function expr() {
+      var ts = [term()];
+      while (peek() === '+') { take(); ts.push(term()); }
+      return function (e) { return ts.some(function (t) { return t(e); }); };
+    }
+    function term() {
+      var fs = [factor()];
+      for (;;) {
+        var t = peek();
+        if (t === '.') { take(); fs.push(factor()); }
+        else if (t === '!' || t === '(' || (t && typeof t === 'object')) fs.push(factor());
+        else return function (e) { return fs.every(function (f) { return f(e); }); };
+      }
+    }
+    function factor() {
+      var t = peek(), g;
+      if (t === '!') { take(); var f = factor(); g = function (e) { return !f(e); }; }
+      else if (t === '(') { take(); g = expr(); if (take() !== ')') throw new Error('a bracket is not closed'); }
+      else if (t && t.v) { take(); lits++; g = function (e) { return !!e[t.v]; }; }
+      else if (t && 'c' in t) { take(); g = function () { return t.c; }; }
+      else throw new Error(t ? 'unexpected "' + t + '"' : 'the expression ends too soon');
+      while (peek() === "'") { take(); g = (function (h) { return function (e) { return !h(e); }; })(g); }
+      return g;
+    }
+    var fn = expr();
+    if (pos !== toks.length) throw new Error('unexpected "' + (typeof toks[pos] === 'string' ? toks[pos] : '…') + '"');
+    return { fn: fn, literals: lits };
+  }
+  TYPES.boolean = function (q, data, api) {
+    var f = frame(q), done = false, sol = q.querySelector(':scope > .kc-solution');
+    var want = boolParse(data.answer, data.vars);
+    var dc = data.dc ? boolParse(data.dc, data.vars).fn : function () { return false; };
+    var row = el('div', 'kc-inputs');
+    var wrap = el('label', 'kc-part kc-bool');
+    wrap.appendChild(el('span', 'kc-part-label', (data.output || 'Output') + ' ='));
+    var inp = el('input', 'kc-input kc-bool-input');
+    inp.type = 'text'; inp.autocomplete = 'off'; inp.spellcheck = false;
+    inp.setAttribute('aria-label', 'Boolean expression');
+    inp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') check(); });
+    inp.addEventListener('input', function () { inp.classList.remove('kc-in-ok', 'kc-in-no'); });
+    wrap.appendChild(inp); row.appendChild(wrap);
+    q.insertBefore(row, f.controls);
+    q.insertBefore(el('p', 'kc-note', 'Write . for AND, + for OR, and ! (or a trailing \') for NOT, e.g. !A.B + C or A\'B + C.'), f.controls);
+    function check() {
+      if (done) return;
+      var got;
+      try { got = boolParse(inp.value, data.vars); }
+      catch (e) { f.say('Couldn\'t read that: ' + e.message + '.', 'info'); return; }
+      var n = data.vars.length;
+      for (var k = 0; k < (1 << n); k++) {
+        var env = {};
+        data.vars.forEach(function (v, i) { env[v] = !!(k >> (n - 1 - i) & 1); });
+        if (!dc(env) && got.fn(env) !== want.fn(env)) {
+          inp.classList.add('kc-in-no');
+          f.say('✗ Not equivalent. For ' + data.vars.map(function (v) { return v + ' = ' + (env[v] ? 1 : 0); }).join(', ') +
+                ' your expression gives ' + (got.fn(env) ? 1 : 0) + ' but it should give ' + (want.fn(env) ? 1 : 0) + '.', 'no');
+          solBtn.hidden = false;
+          return;
+        }
+      }
+      if (data.literals && got.literals > data.literals) {
+        inp.classList.add('kc-in-no');
+        f.say('Equivalent, but not fully simplified: you used ' + got.literals + ' literals and it can be done with ' +
+              data.literals + '. Simplify further.', 'info');
+        solBtn.hidden = false;
+        return;
+      }
+      inp.classList.add('kc-in-ok');
+      done = true; q.classList.add('kc-done'); api.solve(); checkBtn.disabled = true; solBtn.hidden = true;
+      show(sol); show(explainOf(q)); f.say('✓ Correct: the same truth table' + (data.literals ? ', fully simplified.' : '.'), 'ok');
+    }
+    var checkBtn = button('Check', 'kc-primary', check);
+    var solBtn = button('Show answer', '', function () {
+      done = true; q.classList.add('kc-done'); checkBtn.disabled = true; solBtn.hidden = true;
+      inp.value = data.answer; inp.classList.remove('kc-in-no'); inp.classList.add('kc-in-shown');
+      show(sol); show(explainOf(q)); f.say('A correct answer is filled in.', 'info');
+    });
+    solBtn.hidden = true;
+    f.controls.appendChild(checkBtn); f.controls.appendChild(solBtn);
+    q._reset = function () {
+      done = false; q.classList.remove('kc-done', 'kc-solved'); inp.value = '';
+      inp.classList.remove('kc-in-ok', 'kc-in-no', 'kc-in-shown'); checkBtn.disabled = false; solBtn.hidden = true;
+      show(sol, false); show(explainOf(q), false); f.say('');
+    };
+  };
+
   // Explain in your own words, then compare with the model answer
   TYPES.reveal = function (q, data, api) {
     var f = frame(q), ans = q.querySelector(':scope > .kc-answer');

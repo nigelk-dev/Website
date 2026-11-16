@@ -1,0 +1,81 @@
+# Manufacturing Automation · Chapter 4 · Logic Diagrams and Response Diagrams
+- type: multi
+  q: Which of these can't be expressed in plain Boolean algebra, and so need logic or response diagrams? Select all that apply.
+  options:
+    - text: Timers
+      correct: true
+    - text: Delays
+      correct: true
+    - text: Counters
+      correct: true
+    - text: Memories
+      correct: true
+    - text: An AND of two inputs
+      why: That is ordinary Boolean algebra, $A.B$.
+
+- type: boolean
+  q: Two cascaded 2-input AND gates take inputs A and B, then the result and C. Write the output.
+  vars: [A, B, C]
+  answer: "A.B.C"
+
+- type: boolean
+  q: A network has an output $Z$ taken from an OR gate on A and B, passed through a NOT gate. Write $Z$.
+  vars: [A, B]
+  output: "Z"
+  answer: "!(A + B)"
+  solution: $Z = \overline{A + B}$, which by De Morgan is also $\overline{A}.\overline{B}$.
+
+- type: cloze
+  q: |
+    In a **memory** block, the output follows the [[set ~ reset ~ enable]] command while the enable input is high.
+    When the enable input is low, the output [[stays unchanged ~ switches off ~ switches on]].
+
+- type: mcq
+  q: How should the **input** waveforms on a response diagram be chosen?
+  options:
+    - text: The designer chooses them freely, but they must cover every possible situation
+      correct: true
+      why: The outputs then follow from the logic, so the diagram verifies the design in every case.
+    - text: They are calculated from the outputs
+    - text: They must all be square waves of the same period
+    - text: Only the normal operating case needs to be shown
+
+- type: mcq
+  q: A memory block's set (A) and reset (B) inputs go high **at the same time**. In an **off-dominant** memory, what is the output?
+  options:
+    - text: 0, because reset wins
+      correct: true
+    - text: 1, because set wins
+      why: That is an on-dominant (set-dominant) memory.
+    - text: Whatever it already was
+      why: That is a static-dominant memory.
+
+- type: mcq
+  q: Why is off-dominant behaviour the safe default when the reset is a **Stop** function?
+  options:
+    - text: Pressing Stop then always switches the output off, even if Start is held at the same time
+      correct: true
+    - text: It uses fewer gates
+    - text: It makes the machine start faster
+    - text: It removes the need for a Start button
+
+- type: order
+  q: Put the steps of the design workflow in order.
+  items:
+    - List the inputs and outputs (with respect to the controller)
+    - Draw a response diagram covering every scenario
+    - Derive the logic network by working back from each output
+    - Translate the logic network into ladder logic
+
+- type: numeric
+  q: |
+    In the conveyor example, a heavy item is detected at {t1} s and again at {t2} s, and the trap door opens for 4 s after each
+    detection. For how many seconds in total is the trap door open?
+  vars:
+    t1: [2, 1, 4, 1]
+    t2: [9, 7, 12, 1]
+  answer: 8
+  unit: s
+  tol: 0
+  solution: |
+    The two openings ({t1}–{=t1 + 4} s and {t2}–{=t2 + 4} s) don't overlap, so the door is open for 4 + 4 = **8 s**.

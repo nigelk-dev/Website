@@ -232,3 +232,4 @@ pre.kc-code .kc-input { font-family: inherit; font-size: inherit; }
 .kc-feedback.kc-info { opacity: .85; }
 .kc-reset { margin-left: auto; }
 body.quarto-dark .kc-quiz { --kc-ok: #3fb950; --kc-no: #f47067; }
+.kc-inputs .kc-bool-input { width: min(26rem, 70vw); font-family: var(--bs-font-monospace, monospace); }

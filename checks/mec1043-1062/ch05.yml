@@ -1,0 +1,76 @@
+# Manufacturing Automation · Chapter 5 · Ladder Logic and Timers
+- type: cloze
+  q: |
+    In ladder logic, contacts in [[series ~ parallel]] form an AND, contacts in [[parallel ~ series]] form an OR, and an
+    [[inverse ~ output ~ timer]] contact (`—|/|—`) gives NOT.
+
+- type: multi
+  q: Which are rules of ladder logic? Select all that apply.
+  options:
+    - text: Every rung must contain a load or output
+      correct: true
+      why: The left rail is live and the right is neutral, so a rung without a load would be a short circuit.
+    - text: Inputs can be repeated on as many rungs as needed
+      correct: true
+    - text: An output can be created only once
+      correct: true
+    - text: Variables are updated at the end of each scan cycle
+      correct: true
+    - text: Each input can be used on only one rung
+      why: Inputs can be repeated freely; it is outputs that may be created only once.
+
+- type: boolean
+  q: |
+    Write the rung for **latching with stop**: Go (G) starts output P, P latches itself on, and Stop (S) breaks the latch.
+  vars: [G, P, S]
+  output: P
+  answer: "(G + P).!S"
+  solution: $P = (G + P).\overline{S}$. A contact of P in parallel with G latches the output; NOT S in series breaks it.
+
+- type: mcq
+  q: Why is the Stop input usually wired **normally closed**?
+  options:
+    - text: A broken wire or failed contact then looks the same as pressing Stop, so the system fails safe
+      correct: true
+    - text: It uses less current
+    - text: Normally open contacts cannot be used with PLCs
+    - text: It makes the Stop button easier to press
+
+- type: mcq
+  q: Why do most industrial systems use **push buttons** (rather than toggle switches) for Start and Stop?
+  options:
+    - text: After a power loss, a push-button system won't restart by itself when the power returns
+      correct: true
+    - text: Push buttons are cheaper
+    - text: Toggle switches can't be connected to a PLC
+    - text: Push buttons don't need latching
+
+- type: mcq
+  q: How does an **On-Delay Timer (TON)** behave?
+  options:
+    - text: Its output goes high a preset time after the input goes high, and resets when the input goes low
+      correct: true
+    - text: Its output goes high at once and stays high for a preset time after the input goes low
+      why: That is an Off-Delay Timer (TOF).
+    - text: Its output pulses once per preset time
+    - text: Its output goes low a preset time after the input goes high
+
+- type: cloze
+  q: |
+    Complete the conveyor-reject ladder. Sensor A detects an overweight item; trap door Y must open at once and stay open for 4 s.
+  code: |
+    Rung 1:  ( A OR [[Y]] ) AND NOT [[B]]  ──> (Y)
+    Rung 2:  Y ──> [ [[TON ~ TOF ~ CTU]] 4 s ] ──> B
+  explain: |
+    Sensor A goes low once the item has passed, which would reset a TON driven by A. So A switches Y on, Y **latches itself**,
+    Y starts the timer, and the timer output B unlatches Y after 4 s.
+
+- type: mcq
+  q: Why can't sensor A start the 4 s timer directly in the conveyor example?
+  options:
+    - text: A goes low once the item has passed the weigh station, which resets the TON before it finishes
+      correct: true
+      why: A TON needs a **sustained** input.
+    - text: A is an output, not an input
+    - text: Timers can only be started by outputs
+    - text: A is wired normally closed

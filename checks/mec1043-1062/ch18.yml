@@ -1,0 +1,94 @@
+# Manufacturing Automation · Chapter 18 · Performance of Assembly Systems
+- type: mcq
+  q: Why is downtime more serious on an **indexing machine** than on a free transfer system?
+  options:
+    - text: The whole line stops when one station malfunctions
+      correct: true
+    - text: Indexing machines have more workheads
+    - text: Indexing machines can't use defective parts
+    - text: Free transfer systems never stop
+
+- type: numeric
+  q: |
+    An indexing machine has {n} workheads, a cycle time of {t} s and a repair time of {T} s per stoppage. The defective-part ratio
+    is {x}, and a fraction {m} of defects stop the machine. What proportion of the time is downtime?
+  vars:
+    n: [10, 4, 20, 1]
+    t: [6, 3, 12, 1]
+    T: [30, 10, 60, 5]
+    x: [0.01, 0.005, 0.02, 0.005]
+    m: [1, 0.2, 1, 0.1]
+  answer: 100 * m * x * n / (t / T + m * x * n)
+  unit: "%"
+  hint: Proportion of downtime $= \dfrac{mxn}{t/T + mxn}$
+  solution: |
+    mxn = {m} × {x} × {n} = {=m * x * n}; t/T = {=t / T}; proportion = {=m * x * n} / ({=t / T} + {=m * x * n}) = **{=100 * m * x * n / (t / T + m * x * n)} %**
+
+- type: numeric
+  q: |
+    With $x$ = 0.01, $t$ = 6 s, $T$ = 30 s and $n$ = 10, what is the average production time per **acceptable** assembly when
+    $m$ = {m}?
+  vars:
+    m: [1, 0, 1, 0.1]
+  answer: (6 + 3 * m) / (0.9 + 0.1 * m)
+  unit: s
+  hint: $t_{pr} = \dfrac{t + mxnT}{1 - (1 - m)xn}$
+  solution: |
+    t_pr = (6 + 3 × {m}) / (0.9 + 0.1 × {m}) = **{=(6 + 3 * m) / (0.9 + 0.1 * m)} s**
+
+- type: mcq
+  q: To **maximise the production rate** of an indexing machine, what should happen to defective parts?
+  options:
+    - text: Let defective assemblies pass through rather than stopping the line
+      correct: true
+      why: A smaller $m$ gives a shorter $t_{pr}$; each faulty assembly costs only one machine cycle.
+    - text: Stop the machine for every defective part
+      why: Each stoppage costs the full repair time $T$.
+    - text: Run the machine at its maximum rate
+      why: With realistic defect rates (0.005–0.02), higher machine rates give diminishing returns.
+
+- type: numeric
+  q: |
+    In a free transfer machine, workhead 1 is blocked for $T$ = {T} s. The buffer between workheads 1 and 2 holds on average
+    $a_1$ = {a1} assemblies and the cycle time is $t$ = {t} s. How long is workhead 2 **down** as a result?
+  vars:
+    T: [30, 20, 60, 5]
+    a1: [3, 1, 4, 1]
+    t: [6, 3, 6, 1]
+  answer: max(T - a1 * t, 0)
+  unit: s
+  tol: 0.5
+  hint: Workhead 2 can keep working until the buffer empties, which takes $a_1t$. A negative result means no downtime.
+  solution: |
+    Downtime = T − a₁t = {T} − {a1} × {t} = **{=max(T - a1 * t, 0)} s**
+
+- type: cloze
+  q: |
+    To equalise the downtime of a 5-workhead free transfer line, the average buffer contents should be $a_1$ = [[4b/5 ~ b/5 ~ b/2]],
+    $a_2$ = [[3b/5 ~ 2b/5 ~ b/2]], $a_3$ = [[2b/5 ~ 3b/5 ~ b/2]] and $a_4$ = [[b/5 ~ 4b/5 ~ b/2]].
+
+- type: numeric
+  q: |
+    A free transfer line has $T$ = {T} s and $t$ = {t} s. What buffer size $b$ is usually chosen in practice, and above what size are
+    the workheads in theory fully isolated?
+  vars:
+    T: [30, 20, 60, 6]
+    t: [6, 2, 6, 2]
+  parts:
+    - label: "Practical b ≈"
+      answer: T / t
+      tol: 5
+    - label: "Isolated for b ≥"
+      answer: 2 * T / t
+      tol: 5
+  solution: |
+    Practical b ≈ T/t = {T}/{t} = **{=T / t}**; isolated for b ≥ 2T/t = **{=2 * T / t}**
+
+- type: mcq
+  q: With large buffers, $\Sigma d = nNxT$ looks just like an indexing machine with $m = 1$. Why isn't the line's downtime that big?
+  options:
+    - text: Downtime at different stations can happen in parallel, so the individual downtimes overlap
+      correct: true
+    - text: Free transfer machines have no defective parts
+    - text: The buffers repair the faults
+    - text: The cycle time is shorter

@@ -1,0 +1,79 @@
+# Manufacturing Automation · Chapter 7 · PLC Fundamentals and Hardware
+- type: order
+  q: Put the stages of the PLC **scan cycle** in order.
+  items:
+    - Read the inputs into the input image
+    - Execute the program, rung by rung
+    - Write the output image to the outputs
+    - Repeat
+  explain: The program runs in milliseconds compared with the mechanical system, so the rungs can be treated as executing simultaneously.
+
+- type: mcq
+  q: An input changes partway through a scan. What happens?
+  options:
+    - text: Usually nothing harmful; the next scan follows within a fraction of a second and picks up the new value
+      correct: true
+    - text: The PLC stops and raises a fault
+    - text: The change is lost for good
+    - text: The current rung is executed again at once
+
+- type: multi
+  q: Which are advantages of PLCs over hard-wired relay control? Select all that apply.
+  options:
+    - text: Changing the sequence only needs reprogramming, not rewiring
+      correct: true
+    - text: Inputs and outputs can be wired before the program is written
+      correct: true
+    - text: Solid-state switching with no moving parts, so they are reliable
+      correct: true
+    - text: They can collect data such as operation counts and rejects
+      correct: true
+    - text: They need no safety precautions
+      why: A hard-wired master control relay and safe behaviour on power loss are still essential.
+
+- type: numeric
+  q: Above roughly how many relays does a PLC become cheaper than standalone relays?
+  answer: 10
+  unit: relays
+  tol: 0
+  explain: For complex systems (more than about 10 relays) a PLC is cheaper, and uses less power and floor space.
+
+- type: mcq
+  q: Why should a PLC system always include a **master control relay**?
+  options:
+    - text: So a mechanically operated switch can de-energise all outputs, overriding any fault in the solid-state electronics
+      correct: true
+    - text: To speed up the scan cycle
+    - text: To store the program when the power is off
+      why: That is the job of battery-backed RAM or EEPROM.
+    - text: To count operations
+
+- type: cloze
+  q: |
+    In the input unit, the sensor signal (usually [[24]] V DC) passes through an [[RC ~ LC ~ RL]] network, a low-pass filter that
+    removes noise, and then an [[opto-coupler|optocoupler|opto coupler|opto-isolator]] that isolates the internal circuitry from
+    voltage spikes. A normally closed input has its status LED lit when it has [[not ~ just]] been activated.
+
+- type: cloze
+  q: |
+    Choose the output type: a **relay** output switches [[AC or DC ~ DC only ~ AC only]] (up to 2 A) but wears because of moving
+    parts; a **transistor** output switches [[DC only ~ AC only ~ AC or DC]] (up to 1 A) and is polarity-sensitive; a **triac**
+    output switches [[AC only ~ DC only ~ AC or DC]] (up to 1 A).
+
+- type: mcq
+  q: A PLC must switch a 3 A, 24 V DC motor. What is needed?
+  options:
+    - text: The PLC output drives a further switching circuit, such as a contactor, which switches the motor
+      correct: true
+      why: 3 A is above every output type's rating, so a high-power load needs an extra switching stage.
+    - text: A transistor output, because the motor is DC
+      why: A transistor output is right for DC, but is rated only up to 1 A.
+    - text: A triac output
+      why: Triacs switch AC, and this load is DC (and too large).
+    - text: Two relay outputs in parallel
+
+- type: cloze
+  q: |
+    PLC memory: the [[system ~ program ~ data]] memory holds fixed code such as the compiler, in ROM; the
+    [[program ~ system ~ data]] memory holds the user program, in battery-backed RAM or EEPROM; and the
+    [[data ~ system ~ program]] memory holds I/O information and process variables.

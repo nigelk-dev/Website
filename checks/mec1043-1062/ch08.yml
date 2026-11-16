@@ -1,0 +1,98 @@
+# Manufacturing Automation · Chapter 8 · PLC Programming: Sequence Control, Logic Control and Staged Programs
+- type: cloze
+  q: |
+    **Sequencing** uses internal [[timers ~ sensors]] to end each step, so it is [[open ~ closed]] loop and needs a safety margin
+    on every step. **Logic control** uses [[sensors ~ timers]] that switch on completion of each step, so it is
+    [[closed ~ open]] loop and each step takes only the minimum time needed.
+
+- type: mcq
+  q: In sequence programming, when does a **new step** start?
+  options:
+    - text: Every time something changes, i.e. one or more activities begin or end
+      correct: true
+    - text: Every second
+    - text: Only when a sensor confirms the last step is complete
+      why: That is logic control; sequencing uses timers.
+    - text: At the start of each scan cycle
+
+- type: numeric
+  q: |
+    The machine-tool sequence has steps of 2, 1, 2, 4, 1, 1 and 2 seconds. How long is one complete cycle?
+  answer: 13
+  unit: s
+  tol: 0
+
+- type: numeric
+  q: |
+    The step register `Op_Ctrl.Steps` has bit 0, 1, 2, … set for each step. Which bit is set during **step {n}**?
+  vars:
+    n: [5, 1, 8, 1]
+  answer: n - 1
+  unit: "(bit number)"
+  tol: 0
+  solution: |
+    Bits are numbered from 0, so step {n} sets bit **{=n - 1}** (`Op_Ctrl.Steps%X{=n - 1}`).
+
+- type: mcq
+  q: How does the Siemens implementation move from one step to the next?
+  options:
+    - text: When the step's timer finishes, a shift command moves the 1 in the register one bit to the left (SHL)
+      correct: true
+    - text: The register is cleared and reloaded with the next step number
+    - text: Each step has its own PLC
+    - text: The operator presses a button for each step
+
+- type: mcq
+  q: Why does each axis of the pick-and-place robot need **two** PLC outputs?
+  options:
+    - text: Each axis holds its position when its output is off, so one output is needed for each direction
+      correct: true
+    - text: One output is a spare
+    - text: One output powers the axis and the other reads its sensor
+      why: Sensors are inputs, not outputs.
+    - text: The PLC outputs are too weak to drive one direction alone
+
+- type: multi
+  q: |
+    Step 1 (extend arm) happens when the inputs high are 01, 02, 05 and 07. Which inputs make the **minimum unique** set that
+    triggers it? Select them.
+  options:
+    - text: "01"
+      correct: true
+    - text: "07"
+      correct: true
+    - text: "02"
+      why: 02 is high in every step where the arm is retracted, so it can't tell step 1 apart.
+    - text: "05"
+      why: With 01 and 07 already chosen, 05 adds nothing.
+  explain: Choosing 07 leaves only steps 11 and 12 as conflicts, and 01 rules both out, so 01 and 07 are enough.
+
+- type: cloze
+  q: Complete the rung for output 24 (extend arm), used in steps 1 and 7.
+  code: |
+    ( 01 AND 07  OR  00 AND 06  OR  [[24]] ) AND NOT [[04]] AND 10 ──> (24)
+  explain: |
+    Contact 24 latches the output on until the action completes; sensor 04 (arm extended) then opens NOT 04.
+    Contact 10 is the power switch, included in every rung.
+
+- type: mcq
+  q: Why is **interlocking** needed in a logic-control program?
+  options:
+    - text: All rungs effectively execute at once, so the right input conditions must stop outputs triggering at the wrong point in the cycle
+      correct: true
+    - text: To prevent two people from programming the PLC at the same time
+    - text: To lock the program against edits
+    - text: To link two PLCs together
+
+- type: multi
+  q: What are the advantages of a **staged** program over an interlocked one? Select all that apply.
+  options:
+    - text: It is much easier to follow and debug
+      correct: true
+    - text: It needs fewer inputs to trigger each output
+      correct: true
+    - text: The order of the rungs doesn't matter
+      why: In a staged program the order **does** matter; each stage waits for an input before moving on.
+    - text: It runs every rung on every scan
+      why: Only the current stage executes; it waits for its completion signal.
+  explain: In IEC 61131-3 this style is formalised as Sequential Function Charts.

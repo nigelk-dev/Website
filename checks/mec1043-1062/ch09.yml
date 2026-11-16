@@ -1,0 +1,46 @@
+# Manufacturing Automation · Chapter 9 · SCADA and the ISA-95 Model
+- type: order
+  q: Put the levels of the **ISA-95** automation pyramid in order, from the field (level 0) up to the enterprise (level 4).
+  items:
+    - "Process / system: sensors and actuators"
+    - "Sensing and manipulation: PLCs, microcontrollers"
+    - "Monitoring and supervisory: SCADA, HMIs"
+    - "MES: Manufacturing Execution System"
+    - "ERP: Enterprise Resource Planning"
+
+- type: mcq
+  q: At which ISA-95 level do **SCADA** systems and HMIs sit?
+  options:
+    - text: Level 2, monitoring and supervisory
+      correct: true
+    - text: Level 1, sensing and manipulation
+      why: Level 1 is the PLCs and microcontrollers that SCADA supervises.
+    - text: Level 3, MES
+    - text: Level 4, ERP
+
+- type: cloze
+  q: |
+    MES stands for Manufacturing [[Execution ~ Enterprise ~ Engineering]] System, and ERP for [[Enterprise]] Resource Planning.
+
+- type: order
+  q: Put the steps of the **information loop** in order, starting at the sensor.
+  items:
+    - The sensor feeds data to the PLC
+    - The PLC's program decides how to change the actuator
+    - The actuator changes the technical process
+    - The process changes the sensor value, and the loop continues
+
+- type: multi
+  q: Which three components are essential to collect and send information across a LAN? Select all that apply.
+  options:
+    - text: Topology (how the network is constructed)
+      correct: true
+    - text: Transmission medium (the physical means of communication)
+      correct: true
+    - text: Network access protocol (how communications are decoded)
+      correct: true
+    - text: A SCADA licence
+    - text: An ERP system
+
+- type: cloze
+  q: SCADA stands for [[Supervisory]] Control And [[Data]] Acquisition. It sits above many information loops.

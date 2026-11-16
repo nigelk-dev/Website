@@ -1,0 +1,117 @@
+# Manufacturing Automation · Chapter 3 · Karnaugh Maps and Problem Breakdown
+- type: cloze
+  q: |
+    K-maps group terms that differ only in one complemented variable, using the inclusion theorem
+    ($A + \overline{A}$ = [[1 ~ 0 ~ A]]) and the characteristic theorem ($X.1$ = [[X ~ 1 ~ 0]]).
+    Any group of [[2^n|2ⁿ|2 to the n|powers of 2|power of 2]] adjacent cells can be combined: two, four, eight and so on.
+
+- type: mcq
+  q: Why are the axes of a K-map labelled in the order 00, 01, 11, 10?
+  options:
+    - text: It is Gray code, so adjacent cells differ by exactly one variable
+      correct: true
+    - text: It is ordinary binary counting
+      why: Binary would go 00, 01, 10, 11, and 01 → 10 changes two variables.
+    - text: It puts the 1s together
+    - text: It is arbitrary
+
+- type: boolean
+  q: |
+    Use a two-variable map to minimise $A.\overline{B} + A.B$.
+  vars: [A, B]
+  answer: "A"
+  minimal: true
+  solution: The two cells 10 and 11 are adjacent; only $B$ changes, so the group is $A$.
+
+- type: boolean
+  q: |
+    Minimise the 13-term expression from the worked exercise. Its K-map (AB across, CD down) is:
+
+    | AB → / CD ↓ | 00 | 01 | 11 | 10 |
+    |:-:|:-:|:-:|:-:|:-:|
+    | **00** | | 1 | 1 | 1 |
+    | **01** | 1 | 1 | 1 | 1 |
+    | **11** | 1 | 1 | 1 | 1 |
+    | **10** | | | 1 | 1 |
+  vars: [A, B, C, D]
+  output: "Y"
+  answer: "A + D + !C.B"
+  minimal: true
+  solution: |
+    Group 1 = $A$ (columns 11 and 10); group 2 = $D$ (rows 01 and 11); group 3 = $\overline{C}.B$ (columns 01 and 11,
+    rows 00 and 01). So $Y = A + D + \overline{C}.B$.
+
+- type: multi
+  q: Which statements about K-map grouping are true? Select all that apply.
+  options:
+    - text: The left and right edges wrap round and meet
+      correct: true
+    - text: The top and bottom edges wrap round and meet
+      correct: true
+    - text: The four corner cells can form one group
+      correct: true
+      why: On a 4-variable map with AB across and CD down, the corners give $\overline{B}.\overline{D}$.
+    - text: Groups of three cells are allowed
+      why: Groups must have $2^n$ cells (1, 2, 4, 8, …).
+    - text: Smaller groups give simpler terms
+      why: Larger groups eliminate more variables, so make groups as large as possible.
+
+- type: mcq
+  q: How should a **"don't care"** (X) cell be treated when grouping?
+  options:
+    - text: As 1 or 0, whichever gives the simpler expression
+      correct: true
+    - text: Always as 1
+    - text: Always as 0
+    - text: It must be left out of every group
+
+- type: boolean
+  q: |
+    In the automatic work station, the power $P'$ turns on with Go (G), stays on (P) until Stop (S), and Stop takes precedence.
+    The two rows with $S = 0$, $P = 0$, $C = 1$ can't exist (don't care). Find the minimal expression for $P'$.
+  vars: [G, S, P, C]
+  output: P′
+  answer: "G.!S + P.!S"
+  dont_care: "!S.!P.C"
+  minimal: true
+  solution: $P' = G.\overline{S} + P.\overline{S}$ (which can also be written $\overline{S}.(G + P)$).
+
+- type: boolean
+  q: |
+    The station cycles ($Y = 1$) only when the power is on and the cycle-ready indicator C is on, and never while Stop is pressed.
+    Using the same don't-care rows, find the minimal expression for $Y$.
+  vars: [G, S, P, C]
+  output: "Y"
+  answer: "C.!S"
+  dont_care: "!S.!P.C"
+  minimal: true
+  solution: $Y = C.\overline{S}$. The don't-care cells let the group cover every $C = 1$, $S = 0$ cell.
+
+- type: numeric
+  q: |
+    The pneumatic press has 8 inputs (G, S1, S2, S3, L1, L2, P, A). How many rows would a single truth table for the whole system need?
+  answer: 256
+  unit: rows
+  tol: 0
+  explain: That is why the problem is broken into subsystems (stop, power and actuation) and the results are substituted back in.
+
+- type: boolean
+  q: The press's general stop $S$ must be on if **any** of the stop buttons S1, S2 or S3 is pressed. Write $S$.
+  vars: [S1, S2, S3]
+  output: "S"
+  answer: "S1 + S2 + S3"
+
+- type: boolean
+  q: |
+    Write the **fail-safe** expression for the press actuation $A'$ in terms of $P'$ (write it as P), L1, L2 and A: every row with
+    $P' = 0$, and both rows with L1 = L2 = 1, must give $A' = 0$.
+  vars: [P, L1, L2, A]
+  output: A′
+  answer: "P.!L2.(A + L1)"
+  solution: $A' = P'.\overline{L_2}.A + P'.L_1.\overline{L_2} = P'.\overline{L_2}.(A + L_1)$
+
+- type: reveal
+  q: Why should a Stop press force the outputs to 0 rather than leaving them as "don't care"?
+  answer: |
+    "Don't care" lets the minimiser choose 1 or 0 for the easiest expression, so an output might stay on while Stop is pressed.
+    For safety, pressing Stop must always switch everything off, so those rows are set to 0: the design should **fail safe**.

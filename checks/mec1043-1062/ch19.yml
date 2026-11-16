@@ -1,0 +1,81 @@
+# Manufacturing Automation · Chapter 19 · Cost Justification for Automation
+- type: cloze
+  q: |
+    In the payback equation $a = \dfrac{C}{Ns(1 + L) - Si - C(i + u + t)}$, $a$ is the payback period in [[years]],
+    $C$ is the cost of the [[new|proposed]] system, $S$ is the unrecoverable cost of scrapping the [[old|existing]] system,
+    and $s$ is the [[saving]] per part.
+
+- type: numeric
+  q: |
+    A system has a cycle time of {c} s and runs {d} days a year on one 8-hour shift. Marketing need 550,000 units a year.
+    What is its capacity, and what value of $N$ should be used in the payback calculation?
+  vars:
+    c: [12, 10, 16, 1]
+    d: [250, 200, 250, 10]
+  parts:
+    - label: "Capacity:"
+      answer: d * 8 * 3600 / c
+      unit: units/year
+      tol: 0.5
+    - label: "N ="
+      answer: min(d * 8 * 3600 / c, 550000)
+      unit: units/year
+      tol: 0.5
+  solution: |
+    Capacity = {d} × 8 × 3600 / {c} = **{=d * 8 * 3600 / c|4} units/year**. Use the lesser of capacity and demand:
+    N = **{=min(d * 8 * 3600 / c, 550000)|4}**.
+
+- type: numeric
+  q: |
+    A proposed system costs €{C} million. The old system's write-off value is €{W} million, of which €50,000 can be recovered.
+    The new system will make {N} parts a year, saving €{s} per part, with a {L}% overhead. Interest is {i}%, tax and insurance {tx}%
+    of the machine cost, and maintenance €{mt},000 a year. What is the payback period?
+  vars:
+    C: [2.5, 2, 3, 0.25]
+    W: [0.75, 0.55, 0.85, 0.1]
+    N: [550000, 500000, 600000, 10000]
+    s: [2.25, 2.25, 3, 0.25]
+    L: [35, 30, 40, 5]
+    i: [9, 7, 10, 1]
+    tx: [6, 5, 7, 1]
+    mt: [500, 300, 500, 50]
+  answer: C * 1e6 / (N * s * (1 + L / 100) - (W - 0.05) * 1e6 * i / 100 - C * 1e6 * (i / 100 + mt * 1000 / (C * 1e6) + tx / 100))
+  unit: years
+  hint: $S$ = write-off value minus what is recovered, and $u$ = maintenance ÷ $C$.
+  solution: |
+    S = {W} − 0.05 = €{=W - 0.05} M; u = {mt},000 / {C} M = {=mt * 1000 / (C * 1e6)|3}.
+    Denominator = {N} × {s} × {=1 + L / 100} − {=(W - 0.05) * 1e6|4} × {=i / 100} − {=C * 1e6|4} × ({=i / 100} + {=mt * 1000 / (C * 1e6)|3} + {=tx / 100})
+    = €{=N * s * (1 + L / 100) - (W - 0.05) * 1e6 * i / 100 - C * 1e6 * (i / 100 + mt * 1000 / (C * 1e6) + tx / 100)|4} per year.
+    a = {=C * 1e6|4} / that = **{=C * 1e6 / (N * s * (1 + L / 100) - (W - 0.05) * 1e6 * i / 100 - C * 1e6 * (i / 100 + mt * 1000 / (C * 1e6) + tx / 100))} years**
+
+- type: multi
+  q: Which costs can better quality from automation reduce? Select all that apply.
+  options:
+    - text: Internal failures (rework and scrap)
+      correct: true
+    - text: External failures (warranty replacement, damages, lost customers)
+      correct: true
+    - text: High levels of quality control and quality assurance staffing
+      correct: true
+    - text: The purchase price of the new system
+      why: Better quality usually makes the system cost **more**; it pays off through savings and sales.
+
+- type: numeric
+  q: |
+    In Example 2, the improved system breaks even {dy} years earlier, selling 575,000 parts a year at a saving of €2.50 each.
+    How much extra profit does it make in that time?
+  vars:
+    dy: [0.46, 0.2, 0.8, 0.02]
+  answer: dy * 575000 * 2.5
+  unit: €
+  solution: |
+    {dy} × 575,000 × 2.50 = **€{=dy * 575000 * 2.5|4}**
+
+- type: mcq
+  q: Before working out the payback period, what should you check first?
+  options:
+    - text: The machine's capacity, so that N is the lesser of capacity and demand
+      correct: true
+    - text: The colour of the machine
+    - text: That the interest rate is zero
+    - text: That the old system can be fully recovered

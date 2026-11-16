@@ -1,0 +1,76 @@
+# Manufacturing Automation · Chapter 13 · Automatic Assembly and Transfer Systems
+- type: multi
+  q: Which are reasons for automating assembly? Select all that apply.
+  options:
+    - text: Reduce cost
+      correct: true
+    - text: Increase productivity
+      correct: true
+    - text: Improve consistency and quality
+      correct: true
+    - text: Remove operators from hazardous operations
+      correct: true
+    - text: Make every product by one craftsman
+      why: That is how products were made before mass production.
+
+- type: cloze
+  q: |
+    In 1798 Eli Whitney tendered to make 10,000 muskets using [[interchangeable]] parts. Frederick Winslow Taylor introduced
+    [[time and motion|time-and-motion|time & motion]] studies, and [[Henry Ford|Ford]] automated car assembly with a conveyor.
+
+- type: cloze
+  q: |
+    Transfer systems are classified by topology, [[in-line|inline|in line]] or rotary, and by motion, continuous or
+    [[intermittent]]. When all the workheads or workpieces move at the same time, the system is an [[indexing]] machine.
+
+- type: numeric
+  q: |
+    An indexing table driven by a Geneva mechanism has **{N} stations** and a driver speed of **{n} rpm**. Calculate the indexing time and the dwell time.
+  vars:
+    N: [6, 3, 12, 1]
+    n: [12, 5, 30, 1]
+  parts:
+    - label: "Index time:"
+      answer: (180 - 360 / N) / 360 / n * 60
+      unit: s
+    - label: "Dwell time:"
+      answer: (180 + 360 / N) / 360 / n * 60
+      unit: s
+  hint: For an N-station Geneva, $2B = 180^\circ - 360^\circ/N$ and $C = 180^\circ + 360^\circ/N$. Times are fractions of one driver revolution.
+  solution: |
+    A = 360°/{N} = {=360 / N}°, 2B = 180° − {=360 / N}° = {=180 - 360 / N}°, C = 180° + {=360 / N}° = {=180 + 360 / N}°.
+    One revolution takes 60/{n} = {=60 / n} s, so index time = ({=180 - 360 / N}/360) × {=60 / n} = **{=(180 - 360 / N) / 360 / n * 60} s** and
+    dwell time = ({=180 + 360 / N}/360) × {=60 / n} = **{=(180 + 360 / N) / 360 / n * 60} s**.
+
+- type: mcq
+  q: Which is true of the **Geneva mechanism** compared with pneumatic piston drives?
+  options:
+    - text: It can transmit higher torques but is more expensive and prone to wear
+      correct: true
+    - text: It is cheaper and never needs lubrication
+    - text: It gives a perfectly smooth acceleration
+      why: A small Geneva wheel gives a very peaked acceleration profile.
+    - text: It converts intermittent rotation to continuous rotation
+      why: It does the opposite.
+
+- type: order
+  q: Rank the cross-over cam acceleration profiles from worst to best.
+  items:
+    - Sine
+    - Modified sine
+    - Modified trapezoid
+
+- type: mcq
+  q: Why is a **smooth** acceleration profile preferred for an indexing machine, even though a fast transfer shortens the cycle?
+  options:
+    - text: Very high acceleration causes excessive loads, so a smooth profile prolongs the machine's life
+      correct: true
+    - text: Smooth profiles always give a shorter cycle time
+    - text: Smooth profiles need no motor
+    - text: The workheads can't work during the transfer
+
+- type: cloze
+  q: |
+    If a fault at any one station stops the whole machine and every operation must finish within a set time, the system is
+    [[machine]] paced. If it indexes only when told to by feedback from the stations, it is [[operator]] paced. Adding storage
+    [[buffers|buffer]] between stations gives a free transfer machine.

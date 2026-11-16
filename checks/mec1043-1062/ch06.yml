@@ -1,0 +1,78 @@
+# Manufacturing Automation · Chapter 6 · Design Case Studies: Cooling System and Gas Furnace
+- type: mcq
+  q: |
+    In the machine cooling system, machine Y follows toggle switch A and the fan Z must run for 3 minutes after the machine is
+    switched off. If A is switched off, on again after 1 minute, then off for good, when does the fan stop?
+  options:
+    - text: 3 minutes after the final switch-off
+      correct: true
+      why: The timer restarts each time A goes off, so Z is timed from the **final** switching-off.
+    - text: 3 minutes after the first switch-off
+    - text: As soon as A goes off the second time
+    - text: 1 minute after the final switch-off
+
+- type: cloze
+  q: Complete the cooling-system ladder.
+  code: |
+    Rung 1:  A ──────────────────> (Y)
+    Rung 2:  A OR NOT [[D]] ─────> (Z)
+    Rung 3:  NOT [[A]] ──> [TON 3 min] ──> D
+  explain: |
+    A TON's output is low **while it is timing**, so Z uses NOT D to stay on during the 3 minutes. The timer starts when A
+    switches off, so it is driven by NOT A.
+
+- type: mcq
+  q: Which single timer would give the fan Z in **one rung**, driven directly by A?
+  options:
+    - text: An Off-Delay Timer (TOF) with a 3-minute preset
+      correct: true
+      why: A TOF output goes high with its input and stays high for the preset time after the input goes low, which is exactly Z.
+    - text: An On-Delay Timer (TON) with a 3-minute preset
+      why: A TON would delay switching the fan **on**, not off.
+    - text: A counter
+
+- type: mcq
+  q: In the gas furnace, is the signal to the **gas valve** an input or an output?
+  options:
+    - text: An output, because inputs and outputs are defined relative to the control system
+      correct: true
+      why: Fuel is an input to the furnace, but the signal that opens the valve comes **from** the controller.
+    - text: An input, because gas goes into the furnace
+
+- type: boolean
+  q: |
+    The gas G is on when power and flame are both on, **or** when power is on and the ignition I is trying to fire. Write G.
+  vars: [P, F, I]
+  output: G
+  answer: "P.(F + I)"
+
+- type: boolean
+  q: |
+    The ignition I is on when power P is on **and** no flame F is detected **and** the alarm A (time limit exceeded) is off. Write I.
+  vars: [P, F, A]
+  output: I
+  answer: "P.!F.!A"
+
+- type: cloze
+  q: |
+    The alarm comes from a timer: $A = \text{TON}_{[[5]]\,s}(P.\overline{F})$. The timer starts when the power is
+    [[on ~ off]] and there is [[no flame ~ a flame]].
+
+- type: order
+  q: Put the gas furnace's response-diagram scenarios in the order they are tested.
+  items:
+    - Power on, with no flame until 3 seconds later
+    - A momentary loss of flame, which reappears
+    - An extended loss of flame, then the power is switched off manually
+    - A spurious short flame signal while the power is off
+    - Power on, but no flame appears even after 5 seconds
+
+- type: mcq
+  q: The G rung can be simplified to `( P AND F ) OR I ──> (G)`. Why is it safe to drop P from the I branch?
+  options:
+    - text: I can only be high when P is already high, since $I = P.\overline{F}.\overline{A}$
+      correct: true
+      why: But don't oversimplify; keep the design intent clear to whoever reads the code later.
+    - text: The gas doesn't need power
+    - text: P is always high
+    - text: Ladder logic ignores repeated inputs
