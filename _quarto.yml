@@ -4,6 +4,8 @@ project:
   resources:
     # Standalone HTML applets (and their CSS/JS) copied as-is
     - "mec1019/notes/applets/**"
+    - "mec1002/notes/*/interactive/**"
+    - "mec1002/notes/shared/**"
 
 website:
   title: "Nigel Kent"
@@ -15,12 +17,15 @@ website:
         text: Home
       - href: mec1019/index.qmd
         text: "MEC1019"
+      - href: mec1002/index.qmd
+        text: "MEC1002"
     right:
       - icon: github
-        href: https://github.com/nigelk-dev/MEC1019_Sustainable_Processes
-        aria-label: MEC1019 repository on GitHub
+        href: https://github.com/nigelk-dev
+        aria-label: GitHub
   sidebar:
-    - title: "MEC1019"
+    - id: mec1019
+      title: "MEC1019"
       style: docked
       contents:
         - href: mec1019/index.qmd
@@ -45,6 +50,50 @@ website:
               text: "Finished circuit"
         - href: mec1019/applets.qmd
           text: Interactive applets
+    - id: mec1002
+      title: "MEC1002"
+      style: docked
+      contents:
+        - href: mec1002/index.qmd
+          text: Course overview
+        - section: "Lectures"
+          contents:
+            - href: mec1002/notes/Lec1/Lec1.md
+              text: "1 · Electromagnetic Induction"
+            - href: mec1002/notes/Lec2/Lec2.md
+              text: "2 · DC Motor Characteristics"
+            - href: mec1002/notes/Lec3/Lec3.md
+              text: "3 · DC Motor Start-up"
+            - href: mec1002/notes/Lec4/Lec4.md
+              text: "4 · DC Motor Connections"
+            - href: mec1002/notes/Lec5/Lec5.md
+              text: "5 · DC Motor Control"
+            - href: mec1002/notes/Lec6/Lec6.md
+              text: "6 · Servo Systems"
+            - href: mec1002/notes/Lec7/Lec7.md
+              text: "7 · Capacitors and Inductors"
+            - href: mec1002/notes/Lec8/Lec8.md
+              text: "8 · Phasors and Impedance"
+            - href: mec1002/notes/Lec9/Lec9.md
+              text: "9 · AC Power"
+            - href: mec1002/notes/Lec10/Lec10.md
+              text: "10 · Transformers"
+            - href: mec1002/notes/Lec11/Lec11.md
+              text: "11 · Three-Phase Power"
+            - href: mec1002/notes/Lec12/Lec12.md
+              text: "12 · Star–Delta Circuits"
+            - href: mec1002/notes/Lec13/Lec13.md
+              text: "13 · Induction Motors"
+            - href: mec1002/notes/Lec14/Lec14.md
+              text: "14 · Equivalent Circuit"
+            - href: mec1002/notes/Lec15/Lec15.md
+              text: "15 · Speed–Torque Curve"
+            - href: mec1002/notes/Lec16/Lec16.md
+              text: "16 · Single-Phase Motors"
+            - href: mec1002/notes/Lec17/Lec17.md
+              text: "17 · Synchronous Motors"
+            - href: mec1002/notes/Lec18/Lec18.md
+              text: "18 · Motor Starting"
   page-footer:
     center: "© Nigel Kent · [nigelkent.ie](https://nigelkent.ie)"
 
@@ -53,4 +102,6 @@ format:
     theme:
       light: cosmo
       dark: darkly
+    css: styles.css
+    include-after-body: _includes/applet-embed.html
     toc: true

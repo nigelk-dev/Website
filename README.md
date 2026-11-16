@@ -3,14 +3,25 @@
 Personal website built with [Quarto](https://quarto.org) and published to
 GitHub Pages at <https://nigelkent.ie>.
 
-The **MEC1019: Sustainable Processes** Markdown notes and interactive applets are pulled from
-[nigelk-dev/MEC1019_Sustainable_Processes](https://github.com/nigelk-dev/MEC1019_Sustainable_Processes)
-at build time (on every push to `main`, daily, or on manual run).
+Course notes are pulled from their own repositories at build time (on every
+push to `main`, daily, or on manual run) and turned into one page per Markdown
+file by `scripts/notes.py`, with every interactive applet embedded live where
+the notes refer to it:
+
+- **MEC1019: Sustainable Processes** from
+  [nigelk-dev/MEC1019_Sustainable_Processes](https://github.com/nigelk-dev/MEC1019_Sustainable_Processes)
+  (`scripts/fetch-mec1019.sh`)
+- **MEC1002: Electrical Power and Electromechanical Systems** from
+  nigelk-dev/ElectricalPowerNotes (`scripts/fetch-mec1002.sh`). That repository
+  is private, so the publish workflow needs a repository secret `NOTES_TOKEN`:
+  a fine-grained personal access token with read-only *Contents* access to
+  ElectricalPowerNotes. Without it the MEC1002 pages are built empty.
 
 ## Local preview
 
 ```bash
-scripts/fetch-mec1019.sh   # copy notes + applets into mec1019/notes/
+scripts/fetch-mec1019.sh   # copy MEC1019 notes + applets into mec1019/notes/
+scripts/fetch-mec1002.sh   # copy MEC1002 notes + interactives into mec1002/notes/
 quarto preview
 ```
 

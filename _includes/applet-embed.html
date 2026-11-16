@@ -1,0 +1,43 @@
+<script>
+// Size each embedded applet (<iframe class="applet-frame">) to its content and
+// keep its light/dark theme in step with the site's toggle. The applets are
+// served from this site, so the frames are same-origin.
+(function () {
+  function dark() { return document.body.classList.contains('quarto-dark'); }
+  function prepare(frame) {
+    var d; try { d = frame.contentDocument; } catch (e) { return; }
+    if (!d || !d.body) return;
+    d.documentElement.setAttribute('data-theme', dark() ? 'dark' : 'light');
+    if (!d.getElementById('applet-embed-style')) {
+      var s = d.createElement('style');
+      s.id = 'applet-embed-style';
+      // The notes introduce each applet, so hide its own heading, and its
+      // "Back to notes" link, which makes no sense inside the notes page
+      s.textContent = 'a.back, main > h1, main > h1 + p.lead { display: none !important; }' +
+                      ' html, body { overflow-y: hidden; }';
+      d.head.appendChild(s);
+    }
+    function fit() {
+      var cs = d.defaultView.getComputedStyle(d.body);
+      var h = Math.ceil(d.body.getBoundingClientRect().height +
+                        parseFloat(cs.marginTop) + parseFloat(cs.marginBottom));
+      if (h > 50 && Math.abs(h - frame.offsetHeight) > 2) frame.style.height = h + 'px';
+    }
+    fit();
+    if (window.ResizeObserver && !frame._appletObserved) {
+      frame._appletObserved = true;
+      new ResizeObserver(fit).observe(d.body);
+    }
+  }
+  function setup() {
+    var frames = document.querySelectorAll('iframe.applet-frame');
+    frames.forEach(function (f) {
+      f.addEventListener('load', function () { f._appletObserved = false; prepare(f); });
+      prepare(f);
+    });
+    new MutationObserver(function () { frames.forEach(prepare); })
+      .observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup); else setup();
+})();
+</script>

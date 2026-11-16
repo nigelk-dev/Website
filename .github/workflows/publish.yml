@@ -20,6 +20,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NOTES_TOKEN: ${{ secrets.NOTES_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -31,6 +33,21 @@ jobs:
 
       - name: Copy MEC1019 materials into the site
         run: scripts/fetch-mec1019.sh _mec1019 && rm -rf _mec1019
+
+      # ElectricalPowerNotes is private: reading it needs a token saved as the
+      # repository secret NOTES_TOKEN (a fine-grained token with read access to
+      # its contents). Without one, the MEC1002 pages are left out of the build.
+      - name: Check out MEC1002 notes
+        if: env.NOTES_TOKEN != ''
+        uses: actions/checkout@v4
+        with:
+          repository: nigelk-dev/ElectricalPowerNotes
+          token: ${{ secrets.NOTES_TOKEN }}
+          path: _mec1002
+
+      - name: Copy MEC1002 notes into the site
+        if: hashFiles('_mec1002/**') != ''
+        run: scripts/fetch-mec1002.sh _mec1002 && rm -rf _mec1002
 
       - uses: quarto-dev/quarto-actions/setup@v2
 

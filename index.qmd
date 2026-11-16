@@ -9,3 +9,7 @@ Welcome. This site hosts teaching materials and projects.
 
 [**MEC1019: Sustainable Processes**](mec1019/index.qmd)
 : Design project — study notes and interactive applets on microcontrollers
+
+[**MEC1002: Electrical Power and Electromechanical Systems**](mec1002/index.qmd)
+: Lecture notes with interactive elements: DC motors, AC circuits and power,
+  transformers, three-phase systems, induction and synchronous motors
