@@ -1,0 +1,75 @@
+# Introduction to microcontrollers · Chapter 7 · RES with battery backup
+- type: cloze
+  q: |
+    In the final system, a voltage [[divider]] scales the RES voltage into the 0–5 V range, `analogRead` with an `if/else`
+    [[threshold]] decides whether the RES is high enough, and [[relays|relay]] connect the load to either the RES or the battery.
+
+- type: order
+  q: Put the build steps in the order used in the notes.
+  items:
+    - Power and signals from the Arduino to the relay module
+    - RES power in through its relay
+    - Battery power in through its relay
+    - Add the monitoring system (the voltage divider)
+    - Connect all the grounds together
+
+- type: mcq
+  q: Why must the Arduino GND be connected to the RES and battery ground rail?
+  options:
+    - text: A voltage is measured relative to something; without a shared ground, `analogRead` has no reference and returns meaningless values
+      correct: true
+    - text: To power the Arduino from the battery
+    - text: To make the relays click louder
+    - text: It isn't needed if the divider is accurate
+
+- type: numeric
+  q: |
+    The divider has $R_1$ = {k} × $R_2$, and the code switches to the battery when the pin voltage falls below {Vp} V.
+    What RES voltage does that threshold correspond to?
+  vars:
+    k: [2.172, 1, 4, 0.001]
+    Vp: [2.5, 2, 4, 0.1]
+  answer: Vp * (1 + k)
+  unit: V
+  hint: $V_{RES} = V_{pin} \div \dfrac{R_2}{R_1 + R_2} = V_{pin}\,(1 + R_1/R_2)$
+  solution: |
+    V_RES = {Vp} × (1 + {k}) = **{=Vp * (1 + k)} V**
+
+- type: cloze
+  q: Complete `useBattery()`, which must never connect both sources at once.
+  code: |
+    void useBattery() {
+      digitalWrite(kResRelay, [[kRelayOff ~ kRelayOn]]);
+      digitalWrite(kBatRelay, [[kRelayOn ~ kRelayOff]]);
+    }
+  explain: Disconnect the old source **before** connecting the new one.
+
+- type: mcq
+  q: Why add **hysteresis** (two thresholds, e.g. 2.3 V and 2.7 V)?
+  options:
+    - text: So the relays don't chatter on and off when the RES voltage hovers around a single threshold
+      correct: true
+      why: Between the two thresholds the load stays on whichever source it already had.
+    - text: To make the system respond faster
+    - text: To measure two different sources
+    - text: To double the measurement resolution
+
+- type: cloze
+  q: Complete the hysteresis version of `loop()`.
+  code: |
+    float vPin = readVolts(kResPin);
+    if (vPin < [[kToBatteryV ~ kToResV]]) {
+      useBattery();
+    } else if (vPin > [[kToResV ~ kToBatteryV]]) {
+      useRes();
+    }
+  explain: There is no final `else`. Inside the dead band, `loop()` does nothing.
+
+- type: mcq
+  q: Which everyday device uses the same two-threshold idea?
+  options:
+    - text: A home heating thermostat
+      correct: true
+    - text: A light switch
+    - text: A doorbell
+    - text: A fuse

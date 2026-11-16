@@ -1,0 +1,72 @@
+# Introduction to microcontrollers · Chapter 6 · Relays
+- type: mcq
+  q: What does the **opto-isolator** on the relay module do?
+  options:
+    - text: The Arduino's signal drives an LED inside it, so the Arduino is connected to the relay driver by light, not electrically, protecting it from spikes
+      correct: true
+    - text: It amplifies the Arduino's signal to 250 V
+    - text: It measures the current through the load
+    - text: It makes the relay switch faster
+
+- type: cloze
+  q: |
+    On the relay module, the control side has the pins VCC, GND, [[IN1]] and IN2, which connect to the Arduino. The operating side
+    has a screw terminal set for each relay: COM, NC and NO. The contacts are rated up to [[10]] A at 250 VAC / 30 VDC.
+
+- type: cloze
+  q: |
+    **COM** is the moving contact. With the relay **off** (coil not energised), COM is connected to [[NC ~ NO]];
+    with the relay **on**, COM is connected to [[NO ~ NC]].
+
+- type: mcq
+  q: You want a lamp to light **only when the Arduino energises the relay**. How should it be wired?
+  options:
+    - text: Battery +ve to COM, and NO through the lamp to ground
+      correct: true
+    - text: Battery +ve to COM, and NC through the lamp to ground
+      why: Then the lamp would be on by default and switched **off** by the relay.
+    - text: Battery +ve to NO, and NC through the lamp to ground
+    - text: Arduino pin straight to the lamp
+      why: A pin can only supply about 20 mA.
+
+- type: mcq
+  q: The relay module is **active-LOW**. What does `digitalWrite(kRelay1Pin, LOW)` do?
+  options:
+    - text: Switches relay 1 on
+      correct: true
+    - text: Switches relay 1 off
+    - text: Nothing; LOW is ignored
+  explain: Naming the levels `kRelayOn = LOW` and `kRelayOff = HIGH` hides the back-to-front logic in two lines.
+
+- type: mcq
+  q: Why does `setup()` call `digitalWrite(pin, kRelayOff)` **before** `pinMode(pin, OUTPUT)`?
+  options:
+    - text: So the pin goes straight to "off"; the other way round it briefly outputs LOW, clicking the relay on at every reset
+      correct: true
+    - text: "`pinMode` only works after `digitalWrite`"
+    - text: It saves memory
+    - text: It doesn't matter which comes first
+      why: On an active-LOW module, the order decides whether the relay clicks on briefly at start-up.
+
+- type: mcq
+  q: When changing from one relay to the other, why switch the old relay **off before** switching the new one on?
+  options:
+    - text: If both are on at once, the two power sources are connected directly together, even if only for a moment
+      correct: true
+      why: This is "break before make"; it matters once the relays switch the RES and the battery.
+    - text: The Arduino can only drive one pin at a time
+    - text: Relays can't be switched on while another is on
+    - text: To save power
+
+- type: cloze
+  q: Complete Exercise 3e, where the pot chooses which relay is on.
+  code: |
+    float vOut = readVolts(kPotPin);
+    if (vOut [[< ~ > ~ ==]] kThreshold) {
+      setRelay(kBlueRelay, [[false]]);
+      setRelay(kGreenRelay, true);
+    } else {
+      setRelay(kGreenRelay, false);
+      setRelay(kBlueRelay, [[true]]);
+    }
+  explain: Below 2.5 V the green LED's relay is on; otherwise the blue one. Each branch switches the other relay off first.

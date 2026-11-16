@@ -1,0 +1,115 @@
+# Introduction to microcontrollers · Chapter 2 · analogWrite, voltage dividers and potentiometers
+- type: numeric
+  q: What `analogWrite` value gives an average of {V} V from a 5 V pin? (Round to a whole number.)
+  vars:
+    V: [1.5, 0.5, 4.5, 0.1]
+  answer: round(255 / 5 * V)
+  tol: 0
+  hint: value = (255 / 5 V) × V, rounded to the nearest whole number.
+  solution: |
+    value = (255 / 5) × {V} = {=255 / 5 * V|4} → **{=round(255 / 5 * V)}**
+
+- type: cloze
+  q: |
+    `analogWrite` uses [[8]] bits, giving 2⁸ = [[256]] levels, so its value runs from 0 to [[255]]. It only works on the PWM pins
+    marked `~`.
+
+- type: mcq
+  q: In C++, what does `255/2` evaluate to?
+  options:
+    - text: "127"
+      correct: true
+      why: Both numbers are whole numbers, so C++ does **integer division** and throws the remainder away. Write `255.0/2` to get 127.5.
+    - text: "127.5"
+    - text: "128"
+      why: Integer division truncates; it doesn't round.
+    - text: An error
+
+- type: mcq
+  q: Why does `voltsToPwm()` add 0.5 before converting to `(uint8_t)`?
+  options:
+    - text: "`(uint8_t)` keeps only the whole-number part, so adding 0.5 first rounds to the nearest whole number"
+      correct: true
+    - text: To make the LED a little brighter
+    - text: Because `analogWrite` needs an odd number
+    - text: To avoid dividing by zero
+
+- type: cloze
+  q: Complete the loop that brightens the LED from 0 to 250 in steps of 10.
+  code: |
+    for (int pwm = 0; pwm [[<=]] kTopPwm; pwm [[+=]] kPwmStep) {
+      analogWrite(kRedPin, [[pwm]]);
+      delay(kOnMs);
+    }
+
+- type: mcq
+  q: Why is the loop counter an `int` rather than a `uint8_t` when testing `pwm <= 255`?
+  options:
+    - text: A `uint8_t` holds only 0–255, so 260 would wrap round to 4 and the loop would never end
+      correct: true
+    - text: "`analogWrite` only accepts `int`"
+    - text: "`int` is faster on the Arduino"
+    - text: "`uint8_t` can't be used in a `for` loop"
+
+- type: numeric
+  q: A {Vs} V supply drives two {R} Ω resistors in series. Find the current and the voltage across one resistor.
+  vars:
+    Vs: [12, 5, 24, 1]
+    R: [330, 100, 1000, 10]
+  parts:
+    - label: "Current:"
+      answer: Vs / (2 * R) * 1000
+      unit: mA
+    - label: "Voltage across one:"
+      answer: Vs / 2
+      unit: V
+  solution: |
+    R_T = 2 × {R} = {=2 * R} Ω; I = {Vs} / {=2 * R} = **{=Vs / (2 * R) * 1000} mA**; V₁ = I R₁ = **{=Vs / 2} V** (equal resistors split the voltage equally).
+
+- type: numeric
+  q: A voltage divider has $R_1$ = {R1} Ω and $R_2$ = {R2} Ω across {Vs} V. What is $V_{out}$, measured across $R_2$?
+  vars:
+    R1: [100, 100, 10000, 100]
+    R2: [100, 100, 10000, 100]
+    Vs: [12, 5, 24, 1]
+  answer: Vs * R2 / (R1 + R2)
+  unit: V
+  solution: |
+    V_out = V_s R₂/(R₁ + R₂) = {Vs} × {R2} / ({R1} + {R2}) = **{=Vs * R2 / (R1 + R2)} V**
+
+- type: numeric
+  q: Design a divider giving {Vo} V at {I} mA from a {Vs} V battery. Find $R_1$ and $R_2$.
+  vars:
+    Vs: [12, 9, 24, 1]
+    Vo: [6, 1, 8, 1]
+    I: [60, 10, 100, 10]
+  parts:
+    - label: "R₁ ="
+      answer: (Vs - Vo) / (I / 1000)
+      unit: Ω
+    - label: "R₂ ="
+      answer: Vo / (I / 1000)
+      unit: Ω
+  hint: Total resistance $R_T = V_s/I$; $R_2 = V_{out}/I$; $R_1 = R_T - R_2$.
+  solution: |
+    R_T = {Vs} / {=I / 1000} = {=Vs / (I / 1000)} Ω; R₂ = {Vo} / {=I / 1000} = **{=Vo / (I / 1000)} Ω**; R₁ = R_T − R₂ = **{=(Vs - Vo) / (I / 1000)} Ω**
+
+- type: numeric
+  q: A {Rt} kΩ potentiometer has 5 V across it, with the wiper set so that $R_2$ = {R2} kΩ. What is $V_{out}$?
+  vars:
+    Rt: [5, 5, 10, 5]
+    R2: [2.5, 0, 5, 0.5]
+  answer: 5 * R2 / Rt
+  unit: V
+  solution: |
+    I = 5 V / {Rt} kΩ = {=5 / Rt} mA; V_out = I R₂ = {=5 / Rt} mA × {R2} kΩ = **{=5 * R2 / Rt} V**
+
+- type: numeric
+  q: "`analogRead` returns {r}. What voltage is that? (Use `reading × 5.0 / 1023.0`.)"
+  vars:
+    r: [512, 0, 1023, 1]
+  answer: r * 5 / 1023
+  unit: V
+  tol: 1
+  solution: |
+    {r} × 5.0 / 1023.0 = **{=r * 5 / 1023} V**

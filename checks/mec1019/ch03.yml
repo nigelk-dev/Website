@@ -1,0 +1,78 @@
+# Introduction to microcontrollers · Chapter 3 · Loops, PWM and alarms
+- type: cloze
+  q: |
+    In Exercise 1d the delay changes to 1 s and red moves from pin 13 to pin 10. With named constants this is a two-line change:
+    `kHalfPeriodMs = [[1000]]` and `kRedPin = [[10]]`.
+
+- type: cloze
+  q: Complete `blink()` so the buzzer sounds only when `withAlarm` is true.
+  code: |
+    void blink(uint8_t pin, uint8_t count, [[bool]] withAlarm) {
+      for (uint8_t i = 1; i <= count; ++i) {
+        digitalWrite(pin, HIGH);
+        [[if]] (withAlarm) {
+          digitalWrite(kBuzzerPin, [[HIGH]]);
+        }
+        delay(kHalfPeriodMs);
+        digitalWrite(pin, LOW);
+        digitalWrite(kBuzzerPin, [[LOW]]);
+        delay(kHalfPeriodMs);
+      }
+    }
+  explain: Switching the buzzer off every time is simpler than a second `if`; writing LOW to a pin that is already LOW changes nothing.
+
+- type: numeric
+  q: A PWM signal is on for {on} ms and off for {off} ms. What is its duty cycle, and the average voltage from a 5 V pin?
+  vars:
+    on: [7.5, 0.5, 9.5, 0.5]
+    off: [2.5, 0.5, 9.5, 0.5]
+  parts:
+    - label: "Duty cycle:"
+      answer: 100 * on / (on + off)
+      unit: "%"
+    - label: "Average voltage:"
+      answer: 5 * on / (on + off)
+      unit: V
+  solution: |
+    Period = {on} + {off} = {=on + off} ms; duty = {on}/{=on + off} = **{=100 * on / (on + off)} %**; V_avg = duty × 5 V = **{=5 * on / (on + off)} V**
+
+- type: numeric
+  q: What duty cycle and average voltage does `analogWrite(pin, {v})` give?
+  vars:
+    v: [191, 0, 255, 1]
+  parts:
+    - label: "Duty cycle:"
+      answer: 100 * v / 255
+      unit: "%"
+      tol: 1
+    - label: "Average voltage:"
+      answer: 5 * v / 255
+      unit: V
+      tol: 1
+  solution: |
+    duty = {v}/255 = **{=100 * v / 255} %**; V_avg = 5 × {v}/255 = **{=5 * v / 255} V**
+
+- type: multi
+  q: What is PWM used for? Select all that apply.
+  options:
+    - text: Motor speed control
+      correct: true
+    - text: LED dimming
+      correct: true
+    - text: Audio signal generation
+      correct: true
+    - text: Reading an analogue sensor
+      why: That's `analogRead`, the ADC, not PWM.
+
+- type: mcq
+  q: Why does an LED on a 50 % PWM signal look steadily **dimmer** rather than flickering?
+  options:
+    - text: It switches about 490 times a second, far too fast for the eye to follow, so we see the average
+      correct: true
+    - text: The LED's voltage is really 2.5 V all the time
+      why: The pin is only ever at 5 V or 0 V; it's the average that is 2.5 V.
+    - text: The resistor smooths the pulses
+    - text: LEDs can't turn off quickly
+
+- type: cloze
+  q: The PWM pins on the Uno are ~3, ~5, ~6, ~[[9]], ~10 and ~[[11]]. They run at about [[490]] Hz, except pins 5 and 6 at about 980 Hz.

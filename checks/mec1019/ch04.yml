@@ -1,0 +1,88 @@
+# Introduction to microcontrollers · Chapter 4 · Voltage dividers
+- type: mcq
+  q: Why can't the renewable source (RES) be connected straight to an Arduino analogue input?
+  options:
+    - text: The inputs only accept 0–5 V, and the RES may produce 9 V, 12 V or more, which would damage the board
+      correct: true
+    - text: The RES is AC
+    - text: The Arduino needs at least 20 V to read a voltage
+    - text: Analogue inputs can only read currents
+
+- type: numeric
+  q: Two {R} Ω resistors in series are connected across {Vs} V. What voltage appears across the bottom resistor?
+  vars:
+    Vs: [9, 5, 15, 1]
+    R: [220, 100, 1000, 10]
+  answer: Vs / 2
+  unit: V
+  solution: |
+    Equal resistors split the voltage equally: {Vs} × {R}/(2 × {R}) = **{=Vs / 2} V**
+
+- type: numeric
+  q: A divider with $R_1$ = {R1} Ω (top) and $R_2$ = {R2} Ω (bottom) is fed from {Vs} V. Find the current and $V_{out}$.
+  vars:
+    R1: [330, 100, 1000, 10]
+    R2: [100, 100, 1000, 10]
+    Vs: [9, 5, 15, 1]
+  parts:
+    - label: "Current:"
+      answer: Vs / (R1 + R2) * 1000
+      unit: mA
+    - label: "V_out ="
+      answer: Vs * R2 / (R1 + R2)
+      unit: V
+  solution: |
+    I = {Vs} / ({R1} + {R2}) = **{=Vs / (R1 + R2) * 1000} mA**; V_out = I R₂ = **{=Vs * R2 / (R1 + R2)} V**
+
+- type: numeric
+  q: |
+    The RES can produce up to {Vm} V, and the Arduino must see 5 V at that maximum. With $R_2$ = 10 kΩ, what value of $R_1$ is needed?
+  vars:
+    Vm: [15.86, 8, 30, 0.01]
+  answer: (Vm / 5 - 1) * 10
+  unit: kΩ
+  hint: Set $5 = V_{max}\,R_2/(R_1 + R_2)$ and rearrange to $R_1 = (V_{max}/5 - 1)\,R_2$.
+  solution: |
+    R₁ = ({Vm}/5 − 1) × R₂ = {=Vm / 5 - 1|4} × 10 kΩ = **{=(Vm / 5 - 1) * 10} kΩ**. Round **up** to the next standard value so V_out stays just under 5 V.
+
+- type: mcq
+  q: The ratio $R_1/R_2$ fixes $V_{out}$. What does the **absolute size** of the resistors set?
+  options:
+    - text: The current, and so the power the monitoring circuit wastes
+      correct: true
+      why: Larger resistors waste less energy, but very large values make the readings noisy; around 10 kΩ for $R_2$ is a good compromise.
+    - text: The output voltage
+    - text: The Arduino's reference voltage
+    - text: Nothing
+
+- type: numeric
+  q: |
+    A divider with $R_1$ = 22 kΩ and $R_2$ = 10 kΩ feeds A0, and `analogRead` returns {r}. What is the RES voltage?
+  vars:
+    r: [800, 100, 1000, 1]
+  answer: r * 5 / 1023 / (10 / 32)
+  unit: V
+  tol: 1
+  hint: Convert the reading to the pin voltage ($\times 5/1023$), then undo the divider by dividing by $R_2/(R_1 + R_2)$.
+  solution: |
+    V_pin = {r} × 5 / 1023 = {=r * 5 / 1023} V; ratio = 10/32 = 0.3125; V_RES = {=r * 5 / 1023} / 0.3125 = **{=r * 5 / 1023 / (10 / 32)} V**
+
+- type: cloze
+  q: Complete the lines that turn a reading back into the RES voltage.
+  code: |
+    const float kRatio = kR2 / ([[kR1 + kR2|kR1+kR2|kR2 + kR1]]);
+    int   reading = [[analogRead]](kResPin);
+    float vPin    = reading * (5.0 / [[1023.0|1023]]);
+    float vRes    = vPin [[/ ~ * ~ +]] kRatio;
+
+- type: multi
+  q: What else must be done for the divider reading to be correct? Select all that apply.
+  options:
+    - text: Connect the RES negative to the Arduino GND (a shared ground)
+      correct: true
+    - text: Allow for resistor tolerance; ±5 % resistors give up to ±5 % error
+      correct: true
+    - text: Use the measured resistor values in `kR1` and `kR2` for better accuracy
+      correct: true
+    - text: Set the analogue pin with `pinMode(A0, OUTPUT)`
+      why: An analogue input must stay an input.

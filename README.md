@@ -34,6 +34,30 @@ in the copied notes and writes `assets/wordcloud.json`; the workflow runs it
 after the fetch steps. A snapshot is committed so the cloud still shows on a
 build without the notes.
 
+## Knowledge checks
+
+Every chapter ends with an interactive knowledge check. The questions live in
+this repository, one file per chapter: `checks/<course>/chNN.yml`
+(`mec1019`, `mec1002`, `mec1043-1062`). Edit those files to change them.
+For Electrical drives they **replace** the static "Knowledge Check" sections
+in the ElectricalPowerNotes repository, so changes made there no longer show
+on the site.
+
+Question types: multiple choice (`mcq`), select all that apply (`multi`),
+calculations with a tolerance, worked solution and random **New numbers**
+(`numeric`), fill in the blanks, typed or chosen from a list, also inside code
+(`cloze`), put in order (`order`), Boolean expressions checked by truth table
+(`boolean`), and explain-then-reveal (`reveal`). The format of each is
+described at the top of `scripts/checks.py`, and the existing files are good
+examples to copy.
+
+Check your edits before pushing (the publish workflow runs the same check and
+stops if a question is broken):
+
+```bash
+python3 scripts/checks.py
+```
+
 ## Local preview
 
 ```bash

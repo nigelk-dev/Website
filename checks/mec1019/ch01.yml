@@ -1,0 +1,146 @@
+# Introduction to microcontrollers · Chapter 1 · Arduino basics and LEDs
+- type: multi
+  q: Which statements about a solderless **breadboard** are true? Select all that apply.
+  options:
+    - text: Each half-column of five holes (a–e or f–j) is one connected clip
+      correct: true
+    - text: The centre channel isolates the two halves, so a DIP IC can straddle it
+      correct: true
+    - text: The power rails run along the board's length
+      correct: true
+    - text: It is fine for motor currents of several amps
+      why: The clips are rated at roughly 1 A; move power circuits to screw terminals or a soldered board.
+
+- type: cloze
+  q: |
+    An LED's **anode** is the [[long ~ short]] leg and must be at the [[higher ~ lower]] potential; the **cathode** has the flat
+    edge on the lens.
+
+- type: mcq
+  q: Why can't an LED be connected straight across a 9 V battery?
+  options:
+    - text: Its current rises exponentially with voltage, so nothing but the battery's internal resistance limits it, and it burns out
+      correct: true
+      why: A series resistor adds a linear element that sets the current.
+    - text: LEDs only work on AC
+    - text: 9 V is too low to light an LED
+    - text: The LED would light, but dimly
+
+- type: numeric
+  q: An LED with $V_f$ = {Vf} V is to run at {I} mA from a {Vs} V supply. What series resistance gives exactly that current?
+  vars:
+    Vs: [9, 5, 12, 1]
+    Vf: [2, 1.8, 3.2, 0.2]
+    I: [20, 10, 20, 5]
+  answer: (Vs - Vf) / (I / 1000)
+  unit: Ω
+  hint: $R = \dfrac{V_s - V_f}{I_F}$, with the current in amps.
+  solution: |
+    R = ({Vs} − {Vf}) / {=I / 1000} A = **{=(Vs - Vf) / (I / 1000)} Ω**. Then round **up** to the next standard (E12) value.
+
+- type: mcq
+  q: Exactly 20 mA from 9 V through a red LED ($V_f$ = 2.0 V) needs 350 Ω, which isn't a standard value. Which E12 resistor should you fit?
+  options:
+    - text: 390 Ω
+      correct: true
+      why: Round **up**, giving 17.9 mA, safely under the 20 mA rating even with a 5 % low resistor.
+    - text: 330 Ω
+      why: That gives 21.2 mA, over the rating; the LED runs hot and wears out sooner.
+    - text: 270 Ω
+      why: 25.9 mA, well over the rating.
+    - text: No resistor
+      why: The LED would burn out.
+
+- type: numeric
+  q: A {R} Ω resistor carries {I} mA. How much power does it dissipate?
+  vars:
+    R: [390, 100, 1000, 10]
+    I: [17.9, 5, 25, 0.1]
+  answer: (I / 1000) ** 2 * R * 1000
+  unit: mW
+  solution: |
+    P = I²R = ({=I / 1000})² × {R} = **{=(I / 1000) ** 2 * R * 1000} mW**, which you compare with the resistor's rating (¼ W = 250 mW), allowing 50 % derating.
+
+- type: cloze
+  q: |
+    On the Arduino Uno, each I/O pin should carry at most [[20]] mA (recommended), with an absolute maximum of [[40]] mA.
+    The ATmega328P has only [[2]] KB of SRAM for variables. The PWM pins, marked `~`, are 3, 5, 6, 9, 10 and [[11]].
+
+- type: cloze
+  q: Complete the blink sketch so the LED on pin 13 flashes at 1 Hz.
+  code: |
+    const uint8_t  kLedPin       = 13;
+    const uint16_t kHalfPeriodMs = [[500]];
+
+    void [[setup]]() {
+      pinMode(kLedPin, [[OUTPUT]]);
+    }
+
+    void loop() {
+      digitalWrite(kLedPin, [[HIGH]]);
+      delay(kHalfPeriodMs);
+      digitalWrite(kLedPin, [[LOW]]);
+      delay(kHalfPeriodMs);
+    }
+  explain: 1 Hz means one full on–off cycle per second, so 500 ms on and 500 ms off. `setup()` runs once; `loop()` runs forever.
+
+- type: mcq
+  q: Why is the pin number declared as `const uint8_t` rather than plain `int`?
+  options:
+    - text: "`const` stops it being changed by mistake, and `uint8_t` uses 1 byte instead of 2, which matters with only 2 KB of SRAM"
+      correct: true
+    - text: "`int` can't hold the number 13"
+    - text: "`uint8_t` makes the pin switch faster"
+    - text: Arduino requires all pin numbers to be `const`
+
+- type: mcq
+  q: Which data type should hold a timestamp from `millis()`?
+  options:
+    - text: "`unsigned long`"
+      correct: true
+      why: It holds 0 to about 4.29 × 10⁹, and its arithmetic stays correct when `millis()` wraps round after about 49.7 days.
+    - text: "`int`"
+      why: An `int` overflows after 32.8 seconds' worth of milliseconds.
+    - text: "`uint8_t`"
+    - text: "`float`"
+
+- type: numeric
+  q: An array holds {n} values of type `uint16_t`. What do `sizeof(array)` and `sizeof(array) / sizeof(array[0])` give?
+  vars:
+    n: [5, 2, 12, 1]
+  parts:
+    - label: "sizeof(array):"
+      answer: 2 * n
+      unit: bytes
+      tol: 0
+    - label: "Number of values:"
+      answer: n
+      tol: 0
+  solution: |
+    Each `uint16_t` is 2 bytes, so the array is {n} × 2 = **{=2 * n} bytes**, and {=2 * n} ÷ 2 = **{n}** values.
+
+- type: cloze
+  q: Complete the non-blocking blink, which toggles the LED every 500 ms without stopping `loop()`.
+  code: |
+    const unsigned long kIntervalMs = 500;
+    unsigned long lastToggleMs = 0;
+    bool ledOn = false;
+
+    void loop() {
+      const unsigned long now = [[millis()|millis]];
+      if (now - [[lastToggleMs]] >= kIntervalMs) {
+        lastToggleMs = now;
+        ledOn = [[!ledOn]];
+        digitalWrite(13, ledOn ? HIGH : LOW);
+      }
+    }
+  explain: Writing the test as `now - lastToggleMs >= interval` stays correct when `millis()` wraps round; `now >= lastToggleMs + interval` does not.
+
+- type: mcq
+  q: Why should a buzzer have **its own output pin** rather than being wired in series with an LED?
+  options:
+    - text: In series neither device gets its rated voltage, and they can't be controlled independently
+      correct: true
+    - text: Buzzers only work on analogue pins
+    - text: It saves current
+    - text: The LED would make the buzzer louder

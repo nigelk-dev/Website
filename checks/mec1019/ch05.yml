@@ -1,0 +1,81 @@
+# Introduction to microcontrollers · Chapter 5 · Potentiometers
+- type: cloze
+  q: |
+    A potentiometer's two outer pins are the ends of a fixed resistance [[track]], and the middle pin is the [[wiper]], which
+    splits the track into $R_1$ and $R_2$. With 5 V across it, the pot is an adjustable voltage [[divider]].
+
+- type: numeric
+  q: A {Rt} kΩ pot has 5 V across it, and the wiper gives $R_2$ = {R2} kΩ. Find the current through the track and the wiper voltage.
+  vars:
+    Rt: [5, 5, 10, 5]
+    R2: [2.5, 0, 5, 0.5]
+  parts:
+    - label: "Current:"
+      answer: 5 / Rt
+      unit: mA
+    - label: "V_out ="
+      answer: 5 * R2 / Rt
+      unit: V
+  solution: |
+    I = 5 V / {Rt} kΩ = **{=5 / Rt} mA**; V_out = I × R₂ = {=5 / Rt} mA × {R2} kΩ = **{=5 * R2 / Rt} V**
+
+- type: cloze
+  q: |
+    The analogue pins have a [[10]]-bit converter, giving 2¹⁰ = [[1024]] levels: 0 V reads as 0 and 5 V reads as [[1023]].
+    About 2.5 V reads as [[512|511|513]].
+
+- type: mcq
+  q: In C++, what does `5/1023` evaluate to?
+  options:
+    - text: "0"
+      correct: true
+      why: Both are whole numbers, so it's integer division. Write `5.0/1023.0` for the fractional result.
+    - text: "0.00489"
+    - text: "1"
+    - text: An error
+
+- type: numeric
+  q: "`analogRead` returns {r}. What does `map(reading, 0, 1023, 0, 255)` give (to the nearest whole number), roughly?"
+  vars:
+    r: [512, 0, 1023, 1]
+  answer: r * 255 / 1023
+  tol: 1
+  solution: |
+    {r} × 255/1023 ≈ **{=r * 255 / 1023}**. (Dividing by 4 gives almost the same: {=r / 4}.)
+
+- type: mcq
+  q: The slide's Exercise 2d2 used `if (Vout < 2.5)` to switch the blue LED **on**. What's wrong with that?
+  options:
+    - text: It lights the LED below 2.5 V, but the task asks for it to light above 2.5 V
+      correct: true
+    - text: "`if` can't compare floats"
+    - text: It should use `==`
+      why: An exact `==` on a measured voltage would almost never be true.
+    - text: Nothing
+
+- type: cloze
+  q: Complete the three-band logic (red 0–2 V, green above 2 to 3.5 V, blue above 3.5 V).
+  code: |
+    float vOut = readVolts(kPotPin);
+    if (vOut [[<=]] kLowMax) {
+      setLeds(true, false, false);
+    } [[else if]] (vOut <= kMidMax) {
+      setLeds(false, true, false);
+    } [[else]] {
+      setLeds(false, false, true);
+    }
+  explain: The chain runs only the **first** branch whose test is true, so exactly one LED is ever lit, and the second test doesn't need to repeat "above 2 V".
+
+- type: cloze
+  q: |
+    In C++, `==` means [[equal to|equals|is equal to]], `&&` means [[AND ~ OR ~ NOT]], and `||` means [[OR ~ AND ~ NOT]].
+    The ternary expression `red ? HIGH : LOW` gives HIGH when `red` is [[true ~ false]].
+
+- type: mcq
+  q: Why doesn't the dimmer-switch sketch (Exercise 2d1) need a `delay()`?
+  options:
+    - text: Without one, the brightness follows the knob immediately
+      correct: true
+    - text: "`analogWrite` has its own delay built in"
+    - text: Delays aren't allowed with analogue pins
+    - text: It does need one, or the LED won't light
