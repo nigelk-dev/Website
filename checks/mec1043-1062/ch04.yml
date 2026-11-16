@@ -79,3 +79,21 @@
   tol: 0
   solution: |
     The two openings ({t1}–{=t1 + 4} s and {t2}–{=t2 + 4} s) don't overlap, so the door is open for 4 + 4 = **8 s**.
+
+- type: timing
+  q: Draw the output $Y = A.B$ of an **AND gate** for the input waveforms shown.
+  steps: 16
+  inputs: {A: "0011110001111000", B: "0110011100110100"}
+  answer: {Y: "0010010000110000"}
+  step_label: "time →"
+
+- type: timing
+  q: |
+    A memory block has set input S and reset input R. Draw its output Y if it is **off-dominant** (reset wins when both are high).
+  steps: 16
+  inputs: {S: "0110000011100000", R: "0000110000111000"}
+  answer: {Y: "0111000011000000"}
+  step_label: "time →"
+  explain: |
+    Y switches on with S and stays on until R. At step 10 both are high, so the off-dominant memory switches off.
+    An on-dominant memory would stay on there.

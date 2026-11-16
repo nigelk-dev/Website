@@ -97,3 +97,14 @@
   q: |
     A uniform air gap keeps the [[flux]], and the forces on the rotor, even all the way round. Skewing the bars of a squirrel
     cage rotor smooths the [[torque]] and reduces noise and [[cogging]].
+
+- type: tune
+  q: A 4-pole motor runs on a 50 Hz supply. Set the rotor speed so the **rotor currents are at 2 Hz**.
+  controls:
+    - {name: N, label: Rotor speed, min: 1350, max: 1500, step: 5, value: 1475, unit: rpm}
+  readouts:
+    - {label: Slip, expr: "100 * (1500 - N) / 1500", unit: "%", min: 0, max: 10}
+    - {label: Rotor frequency, expr: "(1500 - N) / 1500 * 50", unit: Hz, min: 0, max: 5}
+  target:
+    - {readout: 1, min: 1.95, max: 2.05}
+  explain: $f_r = sf$, so 2 Hz needs $s$ = 4 %, i.e. 1440 rpm.

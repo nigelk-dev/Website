@@ -85,3 +85,27 @@
   answer: "X + Y"
   minimal: true
   solution: $X + \overline{X}.Y = X + Y$
+
+- type: truthtable
+  q: |
+    Fill in the truth table for the **panel switch with lock**: S is the switch, L the lock (L = 1 is unlocked), P the previous
+    state of the process and P′ its new state. With the lock on, P holds; with it off, P follows S.
+  vars: [S, L, P]
+  outputs: {P′: "!L.P + S.L"}
+  explain: When L = 0, P′ = P; when L = 1, P′ = S. This is the table that simplifies to $P' = \overline{L}.P + S.L$.
+
+- type: tune
+  q: |
+    The latch rung $P' = \overline{S}.(P + G)$ is wired to three switches. Set them so that the process P′ is **on** even though
+    the Go button is **not** pressed.
+  controls:
+    - {name: G, label: "G (Go)", kind: switch, value: 0}
+    - {name: S, label: "S (Stop)", kind: switch, value: 1}
+    - {name: P, label: "P (was on)", kind: switch, value: 0}
+  readouts:
+    - {label: "P′ process", kind: lamp, logic: "!S.(P + G)"}
+    - {label: "Go pressed", kind: lamp, logic: "G"}
+  target:
+    - {readout: 0, on: true}
+    - {readout: 1, on: false}
+  explain: With G released the output can only stay on through its own latch contact P, and only while Stop is not pressed.

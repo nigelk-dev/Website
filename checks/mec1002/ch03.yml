@@ -102,3 +102,14 @@
   hint: 63% of the final speed is reached after one time constant, $\tau = 1/\alpha$. The final speed is $\omega_\infty = v_{in}K/\alpha$.
   solution: |
     α = 1/τ = 1 / {=t / 1000} s = **{=1000 / t} s⁻¹**; K = α ω∞ / v_in = {=1000 / t} × {w} / {v} = **{=1000 / t * w / v} rad·s⁻²·V⁻¹**
+
+- type: graph
+  q: |
+    A motor accelerates from rest towards 300 rad/s with $\alpha$ = 20 s⁻¹. Move the cursor to **one time constant**, where the
+    speed has reached 63% of its final value.
+  x: {min: 0, max: 0.25, label: "time (s)"}
+  y: {min: 0, max: 320, label: "speed (rad/s)"}
+  curves:
+    - {expr: "300 * (1 - exp(-20 * x))", label: "ω(t)"}
+  answer: {x: 0.05, tol: 0.004, start: 0.18}
+  explain: $\tau = 1/\alpha = 50$ ms, where $\omega = 300(1 - e^{-1}) \approx 190$ rad/s.

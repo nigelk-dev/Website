@@ -28,6 +28,26 @@ Question types (every question has `type` and `q`, the question in Markdown;
            minimal: true also asks for no more literals than the answer.
            dont_care: an expression true on the rows that may be either.
            output: the name shown before "=" (default "Output").
+
+Hands-on types, drawn like the course applets:
+
+  tune     controls: [{name, label, min, max, step, value, unit}] sliders, or
+           {name, label, kind: switch, value: 0|1} toggle switches.
+           readouts: [{label, expr, unit, min, max, sig?}] live gauges, or
+           {label, kind: lamp, logic: "G.!S"} indicator lamps (switches), or
+           {label, kind: lamp, expr, between: [lo, hi]}, lit when lo < value <= hi.
+           target: [{readout: i, min?, max?} | {readout: i, on: true|false}],
+           all of which must hold when the learner presses Check.
+           view (optional): {kind: pwm, duty: expr 0-1, vmax: expr} or
+           {kind: plot, x: {min, max, label}, y: {min, max, label},
+           curves: [{expr in x and the controls, label}],
+           points?: [{x: expr, y: expr, label}]}.
+  graph    x/y: {min, max, label}, curves: [{expr in x, label}],
+           answer: {x, tol}; the learner drags a cursor to the answer.
+  truthtable  vars: [A, B], outputs: {Y: "A.!B"}; click to fill the
+           output column(s). dont_care: optional expression.
+  timing   steps: n, inputs: {A: "0011..."} (given), answer: {Y: "..."};
+           the learner paints the output waveform(s). step_label: optional.
            Syntax: . * & AND, + | OR, ! ~ NOT or a trailing ', brackets,
            and single-letter names may be written side by side (SL = S.L).
 
@@ -46,7 +66,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 CHECKS = ROOT / "checks"
 
-TYPES = {"mcq", "multi", "numeric", "cloze", "order", "reveal", "boolean"}
+TYPES = {"mcq", "multi", "numeric", "cloze", "order", "reveal", "boolean", "tune", "graph", "truthtable", "timing"}
 
 
 class Loader(yaml.SafeLoader):
@@ -295,7 +315,7 @@ def render_question(n, q, where):
         if code:
             stem += "\n\n" + code_blanks(code.rstrip("\n"), answers)
         data["blanks"] = answers
-    parts.append(div("kc-stem", f"**Q{n}.** {stem}", 0))
+    parts.append(div("kc-stem", stem, 0))  # the widget adds "Q1 · Multiple choice"
 
     if t in ("mcq", "multi"):
         opts = []
@@ -320,6 +340,15 @@ def render_question(n, q, where):
         parts.append(div("kc-items", "\n\n".join(items), 1))
     elif t == "reveal":
         parts.append(div("kc-answer", str(q["answer"]), 0))
+    elif t in ("tune", "graph", "truthtable", "timing"):
+        if t == "tune":
+            data["solve"] = tune_solution(q)
+        for k in ("controls", "readouts", "target", "view", "x", "y", "curves", "answer", "vars", "outputs",
+                  "dont_care", "steps", "inputs", "step_label"):
+            if k in q:
+                data[k] = q[k]
+        if q.get("solution"):
+            parts.append(div("kc-solution", str(q["solution"]), 0))
     elif t == "boolean":
         _, lits = bool_parse(str(q["answer"]), q["vars"])
         data.update(vars=list(q["vars"]), answer=str(q["answer"]), output=q.get("output", "Output"),
@@ -408,11 +437,148 @@ def validate_question(q, where):
     elif t == "reveal":
         if not q.get("answer"):
             errs.append(f"{where}: reveal without answer")
+    elif t == "tune":
+        errs += validate_tune(q, where)
+    elif t == "graph":
+        try:
+            xs = q["x"]; lo, hi = float(xs["min"]), float(xs["max"])
+            for c in q["curves"]:
+                for k in range(41):
+                    evaluate(c["expr"], {"x": lo + (hi - lo) * k / 40})
+            a = q["answer"]
+            if not (lo <= float(a["x"]) <= hi and float(a["tol"]) > 0):
+                errs.append(f"{where}: answer x outside the axis or no tolerance")
+        except Exception as e:  # noqa: BLE001
+            errs.append(f"{where}: graph: {e}")
+    elif t == "truthtable":
+        try:
+            for name, ex in (q.get("outputs") or {}).items():
+                bool_parse(str(ex), q["vars"])
+            if not q.get("outputs"):
+                errs.append(f"{where}: truthtable without outputs")
+        except Exception as e:  # noqa: BLE001
+            errs.append(f"{where}: truthtable: {e}")
+    elif t == "timing":
+        n = q.get("steps")
+        for group in ("inputs", "answer"):
+            for name, wave in (q.get(group) or {}).items():
+                if not (isinstance(wave, str) and len(wave) == n and set(wave) <= {"0", "1"}):
+                    errs.append(f"{where}: {group} {name} must be {n} characters of 0/1")
+        if not q.get("answer"):
+            errs.append(f"{where}: timing without answer")
     elif t == "boolean":
         try:
             bool_parse(str(q.get("answer", "")), q.get("vars") or [])
         except ValueError as e:
             errs.append(f"{where}: answer: {e}")
+    return errs
+
+
+def tune_values(q, env):
+    """The readouts of a tune question for one setting of its controls."""
+    out = []
+    for r in q["readouts"]:
+        if r.get("kind") == "lamp" and "between" in r:
+            v = evaluate(r["expr"], env)
+            out.append(r["between"][0] < v <= r["between"][1])
+        elif r.get("kind") == "lamp":
+            names = [c["name"] for c in q["controls"]]
+            f, _ = bool_parse(str(r["logic"]), names)
+            out.append(bool(f({k: bool(round(v)) for k, v in env.items()})))
+        else:
+            out.append(evaluate(r["expr"], env))
+    return out
+
+
+def tune_hit(q, vals):
+    for t in q["target"]:
+        v = vals[t["readout"]]
+        if "on" in t:
+            if bool(v) != bool(t["on"]):
+                return False
+        else:
+            if ("min" in t and v < t["min"] - 1e-9) or ("max" in t and v > t["max"] + 1e-9):
+                return False
+    return True
+
+
+def tune_settings(q):
+    """Settings of a tune question's controls to try: every one if there are
+    few, otherwise a reproducible random sample."""
+    import itertools
+    grids = []
+    for c in q["controls"]:
+        if c.get("kind") == "switch":
+            grids.append([0.0, 1.0])
+        else:
+            lo, hi, st = float(c["min"]), float(c["max"]), float(c["step"])
+            grids.append([round(lo + st * k, 10) for k in range(int(round((hi - lo) / st)) + 1)])
+    total = 1
+    for g in grids:
+        total *= len(g)
+    rng = random.Random(2)
+    names = [c["name"] for c in q["controls"]]
+    combos = itertools.product(*grids) if total <= 20000 else ([rng.choice(g) for g in grids] for _ in range(20000))
+    for combo in combos:
+        yield dict(zip(names, combo))
+
+
+def tune_solution(q):
+    """A setting that meets the target, closest to the middle of the band."""
+    best, score = None, None
+    for env in tune_settings(q):
+        vals = tune_values(q, env)
+        if tune_hit(q, vals):
+            # prefer settings well inside each gauge's band
+            sc = 0.0
+            for t in q["target"]:
+                if "min" in t and "max" in t:
+                    sc += abs(vals[t["readout"]] - (t["min"] + t["max"]) / 2) / max(t["max"] - t["min"], 1e-9)
+            if score is None or sc < score:
+                best, score = env, sc
+    return best
+
+
+def validate_tune(q, where):
+    errs = []
+    try:
+        ctls = q["controls"]
+        grids = []
+        for c in ctls:
+            if c.get("kind") == "switch":
+                grids.append([0.0, 1.0])
+            else:
+                lo, hi, st = float(c["min"]), float(c["max"]), float(c["step"])
+                if not (lo <= float(c["value"]) <= hi and st > 0):
+                    errs.append(f"{where}: control {c['name']} value outside its range")
+                n = int(round((hi - lo) / st))
+                grids.append([round(lo + st * k, 10) for k in range(n + 1)])
+        start = {c["name"]: float(c["value"]) for c in ctls}
+        if tune_hit(q, tune_values(q, start)):
+            errs.append(f"{where}: the starting setting already meets the target")
+        total = 1
+        for g in grids:
+            total *= len(g)
+        import itertools
+        rng = random.Random(2)
+        combos = (itertools.product(*grids) if total <= 20000
+                  else ([rng.choice(g) for g in grids] for _ in range(20000)))
+        found = False
+        for combo in combos:
+            env = dict(zip([c["name"] for c in ctls], combo))
+            if tune_hit(q, tune_values(q, env)):
+                found = True
+                break
+        if not found:
+            errs.append(f"{where}: no setting of the controls meets the target")
+        view = q.get("view")
+        if view and view.get("kind") == "plot":
+            for c in view["curves"]:
+                evaluate(c["expr"], {**start, "x": float(view["x"]["min"])})
+        elif view and view.get("kind") == "pwm":
+            evaluate(view["duty"], start)
+    except Exception as e:  # noqa: BLE001
+        errs.append(f"{where}: tune: {e}")
     return errs
 
 

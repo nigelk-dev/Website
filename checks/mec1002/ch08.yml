@@ -111,3 +111,25 @@
   hint: First find $X_C = V/i$, then $C = \dfrac{1}{2\pi f X_C}$.
   solution: |
     X_C = V/i = {V}/{I} = {=V / I} Ω; C = 1 / (2π × {f} × {=V / I}) = **{=I / (2 * pi * f * V) * 1e6} µF**
+
+- type: tune
+  q: |
+    In a series RL circuit, the current lags the supply voltage by $\varphi = \tan^{-1}(X_L/R)$. Adjust $R$ and $X_L$ so the current
+    lags by **45° (±2°)** with an impedance of **about 70 Ω (±5)**.
+  controls:
+    - {name: R, label: Resistance R, min: 10, max: 100, step: 5, value: 20, unit: Ω}
+    - {name: X, label: Reactance X_L, min: 10, max: 100, step: 5, value: 80, unit: Ω}
+  readouts:
+    - {label: Phase angle φ, expr: "atand(X / R)", unit: °, min: 0, max: 90}
+    - {label: "|Z|", expr: "hypot(R, X)", unit: Ω, min: 0, max: 150}
+  target:
+    - {readout: 0, min: 43, max: 47}
+    - {readout: 1, min: 65, max: 75}
+  view:
+    kind: plot
+    x: {min: 0, max: 720, label: "ωt (degrees)"}
+    y: {min: -1.2, max: 1.2, label: "per unit"}
+    curves:
+      - {expr: "sind(x)", label: "voltage"}
+      - {expr: "sind(x - atand(X / R))", label: "current (lags by φ)"}
+  explain: Equal $R$ and $X_L$ give 45°; $|Z| = \sqrt{R^2 + X_L^2} = 70$ Ω needs $R = X_L \approx 50$ Ω.

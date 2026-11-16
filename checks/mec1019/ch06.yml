@@ -70,3 +70,18 @@
       setRelay(kBlueRelay, [[true]]);
     }
   explain: Below 2.5 V the green LED's relay is on; otherwise the blue one. Each branch switches the other relay off first.
+
+- type: tune
+  q: |
+    The dual relay module is **active-LOW**. Relay 1 switches the blue LED (through NO) and relay 2 the green LED.
+    Set the two Arduino outputs so **only the blue LED** is lit.
+  controls:
+    - {name: IN1, label: "Pin 13 → IN1 HIGH", kind: switch, value: 1}
+    - {name: IN2, label: "Pin 12 → IN2 HIGH", kind: switch, value: 0}
+  readouts:
+    - {label: Blue LED (relay 1), kind: lamp, logic: "!IN1"}
+    - {label: Green LED (relay 2), kind: lamp, logic: "!IN2"}
+  target:
+    - {readout: 0, on: true}
+    - {readout: 1, on: false}
+  explain: On an active-LOW module, LOW energises the relay. So IN1 must be LOW (switch off) and IN2 HIGH (switch on).

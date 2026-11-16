@@ -115,3 +115,11 @@
   answer: |
     "Don't care" lets the minimiser choose 1 or 0 for the easiest expression, so an output might stay on while Stop is pressed.
     For safety, pressing Stop must always switch everything off, so those rows are set to 0: the design should **fail safe**.
+
+- type: truthtable
+  q: |
+    Fill in the work station's cycle output $Y = C.\overline{S}$ for every combination of Go (G), Stop (S), power (P) and
+    cycle-ready (C). The rows marked X can't exist.
+  vars: [G, S, P, C]
+  outputs: {Y: "C.!S"}
+  dont_care: "!S.!P.C"

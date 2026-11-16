@@ -97,3 +97,14 @@
       correct: true
     - text: They hold very large numbers of parts
       why: Magazines hold relatively few parts and may need frequent reloading.
+
+- type: graph
+  q: |
+    The centreboard's total cycle time $T$ is plotted against the maximum track angle $\theta_m$ (track 0.2 m long, $\mu$ = 0.3).
+    Move the cursor to the angle that gives the **shortest** cycle.
+  x: {min: 20, max: 80, label: "θm (degrees)"}
+  y: {min: 0.7, max: 1.4, label: "T (s)"}
+  curves:
+    - {expr: "4 * sqrt(x * pi / 180 * 0.2 / (9.81 * cosd(x))) + sqrt(2 * 0.2 / (9.81 * (sind(x) - 0.3 * cosd(x))))", label: "T (s)"}
+  answer: {x: 34.2, tol: 3, start: 65}
+  explain: Too shallow and the parts slide off slowly; too steep and lifting takes longer. The minimum is found numerically, at about 34°.

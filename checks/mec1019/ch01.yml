@@ -144,3 +144,18 @@
     - text: Buzzers only work on analogue pins
     - text: It saves current
     - text: The LED would make the buzzer louder
+
+- type: tune
+  q: |
+    A red LED ($V_f$ = 2.0 V) runs from a **9 V battery**. Choose the series resistor so the LED current is **between 15 and 20 mA**,
+    and check the resistor's power stays well inside a ¼ W (250 mW) rating.
+  controls:
+    - {name: R, label: Series resistor, min: 100, max: 1000, step: 10, value: 220, unit: Ω}
+  readouts:
+    - {label: LED current, expr: "(9 - 2) / R * 1000", unit: mA, min: 0, max: 40}
+    - {label: Resistor power, expr: "((9 - 2) / R) ** 2 * R * 1000", unit: mW, min: 0, max: 250}
+  target:
+    - {readout: 0, min: 15, max: 20}
+    - {readout: 1, max: 150}
+  explain: |
+    $R = (V_s - V_f)/I$: 350–470 Ω gives 15–20 mA. In practice you'd fit the standard 390 Ω (17.9 mA, about 125 mW).

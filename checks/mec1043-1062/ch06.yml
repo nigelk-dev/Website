@@ -76,3 +76,12 @@
     - text: The gas doesn't need power
     - text: P is always high
     - text: Ladder logic ignores repeated inputs
+
+- type: timing
+  q: |
+    The machine Y follows toggle switch A, and the cooling fan Z runs on for **3 minutes** after the machine is switched off.
+    Each step is 1 minute. Draw Y and Z.
+  steps: 16
+  inputs: {A: "0111110000011000"}
+  answer: {Y: "0111110000011000", Z: "0111111110011111"}
+  step_label: "1 min per step"

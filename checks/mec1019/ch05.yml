@@ -79,3 +79,18 @@
     - text: "`analogWrite` has its own delay built in"
     - text: Delays aren't allowed with analogue pins
     - text: It does need one, or the LED won't light
+
+- type: tune
+  q: |
+    The pot (5 kΩ, across 5 V) feeds the three-band sketch: red for 0–2 V, green above 2 to 3.5 V, blue above 3.5 V.
+    Turn the knob so that **only the green LED** is lit.
+  controls:
+    - {name: R2, label: Wiper position (R2), min: 0, max: 5, step: 0.1, value: 0.5, unit: kΩ}
+  readouts:
+    - {label: Wiper voltage, expr: "R2", unit: V, min: 0, max: 5}
+    - {label: Red, kind: lamp, expr: "R2", between: [-1, 2]}
+    - {label: Green, kind: lamp, expr: "R2", between: [2, 3.5]}
+    - {label: Blue, kind: lamp, expr: "R2", between: [3.5, 6]}
+  target:
+    - {readout: 2, on: true}
+  explain: With 1 mA through the track, $V_{out} = 1\text{ mA} \times R_2$, so 2.1–3.5 kΩ puts it in the green band.

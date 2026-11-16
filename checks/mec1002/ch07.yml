@@ -101,3 +101,15 @@
       correct: true
     - text: $\dfrac{A}{R}\cos(\omega t)$, leading by 90°
     - text: $AR\sin(\omega t)$
+
+- type: graph
+  q: |
+    The reactances of a 100 mH inductor and a 10 µF capacitor are plotted against frequency. Move the cursor to the frequency where
+    they are **equal**.
+  x: {min: 20, max: 400, label: "frequency (Hz)"}
+  y: {min: 0, max: 250, label: "reactance (Ω)"}
+  curves:
+    - {expr: "2 * pi * x * 0.1", label: "X_L"}
+    - {expr: "1 / (2 * pi * x * 10e-6)", label: "X_C"}
+  answer: {x: 159.2, tol: 6, start: 300}
+  explain: $X_L = X_C$ at $f_0 = 1/(2\pi\sqrt{LC}) \approx 159$ Hz, the resonant frequency.

@@ -106,3 +106,33 @@
   solution: |
     P_mech = (π/30) × {n} × {=e / 100 * V * I * 30 / (pi * n)} N·m = {=e / 100 * V * I} W; P_in = {V} × {I} = {=V * I} W;
     η = {=e / 100 * V * I} / {=V * I} = **{=e} %**
+
+- type: graph
+  q: |
+    A motor has a no-load speed of 6000 rpm and a stall torque of 100 mN·m. Its output power is plotted against torque.
+    Move the cursor to the torque that gives the **maximum output power**.
+  x: {min: 0, max: 100, label: "torque (mN·m)"}
+  y: {min: 0, max: 40, label: "power (W)"}
+  curves:
+    - {expr: "pi / 30 * 6000 * (1 - x / 100) * x / 1000", label: "output power (W)"}
+  answer: {x: 50, tol: 2, start: 15}
+  explain: Maximum power is at half the stall torque (and half the no-load speed), here 50 mN·m and about 15.7 W.
+
+- type: tune
+  q: |
+    Raising the supply voltage moves the speed–torque line up, parallel to itself. Set the voltage so the motor runs at
+    **4000 rpm (±100) with a 40 mN·m load** ($K_s$ = 400 rpm/V, gradient 30 rpm per mN·m).
+  controls:
+    - {name: V, label: Supply voltage, min: 6, max: 24, step: 0.5, value: 9, unit: V}
+  readouts:
+    - {label: Speed at 40 mN·m, expr: "400 * V - 30 * 40", unit: rpm, min: 0, max: 10000, sig: 4}
+  target:
+    - {readout: 0, min: 3900, max: 4100}
+  view:
+    kind: plot
+    x: {min: 0, max: 100, label: "torque (mN·m)"}
+    y: {min: 0, max: 10000, label: "speed (rpm)"}
+    curves:
+      - {expr: "400 * V - 30 * x", label: "speed–torque line"}
+    points:
+      - {x: "40", y: "400 * V - 30 * 40", label: "load"}

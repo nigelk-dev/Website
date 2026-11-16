@@ -95,3 +95,13 @@
     - text: Short-circuit test of the supply
     - text: Insulation resistance (megger) test
       why: That checks insulation, not the circuit parameters.
+
+- type: graph
+  q: |
+    The speed–torque curve of a 4-pole, 50 Hz induction motor is plotted. Move the cursor to the **pull-out (breakdown) torque**.
+  x: {min: 0, max: 1499, label: "speed (rpm)"}
+  y: {min: 0, max: 320, label: "torque (N·m)"}
+  curves:
+    - {expr: "2 * 300 / ((1500 - x) / 1500 / 0.2 + 0.2 / ((1500 - x) / 1500))", label: "motor torque"}
+  answer: {x: 1200, tol: 25, start: 300}
+  explain: The pull-out torque is the peak of the curve (300 N·m at 20 % slip, 1200 rpm). To its right is the stable running region.

@@ -73,3 +73,29 @@
     - text: A light switch
     - text: A doorbell
     - text: A fuse
+
+- type: graph
+  q: |
+    With $R_1 = 2.172\,R_2$, the pin voltage is plotted against the RES voltage, and the sketch switches to the battery when the pin
+    falls below **2.5 V** (dashed). Move the cursor to the **RES voltage** at which it switches.
+  x: {min: 0, max: 16, label: "RES voltage (V)"}
+  y: {min: 0, max: 5.5, label: "pin voltage (V)"}
+  curves:
+    - {expr: "x / 3.172", label: "pin voltage"}
+    - {expr: "2.5 + 0 * x", label: "threshold"}
+  answer: {x: 7.93, tol: 0.25, start: 13}
+  explain: $V_{RES} = 2.5 \times (1 + 2.172) \approx 7.9$ V.
+
+- type: tune
+  q: |
+    With hysteresis the sketch switches to the battery below 2.3 V and back to the RES only above 2.7 V. Set the pin voltage to a
+    value where the load **stays on whichever source it already had**.
+  controls:
+    - {name: v, label: Pin voltage, min: 0, max: 5, step: 0.05, value: 3.5, unit: V}
+  readouts:
+    - {label: Switches to battery, kind: lamp, expr: "v", between: [-1, 2.2999]}
+    - {label: Dead band, no change, kind: lamp, expr: "v", between: [2.2999, 2.7]}
+    - {label: Switches back to RES, kind: lamp, expr: "v", between: [2.7, 6]}
+  target:
+    - {readout: 1, on: true}
+  explain: Between 2.3 and 2.7 V `loop()` does nothing, so small wobbles in the RES voltage no longer make the relays chatter.

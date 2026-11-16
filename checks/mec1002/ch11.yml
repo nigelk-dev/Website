@@ -91,3 +91,16 @@
   unit: kW
   solution: |
     P = √3 × {V} × {I} × {pf} = **{=sqrt(3) * V * I * pf / 1000} kW**
+
+- type: graph
+  q: |
+    The three phase voltages of a 50 Hz supply are plotted over one cycle (20 ms), with $V_Y$ lagging $V_R$ by 120°. Move the cursor
+    to the time when **$V_Y$ is at its positive peak**.
+  x: {min: 0, max: 20, label: "time (ms)"}
+  y: {min: -400, max: 400, label: "voltage (V)"}
+  curves:
+    - {expr: "325 * sind(18 * x)", label: "V_R"}
+    - {expr: "325 * sind(18 * x - 120)", label: "V_Y"}
+    - {expr: "325 * sind(18 * x + 120)", label: "V_B"}
+  answer: {x: 11.67, tol: 0.4, start: 3}
+  explain: $V_R$ peaks at 5 ms (90°). $V_Y$ lags by 120°, a third of a cycle (6.67 ms), so it peaks at 11.67 ms.

@@ -86,3 +86,18 @@
       correct: true
     - text: Set the analogue pin with `pinMode(A0, OUTPUT)`
       why: An analogue input must stay an input.
+
+- type: tune
+  q: |
+    The RES can reach **15.86 V**. Choose $R_1$ and $R_2$ so the Arduino sees **between 4.5 and 5 V** at that maximum, while the divider
+    draws **under 1 mA** (to waste little energy).
+  controls:
+    - {name: R1, label: R1 (top), min: 1, max: 50, step: 1, value: 10, unit: kΩ}
+    - {name: R2, label: R2 (bottom), min: 1, max: 50, step: 1, value: 10, unit: kΩ}
+  readouts:
+    - {label: Pin voltage at 15.86 V, expr: "15.86 * R2 / (R1 + R2)", unit: V, min: 0, max: 16}
+    - {label: Divider current, expr: "15.86 / (R1 + R2)", unit: mA, min: 0, max: 8}
+  target:
+    - {readout: 0, min: 4.5, max: 5}
+    - {readout: 1, max: 1}
+  explain: $R_1 = 2.172\,R_2$; for example 22 kΩ and 10 kΩ give 4.96 V at 0.5 mA.

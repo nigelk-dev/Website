@@ -92,3 +92,14 @@
     - text: Free transfer machines have no defective parts
     - text: The buffers repair the faults
     - text: The cycle time is shorter
+
+- type: graph
+  q: |
+    An indexing machine has $t$ = 6 s, $T$ = 30 s, $x$ = 0.01 and $m$ = 1. Move the cursor to the number of workheads at which the
+    machine is down **half** the time.
+  x: {min: 1, max: 60, label: "workheads n", step: 1}
+  y: {min: 0, max: 100, label: "downtime (%)"}
+  curves:
+    - {expr: "100 * 0.01 * x / (6 / 30 + 0.01 * x)", label: "downtime %"}
+  answer: {x: 20, tol: 1, start: 50}
+  explain: $mxn = t/T$ gives 50 %, so $n = t/(Tmx) = 6/(30 \times 0.01) = 20$.

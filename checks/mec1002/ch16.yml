@@ -81,3 +81,14 @@
     - text: From the shaded part towards the unshaded part
     - text: Either way, depending on how it is started
       why: That is true of a plain single-winding motor, but the shading ring fixes the direction.
+
+- type: tune
+  q: A centrifugal pump needs 10 kW at full speed. Slow it down until it needs **no more than half** that power.
+  controls:
+    - {name: k, label: Speed, min: 50, max: 100, step: 1, value: 100, unit: "% of full"}
+  readouts:
+    - {label: Power, expr: "10 * (k / 100) ** 3", unit: kW, min: 0, max: 10}
+    - {label: Torque, expr: "100 * (k / 100) ** 2", unit: "% of full", min: 0, max: 100}
+  target:
+    - {readout: 0, min: 0, max: 5}
+  explain: Power ∝ N³, so about 79 % speed halves the power. That's why variable-speed drives save so much energy on pumps and fans.

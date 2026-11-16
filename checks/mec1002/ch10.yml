@@ -101,3 +101,14 @@
       why: Copper losses are in the windings, not the core.
     - text: To make the core lighter
     - text: To increase the turns ratio
+
+- type: tune
+  q: Choose the turns of a transformer fed at **230 V** so that it gives **12 V (±0.3)** on the secondary.
+  controls:
+    - {name: N1, label: Primary turns, min: 100, max: 2000, step: 50, value: 500, unit: ""}
+    - {name: N2, label: Secondary turns, min: 10, max: 200, step: 2, value: 100, unit: ""}
+  readouts:
+    - {label: Secondary voltage, expr: "230 * N2 / N1", unit: V, min: 0, max: 60}
+    - {label: Turns ratio N1/N2, expr: "N1 / N2", unit: "", min: 0, max: 40}
+  target:
+    - {readout: 0, min: 11.7, max: 12.3}

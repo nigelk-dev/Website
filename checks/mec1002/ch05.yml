@@ -117,3 +117,13 @@
     - text: For high speed and high power at good efficiency
       why: That is where BLDC motors shine.
     - text: Whenever the motor must run for a long time
+
+- type: tune
+  q: Set the PWM duty cycle so a motor on a **12 V** supply sees an average of **7.2 V (±0.2)**.
+  controls:
+    - {name: D, label: Duty cycle, min: 0, max: 100, step: 1, value: 25, unit: "%"}
+  readouts:
+    - {label: Average voltage, expr: "D / 100 * 12", unit: V, min: 0, max: 12}
+  target:
+    - {readout: 0, min: 7, max: 7.4}
+  view: {kind: pwm, duty: "D / 100", vmax: "12", ymax: 12}

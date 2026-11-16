@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <script>
 // Interactive knowledge checks (markup written by scripts/checks.py).
 // Each .kc-q holds its question as normal page content plus a JSON block
@@ -75,9 +76,11 @@
     var qs = Array.prototype.slice.call(quiz.querySelectorAll('.kc-q'));
     var solved = {};
     var bar = el('div', 'kc-scorebar');
-    var label = el('span', 'kc-score');
+    bar.appendChild(el('span', 'kc-title', 'Knowledge check · ' + qs.length + ' questions'));
+    var stat = el('span', 'kc-stat'), num = el('b'), label = el('span', 'kc-score');
+    stat.appendChild(num); stat.appendChild(label);
     var meter = el('span', 'kc-meter'); var fill = el('span'); meter.appendChild(fill);
-    bar.appendChild(label); bar.appendChild(meter);
+    bar.appendChild(stat); bar.appendChild(meter);
     bar.appendChild(button('Start again', 'kc-reset', function () {
       qs.forEach(function (q) { q._reset(); });
       solved = {}; update();
@@ -85,12 +88,18 @@
     quiz.insertBefore(bar, quiz.firstChild);
     function update() {
       var n = Object.keys(solved).length;
-      label.textContent = n + ' of ' + qs.length + ' answered correctly' + (n === qs.length ? ' — well done!' : '');
+      num.textContent = n + ' / ' + qs.length;
+      label.textContent = n === qs.length ? 'All correct · well done' : 'Answered correctly';
       fill.style.width = (100 * n / qs.length) + '%';
       bar.classList.toggle('kc-complete', n === qs.length);
     }
     qs.forEach(function (q, i) {
       var data = JSON.parse(q.querySelector('.kc-data').textContent);
+      var head = el('div', 'kc-head');
+      head.appendChild(el('span', 'kc-num', 'Q' + (i + 1)));
+      head.appendChild(el('span', 'kc-kind', KINDS[data.type] || ''));
+      head.appendChild(el('span', 'kc-badge', '✓ Correct'));
+      q.insertBefore(head, q.firstChild);
       var api = {
         solve: function () { solved[i] = true; q.classList.add('kc-solved'); update(); },
       };
@@ -105,6 +114,9 @@
     var controls = el('div', 'kc-controls');
     var fb = el('div', 'kc-feedback'); fb.setAttribute('aria-live', 'polite');
     q.appendChild(controls); q.appendChild(fb);
+    // explanations, hints and solutions read best after the feedback line
+    Array.prototype.slice.call(q.querySelectorAll(':scope > .kc-hint, :scope > .kc-solution, :scope > .kc-explain, :scope > .kc-answer'))
+      .forEach(function (e) { q.appendChild(e); });
     function say(text, kind) {
       fb.textContent = text;
       fb.className = 'kc-feedback' + (kind ? ' kc-' + kind : '');
@@ -114,6 +126,9 @@
   function explainOf(q) { return q.querySelector(':scope > .kc-explain'); }
 
   var TYPES = {};
+  var KINDS = { mcq: 'Multiple choice', multi: 'Select all that apply', numeric: 'Calculation', cloze: 'Fill in the blanks',
+                order: 'Put in order', reveal: 'Explain', boolean: 'Boolean expression', tune: 'Hands-on',
+                graph: 'Read the graph', truthtable: 'Truth table', timing: 'Timing diagram' };
 
   // Multiple choice (one answer) and select-all-that-apply
   function choice(multi) {
@@ -228,8 +243,10 @@
       inp.setAttribute('aria-label', p.label || 'Answer');
       inp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') check(); });
       inp.addEventListener('input', function () { inp.classList.remove('kc-in-ok', 'kc-in-no'); });
-      wrap.appendChild(inp);
-      if (p.unit) wrap.appendChild(el('span', 'kc-unit', p.unit));
+      var field = el('span', 'kc-field');
+      field.appendChild(inp);
+      if (p.unit) field.appendChild(el('span', 'kc-unit', p.unit));
+      wrap.appendChild(field);
       row.appendChild(wrap);
       return inp;
     });
@@ -480,11 +497,12 @@
     var wrap = el('label', 'kc-part kc-bool');
     wrap.appendChild(el('span', 'kc-part-label', (data.output || 'Output') + ' ='));
     var inp = el('input', 'kc-input kc-bool-input');
+    var field = el('span', 'kc-field'); wrap.appendChild(field);
     inp.type = 'text'; inp.autocomplete = 'off'; inp.spellcheck = false;
     inp.setAttribute('aria-label', 'Boolean expression');
     inp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') check(); });
     inp.addEventListener('input', function () { inp.classList.remove('kc-in-ok', 'kc-in-no'); });
-    wrap.appendChild(inp); row.appendChild(wrap);
+    field.appendChild(inp); row.appendChild(wrap);
     q.insertBefore(row, f.controls);
     q.insertBefore(el('p', 'kc-note', 'Write . for AND, + for OR, and ! (or a trailing \') for NOT, e.g. !A.B + C or A\'B + C.'), f.controls);
     function check() {
@@ -527,6 +545,420 @@
       done = false; q.classList.remove('kc-done', 'kc-solved'); inp.value = '';
       inp.classList.remove('kc-in-ok', 'kc-in-no', 'kc-in-shown'); checkBtn.disabled = false; solBtn.hidden = true;
       show(sol, false); show(explainOf(q), false); f.say('');
+    };
+  };
+
+  // ---- hands-on types, drawn like the course applets
+  var NS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  var COLORS = ['var(--c1)', 'var(--c2)', 'var(--c3)', 'var(--c4)'];
+  // A plot frame: axes, grid, ticks and labels, plus a layer to redraw into.
+  function plotFrame(xs, ys, h) {
+    var W = 440, H = h || 250, L = 50, R = 14, T = 12, B = 36;
+    var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img' });
+    function X(v) { return L + (v - xs.min) / (xs.max - xs.min) * (W - L - R); }
+    function Y(v) { return H - B - (v - ys.min) / (ys.max - ys.min) * (H - T - B); }
+    var grid = svgEl('g', {}, svg);
+    for (var k = 0; k <= 4; k++) {
+      var xv = xs.min + (xs.max - xs.min) * k / 4, yv = ys.min + (ys.max - ys.min) * k / 4;
+      svgEl('line', { x1: X(xv), x2: X(xv), y1: T, y2: H - B, style: 'stroke: var(--track); stroke-width: 1' }, grid);
+      svgEl('line', { x1: L, x2: W - R, y1: Y(yv), y2: Y(yv), style: 'stroke: var(--track); stroke-width: 1' }, grid);
+      svgEl('text', { x: X(xv), y: H - B + 14, 'text-anchor': 'middle' }, grid).textContent = fmt(xv, 3);
+      svgEl('text', { x: L - 6, y: Y(yv) + 4, 'text-anchor': 'end' }, grid).textContent = fmt(yv, 3);
+    }
+    svgEl('line', { x1: L, x2: W - R, y1: H - B, y2: H - B, style: 'stroke: var(--muted); stroke-width: 1.2' }, grid);
+    svgEl('line', { x1: L, x2: L, y1: T, y2: H - B, style: 'stroke: var(--muted); stroke-width: 1.2' }, grid);
+    if (xs.label) svgEl('text', { x: (L + W - R) / 2, y: H - 4, 'text-anchor': 'middle' }, grid).textContent = xs.label;
+    if (ys.label) svgEl('text', { x: 12, y: (T + H - B) / 2, 'text-anchor': 'middle', transform: 'rotate(-90 12 ' + (T + H - B) / 2 + ')' }, grid).textContent = ys.label;
+    var layer = svgEl('g', {}, svg);
+    return { svg: svg, X: X, Y: Y, layer: layer, W: W, H: H, L: L, R: R, T: T, B: B, xs: xs, ys: ys };
+  }
+  function drawCurve(pf, fn, color, width) {
+    var d = '', n = 160, pen = false;
+    for (var k = 0; k <= n; k++) {
+      var x = pf.xs.min + (pf.xs.max - pf.xs.min) * k / n, y;
+      try { y = fn(x); } catch (e) { y = NaN; }
+      if (!isFinite(y)) { pen = false; continue; }
+      y = Math.max(pf.ys.min - (pf.ys.max - pf.ys.min), Math.min(pf.ys.max + (pf.ys.max - pf.ys.min), y));
+      d += (pen ? 'L' : 'M') + pf.X(x).toFixed(1) + ' ' + pf.Y(y).toFixed(1);
+      pen = true;
+    }
+    svgEl('path', { d: d, fill: 'none', style: 'stroke: ' + color + '; stroke-width: ' + (width || 2.2) + '; stroke-linejoin: round' }, pf.layer);
+  }
+  function clipSvg(pf) {
+    var id = 'kc-clip-' + Math.random().toString(36).slice(2);
+    var cp = svgEl('clipPath', { id: id }, svgEl('defs', {}, pf.svg));
+    svgEl('rect', { x: pf.L, y: pf.T, width: pf.W - pf.L - pf.R, height: pf.H - pf.T - pf.B }, cp);
+    pf.layer.setAttribute('clip-path', 'url(#' + id + ')');
+  }
+  function legend(items) {
+    var lg = el('div', 'kc-legend');
+    items.forEach(function (it, k) {
+      if (!it.label) return;
+      var s = el('span'); var i = el('i'); i.style.background = COLORS[k % COLORS.length];
+      s.appendChild(i); s.appendChild(document.createTextNode(it.label)); lg.appendChild(s);
+    });
+    return lg;
+  }
+  function solvedOnce(q, f, api, extra) {
+    q.classList.add('kc-done'); api.solve(); show(explainOf(q)); show(q.querySelector(':scope > .kc-solution'));
+    f.say('✓ ' + (extra || 'Correct.'), 'ok');
+  }
+
+  // Set the controls (sliders, switches) to hit a target on live gauges or lamps
+  TYPES.tune = function (q, data, api) {
+    var f = frame(q), done = false, env = {}, inputs = {};
+    var lab = el('div', 'kc-lab' + (data.view ? '' : ' kc-noview'));
+    var card = el('div', 'kc-card'), sws = el('div', 'kc-switches');
+    var names = data.controls.map(function (c) { return c.name; });
+    data.controls.forEach(function (c) {
+      env[c.name] = c.value;
+      if (c.kind === 'switch') {
+        var b = el('button', 'kc-sw', c.label); b.type = 'button';
+        b.setAttribute('aria-pressed', c.value ? 'true' : 'false');
+        b.addEventListener('click', function () {
+          if (done) return;
+          env[c.name] = env[c.name] ? 0 : 1; b.setAttribute('aria-pressed', env[c.name] ? 'true' : 'false'); update();
+        });
+        sws.appendChild(b); inputs[c.name] = b;
+      } else {
+        var w = el('div', 'kc-ctl'), lbl = el('label', 'kc-ctl-label'), out = el('output');
+        lbl.appendChild(document.createTextNode(c.label)); lbl.appendChild(out);
+        var r = el('input'); r.type = 'range'; r.min = c.min; r.max = c.max; r.step = c.step; r.value = c.value;
+        r.setAttribute('aria-label', c.label);
+        r.addEventListener('input', function () { if (done) { r.value = env[c.name]; return; } env[c.name] = +r.value; update(); });
+        w.appendChild(lbl); w.appendChild(r); card.appendChild(w);
+        inputs[c.name] = r; r._out = out; r._c = c;
+      }
+    });
+    if (sws.children.length) card.insertBefore(sws, card.firstChild);
+    var lamps = el('div', 'kc-lamps'), shows = [];
+    data.readouts.forEach(function (r, k) {
+      if (r.kind === 'lamp') {
+        var fn = r.between ? (function (rr) { return function () { var v = evaluate(rr.expr, env); return v > rr.between[0] && v <= rr.between[1]; }; })(r)
+                           : boolParse(r.logic, names).fn, lp = el('span', 'kc-lamp', r.label);
+        lamps.appendChild(lp); shows.push({ lamp: lp, fn: fn });
+      } else {
+        var g = el('div', 'kc-gauge'), lbl = el('div', 'kc-ctl-label'), out = el('output');
+        lbl.appendChild(document.createTextNode(r.label)); lbl.appendChild(out);
+        var bar = el('div', 'kc-gauge-bar'), fill = el('div', 'kc-gauge-fill');
+        var tg = data.target.filter(function (t) { return t.readout === k && !('on' in t); })[0];
+        if (tg) {
+          var lo = 'min' in tg ? tg.min : r.min, hi = 'max' in tg ? tg.max : r.max;
+          var band = el('div', 'kc-gauge-band');
+          band.style.left = (100 * (lo - r.min) / (r.max - r.min)) + '%';
+          band.style.width = (100 * (hi - lo) / (r.max - r.min)) + '%';
+          bar.appendChild(band);
+        }
+        bar.appendChild(fill); g.appendChild(lbl); g.appendChild(bar);
+        if (tg) g.appendChild(el('span', 'kc-gauge-note', 'target: ' + ('min' in tg && 'max' in tg ? fmt(tg.min, 4) + ' – ' + fmt(tg.max, 4)
+          : 'min' in tg ? '≥ ' + fmt(tg.min, 4) : '≤ ' + fmt(tg.max, 4)) + (r.unit ? ' ' + r.unit : '')));
+        card.appendChild(g);
+        shows.push({ gauge: g, out: out, fill: fill, r: r, tg: tg });
+      }
+    });
+    if (lamps.children.length) card.appendChild(lamps);
+    lab.appendChild(card);
+    var view = null, pf = null, vbox = null, info = null;
+    if (data.view) {
+      vbox = el('div', 'kc-view'); lab.appendChild(vbox);
+      if (data.view.kind === 'plot') {
+        pf = plotFrame(data.view.x, data.view.y); clipSvg(pf); vbox.appendChild(pf.svg);
+        vbox.appendChild(legend(data.view.curves));
+      } else if (data.view.kind === 'pwm') {
+        pf = plotFrame({ min: 0, max: 3, label: data.view.xlabel || 'time (periods)' }, { min: 0, max: (data.view.ymax || 5) * 1.2, label: 'volts' }, 190);
+        clipSvg(pf); vbox.appendChild(pf.svg);
+        info = el('div', 'kc-readout'); vbox.appendChild(info);
+      }
+    }
+    q.insertBefore(lab, f.controls);
+    function values() {
+      return shows.map(function (s) {
+        if (s.lamp) { var e = {}; names.forEach(function (n) { e[n] = !!env[n]; }); return s.fn(e); }
+        return evaluate(s.r.expr, env);
+      });
+    }
+    function hits(vals) {
+      return data.target.every(function (t) {
+        var v = vals[t.readout];
+        if ('on' in t) return !!v === !!t.on;
+        return !(('min' in t && v < t.min - 1e-9) || ('max' in t && v > t.max + 1e-9));
+      });
+    }
+    function draw() {
+      if (!pf) return;
+      while (pf.layer.firstChild) pf.layer.removeChild(pf.layer.firstChild);
+      if (data.view.kind === 'plot') {
+        data.view.curves.forEach(function (c, k) {
+          drawCurve(pf, function (x) { var e = Object.assign({}, env, { x: x }); return evaluate(c.expr, e); }, COLORS[k % COLORS.length]);
+        });
+        (data.view.points || []).forEach(function (p) {
+          var px = evaluate(p.x, env), py = evaluate(p.y, env);
+          svgEl('circle', { cx: pf.X(px), cy: pf.Y(py), r: 4.5, style: 'fill: var(--accent); stroke: var(--editor); stroke-width: 1.5' }, pf.layer);
+          if (p.label) svgEl('text', { x: pf.X(px) + 7, y: pf.Y(py) - 7 }, pf.layer).textContent = p.label;
+        });
+      } else {
+        var d = Math.max(0, Math.min(1, evaluate(data.view.duty, env))), vm = evaluate(data.view.vmax || '5', env), path = '';
+        for (var c = 0; c < 3; c++) {
+          path += (c ? 'L' : 'M') + pf.X(c) + ' ' + pf.Y(d > 0 ? vm : 0) + 'L' + pf.X(c + d) + ' ' + pf.Y(d > 0 ? vm : 0) +
+                  'L' + pf.X(c + d) + ' ' + pf.Y(0) + 'L' + pf.X(c + 1) + ' ' + pf.Y(0) + (c < 2 ? 'L' + pf.X(c + 1) + ' ' + pf.Y(vm) : '');
+        }
+        svgEl('path', { d: path, fill: 'none', style: 'stroke: var(--c1); stroke-width: 2.2' }, pf.layer);
+        svgEl('line', { x1: pf.X(0), x2: pf.X(3), y1: pf.Y(d * vm), y2: pf.Y(d * vm), style: 'stroke: var(--c2); stroke-width: 2; stroke-dasharray: 6 4' }, pf.layer);
+        info.textContent = 'duty ' + fmt(100 * d, 3) + ' %  ·  average ' + fmt(d * vm, 3) + ' V (dashed)';
+      }
+    }
+    function update(silent) {
+      Object.keys(inputs).forEach(function (n) {
+        var r = inputs[n]; if (r._out) r._out.textContent = fmt(+r.value, 4) + (r._c.unit ? ' ' + r._c.unit : '');
+      });
+      var vals = values();
+      shows.forEach(function (s, k) {
+        if (s.lamp) { s.lamp.classList.toggle('kc-on', !!vals[k]); return; }
+        var v = vals[k], r = s.r;
+        s.out.textContent = (isFinite(v) ? fmt(v, r.sig || 3) : '—') + (r.unit ? ' ' + r.unit : '');
+        s.fill.style.width = Math.max(0, Math.min(100, 100 * (v - r.min) / (r.max - r.min))) + '%';
+        var ok = !s.tg || !(('min' in s.tg && v < s.tg.min - 1e-9) || ('max' in s.tg && v > s.tg.max + 1e-9));
+        s.gauge.classList.toggle('kc-hit', !!s.tg && ok);
+      });
+      draw();
+      if (!silent && !done) f.say('');
+    }
+    function check() {
+      if (done) return;
+      var vals = values();
+      if (hits(vals)) { done = true; checkBtn.disabled = true; solBtn.hidden = true; solvedOnce(q, f, api, 'Target reached.'); return; }
+      var miss = data.target.filter(function (t) {
+        var v = vals[t.readout];
+        if ('on' in t) return !!v !== !!t.on;
+        return ('min' in t && v < t.min - 1e-9) || ('max' in t && v > t.max + 1e-9);
+      }).map(function (t) {
+        var r = data.readouts[t.readout], v = vals[t.readout];
+        if ('on' in t) return r.label + ' should be ' + (t.on ? 'on' : 'off');
+        var want = 'min' in t && 'max' in t ? 'between ' + fmt(t.min, 4) + ' and ' + fmt(t.max, 4) : 'min' in t ? 'at least ' + fmt(t.min, 4) : 'at most ' + fmt(t.max, 4);
+        return r.label + ' is ' + fmt(v, r.sig || 3) + (r.unit ? ' ' + r.unit : '') + '; it needs to be ' + want;
+      });
+      f.say('✗ Not yet: ' + miss.join('; ') + '.', 'no');
+      solBtn.hidden = !data.solve;
+    }
+    function setAll(vals) {
+      Object.keys(vals).forEach(function (n) {
+        env[n] = vals[n]; var r = inputs[n];
+        if (r.type === 'range') r.value = vals[n]; else r.setAttribute('aria-pressed', vals[n] ? 'true' : 'false');
+      });
+      update(true);
+    }
+    var checkBtn = button('Check', 'kc-primary', check);
+    var solBtn = button('Show a solution', '', function () {
+      setAll(data.solve); done = true; q.classList.add('kc-done'); checkBtn.disabled = true; solBtn.hidden = true;
+      show(explainOf(q)); show(q.querySelector(':scope > .kc-solution')); f.say('The controls are set to one setting that works.', 'info');
+    });
+    solBtn.hidden = true;
+    f.controls.appendChild(checkBtn); f.controls.appendChild(solBtn);
+    var start = {}; data.controls.forEach(function (c) { start[c.name] = c.value; });
+    update(true);
+    q._reset = function () {
+      done = false; q.classList.remove('kc-done', 'kc-solved'); checkBtn.disabled = false; solBtn.hidden = true;
+      setAll(start); show(explainOf(q), false); show(q.querySelector(':scope > .kc-solution'), false); f.say('');
+    };
+    q.kcSet = function (vals) { setAll(vals); };  // for the site's automated test
+  };
+
+  // Drag a cursor along a plotted curve to the requested point
+  TYPES.graph = function (q, data, api) {
+    var f = frame(q), done = false, x = 'start' in data.answer ? data.answer.start : (data.x.min + data.x.max) / 2;
+    var vbox = el('div', 'kc-view'), pf = plotFrame(data.x, data.y); clipSvg(pf);
+    vbox.appendChild(pf.svg);
+    data.curves.forEach(function (c, k) {
+      drawCurve(pf, function (xx) { return evaluate(c.expr, { x: xx }); }, COLORS[k % COLORS.length]);
+    });
+    var cur = svgEl('g', {}, pf.svg);
+    vbox.appendChild(legend(data.curves));
+    var info = el('div', 'kc-readout'); vbox.appendChild(info);
+    var ctl = el('div', 'kc-ctl'), lbl = el('label', 'kc-ctl-label', 'Cursor'), out = el('output'); lbl.appendChild(out);
+    var r = el('input'); r.type = 'range'; r.min = data.x.min; r.max = data.x.max;
+    r.step = data.x.step || (data.x.max - data.x.min) / 400; r.value = x; r.setAttribute('aria-label', 'Cursor position');
+    ctl.appendChild(lbl); ctl.appendChild(r);
+    var lab = el('div', 'kc-lab kc-noview'); lab.appendChild(vbox); lab.appendChild(ctl);
+    q.insertBefore(lab, f.controls);
+    q.insertBefore(el('p', 'kc-note', 'Drag on the graph (or use the slider) to move the cursor, then press Check.'), f.controls);
+    function draw() {
+      while (cur.firstChild) cur.removeChild(cur.firstChild);
+      svgEl('line', { x1: pf.X(x), x2: pf.X(x), y1: pf.T, y2: pf.H - pf.B, style: 'stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 3' }, cur);
+      var parts = [(data.x.label || 'x') + ' = ' + fmt(x, 3)];
+      data.curves.forEach(function (c, k) {
+        var y = evaluate(c.expr, { x: x });
+        if (isFinite(y) && y >= data.y.min && y <= data.y.max)
+          svgEl('circle', { cx: pf.X(x), cy: pf.Y(y), r: 4.5, style: 'fill: ' + COLORS[k % COLORS.length] + '; stroke: var(--editor); stroke-width: 1.5' }, cur);
+        parts.push((c.label || 'y') + ' = ' + (isFinite(y) ? fmt(y, 3) : '—'));
+      });
+      info.textContent = parts.join('  ·  ');
+      out.textContent = fmt(x, 3);
+    }
+    function moveTo(v) {
+      if (done) return;
+      x = Math.max(data.x.min, Math.min(data.x.max, v)); r.value = x; draw(); f.say('');
+    }
+    r.addEventListener('input', function () { moveTo(+r.value); });
+    function fromEvent(ev) {
+      var b = pf.svg.getBoundingClientRect(), sx = (ev.clientX - b.left) / b.width * pf.W;
+      return data.x.min + (sx - pf.L) / (pf.W - pf.L - pf.R) * (data.x.max - data.x.min);
+    }
+    var dragging = false;
+    pf.svg.addEventListener('pointerdown', function (ev) { dragging = true; pf.svg.setPointerCapture(ev.pointerId); moveTo(fromEvent(ev)); });
+    pf.svg.addEventListener('pointermove', function (ev) { if (dragging) moveTo(fromEvent(ev)); });
+    pf.svg.addEventListener('pointerup', function () { dragging = false; });
+    var checkBtn = button('Check', 'kc-primary', function () {
+      if (done) return;
+      if (Math.abs(x - data.answer.x) <= data.answer.tol) { done = true; checkBtn.disabled = true; solBtn.hidden = true; solvedOnce(q, f, api); }
+      else { f.say('✗ Not there yet: the cursor is at ' + fmt(x, 3) + '. Look again at what the question asks for.', 'no'); solBtn.hidden = false; }
+    });
+    var solBtn = button('Show answer', '', function () {
+      x = data.answer.x; r.value = x; draw(); done = true; q.classList.add('kc-done'); checkBtn.disabled = true; solBtn.hidden = true;
+      show(explainOf(q)); show(q.querySelector(':scope > .kc-solution')); f.say('The cursor is at the answer.', 'info');
+    });
+    solBtn.hidden = true;
+    f.controls.appendChild(checkBtn); f.controls.appendChild(solBtn);
+    var x0 = x; draw();
+    q._reset = function () {
+      done = false; dragging = false; q.classList.remove('kc-done', 'kc-solved'); checkBtn.disabled = false; solBtn.hidden = true;
+      x = x0; r.value = x; draw(); show(explainOf(q), false); show(q.querySelector(':scope > .kc-solution'), false); f.say('');
+    };
+    q.kcSet = function (v) { moveTo(v); };
+  };
+
+  // Click to fill the output column(s) of a truth table
+  TYPES.truthtable = function (q, data, api) {
+    var f = frame(q), done = false, n = data.vars.length, outs = Object.keys(data.outputs);
+    var fns = outs.map(function (o) { return boolParse(data.outputs[o], data.vars).fn; });
+    var dc = data.dont_care ? boolParse(data.dont_care, data.vars).fn : function () { return false; };
+    var wrap = el('div', 'kc-scroll'), tbl = el('table', 'kc-tt'), thead = el('tr'), cells = [];
+    data.vars.forEach(function (v) { thead.appendChild(el('th', '', v)); });
+    outs.forEach(function (o, j) { thead.appendChild(el('th', j ? '' : 'kc-out', o)); });
+    tbl.appendChild(thead);
+    for (var k = 0; k < (1 << n); k++) {
+      var tr = el('tr'), env = {};
+      data.vars.forEach(function (v, i) { env[v] = !!(k >> (n - 1 - i) & 1); tr.appendChild(el('td', '', env[v] ? '1' : '0')); });
+      var isDc = dc(env);
+      outs.forEach(function (o, j) {
+        var td = el('td', j ? '' : 'kc-out');
+        if (isDc) { td.textContent = 'X'; td.title = "don't care"; }
+        else {
+          td.className += ' kc-cell'; td.textContent = '·'; td.tabIndex = 0; td.setAttribute('role', 'button');
+          td._want = fns[j](env) ? '1' : '0';
+          var flip = (function (cell) { return function () {
+            if (done) return;
+            cell.textContent = cell.textContent === '1' ? '0' : '1'; cell.classList.remove('kc-in-ok', 'kc-in-no'); f.say('');
+          }; })(td);
+          td.addEventListener('click', flip);
+          td.addEventListener('keydown', (function (fl) { return function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); fl(); } }; })(flip));
+          cells.push(td);
+        }
+        tr.appendChild(td);
+      });
+      tbl.appendChild(tr);
+    }
+    wrap.appendChild(tbl);
+    q.insertBefore(wrap, f.controls);
+    q.insertBefore(el('p', 'kc-note', 'Click an output cell to switch it between 1 and 0.'), f.controls);
+    var checkBtn = button('Check', 'kc-primary', function () {
+      if (done) return;
+      var empty = cells.filter(function (c) { return c.textContent === '·'; }).length;
+      if (empty) { f.say('Fill in every output cell first (' + empty + ' left).', 'info'); return; }
+      var bad = 0;
+      cells.forEach(function (c) { var ok = c.textContent === c._want; c.classList.toggle('kc-in-ok', ok); c.classList.toggle('kc-in-no', !ok); if (!ok) bad++; });
+      if (!bad) { done = true; checkBtn.disabled = true; solBtn.hidden = true; solvedOnce(q, f, api, 'Every row is right.'); }
+      else { f.say('✗ ' + bad + ' cell' + (bad > 1 ? 's are' : ' is') + ' wrong (marked). Fix and check again.', 'no'); solBtn.hidden = false; }
+    });
+    var solBtn = button('Show answer', '', function () {
+      cells.forEach(function (c) { if (c.textContent !== c._want) { c.textContent = c._want; c.classList.add('kc-in-shown'); } c.classList.remove('kc-in-no'); });
+      done = true; q.classList.add('kc-done'); checkBtn.disabled = true; solBtn.hidden = true;
+      show(explainOf(q)); show(q.querySelector(':scope > .kc-solution')); f.say('The correct outputs are filled in.', 'info');
+    });
+    solBtn.hidden = true;
+    f.controls.appendChild(checkBtn); f.controls.appendChild(solBtn);
+    q._reset = function () {
+      done = false; q.classList.remove('kc-done', 'kc-solved'); checkBtn.disabled = false; solBtn.hidden = true;
+      cells.forEach(function (c) { c.textContent = '·'; c.classList.remove('kc-in-ok', 'kc-in-no', 'kc-in-shown'); });
+      show(explainOf(q), false); show(q.querySelector(':scope > .kc-solution'), false); f.say('');
+    };
+  };
+
+  // Paint the output waveform(s) of a timing (response) diagram
+  TYPES.timing = function (q, data, api) {
+    var f = frame(q), done = false, n = data.steps, grid = el('div', 'kc-wave'), rows = {}, painting = null;
+    function row(name, wave, paint) {
+      grid.appendChild(el('span', 'kc-wave-name', name));
+      var r = el('div', 'kc-wave-row' + (paint ? ' kc-paint' : '')), cells = [];
+      for (var k = 0; k < n; k++) {
+        var c = el('span'); if (!paint && wave.charAt(k) === '1') c.className = 'kc-hi';
+        r.appendChild(c); cells.push(c);
+      }
+      if (paint) {
+        r.setAttribute('aria-label', name + ' (click or drag to draw)');
+        cells.forEach(function (c) {
+          c.addEventListener('pointerdown', function (ev) {
+            if (done) return; ev.preventDefault();
+            painting = !c.classList.contains('kc-hi'); set(c);
+          });
+          c.addEventListener('pointerenter', function () { if (painting !== null) set(c); });
+        });
+      }
+      grid.appendChild(r);
+      return { row: r, cells: cells };
+    }
+    function set(c) {
+      if (done) return;
+      c.classList.toggle('kc-hi', painting); c.classList.remove('kc-in-no');
+      Object.keys(rows).forEach(function (k) { rows[k].row.classList.remove('kc-good'); });
+      f.say('');
+    }
+    document.addEventListener('pointerup', function () { painting = null; });
+    Object.keys(data.inputs || {}).forEach(function (k) { row(k, data.inputs[k], false); });
+    Object.keys(data.answer).forEach(function (k) { rows[k] = row(k, '', true); });
+    var axis = el('div', 'kc-wave-axis');
+    axis.appendChild(el('span', '', '0')); axis.appendChild(el('span', '', data.step_label || ''));
+    axis.appendChild(el('span', '', String(n)));
+    grid.appendChild(axis);
+    var sc = el('div', 'kc-scroll'); sc.appendChild(grid);
+    q.insertBefore(sc, f.controls);
+    q.insertBefore(el('p', 'kc-note', 'Click or drag along the output row' + (Object.keys(rows).length > 1 ? 's' : '') + ' to draw it high or low.'), f.controls);
+    var checkBtn = button('Check', 'kc-primary', function () {
+      if (done) return;
+      var bad = 0;
+      Object.keys(rows).forEach(function (k) {
+        var want = data.answer[k], rb = 0;
+        rows[k].cells.forEach(function (c, i) {
+          var ok = c.classList.contains('kc-hi') === (want.charAt(i) === '1');
+          c.classList.toggle('kc-in-no', !ok); if (!ok) rb++;
+        });
+        rows[k].row.classList.toggle('kc-good', !rb); bad += rb;
+      });
+      if (!bad) { done = true; checkBtn.disabled = true; solBtn.hidden = true; solvedOnce(q, f, api, 'The waveform is right.'); }
+      else { f.say('✗ ' + bad + ' time step' + (bad > 1 ? 's are' : ' is') + ' wrong (marked red).', 'no'); solBtn.hidden = false; }
+    });
+    var solBtn = button('Show answer', '', function () {
+      Object.keys(rows).forEach(function (k) {
+        rows[k].cells.forEach(function (c, i) { c.classList.toggle('kc-hi', data.answer[k].charAt(i) === '1'); c.classList.remove('kc-in-no'); });
+        rows[k].row.classList.add('kc-good');
+      });
+      done = true; q.classList.add('kc-done'); checkBtn.disabled = true; solBtn.hidden = true;
+      show(explainOf(q)); show(q.querySelector(':scope > .kc-solution')); f.say('The correct waveform is drawn.', 'info');
+    });
+    solBtn.hidden = true;
+    f.controls.appendChild(checkBtn); f.controls.appendChild(solBtn);
+    q._reset = function () {
+      done = false; q.classList.remove('kc-done', 'kc-solved'); checkBtn.disabled = false; solBtn.hidden = true;
+      Object.keys(rows).forEach(function (k) { rows[k].row.classList.remove('kc-good'); rows[k].cells.forEach(function (c) { c.classList.remove('kc-hi', 'kc-in-no'); }); });
+      show(explainOf(q), false); show(q.querySelector(':scope > .kc-solution'), false); f.say('');
+    };
+    q.kcPaint = function () {  // for the site's automated test
+      Object.keys(rows).forEach(function (k) { rows[k].cells.forEach(function (c, i) { c.classList.toggle('kc-hi', data.answer[k].charAt(i) === '1'); }); });
     };
   };
 

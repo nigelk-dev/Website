@@ -47,7 +47,11 @@ Question types: multiple choice (`mcq`), select all that apply (`multi`),
 calculations with a tolerance, worked solution and random **New numbers**
 (`numeric`), fill in the blanks, typed or chosen from a list, also inside code
 (`cloze`), put in order (`order`), Boolean expressions checked by truth table
-(`boolean`), and explain-then-reveal (`reveal`). The format of each is
+(`boolean`), and explain-then-reveal (`reveal`). Hands-on types work like
+the course applets: set sliders and switches to hit a target on live gauges,
+lamps and plots (`tune`), drag a cursor along a graph (`graph`), click to fill
+a truth table (`truthtable`), and paint a timing diagram (`timing`). The
+checks are styled in the Applet Lab design. The format of each is
 described at the top of `scripts/checks.py`, and the existing files are good
 examples to copy.
 

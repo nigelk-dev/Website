@@ -79,3 +79,16 @@
     - text: The colour of the machine
     - text: That the interest rate is zero
     - text: That the old system can be fully recovered
+
+- type: tune
+  q: |
+    A €2.5 M system ($S$ = €0.7 M, $L$ = 35 %, $i$ = 9 %, $u$ = 0.2, $t$ = 6 %) must **pay back within 3 years**.
+    Adjust the saving per part and the annual volume until it does.
+  controls:
+    - {name: s, label: Saving per part, min: 2, max: 3.5, step: 0.05, value: 2.25, unit: €}
+    - {name: N, label: Parts per year, min: 400000, max: 700000, step: 10000, value: 550000, unit: ""}
+  readouts:
+    - {label: Payback period, expr: "2.5e6 / (N * s * 1.35 - 0.7e6 * 0.09 - 2.5e6 * (0.09 + 0.2 + 0.06))", unit: years, min: 0, max: 8}
+  target:
+    - {readout: 0, min: 0, max: 3}
+  explain: The payback falls quickly as $Ns$ rises, because the fixed costs are subtracted from the savings in the denominator.

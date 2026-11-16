@@ -92,3 +92,15 @@
     - text: Increasing the bowl's spring stiffness
       correct: true
     - text: Raising the track angle
+
+- type: tune
+  q: |
+    On a flat track ($\theta = 0$), set the vibration so the parts **just hop**: $A_n/g_n$ between 1 and 1.3, enough to hop but not
+    so much that they land erratically.
+  controls:
+    - {name: r, label: "a₀ω²/g", min: 0.5, max: 3, step: 0.05, value: 1.2, unit: ""}
+    - {name: psi, label: "Vibration angle Ψ", min: 5, max: 45, step: 1, value: 20, unit: °}
+  readouts:
+    - {label: "Aₙ/gₙ", expr: "r * sind(psi)", unit: "", min: 0, max: 2.2}
+  target:
+    - {readout: 0, min: 1, max: 1.3}

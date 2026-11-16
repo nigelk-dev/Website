@@ -76,3 +76,16 @@
 
 - type: cloze
   q: The PWM pins on the Uno are ~3, ~5, ~6, ~[[9]], ~10 and ~[[11]]. They run at about [[490]] Hz, except pins 5 and 6 at about 980 Hz.
+
+- type: tune
+  q: Adjust the on-time and off-time of a 5 V PWM signal to give a **75 % duty cycle** with a **10 ms period**.
+  controls:
+    - {name: on, label: On time, min: 0.5, max: 10, step: 0.5, value: 5, unit: ms}
+    - {name: off, label: Off time, min: 0.5, max: 10, step: 0.5, value: 5, unit: ms}
+  readouts:
+    - {label: Duty cycle, expr: "100 * on / (on + off)", unit: "%", min: 0, max: 100}
+    - {label: Period, expr: "on + off", unit: ms, min: 0, max: 20}
+  target:
+    - {readout: 0, min: 74.9, max: 75.1}
+    - {readout: 1, min: 9.9, max: 10.1}
+  view: {kind: pwm, duty: "on / (on + off)", vmax: "5", ymax: 5}

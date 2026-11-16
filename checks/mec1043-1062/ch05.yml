@@ -74,3 +74,21 @@
     - text: A is an output, not an input
     - text: Timers can only be started by outputs
     - text: A is wired normally closed
+
+- type: timing
+  q: |
+    Input X drives an **On-Delay Timer (TON)** with a 3 s preset. Each step is 1 s. Draw the timer output Q.
+  steps: 16
+  inputs: {X: "0011111110011110"}
+  answer: {Q: "0000011110000010"}
+  step_label: "1 s per step"
+  explain: Q goes high 3 s after X goes high and drops at once when X goes low. The second pulse lasts 4 s, so Q is high for only its last second.
+
+- type: timing
+  q: |
+    Draw the output P of the **latching rung** $P = (G + P).\overline{S}$ for the Go (G) and Stop (S) presses shown.
+  steps: 16
+  inputs: {G: "0100000001000000", S: "0000010000001000"}
+  answer: {P: "0111100001110000"}
+  step_label: "time →"
+  explain: Each press of G latches P on; it stays on after G is released until S is pressed.

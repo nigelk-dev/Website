@@ -115,3 +115,19 @@
   q: |
     A capacitor must supply $Q$ VAR at voltage $V$ and frequency $f$. Since $Q = V^2/X_C$, $X_C$ = [[V²/Q|V^2/Q|V*V/Q]],
     and with $X_C = 1/(2\pi f C)$ the capacitance is $C$ = [[Q/(2πfV²) ~ 2πfV²/Q ~ V²/(2πfQ)]].
+
+- type: tune
+  q: |
+    A 2 kW load at 230 V, 50 Hz has a power factor of 0.7 lagging. Choose the parallel capacitor that corrects it to **0.95 or
+    better without over-correcting** (the load must stay lagging).
+  controls:
+    - {name: C, label: Capacitor, min: 0, max: 200, step: 2, value: 20, unit: µF}
+  readouts:
+    - {label: Power factor, expr: "2000 / hypot(2000, 2000 * tand(acosd(0.7)) - 230 * 230 * 2 * pi * 50 * C * 1e-6)", unit: "", min: 0.6, max: 1}
+    - {label: Remaining reactive power Q, expr: "(2000 * tand(acosd(0.7)) - 230 * 230 * 2 * pi * 50 * C * 1e-6) / 1000", unit: kVAR, min: -1, max: 2.2}
+  target:
+    - {readout: 0, min: 0.95}
+    - {readout: 1, min: 0}
+  explain: |
+    The load needs $Q = P\tan\varphi = 2.04$ kVAR. A capacitor supplies $Q_C = V^2\,2\pi f C$. Too much capacitance overshoots
+    unity and the power factor falls again, now leading.

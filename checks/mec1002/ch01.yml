@@ -108,3 +108,17 @@
     - text: Power-station generators
       why: These are very large machines; permanent magnet DC motors are generally low-power.
   explain: Permanent magnet DC motors are simple and generally low-power, so they suit pumps, fans, robots, toys and electric cars.
+
+- type: tune
+  q: |
+    A coil sits in a changing magnetic field. Adjust the number of turns, the change in flux and the time it takes so that the
+    induced e.m.f. is **between 10 and 12 V**.
+  controls:
+    - {name: N, label: Turns N, min: 50, max: 500, step: 10, value: 100, unit: ""}
+    - {name: dp, label: Change in flux ΔΦ, min: 1, max: 10, step: 0.5, value: 2, unit: mWb}
+    - {name: dt, label: Time Δt, min: 0.05, max: 1, step: 0.05, value: 0.5, unit: s}
+  readouts:
+    - {label: "Induced e.m.f. |ε|", expr: "N * dp / 1000 / dt", unit: V, min: 0, max: 20}
+  target:
+    - {readout: 0, min: 10, max: 12}
+  explain: $|\varepsilon| = N\,\Delta\Phi/\Delta t$, so more turns, a bigger change in flux or a faster change all raise the e.m.f.

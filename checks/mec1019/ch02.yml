@@ -113,3 +113,28 @@
   tol: 1
   solution: |
     {r} × 5.0 / 1023.0 = **{=r * 5 / 1023} V**
+
+- type: tune
+  q: Set the `analogWrite` value so the LED's pin gives an average of **3 V (±0.05)**.
+  controls:
+    - {name: v, label: "analogWrite value", min: 0, max: 255, step: 1, value: 64, unit: ""}
+  readouts:
+    - {label: Average voltage, expr: "5 * v / 255", unit: V, min: 0, max: 5}
+  target:
+    - {readout: 0, min: 2.95, max: 3.05}
+  view: {kind: pwm, duty: "v / 255", vmax: "5", ymax: 5}
+  explain: value = 255/5 × 3 = 153. The pin is only ever 5 V or 0 V; the dashed line is the average.
+
+- type: tune
+  q: |
+    Design a voltage divider from a **12 V** battery whose output is **6 V (±0.2)** while drawing **about 60 mA (±5)**.
+  controls:
+    - {name: R1, label: R1 (top), min: 20, max: 400, step: 10, value: 300, unit: Ω}
+    - {name: R2, label: R2 (bottom), min: 20, max: 400, step: 10, value: 100, unit: Ω}
+  readouts:
+    - {label: V_out, expr: "12 * R2 / (R1 + R2)", unit: V, min: 0, max: 12}
+    - {label: Current, expr: "12 / (R1 + R2) * 1000", unit: mA, min: 0, max: 150}
+  target:
+    - {readout: 0, min: 5.8, max: 6.2}
+    - {readout: 1, min: 55, max: 65}
+  explain: The ratio sets $V_{out}$ (equal resistors halve the voltage); the total, $R_T = 12/0.06 = 200$ Ω, sets the current.

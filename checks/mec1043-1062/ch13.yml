@@ -74,3 +74,18 @@
     If a fault at any one station stops the whole machine and every operation must finish within a set time, the system is
     [[machine]] paced. If it indexes only when told to by feedback from the stations, it is [[operator]] paced. Adding storage
     [[buffers|buffer]] between stations gives a free transfer machine.
+
+- type: tune
+  q: |
+    Choose the number of stations and the driver speed of a Geneva indexing table so that the **index time is between 1.5 and 2 s**
+    and the **dwell time is at least 3 s**.
+  controls:
+    - {name: N, label: Stations, min: 3, max: 12, step: 1, value: 4, unit: ""}
+    - {name: n, label: Driver speed, min: 5, max: 30, step: 1, value: 20, unit: rpm}
+  readouts:
+    - {label: Index time, expr: "(180 - 360 / N) / 360 / n * 60", unit: s, min: 0, max: 6}
+    - {label: Dwell time, expr: "(180 + 360 / N) / 360 / n * 60", unit: s, min: 0, max: 12}
+  target:
+    - {readout: 0, min: 1.5, max: 2}
+    - {readout: 1, min: 3}
+  explain: More stations make the index a larger share of each revolution; a slower driver stretches both times.
