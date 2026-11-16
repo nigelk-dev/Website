@@ -17,6 +17,13 @@ the notes refer to it:
   chapter's "Suggested interactive applets" table is replaced by the built
   applets from its `applets/chNN.html` page, one live frame per applet.
 
+On the site every course is shown the same way: numbered chapters grouped
+into parts (in the sidebar and in each page's "Chapter N · Part X" subtitle),
+with no course overview pages and no mention of lectures. Each applet is
+embedded in the notes after the section it illustrates; `scripts/notes.py`
+holds where each one goes (`MEC1002_PLACES`, `MEC1043_1062_PLACES`). The old
+course overview addresses redirect to each course's first chapter.
+
 All three repositories are private, so the publish workflow needs a repository
 secret `NOTES_TOKEN`: a fine-grained personal access token with read-only
 *Contents* access to all three. Without it the course pages are built empty.
