@@ -5,6 +5,22 @@ toc: false
 
 Welcome. This site hosts teaching materials and projects.
 
+```{=html}
+<figure class="wordcloud" data-src="assets/wordcloud.json" aria-label="Word cloud of the most used terms in the course notes">
+  <div class="wc-stage"></div>
+  <div class="wc-tip" role="status" hidden></div>
+  <figcaption>
+    <span>The most used terms across the course notes, linked when they share a paragraph. Hover to trace connections, drag to move, click to open the page that uses a term most.</span>
+    <span class="wc-legend">
+      <a class="wc-key wc-mec1019" href="mec1019/index.html">MEC1019</a>
+      <a class="wc-key wc-mec1002" href="mec1002/index.html">MEC1002</a>
+      <a class="wc-key wc-mec1043-1062" href="mec1043-1062/index.html">MEC1043/1062</a>
+    </span>
+  </figcaption>
+</figure>
+<script src="assets/wordcloud.js" defer></script>
+```
+
 ## Courses
 
 [**MEC1019: Sustainable Processes**](mec1019/index.qmd)

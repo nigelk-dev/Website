@@ -69,6 +69,11 @@ jobs:
         if: hashFiles('_mec1043_1062/**') != ''
         run: scripts/fetch-mec1043-1062.sh _mec1043_1062 && rm -rf _mec1043_1062
 
+      # Count the most used terms in the notes for the home page word cloud.
+      # Without the notes (no NOTES_TOKEN) the committed snapshot is kept.
+      - name: Build home page word cloud
+        run: python3 scripts/wordcloud.py
+
       - uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Render
