@@ -24,9 +24,7 @@
 
 /* Home page word cloud (assets/wordcloud.js) */
 .wordcloud {
-  --wc-mec1019: #14855c;
-  --wc-mec1002: #c4570e;
-  --wc-mec1043-1062: #2565c7;
+  --wc-ink: #1f6fb8;
   --wc-line: rgba(90, 100, 115, .32);
   position: relative;
   margin: 1.25rem 0 2rem;
@@ -38,9 +36,7 @@
   overflow: hidden;
 }
 body.quarto-dark .wordcloud {
-  --wc-mec1019: #52d19f;
-  --wc-mec1002: #f5a25d;
-  --wc-mec1043-1062: #7fb0ff;
+  --wc-ink: #8cc0f5;
   --wc-line: rgba(200, 210, 225, .26);
 }
 .wordcloud .wc-stage {
@@ -78,9 +74,11 @@ body.quarto-dark .wordcloud {
 }
 .wordcloud .wc-word:hover, .wordcloud .wc-word:focus-visible { text-decoration: underline; }
 .wordcloud.dragging .wc-word { cursor: grabbing; }
-.wordcloud .wc-mec1019 { color: var(--wc-mec1019); }
-.wordcloud .wc-mec1002 { color: var(--wc-mec1002); }
-.wordcloud .wc-mec1043-1062 { color: var(--wc-mec1043-1062); }
+/* one colour for every word; smaller (less used) words are paler */
+.wordcloud .wc-word {
+  color: var(--wc-ink);
+  color: color-mix(in srgb, var(--wc-ink) calc(60% + var(--k) * 40%), var(--bs-body-bg));
+}
 .wordcloud.focused .wc-word:not(.on):not(.near) { opacity: .22; }
 .wordcloud.focused .wc-links line:not(.on) { opacity: .25; }
 .wordcloud .wc-links line.on { stroke: var(--bs-body-color); opacity: .7; }
@@ -98,18 +96,9 @@ body.quarto-dark .wordcloud {
 }
 .wordcloud .wc-tip span { display: block; opacity: .8; }
 .wordcloud figcaption {
-  display: flex; flex-wrap: wrap; gap: .5rem 1rem;
-  align-items: center; justify-content: space-between;
   padding: .55rem .85rem;
   font-size: .85rem;
   border-top: 1px solid var(--bs-border-color);
   background: rgba(127, 127, 127, .06);
 }
-.wordcloud figcaption > span:first-child { flex: 1 1 22rem; opacity: .85; }
-.wordcloud .wc-legend { display: flex; flex-wrap: wrap; gap: .35rem .9rem; }
-.wordcloud .wc-key { font-weight: 600; text-decoration: none; white-space: nowrap; }
-.wordcloud .wc-key::before {
-  content: ""; display: inline-block;
-  width: .65em; height: .65em; margin-right: .35em;
-  border-radius: 50%; background: currentColor;
-}
+.wordcloud figcaption { opacity: .85; }

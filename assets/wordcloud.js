@@ -27,11 +27,10 @@
     var minN = Math.min.apply(null, data.nodes.map(function (n) { return n.n; }));
     var nodes = data.nodes.map(function (d, i) {
       var a = document.createElement('a');
-      a.className = 'wc-word wc-' + d.c;
+      a.className = 'wc-word';
       a.href = d.url;
       a.textContent = d.t;
-      var course = data.courses[d.c].name;
-      a.setAttribute('aria-label', d.t + ': ' + d.page + ' (' + course + ')');
+      a.setAttribute('aria-label', d.t + ': ' + d.page);
       var k = (Math.sqrt(d.n) - Math.sqrt(minN)) / (Math.sqrt(maxN) - Math.sqrt(minN));
       a.style.setProperty('--k', k.toFixed(3));
       stage.appendChild(a);
@@ -187,18 +186,12 @@
         L.el.classList.add('on');
         (L.a === n ? L.b : L.a).el.classList.add('near');
       });
-      var also = n.d.also.map(function (c) { return data.courses[c].name; });
       tip.innerHTML = '';
       var b = document.createElement('strong'); b.textContent = n.d.t; tip.appendChild(b);
       tip.appendChild(document.createTextNode(' · ' + n.d.n + ' mentions'));
       var p = document.createElement('span');
-      p.textContent = 'Most used in ' + data.courses[n.d.c].name + ': ' + n.d.page;
+      p.textContent = 'Most used in ' + n.d.page;
       tip.appendChild(p);
-      if (also.length) {
-        var q = document.createElement('span');
-        q.textContent = 'Also in ' + also.join(', ');
-        tip.appendChild(q);
-      }
       tip.hidden = false;
     }
     nodes.forEach(function (n) {
