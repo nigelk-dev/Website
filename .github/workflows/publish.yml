@@ -1,10 +1,14 @@
 name: Publish site
 
 on:
+  # Rebuild on every push. Only pushes to main are deployed; other branches
+  # are built so a broken render shows up before it is merged.
   push:
-    branches: [main]
   workflow_dispatch:
-  # Rebuild daily so new files in the MEC1019 repo appear on the site
+  # A course-notes repository can trigger a rebuild with a repository_dispatch
+  # event of type "notes-updated"; the daily run catches anything else.
+  repository_dispatch:
+    types: [notes-updated]
   schedule:
     - cron: "17 3 * * *"
 
@@ -14,7 +18,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -25,19 +29,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The three course repositories are private: reading them needs a token
+      # saved as the repository secret NOTES_TOKEN (a fine-grained token with
+      # read-only Contents access to all three). Without one, the course pages
+      # are built empty rather than failing the whole site.
       - name: Check out MEC1019 materials
+        if: env.NOTES_TOKEN != ''
         uses: actions/checkout@v4
         with:
           repository: nigelk-dev/MEC1019_Sustainable_Processes
+          token: ${{ secrets.NOTES_TOKEN }}
           path: _mec1019
 
       - name: Copy MEC1019 materials into the site
+        if: hashFiles('_mec1019/**') != ''
         run: scripts/fetch-mec1019.sh _mec1019 && rm -rf _mec1019
 
-      # ElectricalPowerNotes is private: reading it needs a token saved as the
-      # repository secret NOTES_TOKEN (a fine-grained token with read access to
-      # its contents). Without one, the MEC1002 pages are left out of the build.
-      - name: Check out MEC1002 notes
+      - name: Check out MEC1002 notes (ElectricalPowerNotes)
         if: env.NOTES_TOKEN != ''
         uses: actions/checkout@v4
         with:
@@ -49,6 +57,18 @@ jobs:
         if: hashFiles('_mec1002/**') != ''
         run: scripts/fetch-mec1002.sh _mec1002 && rm -rf _mec1002
 
+      - name: Check out MM453 notes (ManufacturingAutomationNotes)
+        if: env.NOTES_TOKEN != ''
+        uses: actions/checkout@v4
+        with:
+          repository: nigelk-dev/ManufacturingAutomationNotes
+          token: ${{ secrets.NOTES_TOKEN }}
+          path: _mm453
+
+      - name: Copy MM453 notes into the site
+        if: hashFiles('_mm453/**') != ''
+        run: scripts/fetch-mm453.sh _mm453 && rm -rf _mm453
+
       - uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Render
@@ -59,6 +79,7 @@ jobs:
           path: _site
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment:

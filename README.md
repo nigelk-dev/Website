@@ -4,24 +4,29 @@ Personal website built with [Quarto](https://quarto.org) and published to
 GitHub Pages at <https://nigelkent.ie>.
 
 Course notes are pulled from their own repositories at build time (on every
-push to `main`, daily, or on manual run) and turned into one page per Markdown
+push, daily, or on manual run; only `main` is deployed) and turned into one page per Markdown
 file by `scripts/notes.py`, with every interactive applet embedded live where
 the notes refer to it:
 
 - **MEC1019: Sustainable Processes** from
-  [nigelk-dev/MEC1019_Sustainable_Processes](https://github.com/nigelk-dev/MEC1019_Sustainable_Processes)
-  (`scripts/fetch-mec1019.sh`)
+  nigelk-dev/MEC1019_Sustainable_Processes (`scripts/fetch-mec1019.sh`)
 - **MEC1002: Electrical Power and Electromechanical Systems** from
-  nigelk-dev/ElectricalPowerNotes (`scripts/fetch-mec1002.sh`). That repository
-  is private, so the publish workflow needs a repository secret `NOTES_TOKEN`:
-  a fine-grained personal access token with read-only *Contents* access to
-  ElectricalPowerNotes. Without it the MEC1002 pages are built empty.
+  nigelk-dev/ElectricalPowerNotes (`scripts/fetch-mec1002.sh`)
+- **MM453: Manufacturing Automation for Assembly and Inspection** from
+  nigelk-dev/ManufacturingAutomationNotes (`scripts/fetch-mm453.sh`). Each
+  chapter's "Suggested interactive applets" table is replaced by the built
+  applets from its `applets/chNN.html` page, one live frame per applet.
+
+All three repositories are private, so the publish workflow needs a repository
+secret `NOTES_TOKEN`: a fine-grained personal access token with read-only
+*Contents* access to all three. Without it the course pages are built empty.
 
 ## Local preview
 
 ```bash
 scripts/fetch-mec1019.sh   # copy MEC1019 notes + applets into mec1019/notes/
 scripts/fetch-mec1002.sh   # copy MEC1002 notes + interactives into mec1002/notes/
+scripts/fetch-mm453.sh     # copy MM453 notes + Applet Lab into mm453/notes/
 quarto preview
 ```
 

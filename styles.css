@@ -17,6 +17,7 @@
   padding: .5rem .85rem;
   font-size: .9rem;
   border-top: 1px solid var(--bs-border-color);
-  background: var(--bs-tertiary-bg, rgba(127, 127, 127, .06));
+  /* translucent grey works over both the light and the dark theme */
+  background: rgba(127, 127, 127, .08);
 }
 .applet > p a.applet-open { white-space: nowrap; }

@@ -1,0 +1,54 @@
+---
+title: "MM453: Manufacturing Automation for Assembly and Inspection"
+subtitle: "Course notes and the MM453 Applet Lab"
+---
+
+Notes from the two MM453 slide packs, grouped by topic rather than lecture:
+logic control and ladder logic, PLCs, industrial communications, automated
+assembly and parts feeding, and the performance and cost of assembly systems.
+Every chapter ends with its interactive applets (77 in all), running in the
+page. The Statistical Process Control part of the module is not included.
+
+## Part I · Logic Control Fundamentals
+
+1. [Introduction to Industrial Logic Control](notes/01-introduction-to-industrial-logic-control.md)
+2. [Boolean Algebra and Truth Tables](notes/02-boolean-algebra-and-truth-tables.md)
+3. [Karnaugh Maps and Problem Breakdown](notes/03-karnaugh-maps-and-problem-breakdown.md)
+4. [Logic Diagrams and Response Diagrams](notes/04-logic-diagrams-and-response-diagrams.md)
+5. [Ladder Logic and Timers](notes/05-ladder-logic-and-timers.md)
+6. [Design Case Studies: Cooling System and Gas Furnace](notes/06-design-case-studies.md)
+
+## Part II · Programmable Logic Controllers
+
+7. [PLC Fundamentals and Hardware](notes/07-plc-fundamentals-and-hardware.md)
+8. [PLC Programming: Sequence Control, Logic Control and Staged Programs](notes/08-plc-programming-sequence-and-logic-control.md)
+
+## Part III · Industrial Communications
+
+9. [SCADA and the ISA-95 Model](notes/09-scada-and-isa-95.md)
+10. [Network Topology, Transmission Media and Components](notes/10-network-topology-media-and-components.md)
+11. [Network Protocols: OSI, TCP/IP and Data Integrity](notes/11-network-protocols-osi-tcpip-data-integrity.md)
+12. [Fieldbus, Profibus and Industrial Ethernet](notes/12-fieldbus-profibus-and-industrial-ethernet.md)
+
+## Part IV · Automated Assembly and Parts Feeding
+
+13. [Automatic Assembly and Transfer Systems](notes/13-automatic-assembly-and-transfer-systems.md)
+14. [Vibratory Bowl Feeders](notes/14-vibratory-bowl-feeders.md)
+15. [Non-Vibratory Hopper Feeders and Magazines](notes/15-non-vibratory-feeders-and-magazines.md)
+16. [Part Orientation](notes/16-part-orientation.md)
+17. [Feedtracks and Escapements](notes/17-feedtracks-and-escapements.md)
+
+## Part V · Performance and Economics
+
+18. [Performance of Assembly Systems](notes/18-performance-of-assembly-systems.md)
+19. [Cost Justification for Automation](notes/19-cost-justification-for-automation.md)
+
+## Applet Lab
+
+All 77 applets are also on one page, chapter by chapter:
+[open the MM453 Applet Lab ↗](notes/applets/index.html){target="_blank"}.
+
+::: {.callout-note}
+The notes and applets are pulled automatically from the
+ManufacturingAutomationNotes repository each time the site is built.
+:::

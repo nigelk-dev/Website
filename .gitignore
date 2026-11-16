@@ -8,3 +8,8 @@
 
 # Pulled from nigelk-dev/ElectricalPowerNotes at build time
 /mec1002/notes/
+
+# Pulled from nigelk-dev/ManufacturingAutomationNotes at build time
+/mm453/notes/
+
+**/*.quarto_ipynb
