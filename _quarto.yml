@@ -24,7 +24,7 @@ website:
       contents:
         - href: index.qmd
           text: Home
-        - section: "Sustainable Processes"
+        - section: "Introduction to microcontrollers"
           href: mec1019/index.qmd
           contents:
             - href: mec1019/index.qmd
@@ -49,7 +49,7 @@ website:
                   text: "Finished circuit"
             - href: mec1019/applets.qmd
               text: Interactive applets
-        - section: "Electrical Power"
+        - section: "Electrical drives"
           href: mec1002/index.qmd
           contents:
             - href: mec1002/index.qmd
