@@ -13,149 +13,142 @@ website:
   site-url: https://nigelkent.ie
   repo-url: https://github.com/nigelk-dev/Website
   navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - href: mec1019/index.qmd
-        text: "MEC1019"
-      - href: mec1002/index.qmd
-        text: "MEC1002"
-      - href: mec1043-1062/index.qmd
-        text: "MEC1043/1062"
-    right:
-      - icon: github
-        href: https://github.com/nigelk-dev
-        aria-label: GitHub
+    # The site title links to the About page; the course links are in the sidebar
+    logo-href: /about.qmd
   sidebar:
-    - id: mec1019
-      title: "MEC1019"
+    - id: site
       style: docked
+      collapse-level: 1
       contents:
-        - href: mec1019/index.qmd
-          text: Course overview
-        - section: "Microcontroller notes"
+        - href: index.qmd
+          text: Home
+        - section: "MEC1019"
+          href: mec1019/index.qmd
           contents:
-            - href: mec1019/notes/01-arduino-basics-and-leds.md
-              text: "1 · Arduino basics and LEDs"
-            - href: mec1019/notes/02-analogwrite-dividers-and-potentiometers.md
-              text: "2 · analogWrite, dividers, pots"
-            - href: mec1019/notes/03-loops-pwm-and-alarms.md
-              text: "3 · Loops, PWM and alarms"
-            - href: mec1019/notes/05-voltage-dividers.md
-              text: "5 · Voltage dividers"
-            - href: mec1019/notes/06-potentiometers.md
-              text: "6 · Potentiometers"
-            - href: mec1019/notes/07-relays.md
-              text: "7 · Relays"
-            - href: mec1019/notes/08-res-battery-switchover.md
-              text: "8 · RES with battery backup"
-            - href: mec1019/notes/finished-circuit.md
-              text: "Finished circuit"
-        - href: mec1019/applets.qmd
-          text: Interactive applets
-    - id: mec1002
-      title: "MEC1002"
-      style: docked
-      contents:
-        - href: mec1002/index.qmd
-          text: Course overview
-        - section: "Lectures"
+            - href: mec1019/index.qmd
+              text: Course overview
+            - section: "Microcontroller notes"
+              contents:
+                - href: mec1019/notes/01-arduino-basics-and-leds.md
+                  text: "1 · Arduino basics and LEDs"
+                - href: mec1019/notes/02-analogwrite-dividers-and-potentiometers.md
+                  text: "2 · analogWrite, dividers, pots"
+                - href: mec1019/notes/03-loops-pwm-and-alarms.md
+                  text: "3 · Loops, PWM and alarms"
+                - href: mec1019/notes/05-voltage-dividers.md
+                  text: "5 · Voltage dividers"
+                - href: mec1019/notes/06-potentiometers.md
+                  text: "6 · Potentiometers"
+                - href: mec1019/notes/07-relays.md
+                  text: "7 · Relays"
+                - href: mec1019/notes/08-res-battery-switchover.md
+                  text: "8 · RES with battery backup"
+                - href: mec1019/notes/finished-circuit.md
+                  text: "Finished circuit"
+            - href: mec1019/applets.qmd
+              text: Interactive applets
+        - section: "MEC1002"
+          href: mec1002/index.qmd
           contents:
-            - href: mec1002/notes/Lec1/Lec1.md
-              text: "1 · Electromagnetic Induction"
-            - href: mec1002/notes/Lec2/Lec2.md
-              text: "2 · DC Motor Characteristics"
-            - href: mec1002/notes/Lec3/Lec3.md
-              text: "3 · DC Motor Start-up"
-            - href: mec1002/notes/Lec4/Lec4.md
-              text: "4 · DC Motor Connections"
-            - href: mec1002/notes/Lec5/Lec5.md
-              text: "5 · DC Motor Control"
-            - href: mec1002/notes/Lec6/Lec6.md
-              text: "6 · Servo Systems"
-            - href: mec1002/notes/Lec7/Lec7.md
-              text: "7 · Capacitors and Inductors"
-            - href: mec1002/notes/Lec8/Lec8.md
-              text: "8 · Phasors and Impedance"
-            - href: mec1002/notes/Lec9/Lec9.md
-              text: "9 · AC Power"
-            - href: mec1002/notes/Lec10/Lec10.md
-              text: "10 · Transformers"
-            - href: mec1002/notes/Lec11/Lec11.md
-              text: "11 · Three-Phase Power"
-            - href: mec1002/notes/Lec12/Lec12.md
-              text: "12 · Star–Delta Circuits"
-            - href: mec1002/notes/Lec13/Lec13.md
-              text: "13 · Induction Motors"
-            - href: mec1002/notes/Lec14/Lec14.md
-              text: "14 · Equivalent Circuit"
-            - href: mec1002/notes/Lec15/Lec15.md
-              text: "15 · Speed–Torque Curve"
-            - href: mec1002/notes/Lec16/Lec16.md
-              text: "16 · Single-Phase Motors"
-            - href: mec1002/notes/Lec17/Lec17.md
-              text: "17 · Synchronous Motors"
-            - href: mec1002/notes/Lec18/Lec18.md
-              text: "18 · Motor Starting"
-    - id: mec1043-1062
-      title: "MEC1043/1062"
-      style: docked
-      contents:
-        - href: mec1043-1062/index.qmd
-          text: Course overview
-        - section: "Logic control"
+            - href: mec1002/index.qmd
+              text: Course overview
+            - section: "Lectures"
+              contents:
+                - href: mec1002/notes/Lec1/Lec1.md
+                  text: "1 · Electromagnetic Induction"
+                - href: mec1002/notes/Lec2/Lec2.md
+                  text: "2 · DC Motor Characteristics"
+                - href: mec1002/notes/Lec3/Lec3.md
+                  text: "3 · DC Motor Start-up"
+                - href: mec1002/notes/Lec4/Lec4.md
+                  text: "4 · DC Motor Connections"
+                - href: mec1002/notes/Lec5/Lec5.md
+                  text: "5 · DC Motor Control"
+                - href: mec1002/notes/Lec6/Lec6.md
+                  text: "6 · Servo Systems"
+                - href: mec1002/notes/Lec7/Lec7.md
+                  text: "7 · Capacitors and Inductors"
+                - href: mec1002/notes/Lec8/Lec8.md
+                  text: "8 · Phasors and Impedance"
+                - href: mec1002/notes/Lec9/Lec9.md
+                  text: "9 · AC Power"
+                - href: mec1002/notes/Lec10/Lec10.md
+                  text: "10 · Transformers"
+                - href: mec1002/notes/Lec11/Lec11.md
+                  text: "11 · Three-Phase Power"
+                - href: mec1002/notes/Lec12/Lec12.md
+                  text: "12 · Star–Delta Circuits"
+                - href: mec1002/notes/Lec13/Lec13.md
+                  text: "13 · Induction Motors"
+                - href: mec1002/notes/Lec14/Lec14.md
+                  text: "14 · Equivalent Circuit"
+                - href: mec1002/notes/Lec15/Lec15.md
+                  text: "15 · Speed–Torque Curve"
+                - href: mec1002/notes/Lec16/Lec16.md
+                  text: "16 · Single-Phase Motors"
+                - href: mec1002/notes/Lec17/Lec17.md
+                  text: "17 · Synchronous Motors"
+                - href: mec1002/notes/Lec18/Lec18.md
+                  text: "18 · Motor Starting"
+        - section: "MEC1043/1062"
+          href: mec1043-1062/index.qmd
           contents:
-            - href: mec1043-1062/notes/01-introduction-to-industrial-logic-control.md
-              text: "1 · Introduction to Logic Control"
-            - href: mec1043-1062/notes/02-boolean-algebra-and-truth-tables.md
-              text: "2 · Boolean Algebra, Truth Tables"
-            - href: mec1043-1062/notes/03-karnaugh-maps-and-problem-breakdown.md
-              text: "3 · Karnaugh Maps"
-            - href: mec1043-1062/notes/04-logic-diagrams-and-response-diagrams.md
-              text: "4 · Logic and Response Diagrams"
-            - href: mec1043-1062/notes/05-ladder-logic-and-timers.md
-              text: "5 · Ladder Logic and Timers"
-            - href: mec1043-1062/notes/06-design-case-studies.md
-              text: "6 · Design Case Studies"
-        - section: "PLCs"
-          contents:
-            - href: mec1043-1062/notes/07-plc-fundamentals-and-hardware.md
-              text: "7 · PLC Fundamentals"
-            - href: mec1043-1062/notes/08-plc-programming-sequence-and-logic-control.md
-              text: "8 · PLC Programming"
-        - section: "Communications"
-          contents:
-            - href: mec1043-1062/notes/09-scada-and-isa-95.md
-              text: "9 · SCADA and ISA-95"
-            - href: mec1043-1062/notes/10-network-topology-media-and-components.md
-              text: "10 · Networks"
-            - href: mec1043-1062/notes/11-network-protocols-osi-tcpip-data-integrity.md
-              text: "11 · Network Protocols"
-            - href: mec1043-1062/notes/12-fieldbus-profibus-and-industrial-ethernet.md
-              text: "12 · Fieldbus and Industrial Ethernet"
-        - section: "Assembly and feeding"
-          contents:
-            - href: mec1043-1062/notes/13-automatic-assembly-and-transfer-systems.md
-              text: "13 · Assembly and Transfer"
-            - href: mec1043-1062/notes/14-vibratory-bowl-feeders.md
-              text: "14 · Vibratory Bowl Feeders"
-            - href: mec1043-1062/notes/15-non-vibratory-feeders-and-magazines.md
-              text: "15 · Hopper Feeders, Magazines"
-            - href: mec1043-1062/notes/16-part-orientation.md
-              text: "16 · Part Orientation"
-            - href: mec1043-1062/notes/17-feedtracks-and-escapements.md
-              text: "17 · Feedtracks and Escapements"
-        - section: "Performance and economics"
-          contents:
-            - href: mec1043-1062/notes/18-performance-of-assembly-systems.md
-              text: "18 · Assembly System Performance"
-            - href: mec1043-1062/notes/19-cost-justification-for-automation.md
-              text: "19 · Cost Justification"
+            - href: mec1043-1062/index.qmd
+              text: Course overview
+            - section: "Logic control"
+              contents:
+                - href: mec1043-1062/notes/01-introduction-to-industrial-logic-control.md
+                  text: "1 · Introduction to Logic Control"
+                - href: mec1043-1062/notes/02-boolean-algebra-and-truth-tables.md
+                  text: "2 · Boolean Algebra, Truth Tables"
+                - href: mec1043-1062/notes/03-karnaugh-maps-and-problem-breakdown.md
+                  text: "3 · Karnaugh Maps"
+                - href: mec1043-1062/notes/04-logic-diagrams-and-response-diagrams.md
+                  text: "4 · Logic and Response Diagrams"
+                - href: mec1043-1062/notes/05-ladder-logic-and-timers.md
+                  text: "5 · Ladder Logic and Timers"
+                - href: mec1043-1062/notes/06-design-case-studies.md
+                  text: "6 · Design Case Studies"
+            - section: "PLCs"
+              contents:
+                - href: mec1043-1062/notes/07-plc-fundamentals-and-hardware.md
+                  text: "7 · PLC Fundamentals"
+                - href: mec1043-1062/notes/08-plc-programming-sequence-and-logic-control.md
+                  text: "8 · PLC Programming"
+            - section: "Communications"
+              contents:
+                - href: mec1043-1062/notes/09-scada-and-isa-95.md
+                  text: "9 · SCADA and ISA-95"
+                - href: mec1043-1062/notes/10-network-topology-media-and-components.md
+                  text: "10 · Networks"
+                - href: mec1043-1062/notes/11-network-protocols-osi-tcpip-data-integrity.md
+                  text: "11 · Network Protocols"
+                - href: mec1043-1062/notes/12-fieldbus-profibus-and-industrial-ethernet.md
+                  text: "12 · Fieldbus and Industrial Ethernet"
+            - section: "Assembly and feeding"
+              contents:
+                - href: mec1043-1062/notes/13-automatic-assembly-and-transfer-systems.md
+                  text: "13 · Assembly and Transfer"
+                - href: mec1043-1062/notes/14-vibratory-bowl-feeders.md
+                  text: "14 · Vibratory Bowl Feeders"
+                - href: mec1043-1062/notes/15-non-vibratory-feeders-and-magazines.md
+                  text: "15 · Hopper Feeders, Magazines"
+                - href: mec1043-1062/notes/16-part-orientation.md
+                  text: "16 · Part Orientation"
+                - href: mec1043-1062/notes/17-feedtracks-and-escapements.md
+                  text: "17 · Feedtracks and Escapements"
+            - section: "Performance and economics"
+              contents:
+                - href: mec1043-1062/notes/18-performance-of-assembly-systems.md
+                  text: "18 · Assembly System Performance"
+                - href: mec1043-1062/notes/19-cost-justification-for-automation.md
+                  text: "19 · Cost Justification"
   page-footer:
     center: "© Nigel Kent · [nigelkent.ie](https://nigelkent.ie)"
 
 format:
   html:
+    page-layout: full
     theme:
       light: cosmo
       dark: darkly
