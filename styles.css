@@ -124,3 +124,15 @@ body.quarto-dark .wordcloud {
       [screen-end];
   }
 }
+
+/* Notes pages (the ones with a table of contents): keep lines to a readable
+   length and centre the text in the space between the sidebar and the
+   table of contents. The home page keeps the full width for the word cloud. */
+@media (min-width: 992px) {
+  body.docked main.content.column-body {
+    width: 100%;
+    max-width: 920px;
+    justify-self: center;
+    margin-inline: auto;
+  }
+}
