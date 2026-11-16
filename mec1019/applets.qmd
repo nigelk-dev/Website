@@ -1,6 +1,6 @@
 ---
 title: "Interactive applets"
-subtitle: "Sustainable Processes"
+subtitle: "Introduction to microcontrollers"
 ---
 
 Each applet runs in your browser. Use it below, or open it in its own tab for more room.

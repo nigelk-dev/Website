@@ -1,5 +1,5 @@
 ---
-title: "Sustainable Processes"
+title: "Introduction to microcontrollers"
 subtitle: "Design project — microcontroller notes"
 ---
 

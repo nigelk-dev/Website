@@ -20,8 +20,8 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "assets" / "wordcloud.json"
 
 COURSES = {
-    "mec1019": "Sustainable Processes",
-    "mec1002": "Electrical Power",
+    "mec1019": "Introduction to microcontrollers",
+    "mec1002": "Electrical drives",
     "mec1043-1062": "Manufacturing Automation",
 }
 PER_COURSE = 22      # terms taken from each course
