@@ -57,17 +57,17 @@ jobs:
         if: hashFiles('_mec1002/**') != ''
         run: scripts/fetch-mec1002.sh _mec1002 && rm -rf _mec1002
 
-      - name: Check out MM453 notes (ManufacturingAutomationNotes)
+      - name: Check out MEC1043/1062 notes (ManufacturingAutomationNotes)
         if: env.NOTES_TOKEN != ''
         uses: actions/checkout@v4
         with:
           repository: nigelk-dev/ManufacturingAutomationNotes
           token: ${{ secrets.NOTES_TOKEN }}
-          path: _mm453
+          path: _mec1043_1062
 
-      - name: Copy MM453 notes into the site
-        if: hashFiles('_mm453/**') != ''
-        run: scripts/fetch-mm453.sh _mm453 && rm -rf _mm453
+      - name: Copy MEC1043/1062 notes into the site
+        if: hashFiles('_mec1043_1062/**') != ''
+        run: scripts/fetch-mec1043-1062.sh _mec1043_1062 && rm -rf _mec1043_1062
 
       - uses: quarto-dev/quarto-actions/setup@v2
 

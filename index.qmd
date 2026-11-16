@@ -14,6 +14,6 @@ Welcome. This site hosts teaching materials and projects.
 : Lecture notes with interactive elements: DC motors, AC circuits and power,
   transformers, three-phase systems, induction and synchronous motors
 
-[**MM453: Manufacturing Automation for Assembly and Inspection**](mm453/index.qmd)
+[**MEC1043/1062: Manufacturing Automation for Assembly and Inspection**](mec1043-1062/index.qmd)
 : Course notes with 77 interactive applets: logic control and ladder logic,
   PLCs, industrial networks, parts feeding and assembly systems

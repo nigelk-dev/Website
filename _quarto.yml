@@ -6,7 +6,7 @@ project:
     - "mec1019/notes/applets/**"
     - "mec1002/notes/*/interactive/**"
     - "mec1002/notes/shared/**"
-    - "mm453/notes/applets/**"
+    - "mec1043-1062/notes/applets/**"
 
 website:
   title: "Nigel Kent"
@@ -20,8 +20,8 @@ website:
         text: "MEC1019"
       - href: mec1002/index.qmd
         text: "MEC1002"
-      - href: mm453/index.qmd
-        text: "MM453"
+      - href: mec1043-1062/index.qmd
+        text: "MEC1043/1062"
     right:
       - icon: github
         href: https://github.com/nigelk-dev
@@ -97,59 +97,59 @@ website:
               text: "17 · Synchronous Motors"
             - href: mec1002/notes/Lec18/Lec18.md
               text: "18 · Motor Starting"
-    - id: mm453
-      title: "MM453"
+    - id: mec1043-1062
+      title: "MEC1043/1062"
       style: docked
       contents:
-        - href: mm453/index.qmd
+        - href: mec1043-1062/index.qmd
           text: Course overview
         - section: "Logic control"
           contents:
-            - href: mm453/notes/01-introduction-to-industrial-logic-control.md
+            - href: mec1043-1062/notes/01-introduction-to-industrial-logic-control.md
               text: "1 · Introduction to Logic Control"
-            - href: mm453/notes/02-boolean-algebra-and-truth-tables.md
+            - href: mec1043-1062/notes/02-boolean-algebra-and-truth-tables.md
               text: "2 · Boolean Algebra, Truth Tables"
-            - href: mm453/notes/03-karnaugh-maps-and-problem-breakdown.md
+            - href: mec1043-1062/notes/03-karnaugh-maps-and-problem-breakdown.md
               text: "3 · Karnaugh Maps"
-            - href: mm453/notes/04-logic-diagrams-and-response-diagrams.md
+            - href: mec1043-1062/notes/04-logic-diagrams-and-response-diagrams.md
               text: "4 · Logic and Response Diagrams"
-            - href: mm453/notes/05-ladder-logic-and-timers.md
+            - href: mec1043-1062/notes/05-ladder-logic-and-timers.md
               text: "5 · Ladder Logic and Timers"
-            - href: mm453/notes/06-design-case-studies.md
+            - href: mec1043-1062/notes/06-design-case-studies.md
               text: "6 · Design Case Studies"
         - section: "PLCs"
           contents:
-            - href: mm453/notes/07-plc-fundamentals-and-hardware.md
+            - href: mec1043-1062/notes/07-plc-fundamentals-and-hardware.md
               text: "7 · PLC Fundamentals"
-            - href: mm453/notes/08-plc-programming-sequence-and-logic-control.md
+            - href: mec1043-1062/notes/08-plc-programming-sequence-and-logic-control.md
               text: "8 · PLC Programming"
         - section: "Communications"
           contents:
-            - href: mm453/notes/09-scada-and-isa-95.md
+            - href: mec1043-1062/notes/09-scada-and-isa-95.md
               text: "9 · SCADA and ISA-95"
-            - href: mm453/notes/10-network-topology-media-and-components.md
+            - href: mec1043-1062/notes/10-network-topology-media-and-components.md
               text: "10 · Networks"
-            - href: mm453/notes/11-network-protocols-osi-tcpip-data-integrity.md
+            - href: mec1043-1062/notes/11-network-protocols-osi-tcpip-data-integrity.md
               text: "11 · Network Protocols"
-            - href: mm453/notes/12-fieldbus-profibus-and-industrial-ethernet.md
+            - href: mec1043-1062/notes/12-fieldbus-profibus-and-industrial-ethernet.md
               text: "12 · Fieldbus and Industrial Ethernet"
         - section: "Assembly and feeding"
           contents:
-            - href: mm453/notes/13-automatic-assembly-and-transfer-systems.md
+            - href: mec1043-1062/notes/13-automatic-assembly-and-transfer-systems.md
               text: "13 · Assembly and Transfer"
-            - href: mm453/notes/14-vibratory-bowl-feeders.md
+            - href: mec1043-1062/notes/14-vibratory-bowl-feeders.md
               text: "14 · Vibratory Bowl Feeders"
-            - href: mm453/notes/15-non-vibratory-feeders-and-magazines.md
+            - href: mec1043-1062/notes/15-non-vibratory-feeders-and-magazines.md
               text: "15 · Hopper Feeders, Magazines"
-            - href: mm453/notes/16-part-orientation.md
+            - href: mec1043-1062/notes/16-part-orientation.md
               text: "16 · Part Orientation"
-            - href: mm453/notes/17-feedtracks-and-escapements.md
+            - href: mec1043-1062/notes/17-feedtracks-and-escapements.md
               text: "17 · Feedtracks and Escapements"
         - section: "Performance and economics"
           contents:
-            - href: mm453/notes/18-performance-of-assembly-systems.md
+            - href: mec1043-1062/notes/18-performance-of-assembly-systems.md
               text: "18 · Assembly System Performance"
-            - href: mm453/notes/19-cost-justification-for-automation.md
+            - href: mec1043-1062/notes/19-cost-justification-for-automation.md
               text: "19 · Cost Justification"
   page-footer:
     center: "© Nigel Kent · [nigelkent.ie](https://nigelkent.ie)"

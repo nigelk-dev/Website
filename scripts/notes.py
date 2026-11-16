@@ -4,7 +4,7 @@
 Usage:
   scripts/notes.py mec1019 SRC_NOTES_DIR DEST_DIR [EXCLUDED_APPLET ...]
   scripts/notes.py mec1002 SRC_REPO_DIR  DEST_DIR
-  scripts/notes.py mm453   SRC_REPO_DIR  DEST_DIR
+  scripts/notes.py mec1043-1062 SRC_REPO_DIR  DEST_DIR
 
 The fetch-*.sh scripts copy the images and applets and then call this to
 write one page per Markdown file. Every applet the notes link to is embedded
@@ -239,22 +239,22 @@ def mec1002(src, dest):
             md.write_text(mec1002_lecture(md, lec_dir), encoding="utf-8")
 
 
-# ---------------------------------------------------------------- MM453
+# ---------------------------------------------------------------- MEC1043/1062
 
 # Added to the copies of the chapter applet pages that are embedded in the
 # notes: one applet per frame, so no page header, tab bar, brief or footer.
-MM453_EMBED_STYLE = (
-    '<style id="mm453-embed">header.top, footer.foot, .brief { display: none !important; }'
+MEC1043_1062_EMBED_STYLE = (
+    '<style id="mec1043-1062-embed">header.top, footer.foot, .brief { display: none !important; }'
     ' main .wrap { padding-block: 12px 12px; }</style>'
 )
 
 
-def mm453_applets(html):
+def mec1043_1062_applets(html):
     """[(id, title), ...] from a chapter applet page's MA.page({... applets: [...]})."""
     return re.findall(r'\{ id: "([^"]+)", short: "[^"]*", title: "([^"]+)"', html)
 
 
-def mm453_chapter(md, applets_dir):
+def mec1043_1062_chapter(md, applets_dir):
     lines = md.read_text(encoding="utf-8").splitlines()
     m = re.match(r"# Chapter (\d+) · (.+)", lines[0])
     num, title = int(m.group(1)), m.group(2).strip()
@@ -277,7 +277,7 @@ def mm453_chapter(md, applets_dir):
     head, sep, tail = text.partition("\n## Suggested interactive applets\n")
     if sep:
         html = (applets_dir / page).read_text(encoding="utf-8")
-        built = mm453_applets(html)
+        built = mec1043_1062_applets(html)
         rows = re.findall(r"^\| \*\*(.+?)\*\* \| (.*?) \| (.*?) \|\s*$", tail, flags=re.M)
         if len(rows) != len(built):
             print(f"warning: {md.name}: {len(rows)} suggested applets but {len(built)} in {page}", file=sys.stderr)
@@ -296,7 +296,7 @@ def mm453_chapter(md, applets_dir):
     return front_matter(title=title, subtitle=subtitle, order=num) + text + "\n"
 
 
-def mm453(src, dest):
+def mec1043_1062(src, dest):
     dest = Path(dest)
     applets = dest / "applets"
     for page in sorted(applets.glob("ch[0-9][0-9].html")):
@@ -305,16 +305,16 @@ def mm453(src, dest):
         html = re.sub(r'"\.\./notes/(\d\d-[\w-]+)\.md"', r'"../\1.html"', html)
         page.write_text(html, encoding="utf-8")
         (applets / f"embed-{page.name}").write_text(
-            html.replace("</head>", MM453_EMBED_STYLE + "\n</head>", 1), encoding="utf-8")
+            html.replace("</head>", MEC1043_1062_EMBED_STYLE + "\n</head>", 1), encoding="utf-8")
     index = applets / "index.html"
     if index.exists():
         index.write_text(index.read_text(encoding="utf-8").replace('"../notes/README.md"', '"../../index.html"'),
                          encoding="utf-8")
     for md in sorted(Path(src, "notes").glob("[0-9][0-9]-*.md")):
-        (dest / md.name).write_text(mm453_chapter(md, applets), encoding="utf-8")
+        (dest / md.name).write_text(mec1043_1062_chapter(md, applets), encoding="utf-8")
 
 
 if __name__ == "__main__":
     course, src, dest, *rest = sys.argv[1:]
     {"mec1019": lambda: mec1019(src, dest, rest), "mec1002": lambda: mec1002(src, dest),
-     "mm453": lambda: mm453(src, dest)}[course]()
+     "mec1043-1062": lambda: mec1043_1062(src, dest)}[course]()

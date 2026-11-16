@@ -12,8 +12,8 @@ the notes refer to it:
   nigelk-dev/MEC1019_Sustainable_Processes (`scripts/fetch-mec1019.sh`)
 - **MEC1002: Electrical Power and Electromechanical Systems** from
   nigelk-dev/ElectricalPowerNotes (`scripts/fetch-mec1002.sh`)
-- **MM453: Manufacturing Automation for Assembly and Inspection** from
-  nigelk-dev/ManufacturingAutomationNotes (`scripts/fetch-mm453.sh`). Each
+- **MEC1043/1062: Manufacturing Automation for Assembly and Inspection** from
+  nigelk-dev/ManufacturingAutomationNotes (`scripts/fetch-mec1043-1062.sh`). Each
   chapter's "Suggested interactive applets" table is replaced by the built
   applets from its `applets/chNN.html` page, one live frame per applet.
 
@@ -26,7 +26,7 @@ secret `NOTES_TOKEN`: a fine-grained personal access token with read-only
 ```bash
 scripts/fetch-mec1019.sh   # copy MEC1019 notes + applets into mec1019/notes/
 scripts/fetch-mec1002.sh   # copy MEC1002 notes + interactives into mec1002/notes/
-scripts/fetch-mm453.sh     # copy MM453 notes + Applet Lab into mm453/notes/
+scripts/fetch-mec1043-1062.sh  # copy MEC1043/1062 notes + Applet Lab into mec1043-1062/notes/
 quarto preview
 ```
 
