@@ -1,5 +1,5 @@
 ---
-title: "MEC1019: Sustainable Processes"
+title: "Sustainable Processes"
 subtitle: "Design project — microcontroller notes"
 ---
 
@@ -57,6 +57,6 @@ them here, or open one on its own:
 
 ::: {.callout-note}
 The notes and applets are pulled automatically from the
-[MEC1019_Sustainable_Processes](https://github.com/nigelk-dev/MEC1019_Sustainable_Processes)
+[Sustainable Processes](https://github.com/nigelk-dev/MEC1019_Sustainable_Processes)
 repository each time the site is built.
 :::

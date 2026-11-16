@@ -1,11 +1,11 @@
 ---
-title: "MEC1043/1062: Manufacturing Automation for Assembly and Inspection"
-subtitle: "Course notes and the MEC1043/1062 Applet Lab"
+title: "Manufacturing Automation for Assembly and Inspection"
+subtitle: "Course notes and the Applet Lab"
 aliases:
   - /mm453/index.html
 ---
 
-Notes from the two MEC1043/1062 slide packs, grouped by topic rather than lecture:
+Notes from the two slide packs, grouped by topic rather than lecture:
 logic control and ladder logic, PLCs, industrial communications, automated
 assembly and parts feeding, and the performance and cost of assembly systems.
 Every chapter ends with its interactive applets (77 in all), running in the
@@ -48,7 +48,7 @@ page. The Statistical Process Control part of the module is not included.
 ## Applet Lab
 
 All 77 applets are also on one page, chapter by chapter:
-[open the MEC1043/1062 Applet Lab ↗](notes/applets/index.html){target="_blank"}.
+[open the Applet Lab ↗](notes/applets/index.html){target="_blank"}.
 
 ::: {.callout-note}
 The notes and applets are pulled automatically from the

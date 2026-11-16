@@ -1,6 +1,6 @@
 ---
 title: "Interactive applets"
-subtitle: "MEC1019: Sustainable Processes"
+subtitle: "Sustainable Processes"
 ---
 
 Each applet runs in your browser. Use it below, or open it in its own tab for more room.

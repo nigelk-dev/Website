@@ -20,9 +20,9 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "assets" / "wordcloud.json"
 
 COURSES = {
-    "mec1019": "MEC1019",
-    "mec1002": "MEC1002",
-    "mec1043-1062": "MEC1043/1062",
+    "mec1019": "Sustainable Processes",
+    "mec1002": "Electrical Power",
+    "mec1043-1062": "Manufacturing Automation",
 }
 PER_COURSE = 22      # terms taken from each course
 MAX_EDGES = 4        # strongest links kept per term

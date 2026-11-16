@@ -12,9 +12,9 @@ Welcome. This site hosts teaching materials and projects.
   <figcaption>
     <span>The most used terms across the course notes, linked when they share a paragraph. Hover to trace connections, drag to move, click to open the page that uses a term most.</span>
     <span class="wc-legend">
-      <a class="wc-key wc-mec1019" href="mec1019/index.html">MEC1019</a>
-      <a class="wc-key wc-mec1002" href="mec1002/index.html">MEC1002</a>
-      <a class="wc-key wc-mec1043-1062" href="mec1043-1062/index.html">MEC1043/1062</a>
+      <a class="wc-key wc-mec1019" href="mec1019/index.html">Sustainable Processes</a>
+      <a class="wc-key wc-mec1002" href="mec1002/index.html">Electrical Power</a>
+      <a class="wc-key wc-mec1043-1062" href="mec1043-1062/index.html">Manufacturing Automation</a>
     </span>
   </figcaption>
 </figure>
@@ -23,13 +23,13 @@ Welcome. This site hosts teaching materials and projects.
 
 ## Courses
 
-[**MEC1019: Sustainable Processes**](mec1019/index.qmd)
+[**Sustainable Processes**](mec1019/index.qmd)
 : Design project — study notes and interactive applets on microcontrollers
 
-[**MEC1002: Electrical Power and Electromechanical Systems**](mec1002/index.qmd)
+[**Electrical Power and Electromechanical Systems**](mec1002/index.qmd)
 : Lecture notes with interactive elements: DC motors, AC circuits and power,
   transformers, three-phase systems, induction and synchronous motors
 
-[**MEC1043/1062: Manufacturing Automation for Assembly and Inspection**](mec1043-1062/index.qmd)
+[**Manufacturing Automation for Assembly and Inspection**](mec1043-1062/index.qmd)
 : Course notes with 77 interactive applets: logic control and ladder logic,
   PLCs, industrial networks, parts feeding and assembly systems

@@ -314,7 +314,26 @@ def mec1043_1062(src, dest):
         (dest / md.name).write_text(mec1043_1062_chapter(md, applets), encoding="utf-8")
 
 
+# ---------------------------------------------------------------- module codes
+
+# The site names the courses without their module codes. The course repos use
+# them in applet headings and captions ("MEC1002 Lecture 4: ...", "MEC1043/1062
+# Applet Lab"), so drop them from every copied page. A code that is part of a
+# path, URL or repo name (mec1019/, MEC1019_Sustainable_Processes) is kept.
+MODULE_CODE = re.compile(r"(?<![\w/.-])MEC\d{4}(?:/\d{4})?(?![\w/])(?:\s*[:·]\s*|\s+)?")
+
+
+def drop_module_codes(dest):
+    for f in Path(dest).rglob("*"):
+        if f.suffix in (".md", ".html", ".js", ".css") and f.is_file():
+            text = f.read_text(encoding="utf-8")
+            new = MODULE_CODE.sub("", text)
+            if new != text:
+                f.write_text(new, encoding="utf-8")
+
+
 if __name__ == "__main__":
     course, src, dest, *rest = sys.argv[1:]
     {"mec1019": lambda: mec1019(src, dest, rest), "mec1002": lambda: mec1002(src, dest),
      "mec1043-1062": lambda: mec1043_1062(src, dest)}[course]()
+    drop_module_codes(dest)

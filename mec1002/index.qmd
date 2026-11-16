@@ -1,5 +1,5 @@
 ---
-title: "MEC1002: Electrical Power and Electromechanical Systems"
+title: "Electrical Power and Electromechanical Systems"
 subtitle: "Lecture notes with interactive elements"
 listing:
   id: lectures

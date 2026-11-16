@@ -24,7 +24,7 @@ website:
       contents:
         - href: index.qmd
           text: Home
-        - section: "MEC1019"
+        - section: "Sustainable Processes"
           href: mec1019/index.qmd
           contents:
             - href: mec1019/index.qmd
@@ -49,7 +49,7 @@ website:
                   text: "Finished circuit"
             - href: mec1019/applets.qmd
               text: Interactive applets
-        - section: "MEC1002"
+        - section: "Electrical Power"
           href: mec1002/index.qmd
           contents:
             - href: mec1002/index.qmd
@@ -92,7 +92,7 @@ website:
                   text: "17 · Synchronous Motors"
                 - href: mec1002/notes/Lec18/Lec18.md
                   text: "18 · Motor Starting"
-        - section: "MEC1043/1062"
+        - section: "Manufacturing Automation"
           href: mec1043-1062/index.qmd
           contents:
             - href: mec1043-1062/index.qmd
