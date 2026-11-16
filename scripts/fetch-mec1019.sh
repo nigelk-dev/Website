@@ -34,21 +34,11 @@ find "$dest/applets" -type f -name '*.py' -delete
 excluded_applets=(led-resistor.html)
 for a in "${excluded_applets[@]}"; do rm -f "$dest/applets/$a"; done
 
-# Sharper replacements for images in the notes (drawn by
-# scripts/arduino-ide-svg.py). The image map below says which note image
-# each one stands in for.
-cp "$root/mec1019/image-overrides/"* "$dest/images/"
-
 python3 - "$src" "$dest" "${excluded_applets[@]}" <<'PY'
 import json, pathlib, re, sys
 
 src, dest = map(pathlib.Path, sys.argv[1:3])
 excluded = sys.argv[3:]
-# Blurry slide screenshots -> redrawn SVGs from mec1019/image-overrides/
-image_map = {
-    "p1-20.png": "ide-tools-port.svg",                  # Tools > Port
-    "p1-19.png": "ide-file-examples-bareminimum.svg",   # File > Examples > 01.Basics > BareMinimum
-}
 pages_url = re.compile(r"https://nigelk-dev\.github\.io/MEC1019_Sustainable_Processes/notes/applets/")
 
 for md in sorted(src.glob("*.md")):
@@ -82,8 +72,6 @@ for md in sorted(src.glob("*.md")):
     text = "\n".join(body).lstrip("\n")
     text = re.sub(r" \(from `[^`]+\.(?:pdf|pptx)`\)", "", text)
     text = pages_url.sub("applets/", text)
-    for old_img, new_img in image_map.items():
-        text = text.replace(f"(images/{old_img})", f"(images/{new_img})")
     front = f"---\ntitle: {json.dumps(title, ensure_ascii=False)}\n---\n\n"
     (dest / md.name).write_text(front + text + "\n", encoding="utf-8")
 PY
