@@ -82,11 +82,15 @@
       t += 1;
       var cx = W / 2, cy = H / 2, i, j, n, m;
       var R2 = Math.pow(Math.max(90, Math.min(W, H) * 0.28), 2);
+      // Pull to the centre more gently across a wide stage, so the cloud
+      // spreads to fill it rather than bunching in the middle.
+      var CX = CENTRE * Math.min(1, Math.pow(800 / W, 1.6));
+      var CY = CENTRE * Math.min(2.5, W / H) * Math.min(1, Math.pow(800 / W, 0.6));
       for (i = 0; i < act.length; i++) {
         n = act[i];
         // pull to centre, stretched to the stage's shape
-        n.vx += (cx - n.x) * CENTRE;
-        n.vy += (cy - n.y) * CENTRE * Math.min(2.5, W / H);
+        n.vx += (cx - n.x) * CX;
+        n.vy += (cy - n.y) * CY;
         // slow drift so the cloud never quite stands still
         if (!reduce) {
           n.vx += Math.cos(t * 0.004 + n.phase) * 0.02;
