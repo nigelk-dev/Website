@@ -22,14 +22,17 @@
     switches off, so it is driven by NOT A.
 
 - type: mcq
-  q: Which single timer would give the fan Z in **one rung**, driven directly by A?
+  q: |
+    The PLC powers up with the machine switch A **off**, so the machine has never run. What does the fan Z do in the cooling-system
+    ladder?
   options:
-    - text: An Off-Delay Timer (TOF) with a 3-minute preset
+    - text: It runs for 3 minutes, then stops
       correct: true
-      why: A TOF output goes high with its input and stays high for the preset time after the input goes low, which is exactly Z.
-    - text: An On-Delay Timer (TON) with a 3-minute preset
-      why: A TON would delay switching the fan **on**, not off.
-    - text: A counter
+      why: NOT A starts the TON straight away, and Z = A OR NOT D stays on until the timer output D comes on after 3 minutes.
+    - text: It stays off
+      why: Z = A OR NOT D, and D is off while the timer is still timing.
+    - text: It runs until the machine is switched on
+    - text: It runs continuously
 
 - type: mcq
   q: In the gas furnace, is the signal to the **gas valve** an input or an output?
