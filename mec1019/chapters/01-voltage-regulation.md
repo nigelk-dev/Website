@@ -23,6 +23,7 @@ By the end of this chapter you should be able to:
 - Tell the difference between scaling a voltage for **measurement** and regulating a supply for **power**
 - Calculate the current and output voltage of a voltage divider
 - Choose divider resistors from a source's maximum voltage
+- Work out the current and power a resistor choice gives, and pick a safe standard value
 - Use a potentiometer as an adjustable divider, and set one up safely to monitor a source
 
 ---
@@ -199,7 +200,80 @@ Now choose a convenient $R_2$ and calculate $R_1$:
 
 ---
 
-## 5. Designing for a set current
+## 5. Current: choosing the right resistor value
+
+Every resistor you choose sets a **current**, and the current decides whether the
+circuit works, how much energy it wastes, and whether anything overheats:
+
+$$I = \frac{V}{R}, \qquad P = I^2R = \frac{V^2}{R}$$
+
+- **Too little resistance** means too much current. The parts heat up ($P = I^2R$),
+  a resistor beyond its power rating burns, an LED or a pin is destroyed, and a
+  battery drains fast.
+- **Too much resistance** means too little current. An LED is dim or dark, and a
+  measurement divider with very large values gives a noisy `analogRead`.
+- **Resistors come in standard values** (the E12 series: 10, 12, 15, 18, 22, 27, 33,
+  39, 47, 56, 68, 82, and those × 10, × 100 …), so a calculated value has to be
+  rounded. Round in the **safe** direction: to the next value up when the current
+  must not exceed a limit.
+- **Resistors have a power rating** (¼ W is common). Keep the power well inside it:
+  using no more than half the rating is a good rule.
+
+### Current in the measurement divider
+
+A divider across the RES draws current all the time, whether or not anyone is
+reading it. At the RES maximum of 16 V:
+
+| Divider | Total resistance | Current | Power wasted | Charge per day |
+|---|---|---|---|---|
+| 220 Ω + 100 Ω | 320 Ω | 50 mA | 0.8 W | 1.2 Ah |
+| 2.2 kΩ + 1 kΩ | 3.2 kΩ | 5 mA | 80 mW | 0.12 Ah |
+| 22 kΩ + 10 kΩ | 32 kΩ | 0.5 mA | 8 mW | 0.012 Ah |
+
+All three give the same 5 V at the pin, because the ratio is the same. The first
+wastes almost a watt, more than three ¼ W resistors could handle, and in a day
+uses as much charge as a small battery holds. The last wastes almost nothing.
+That is why Section 4 recommends around 10 kΩ for $R_2$.
+
+### Current through an LED
+
+An LED is the clearest example of why the resistor value matters. An LED's
+current rises **exponentially** with voltage, so it can't limit its own current:
+the series resistor does. Above the knee of its curve the LED's voltage is
+roughly its forward voltage $V_f$, so:
+
+$$R = \frac{V_s - V_f}{I_F}$$
+
+With a 9 V supply and a red LED ($V_f \approx 2$ V) at 20 mA,
+$R = (9 - 2)/0.020 = 350\ \Omega$, which is not a standard value. Round **up** to
+390 Ω, giving 17.9 mA. Rounding down to 330 Ω would give 21.2 mA, over the
+rating.
+
+> ▶️ **[LED circuit explorer](applets/led-circuit.html)** — choose a supply and LED colour, slide through the standard resistor values and watch the current. Pick a resistor that is too small and the LED burns out.
+
+**Try these:** (if the LED burns out, move the slider to a larger resistor
+first, then press **Replace the LED**)
+
+1. With the **9 V battery** and a **red LED**, find the smallest standard
+   resistor that keeps the current at or below 20 mA.
+2. Slide all the way to **no resistor**. What happens, and why?
+3. Switch to a **blue LED**. Why does the smallest safe resistor change?
+4. At the resistor you found in task 1, how much power does the resistor
+   dissipate? Is a standard ¼ W resistor enough?
+
+<details>
+<summary>Answers</summary>
+
+1. **390 Ω.** Exactly 20 mA needs $R = (9 - 2.0)/0.020 = 350\ \Omega$, which is not a standard value. The next E12 value up is 390 Ω, giving $(9 - 2.0)/390 = 17.9\ \text{mA}$.
+2. With no resistor, only the battery's small internal resistance limits the current, so it tries to reach amps, far past the 30 mA maximum, and the LED burns out.
+3. A blue LED has a higher forward voltage (3.2 V), so the resistor has less voltage across it: $(9 - 3.2)/0.020 = 290\ \Omega$, so the smallest safe standard value is **330 Ω**.
+4. $P = V_R^2/R = 7^2/390 \approx 126\ \text{mW}$: about half of a ¼ W (250 mW) rating, which is acceptable.
+
+</details>
+
+---
+
+## 6. Designing for a set current
 
 Sometimes you are given the output voltage **and** the current. *Design a
 voltage divider with an output of 6 V and a current of 60 mA from a 12 V
@@ -225,7 +299,7 @@ calculation for any $V_s$, $V_{out}$ and $I$.
 
 ---
 
-## 6. Potentiometers: an adjustable divider
+## 7. Potentiometers: an adjustable divider
 
 A **potentiometer** ("pot") is a **voltage divider whose split you adjust by
 turning a knob**. A small one adjusted with a screwdriver is called a
@@ -264,7 +338,7 @@ for the RES: turning it lets you test your monitoring code at your desk, as in
 
 ---
 
-## 7. Setting an adjustable divider safely
+## 8. Setting an adjustable divider safely
 
 A common way to monitor a source is a **fixed resistor in series with a
 trimmer**: the fixed resistor $R_F$ goes from the source to the top of the
@@ -313,6 +387,9 @@ reading back into the RES voltage, using the fraction you measure here.
   steady for power. The project's voltage scaling block is a divider.
 - $V_{out} = V_s R_2/(R_1+R_2)$. The ratio sets the voltage; the total resistance
   sets the current and the power wasted.
+- Every resistor sets a **current**: $I = V/R$, $P = I^2R$. Round to a standard value
+  in the safe direction and keep within the power rating. Large divider values
+  waste far less energy.
 - Design from the **maximum** source voltage: $R_1 = (V_{max}/5 - 1)\,R_2$, with
   $R_2$ around 10 kΩ, rounding $R_1$ up.
 - A potentiometer or trimmer is an adjustable divider. Before connecting it to the

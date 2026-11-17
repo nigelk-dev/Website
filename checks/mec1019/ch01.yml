@@ -178,3 +178,23 @@
     - Measure the wiper voltage to ground with a multimeter
     - Adjust the trimmer until the wiper reads just under 5 V
     - Connect the wiper to the Arduino
+
+- type: numeric
+  q: |
+    A measurement divider of {R1} kΩ + {R2} kΩ sits across a {V} V RES all the time. What current does it draw, and how much
+    power does it waste?
+  vars:
+    R1: [22, 1, 47, 1]
+    R2: [10, 1, 22, 1]
+    V: [16, 9, 18, 1]
+  parts:
+    - label: "Current:"
+      answer: V / (R1 + R2)
+      unit: mA
+    - label: "Power:"
+      answer: V * V / (R1 + R2)
+      unit: mW
+  hint: "The resistors are in series: $I = V/(R_1 + R_2)$ and $P = VI$."
+  solution: |
+    I = {V} / ({R1} + {R2}) kΩ = **{=V / (R1 + R2)} mA**; P = {V} × {=V / (R1 + R2)} mA = **{=V * V / (R1 + R2)} mW**.
+    Smaller resistors with the same ratio give the same pin voltage but waste far more.

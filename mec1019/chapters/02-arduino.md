@@ -165,27 +165,9 @@ From a 5 V pin, a red LED ($V_f \approx 2$ V) at 15 mA needs
 $R = (5 - 2)/0.015 = 200\ \Omega$ → use the next standard value up, **220 Ω**.
 Always round **up**, and check the resistor's power, $P = I^2R$.
 
-> ▶️ **[LED circuit explorer](applets/led-circuit.html)** — choose a supply and LED colour, slide through the standard resistor values and watch the current. Pick a resistor that is too small and the LED burns out.
-
-**Try these:** (if the LED burns out, move the slider to a larger resistor
-first, then press **Replace the LED**)
-
-1. With the **9 V battery** and a **red LED**, find the smallest standard
-   resistor that keeps the current at or below 20 mA.
-2. Slide all the way to **no resistor**. What happens, and why?
-3. Switch to a **blue LED**. Why does the smallest safe resistor change?
-4. At the resistor you found in task 1, how much power does the resistor
-   dissipate? Is a standard ¼ W resistor enough?
-
-<details>
-<summary>Answers</summary>
-
-1. **390 Ω.** Exactly 20 mA needs $R = (9 - 2.0)/0.020 = 350\ \Omega$, which is not a standard value. The next E12 value up is 390 Ω, giving $(9 - 2.0)/390 = 17.9\ \text{mA}$.
-2. With no resistor, only the battery's small internal resistance limits the current, so it tries to reach amps, far past the 30 mA maximum, and the LED burns out.
-3. A blue LED has a higher forward voltage (3.2 V), so the resistor has less voltage across it: $(9 - 3.2)/0.020 = 290\ \Omega$, so the smallest safe standard value is **330 Ω**.
-4. $P = V_R^2/R = 7^2/390 \approx 126\ \text{mW}$: about half of a ¼ W (250 mW) rating, which is acceptable.
-
-</details>
+Choosing that resistor, and what happens when it is too small, is covered with
+the interactive LED circuit explorer in [Voltage
+measurement](01-voltage-regulation.md#current-choosing-the-right-resistor-value).
 
 ### Example 1a — blink an LED
 
