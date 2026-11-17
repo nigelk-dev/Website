@@ -7,6 +7,14 @@ some important differences in how it works. This chapter reads the board's
 schematic block by block and matches each part of it to the chapter that
 introduced the idea.
 
+```{=html}
+<figure class="flow-diagram">
+<figcaption>System overview · The whole system</figcaption>
+<a class="fd-light" href="images/system-overview-light.png"><img src="images/system-overview-light.png" width="1600" height="370" alt="Project overview diagram: solar and wind (the RES, 0–16 V) pass through voltage scaling (0–5 V) to the microcontroller, which reads the input voltage and decides between the RES and the 12 V battery; the switching circuitry supplies the pump drive (direct drive or slow start) and the pump."></a>
+<a class="fd-dark" href="images/system-overview-dark.png"><img src="images/system-overview-dark.png" width="1600" height="370" alt="Project overview diagram: solar and wind (the RES, 0–16 V) pass through voltage scaling (0–5 V) to the microcontroller, which reads the input voltage and decides between the RES and the 12 V battery; the switching circuitry supplies the pump drive (direct drive or slow start) and the pump."></a>
+</figure>
+```
+
 ## Learning outcomes
 
 By the end of this chapter you should be able to:

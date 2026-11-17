@@ -6,6 +6,14 @@ drives the switching circuitry and starts the pump. This chapter is a quick
 introduction to the board and to writing programs for it, so that the
 following chapters can concentrate on the project.
 
+```{=html}
+<figure class="flow-diagram">
+<figcaption>System overview · Microcontroller system</figcaption>
+<a class="fd-light" href="images/system-microcontroller-light.png"><img src="images/system-microcontroller-light.png" width="1600" height="370" alt="Project overview diagram with the microcontroller system highlighted: read input voltage, control decision, switching circuitry and pump drive type; the energy sources, voltage scaling and pump are faded."></a>
+<a class="fd-dark" href="images/system-microcontroller-dark.png"><img src="images/system-microcontroller-dark.png" width="1600" height="370" alt="Project overview diagram with the microcontroller system highlighted: read input voltage, control decision, switching circuitry and pump drive type; the energy sources, voltage scaling and pump are faded."></a>
+</figure>
+```
+
 ## Learning outcomes
 
 By the end of this chapter you should be able to:

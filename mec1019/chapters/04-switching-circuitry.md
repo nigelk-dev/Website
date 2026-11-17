@@ -9,6 +9,14 @@ control the large current.
 This chapter does it with a **relay module**: first driving the relays from the
 Arduino, then building the complete RES / battery switch-over on a breadboard.
 
+```{=html}
+<figure class="flow-diagram">
+<figcaption>System overview · Switching circuitry</figcaption>
+<a class="fd-light" href="images/system-switching-light.png"><img src="images/system-switching-light.png" width="1600" height="370" alt="Project overview diagram with the switching circuitry highlighted, fed by the RES, the 12 V backup battery and the control decision; everything else is faded."></a>
+<a class="fd-dark" href="images/system-switching-dark.png"><img src="images/system-switching-dark.png" width="1600" height="370" alt="Project overview diagram with the switching circuitry highlighted, fed by the RES, the 12 V backup battery and the control decision; everything else is faded."></a>
+</figure>
+```
+
 ## Learning outcomes
 
 By the end of this chapter you should be able to:

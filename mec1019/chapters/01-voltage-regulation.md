@@ -47,8 +47,6 @@ So the RES must never be connected straight to an analogue pin. Something has to
 sit between them that turns 0–16 V into 0–5 V, **in proportion**, so the
 Arduino can still tell a weak source from a strong one.
 
-![Voltage monitoring: the RES and backup battery feed the pump through the switching circuitry; the RES voltage reaches the Arduino's A0 pin only through a voltage divider](images/monitoring-system.svg)
-
 ### Measuring is not the same as powering
 
 This block **measures** the RES voltage; it doesn't **regulate** it. The two are

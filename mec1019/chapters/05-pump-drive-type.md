@@ -14,6 +14,14 @@ The difference that matters most is the **inrush current**: the surge a motor
 draws when it starts, or when its supply suddenly jumps. This chapter explains
 where that surge comes from, then compares the two drive types.
 
+```{=html}
+<figure class="flow-diagram">
+<figcaption>System overview · Pump drive type</figcaption>
+<a class="fd-light" href="images/system-pump-drive-light.png"><img src="images/system-pump-drive-light.png" width="1600" height="370" alt="Project overview diagram with the pump drive type (direct drive or slow start) and the pump highlighted, fed from the switching circuitry; everything else is faded."></a>
+<a class="fd-dark" href="images/system-pump-drive-dark.png"><img src="images/system-pump-drive-dark.png" width="1600" height="370" alt="Project overview diagram with the pump drive type (direct drive or slow start) and the pump highlighted, fed from the switching circuitry; everything else is faded."></a>
+</figure>
+```
+
 ## Learning outcomes
 
 By the end of this chapter you should be able to:

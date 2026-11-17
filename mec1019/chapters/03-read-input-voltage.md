@@ -8,6 +8,14 @@ RES high enough to run the pump, or should the system switch to the battery?
 This chapter covers both, using a potentiometer on the bench as a stand-in for
 the RES.
 
+```{=html}
+<figure class="flow-diagram">
+<figcaption>System overview · Read input voltage</figcaption>
+<a class="fd-light" href="images/system-read-input-light.png"><img src="images/system-read-input-light.png" width="1600" height="370" alt="Project overview diagram with read input voltage, the 0–5 V input from voltage scaling and the control decision (RES or battery) highlighted; everything else is faded."></a>
+<a class="fd-dark" href="images/system-read-input-dark.png"><img src="images/system-read-input-dark.png" width="1600" height="370" alt="Project overview diagram with read input voltage, the 0–5 V input from voltage scaling and the control decision (RES or battery) highlighted; everything else is faded."></a>
+</figure>
+```
+
 ## Learning outcomes
 
 By the end of this chapter you should be able to:
