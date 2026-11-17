@@ -7,12 +7,24 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap">
 <link rel="stylesheet" href="style.css">
 <style>
-  .top { display:grid; gap:18px; grid-template-columns: minmax(260px, 340px) 1fr; align-items:start; }
-  @media (max-width: 860px) { .top { grid-template-columns: 1fr; } }
+  .top { display:grid; gap:18px; grid-template-columns: minmax(260px, 340px) 1fr; align-items:stretch; }
+  .code-card { display:flex; flex-direction:column; min-width:0; }
+  .code-box { position:relative; flex:1; min-height:320px; }
+  .code-box .code-wrap { position:absolute; inset:0; max-height:none; }
+  .chart + .chart { margin-top:6px; }
+  .pick { position:relative; }
+  .pick summary { list-style:none; cursor:pointer; font: 600 .8rem var(--font-head); text-transform:uppercase; letter-spacing:.05em;
+                  padding:6px 12px; border:1px solid var(--line); border-radius:6px; background:var(--editor); user-select:none; }
+  .pick summary::-webkit-details-marker { display:none; }
+  .pick[open] summary { border-color: var(--accent); }
+  .pick-menu { position:absolute; right:0; top:calc(100% + 4px); z-index:5; background:var(--panel); border:1px solid var(--line);
+               border-radius:8px; padding:6px 12px; box-shadow:0 6px 18px rgba(0,0,0,.18); min-width:270px; }
+  .pick-menu label { margin:6px 0; text-transform:none; letter-spacing:0; font: .85rem var(--font-body); color:var(--ink); cursor:pointer; }
+  @media (max-width: 860px) { .top { grid-template-columns: 1fr; } .code-box { flex:none; height:420px; } }
   .charts canvas { width:100%; height:150px; display:block; }
   .charts canvas.scope { height:130px; }
   .chart-head { display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin:14px 0 4px; }
-  .chart-head:first-child { margin-top:0; }
+  .chart:first-of-type .chart-head { margin-top:4px; }
   .chart-head h3 { font: 600 .75rem var(--font-head); text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0; }
   .chart-head span { font: .78rem var(--font-mono); color:var(--muted); }
   .clock { font: 600 1.1rem var(--font-mono); font-variant-numeric: tabular-nums; }
@@ -59,8 +71,8 @@
         <span class="clock" id="clock">t = 0.0 s</span>
         <span class="row">
           <button id="pause" class="secondary">❚❚ Pause</button>
-          <select id="speed" style="width:auto" aria-label="Speed">
-            <option value="0.01">1/100× (slow motion)</option><option value="0.1">1/10×</option><option value="0.5">½×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="5">5×</option>
+          <select id="speed" style="width:auto" aria-label="Speed (1/100× is slow motion)">
+            <option value="0.01">1/100×</option><option value="0.1">1/10×</option><option value="0.5">½×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="5">5×</option>
           </select>
         </span>
       </div>
@@ -83,7 +95,63 @@
       </div>
     </div>
 
-    <div class="card" style="margin-top:18px">
+  </div>
+  <div class="card code-card">
+    <h2>Example 6.1: the sketch, as it runs</h2>
+    <div class="row" style="margin-bottom:8px">
+      <button id="step1" class="secondary" disabled>Step: one pass of loop()</button>
+      <button id="stepRead" class="secondary" disabled>Step to the next RES reading</button>
+      <label style="margin:0 0 0 auto"><input id="follow" type="checkbox" checked> Follow the code</label>
+    </div>
+    <div class="code-box"><div class="code-wrap" id="codeWrap"><pre class="code" id="code"></pre></div></div>
+    <p class="note"><span class="key hot"></span>running now · <span class="key warm"></span>ran in the last 2 s, fading · <span class="key flash"></span><code>setup()</code> or <code>changeSupply()</code>: a decision that just happened. <code>loop()</code> runs once every millisecond; it reads the RES on one pass in 100. Pause, then step through one pass at a time, or use slow motion.</p>
+  </div>
+</div>
+
+<div class="card charts" style="margin-top:18px">
+  <div class="row" style="justify-content:space-between; margin-bottom:6px">
+    <h2 style="margin:0">Graphs</h2>
+    <details class="pick" id="pick">
+      <summary id="pickSum">Graphs ▾</summary>
+      <div class="pick-menu">
+          <label><input type="checkbox" value="a0"> A0 reading (analogue input)</label>
+          <label><input type="checkbox" value="res"> RES voltage at J3</label>
+          <label><input type="checkbox" value="drive"> Pump drive: PWM duty and voltage</label>
+          <label><input type="checkbox" value="cur"> Pump current through the L298N</label>
+          <label><input type="checkbox" value="scope"> Scope: the PWM now</label>
+      </div>
+    </details>
+  </div>
+    <div class="chart" data-g="a0">
+    <div class="chart-head"><h3>Analogue input: A0 reading</h3><span id="hA0"></span></div>
+    <canvas id="cA0"></canvas>
+    <div class="legend"><span><i style="background:var(--ok)"></i>on the RES</span><span><i style="background:var(--warn)"></i>on the battery</span><span><i style="background:var(--muted)"></i>491 / 552 thresholds, dead band shaded</span></div>
+    </div>
+    <div class="chart" data-g="res">
+    <div class="chart-head"><h3>RES voltage at J3</h3><span id="hRes"></span></div>
+    <canvas id="cRes"></canvas>
+    <div class="legend"><span><i style="background:var(--muted)"></i>open circuit</span><span><i style="background:var(--ok)"></i>at the terminals, sagging under load</span></div>
+    </div>
+    <div class="chart" data-g="drive">
+    <div class="chart-head"><h3>Pump drive: PWM duty and pump voltage</h3><span id="hDrive"></span></div>
+    <canvas id="cDrive"></canvas>
+    <div class="legend"><span><i style="background:var(--accent)"></i><code>level</code> as a duty cycle (%)</span><span><i style="background:#8A4FB8"></i>average pump voltage (V)</span></div>
+    </div>
+    <div class="chart" data-g="cur">
+    <div class="chart-head"><h3>Pump current through the L298N</h3><span id="hCur"></span></div>
+    <canvas id="cCur"></canvas>
+    <div class="legend"><span><i style="background:var(--accent)"></i>pump current</span><span><i style="background:var(--bad)"></i>L298N limits: 2 A continuous, 2.5 A peaks</span></div>
+    </div>
+    <div class="chart" data-g="scope">
+    <div class="chart-head"><h3>Scope: the PWM now (3 periods, about 6 ms)</h3><span id="hScope"></span></div>
+    <canvas id="cScope" class="scope"></canvas>
+    <div class="legend"><span><i style="background:var(--warn)"></i>IN3 (D3): the pump is driven while it is LOW</span><span><i style="background:#8A4FB8"></i>voltage across the pump</span></div>
+    </div>
+  <p class="note" id="noCharts" hidden>No graphs selected: choose some from the Graphs menu.</p>
+</div>
+
+<div class="grid" style="margin-top:18px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+    <div class="card">
       <h2>The board</h2>
       <div class="src">
         <div id="srcRes"><b>RES</b><span class="muted">Q4 via D13</span></div>
@@ -107,42 +175,6 @@
       <div class="stat"><span>last <code>reading</code></span><b id="vRead"></b></div>
       <div class="stat"><span><code>kToBattery</code> / <code>kToRes</code></span><b id="vTh"></b></div>
     </div>
-  </div>
-
-  <div class="card charts">
-    <div class="chart-head"><h3>Analogue input: A0 reading</h3><span id="hA0"></span></div>
-    <canvas id="cA0"></canvas>
-    <div class="legend"><span><i style="background:var(--ok)"></i>on the RES</span><span><i style="background:var(--warn)"></i>on the battery</span><span><i style="background:var(--muted)"></i>491 / 552 thresholds, dead band shaded</span></div>
-
-    <div class="chart-head"><h3>RES voltage at J3</h3><span id="hRes"></span></div>
-    <canvas id="cRes"></canvas>
-    <div class="legend"><span><i style="background:var(--muted)"></i>open circuit</span><span><i style="background:var(--ok)"></i>at the terminals, sagging under load</span></div>
-
-    <div class="chart-head"><h3>Pump drive: PWM duty and pump voltage</h3><span id="hDrive"></span></div>
-    <canvas id="cDrive"></canvas>
-    <div class="legend"><span><i style="background:var(--accent)"></i><code>level</code> as a duty cycle (%)</span><span><i style="background:#8A4FB8"></i>average pump voltage (V)</span></div>
-
-    <div class="chart-head"><h3>Pump current through the L298N</h3><span id="hCur"></span></div>
-    <canvas id="cCur"></canvas>
-    <div class="legend"><span><i style="background:var(--accent)"></i>pump current</span><span><i style="background:var(--bad)"></i>L298N limits: 2 A continuous, 2.5 A peaks</span></div>
-
-    <div class="chart-head"><h3>Scope: the PWM now (3 periods, about 6 ms)</h3><span id="hScope"></span></div>
-    <canvas id="cScope" class="scope"></canvas>
-    <div class="legend"><span><i style="background:var(--warn)"></i>IN3 (D3): the pump is driven while it is LOW</span><span><i style="background:#8A4FB8"></i>voltage across the pump</span></div>
-  </div>
-</div>
-
-<div class="grid" style="margin-top:18px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
-  <div class="card">
-    <h2>Example 6.1: the sketch, as it runs</h2>
-    <div class="row" style="margin-bottom:8px">
-      <button id="step1" class="secondary" disabled>Step: one pass of loop()</button>
-      <button id="stepRead" class="secondary" disabled>Step to the next RES reading</button>
-      <label style="margin:0 0 0 auto"><input id="follow" type="checkbox" checked> Follow the code</label>
-    </div>
-    <div class="code-wrap" id="codeWrap"><pre class="code" id="code"></pre></div>
-    <p class="note"><span class="key hot"></span>running now · <span class="key warm"></span>ran in the last 2 s, fading · <span class="key flash"></span><code>setup()</code> or <code>changeSupply()</code>: a decision that just happened. <code>loop()</code> runs once every millisecond; it reads the RES on one pass in 100. Pause, then step through one pass at a time, or use slow motion.</p>
-  </div>
   <div class="card">
     <h2>What happened</h2>
     <div class="log" id="log"></div>
@@ -407,11 +439,32 @@ function hline(g, w, h, v, lo, hi, colour, dash) {
   g.strokeStyle = colour; g.lineWidth = 1.5; g.setLineDash(dash || []);
   g.beginPath(); g.moveTo(PAD.l, y); g.lineTo(w - PAD.r, y); g.stroke(); g.setLineDash([]);
 }
+// ---------------------------------------------------------------- graph picker
+const DEFAULT_GRAPHS = ['a0', 'cur'];
+let shown;
+try { shown = JSON.parse(localStorage.getItem('boardSimGraphs')); } catch (e) { shown = null; }
+if (!Array.isArray(shown)) shown = DEFAULT_GRAPHS;
+const pickBoxes = [...document.querySelectorAll('#pick input')];
+function applyGraphs() {
+  document.querySelectorAll('.chart').forEach(c => { c.hidden = !shown.includes(c.dataset.g); });
+  pickBoxes.forEach(b => { b.checked = shown.includes(b.value); });
+  $('pickSum').textContent = `Graphs: ${shown.length} of ${pickBoxes.length} ▾`;
+  $('noCharts').hidden = shown.length > 0;
+}
+pickBoxes.forEach(b => b.addEventListener('change', () => {
+  shown = pickBoxes.filter(x => x.checked).map(x => x.value);
+  try { localStorage.setItem('boardSimGraphs', JSON.stringify(shown)); } catch (e) {}
+  applyGraphs();
+}));
+document.addEventListener('click', e => { if (!$('pick').contains(e.target)) $('pick').open = false; });
+applyGraphs();
+const visible = g => shown.includes(g);
+
 function drawCharts() {
   const ok = css('--ok'), warn = css('--warn'), acc = css('--accent'), bad = css('--bad'), muted = css('--muted'), purple = '#8A4FB8';
   const supplyCol = p => p.bat ? warn : ok;
   // A0 reading
-  { const { g, w, h } = prep($('cA0')); const lo = 0, hi = 1023;
+  if (visible('a0')) { const { g, w, h } = prep($('cA0')); const lo = 0, hi = 1023;
     g.fillStyle = 'rgba(183,121,31,.16)';
     const y1 = yOf(kToRes, lo, hi, h, PAD), y2 = yOf(kToBattery, lo, hi, h, PAD);
     g.fillRect(PAD.l, y1, w - PAD.l - PAD.r, y2 - y1);
@@ -419,11 +472,11 @@ function drawCharts() {
     hline(g, w, h, kToBattery, lo, hi, muted, [5, 4]); hline(g, w, h, kToRes, lo, hi, muted, [5, 4]);
     trace(g, w, h, 'read', lo, hi, supplyCol); timeAxis(g, w, h); }
   // RES voltage
-  { const { g, w, h } = prep($('cRes')); const lo = 0, hi = 17;
+  if (visible('res')) { const { g, w, h } = prep($('cRes')); const lo = 0, hi = 17;
     axes(g, w, h, lo, hi, [0, 4, 8, 12, 16], v => v + ' V', PAD);
     trace(g, w, h, 'voc', lo, hi, () => muted, 1.5); trace(g, w, h, 'vterm', lo, hi, () => ok); timeAxis(g, w, h); }
   // drive
-  { const { g, w, h } = prep($('cDrive')); const lo = 0, hi = 100;
+  if (visible('drive')) { const { g, w, h } = prep($('cDrive')); const lo = 0, hi = 100;
     axes(g, w, h, lo, hi, [0, 25, 50, 75, 100], v => v + '%', PAD);
     trace(g, w, h, 'duty', lo, hi, () => acc);
     // pump voltage on the same chart, scaled 0-16 V to 0-100
@@ -433,12 +486,12 @@ function drawCharts() {
     g.fillStyle = purple; for (const v of [4, 8, 12]) g.fillText(v + ' V', w - PAD.r - 34, yOf(v / 16 * 100, lo, hi, h, PAD) - 3);
     timeAxis(g, w, h); }
   // current
-  { const { g, w, h } = prep($('cCur')); const lo = 0, hi = 6;
+  if (visible('cur')) { const { g, w, h } = prep($('cCur')); const lo = 0, hi = 6;
     axes(g, w, h, lo, hi, [0, 1, 2, 3, 4, 5, 6], v => v + ' A', PAD);
     hline(g, w, h, 2, lo, hi, bad, [3, 3]); hline(g, w, h, 2.5, lo, hi, bad);
     trace(g, w, h, 'i', lo, hi, p => p.i > 2.5 ? bad : acc); timeAxis(g, w, h); }
   // scope: three PWM periods at about 490 Hz
-  { const { g, w, h } = prep($('cScope')); const pad = { l: 44, r: 8, t: 8, b: 8 };
+  if (visible('scope')) { const { g, w, h } = prep($('cScope')); const pad = { l: 44, r: 8, t: 8, b: 8 };
     const level = A.level, lowFrac = level / 255;           // IN3 is LOW for level/255 of each period
     const midY = h / 2, top1 = pad.t + 10, bot1 = midY - 12, top2 = midY + 14, bot2 = h - pad.b - 4;
     g.fillStyle = muted; g.fillText('IN3', 4, (top1 + bot1) / 2 + 4); g.fillText('pump', 4, (top2 + bot2) / 2 + 4);
