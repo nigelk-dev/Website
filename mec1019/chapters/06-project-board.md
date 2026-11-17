@@ -649,8 +649,7 @@ moving even while the RES is being read.
 | Switch-over order | Break before make | Make before break |
 | PWM pin | ENB on D9 | IN3 on D3 (EnB on D4 held HIGH) |
 | `setPump()` | `analogWrite(9, level)` | `analogWrite(3, 255 - level)` |
-| Divider fraction | Calculated from R1, R2 (or measured) | Measured at TP1, stored in thousandths |
-| Numbers | `float` volts | Whole numbers only: readings and millivolts |
+| Divider fraction | From the two resistors, `kR1` and `kR2` | Measured at TP1, stored in thousandths |
 
 For **direct drive**, move JP1/JP2 to the direct positions: the L298N is then
 bypassed, and only the supply switching matters.

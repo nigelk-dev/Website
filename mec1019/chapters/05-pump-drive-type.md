@@ -428,6 +428,7 @@ new parts are `setPump()`, `startRamp()` and `updateRamp()`.
  *   D12 -> IN2 (RES relay), D13 -> IN1 (battery relay), active-LOW module;
  *   relay NO outputs -> L298N +12V; pump on OUT3/OUT4;
  *   D9 -> ENB (PWM, jumper removed), D8 -> IN3, D7 -> IN4; all grounds joined.
+ * Whole numbers only: there is no float anywhere in this sketch.
  */
 
 const uint8_t  kResPin     = A0;      // divider mid-point
@@ -439,12 +440,14 @@ const uint8_t  kIn4Pin     = 7;       // L298N IN4
 const uint8_t  kRelayOn    = LOW;     // the relay module is active-LOW
 const uint8_t  kRelayOff   = HIGH;
 
-const float    kRatio      = 0.3125;  // divider fraction: 10k / (22k + 10k); measure yours
-const float    kBatteryV   = 12.0;    // battery voltage (measure yours)
-const float    kToBatteryV = 8.0;     // RES volts: switch to the battery below this ...
-const float    kToResV     = 9.0;     // ... and back to the RES only above this
-const float    kAdcVref    = 5.0;
-const float    kAdcMax     = 1023.0;
+const long     kR1         = 22000;   // divider resistors in ohms (measure yours)
+const long     kR2         = 10000;
+const int      kBatteryMv  = 12000;   // battery voltage in millivolts (measure yours)
+
+// Hysteresis thresholds: RES millivolts, turned into analogRead values by the
+// compiler (RES mV x R2 / (R1 + R2) = A0 mV, then x 1023 / 5000).
+const int      kToBattery  = 8000L * kR2 / (kR1 + kR2) * 1023 / 5000;  // 8 V -> 511
+const int      kToRes      = 9000L * kR2 / (kR1 + kR2) * 1023 / 5000;  // 9 V -> 575
 
 const unsigned long kRampMs   = 2000; // time to reach full drive after a ramp starts
 const unsigned long kSampleMs = 100;  // time between RES readings
@@ -455,9 +458,10 @@ uint8_t       rampFrom     = 0;       // drive level when the current ramp start
 unsigned long rampStartMs  = 0;
 unsigned long lastSampleMs = 0;
 
-// The RES voltage, from the A0 reading and the divider fraction.
-float readResVolts() {
-  return analogRead(kResPin) * (kAdcVref / kAdcMax) / kRatio;
+// The RES voltage in millivolts, from an A0 reading. The sums are done in a
+// long, because 1023 x 5000 is far too big for an int.
+int resMillivolts(int reading) {
+  return (long)reading * 5000 / 1023 * (kR1 + kR2) / kR2;
 }
 
 // Drive the pump at 'lvl' (0 to 255): the PWM duty cycle on ENB.
@@ -487,11 +491,12 @@ void updateRamp(unsigned long now) {
 // Change supply, old relay off before new relay on (break before make).
 // If the new supply is higher, first cut the drive so the pump's average
 // voltage stays about the same, then let it ramp back up.
-void changeSupply(bool toBattery, float vRes) {
-  float vOld = toBattery ? vRes : kBatteryV;
-  float vNew = toBattery ? kBatteryV : vRes;
-  if (vNew > vOld) {
-    startRamp((uint8_t)(level * vOld / vNew));
+void changeSupply(bool toBattery, int reading) {
+  int resMv = resMillivolts(reading);
+  int oldMv = toBattery ? resMv : kBatteryMv;
+  int newMv = toBattery ? kBatteryMv : resMv;
+  if (newMv > oldMv) {
+    startRamp((long)level * oldMv / newMv);
   }
   digitalWrite(toBattery ? kResRelay : kBatRelay, kRelayOff);   // break ...
   digitalWrite(toBattery ? kBatRelay : kResRelay, kRelayOn);    // ... then make
@@ -511,7 +516,7 @@ void setup() {
   digitalWrite(kIn4Pin, LOW);
   setPump(0);                           // no drive yet
 
-  onBattery = readResVolts() < kToBatteryV;
+  onBattery = analogRead(kResPin) < kToBattery;
   digitalWrite(onBattery ? kBatRelay : kResRelay, kRelayOn);
   startRamp(0);                         // slow start from standstill
 }
@@ -522,11 +527,11 @@ void loop() {
   // 1. Every 100 ms, read the RES and decide on the supply (with hysteresis).
   if (now - lastSampleMs >= kSampleMs) {
     lastSampleMs = now;
-    float vRes = readResVolts();
-    if (!onBattery && vRes < kToBatteryV) {
-      changeSupply(true, vRes);         // RES clearly too low
-    } else if (onBattery && vRes > kToResV) {
-      changeSupply(false, vRes);        // RES clearly recovered
+    int reading = analogRead(kResPin);
+    if (!onBattery && reading < kToBattery) {
+      changeSupply(true, reading);      // RES clearly too low
+    } else if (onBattery && reading > kToRes) {
+      changeSupply(false, reading);     // RES clearly recovered
     }
   }
 
@@ -545,18 +550,26 @@ void loop() {
   makes the sum use `unsigned long` maths, because $255 \times 2000$ is too big for
   an `int`.
 - **`changeSupply()`** compares the old and new supply voltages. Only a step **up**
-  causes a surge, so only then is the drive cut before the switch.
+  causes a surge, so only then is the drive cut before the switch. Going from an
+  8 V RES to the 12 V battery at full drive, the drive becomes
+  $255 \times 8000 / 12000 = 170$.
+- **No `float`.** The decision compares the raw reading with `kToBattery` (511)
+  and `kToRes` (575), which the compiler works out from the resistors, as in
+  [Read input voltage](03-read-input-voltage.md#why-whole-numbers-are-better).
+  Only the drive scaling needs voltages, and `resMillivolts()` gives them in whole
+  millivolts: a 12 V RES puts 3.75 V on A0, a reading of 767, and
+  $767 \times 5000 / 1023 = 3748$ mV at A0, $\times\, 32\,000 / 10\,000 = 11\,993$ mV
+  from the RES. The `long` maths keeps the big intermediate numbers from
+  overflowing an `int`; multiplying before dividing keeps the precision.
 - **Nothing blocks.** Each pass of `loop()` takes well under a millisecond, so the
   RES is checked every 100 ms even in the middle of a ramp.
 
 **Things to set for your hardware**
 
-- `kRatio`, the divider fraction: apply a known voltage across the divider and
-  divide the voltage at A0 by it, both measured with a multimeter. Measure
-  `kBatteryV` too. (This sketch uses a `float` because it works out the pump's
-  average voltage at a switch-over; the switching decision itself could use whole
-  numbers, as in [Read input voltage](03-read-input-voltage.md).)
-- `kToBatteryV` and `kToResV` from the pump's minimum working voltage.
+- `kR1` and `kR2`: measure your two divider resistors with a multimeter and use
+  their actual values in ohms. Measure the battery too, for `kBatteryMv`.
+- The two thresholds, `8000L` and `9000L` (RES millivolts), from the pump's minimum
+  working voltage. Change only the millivolts: the compiler works out the readings.
 - `kRampMs`: longer means a smaller surge but a slower start. Watch the current
   with an oscilloscope and lengthen the ramp until the peak is close to the
   running current.
