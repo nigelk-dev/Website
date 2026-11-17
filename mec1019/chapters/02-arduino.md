@@ -351,13 +351,102 @@ void loop() {
 
 > ▶️ **[Run it: Example 1b in the code runner](applets/code-runner.html#ex1b)** — watch `i` step through the array and the on-time grow.
 
-### Exercise 1c — three LEDs, with a struct, a table and a function
+### Exercise 1c — three LEDs in sequence
 
 **Task:** blink a red LED 2 times, then a green LED 3 times, then a blue LED 4
-times, each blink 0.5 s on and 0.5 s off, and repeat.
+times, each blink 0.5 s on and 0.5 s off, and repeat. Use only `digitalWrite()`
+and `delay()` in `loop()`.
 
-Written out with `digitalWrite()` and `delay()`, those nine blinks take 36 lines.
-Three tools make it short and easy to change:
+Wire each LED as in Example 1a, from its own pin through its own 220 Ω resistor:
+red on pin 13, green on pin 12 and blue on pin 11. Every blink is then written out
+as four lines: LED on, wait, LED off, wait. Nine blinks need 36 lines.
+
+```cpp
+/*
+ * Exercise 1c: Blink three LEDs in sequence: red 2 times, green 3 times,
+ * blue 4 times, each blink 0.5 s on and 0.5 s off. Then repeat.
+ * Written out in full using only digitalWrite() and delay() in loop().
+ * Hardware: each LED in series with a 220 Ω resistor to GND.
+ */
+
+const uint8_t  kRedPin       = 13;     // red LED pin
+const uint8_t  kGreenPin     = 12;     // green LED pin
+const uint8_t  kBluePin      = 11;     // blue LED pin
+const uint16_t kHalfPeriodMs = 500;    // on time and off time (ms)
+
+void setup() {
+  pinMode(kRedPin, OUTPUT);            // all three LED pins are outputs
+  pinMode(kGreenPin, OUTPUT);
+  pinMode(kBluePin, OUTPUT);
+}
+
+void loop() {
+  // Red: blink 1 of 2
+  digitalWrite(kRedPin, HIGH);         // red on
+  delay(kHalfPeriodMs);                // wait 0.5 s
+  digitalWrite(kRedPin, LOW);          // red off
+  delay(kHalfPeriodMs);                // wait 0.5 s
+
+  // Red: blink 2 of 2
+  digitalWrite(kRedPin, HIGH);         // red on
+  delay(kHalfPeriodMs);                // wait 0.5 s
+  digitalWrite(kRedPin, LOW);          // red off
+  delay(kHalfPeriodMs);                // wait 0.5 s
+
+  // Green: blink 1 of 3
+  digitalWrite(kGreenPin, HIGH);       // green on
+  delay(kHalfPeriodMs);                // wait 0.5 s
+  digitalWrite(kGreenPin, LOW);        // green off
+  delay(kHalfPeriodMs);                // wait 0.5 s
+
+  // Green: blink 2 of 3
+  digitalWrite(kGreenPin, HIGH);       // green on
+  delay(kHalfPeriodMs);                // wait 0.5 s
+  digitalWrite(kGreenPin, LOW);        // green off
+  delay(kHalfPeriodMs);                // wait 0.5 s
+
+  // Green: blink 3 of 3
+  digitalWrite(kGreenPin, HIGH);       // green on
+  delay(kHalfPeriodMs);                // wait 0.5 s
+  digitalWrite(kGreenPin, LOW);        // green off
+  delay(kHalfPeriodMs);                // wait 0.5 s
+
+  // Blue: blink 1 of 4
+  digitalWrite(kBluePin, HIGH);        // blue on
+  delay(kHalfPeriodMs);                // wait 0.5 s
+  digitalWrite(kBluePin, LOW);         // blue off
+  delay(kHalfPeriodMs);                // wait 0.5 s
+
+  // Blue: blink 2 of 4
+  digitalWrite(kBluePin, HIGH);        // blue on
+  delay(kHalfPeriodMs);                // wait 0.5 s
+  digitalWrite(kBluePin, LOW);         // blue off
+  delay(kHalfPeriodMs);                // wait 0.5 s
+
+  // Blue: blink 3 of 4
+  digitalWrite(kBluePin, HIGH);        // blue on
+  delay(kHalfPeriodMs);                // wait 0.5 s
+  digitalWrite(kBluePin, LOW);         // blue off
+  delay(kHalfPeriodMs);                // wait 0.5 s
+
+  // Blue: blink 4 of 4
+  digitalWrite(kBluePin, HIGH);        // blue on
+  delay(kHalfPeriodMs);                // wait 0.5 s
+  digitalWrite(kBluePin, LOW);         // blue off
+  delay(kHalfPeriodMs);                // wait 0.5 s
+}
+```
+
+> ▶️ **[Run it: Exercise 1c in the code runner](applets/code-runner.html#ex1c)** — step down the long list of `digitalWrite` and `delay` calls and watch the three LEDs.
+
+This works, and every step is easy to follow, but it is long and repetitive.
+Changing one LED's count means adding or deleting four lines in exactly the right
+place, and it is easy to miss one.
+
+### A better way: a struct, a table and a function
+
+The same sequence can be written with far less code. Three tools make it short
+and easy to change:
 
 - a **`struct`** (`BlinkStep`) that bundles the two facts about each stage: which
   pin, and how many blinks;
@@ -366,8 +455,9 @@ Three tools make it short and easy to change:
 
 ```cpp
 /*
- * Exercise 1c: red 2 times, green 3 times, blue 4 times, each blink
- * 0.5 s on and 0.5 s off, using a struct, a table and a function.
+ * Exercise 1c(2): the same sequence as Exercise 1c (red 2 times, green
+ * 3 times, blue 4 times, each blink 0.5 s on and 0.5 s off), using a struct,
+ * a table and a function instead of writing every step out.
  * Hardware: each LED in series with a 220 Ω resistor to GND.
  */
 
@@ -429,7 +519,20 @@ The project code uses the same habits: named constants for every pin and
 threshold, and small functions such as `useBattery()` and `startRamp()` so that
 `loop()` reads like the specification.
 
-> ▶️ **[Run it: Exercise 1c in the code runner](applets/code-runner.html#ex1c2)** — press **Step** repeatedly: the Variables panel shows `step.pin` and `step.count` change as each row of the table is read.
+> ▶️ **[Run it: Exercise 1c with a struct in the code runner](applets/code-runner.html#ex1c2)** — press **Step** repeatedly: the Variables panel shows `step.pin` and `step.count` change as each row of the table is read.
+
+Comparing the two versions:
+
+| | Written out | Struct, table and function |
+|---|---|---|
+| Length of `loop()` | 36 lines of code | 3 lines of code |
+| Easy for a beginner to follow | Yes, every step is visible | Needs `struct`, arrays and functions |
+| Change green from 3 blinks to 5 | Add 8 lines in the right place | Change one number in the table |
+| Change the blink time | One constant in both | One constant in both |
+| Risk of mistakes | High: easy to miss or duplicate a line | Low: the blink code exists once |
+
+Both sketches behave identically on the board, but the struct version copes far
+better as programs grow.
 
 ---
 
