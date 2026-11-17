@@ -207,7 +207,7 @@ class Diagram:
             vx, vy = self.bot_pin["5V"]
             self.wire([(vx, vy), (vx, 815), (700, 815), (700, self.hdr("VCC")[1]), (hx, self.hdr("VCC")[1])], COL["5V"],
                       "5V → VCC", (vx + 10, 832))
-        else:                                   # from the top + rail, which the Arduino's 5V feeds
+        elif vcc_from == "rail":                # from the top + rail, which the Arduino's 5V feeds
             self.wire([(self.rail_x(1), self.rail("tp")), (686, self.rail("tp")), (686, self.hdr("VCC")[1]), (hx, self.hdr("VCC")[1])],
                       COL["5V"], "+ rail → VCC", (692, 668))
         self.texts.append(f'<text x="{gx-6}" y="312" text-anchor="end" font-size="13" font-weight="700" fill="{INK}" '
@@ -233,6 +233,16 @@ class Diagram:
             self.o(f'<circle cx="{tx}" cy="{y}" r="7" fill="#c9ccd2" stroke="#777"/>')
             self.o(f'<text x="{tx}" y="{y-12}" text-anchor="middle" font-size="14" font-weight="700" fill="{INK}">{s}</text>')
         return (x + 30, y), (x + 90, y)
+
+    def panel_pot(self, lx, y, label="5 kΩ pot"):
+        """A potentiometer with its three lugs pointing up at (lx, y), (lx+30, y), (lx+60, y)."""
+        for k in range(3):
+            self.o(f'<line x1="{lx+30*k}" y1="{y}" x2="{lx+30*k}" y2="{y+16}" stroke="#9a9a9a" stroke-width="3"/>')
+        self.o(f'<rect x="{lx-14}" y="{y+14}" width="88" height="54" rx="6" fill="#2f5fb3" stroke="#1d3f7a" stroke-width="2"/>')
+        self.o(f'<circle cx="{lx+30}" cy="{y+41}" r="18" fill="#e6e6e6" stroke="#8a8a8a" stroke-width="2"/>')
+        self.o(f'<line x1="{lx+30}" y1="{y+41}" x2="{lx+40}" y2="{y+26}" stroke="#555" stroke-width="3" stroke-linecap="round"/>')
+        self.note(lx + 86, y + 46, [(label, True, INK)], "start", 12)
+        return (lx, y), (lx + 30, y), (lx + 60, y)
 
     def lamp(self, x, y):
         self.o(f'<circle cx="{x}" cy="{y}" r="22" fill="#fff4c2" stroke="#c9a227" stroke-width="2.5"/>')
@@ -288,7 +298,7 @@ def ex3c(green=False, pot=False):
              "Exercise 3c wiring: a blue LED and resistor switched by relay 1, powered by a separate battery")
     d = Diagram(title)
     d.draw_relay_module()
-    d.relay_control(in2=green, vcc_from="rail" if pot else "pin")
+    d.relay_control(in2=green, vcc_from="none" if pot else "pin")
     # the battery feeds the bottom rails; the relays' COM terminals take their supply from the + rail
     bp, bn = d.battery(1190, 790)
     d.wire([bp, (bp[0], d.rail("bp"))], COL["BAT"], "battery + → + rail", (bp[0] - 140, 770))
@@ -303,22 +313,20 @@ def ex3c(green=False, pot=False):
         led_branch(d, 15, "#34c759", no2, [(1175, no2[1]), (1175, 318), (d.cx(15), 318)], "green LED + 220 Ω",
                    "NO 2 → green LED", (1040, 312))
     if pot:
-        pc = 5
-        d.pot(pc)
+        # a stand-alone pot under the Arduino: GND -> left lug, wiper -> A1, 5V -> right lug;
+        # the relay module's VCC takes its 5 V from the same lug
         vx, vy = d.bot_pin["5V"]
         gx, gy = d.bot_pin["GND"]
         ax, ay = d.bot_pin["A1"]
-        d.wire([(d.cx(pc - 1), d.row("a")), (d.rail_x(pc - 2), d.rail("tp"))], COL["5V"])
-        d.wire([(d.cx(pc + 1), d.row("a")), (d.rail_x(pc + 1), d.rail("tn"))], COL["GND"])
-        d.wire([(vx, vy), (vx, 860), (25, 860), (25, 8), (d.rail_x(2), 8), (d.rail_x(2), d.rail("tp"))], COL["5V"],
-               "5V → top + rail", (34, 300))
-        d.wire([(gx, gy), (gx, 845), (42, 845), (42, 20), (d.rail_x(4), 20), (d.rail_x(4), d.rail("tn"))], COL["GND"],
-               "GND → top − rail", (50, 270))
-        d.wire([(d.cx(pc), d.row("a")), (d.cx(pc), 14), (640, 14), (640, 875), (ax, 875), (ax, ay)], COL["A1"],
-               "pot wiper → A1", (ax + 12, 892))
+        lg, lw, l5 = d.panel_pot(560, 830)
+        d.wire([(gx, gy), (gx, 800), (lg[0], 800), lg], COL["GND"], "GND", (lg[0] - 42, 828))
+        d.wire([(ax, ay), (ax, 788), (lw[0], 788), lw], COL["A1"], "A1 ← wiper", (lw[0] + 6, 782))
+        d.wire([(vx, vy), (vx, 812), (l5[0], 812), l5], COL["5V"], "5V", (vx - 30, 826))
+        hx, hy = d.hdr("VCC")
+        d.wire([l5, (l5[0], 822), (700, 822), (700, hy), (hx, hy)], COL["5V"], "→ VCC", (706, 700))
     if pot:
-        foot = ("The pot (ends to the top + and − rails, wiper to A1) chooses which relay is on: below 2.5 V relay 2 (green), otherwise relay 1 (blue).",
-                "The Arduino's 5V and GND feed the top rails (the pot and the relay module); the battery feeds the bottom rails (the LEDs).")
+        foot = ("The pot's outer legs go to the Arduino's 5V and GND and its wiper to A1; it chooses which relay is on:",
+                "below 2.5 V relay 2 (green LED), otherwise relay 1 (blue LED). The relay module's VCC shares the pot's 5 V leg.")
     elif green:
         foot = ("The battery feeds the bottom + rail, which supplies both COM terminals; each relay's NO output lights its own LED.",
                 "The LEDs' power comes from the battery, not the Arduino: the Arduino only switches the relays.")

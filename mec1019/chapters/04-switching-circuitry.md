@@ -257,7 +257,7 @@ void loop() {
 Replace the pot with the divider from the RES and the LEDs with the RES and
 battery supplies, and you have the switch-over system.
 
-> ▶️ **[Run it: Exercise 3e in the code runner](applets/code-runner.html#ex3e)** — move the pot either side of 2.5 V and follow `setRelay()`.
+> ▶️ **[Run it: Exercise 3e in the code runner](applets/code-runner.html#ex3eint)** — move the pot either side of 2.5 V: the raw `reading` is compared with 511, and `setRelay()` switches the relays.
 
 ---
 
@@ -372,7 +372,7 @@ void loop() {
   hysteresis from [Read input voltage](03-read-input-voltage.md#hysteresis-stop-the-chatter)
   so the relays don't chatter when the RES hovers near the threshold.
 
-> ▶️ **[Run it: the switch-over sketch in the code runner](applets/code-runner.html#p8)** — drag the A0 voltage below 2.5 V and watch the load move to the battery.
+> ▶️ **[Run it: the switch-over sketch in the code runner](applets/code-runner.html#p8int)** — drag the A0 voltage below 2.5 V: the raw `reading` drops below 511 and the load moves to the battery.
 
 > 🔧 **Try it:** [RES battery-backup simulator](applets/res-backup.html) — vary the wind, the divider and the threshold, and watch the Arduino switch the load between the RES and the battery.
 

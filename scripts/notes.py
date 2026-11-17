@@ -277,6 +277,110 @@ def mec1019(src, dest, excluded):
     for page in list((dest / "applets").glob("*.html")) + list((dest / "applets").glob("*.js")):
         html = page.read_text(encoding="utf-8")
         page.write_text(mec1019_part_refs(html), encoding="utf-8")
+    mec1019_runner_extras(dest / "applets")
+
+
+def _chapter_code(after_heading):
+    """The first C++ block after a heading in the Switching circuitry chapter."""
+    md = (MEC1019_CHAPTERS / "04-switching-circuitry.md").read_text(encoding="utf-8")
+    return re.search(re.escape(after_heading) + r".*?```cpp\n(.*?)\n```", md, re.S).group(1)
+
+
+def _add_runner_sketch(applets, base, key, code, edits, option_text):
+    """Add a variant of the code runner's sketch `base` as `key`: the sketch text
+    is `code` (from the chapter) and the step-through program is the base one
+    with the (old, new) text `edits` applied."""
+    runner, sketches = applets / "code-runner.html", applets / "sketches.js"
+    js, html = sketches.read_text(encoding="utf-8"), runner.read_text(encoding="utf-8")
+    if f"\n  {key}: {{" in html:
+        return
+    block = re.search(r"\n  " + base + r": \{.*?\n  \},\n", html, re.S).group(0)
+    new = block.replace(f"{base}: {{", f"{key}: {{", 1)
+    for old, rep in edits:
+        if old not in new:                    # the notes' program changed: leave the runner as it is
+            print(f"warning: code runner {base} not in the expected form; {key} not added", file=sys.stderr)
+            return
+        new = new.replace(old, rep)
+    js = re.sub(r'(\n  "' + base + r'": .*?",)\n', lambda m: m.group(1) + f'\n  "{key}": ' + json.dumps(code, ensure_ascii=False) + ",\n",
+                js, count=1, flags=re.S)
+    html = html.replace(block, block + new[1:], 1)
+    html = re.sub(r'(<option value="' + base + r'">[^<]*</option>)', lambda m: m.group(1) +
+                  f'\n      <option value="{key}">{option_text}</option>', html, count=1)
+    sketches.write_text(js, encoding="utf-8")
+    runner.write_text(html, encoding="utf-8")
+
+
+def mec1019_runner_extras(applets):
+    """Whole-number versions of the sketches the chapters now use.
+
+    The course notes' code runner and RES battery-backup simulator use float
+    versions of Exercise 3e and the switch-over sketch; the Switching circuitry
+    chapter compares the raw analogRead value with a whole-number threshold.
+    The sketch text comes from the chapter, so the applets always match it."""
+    if not (applets / "code-runner.html").exists():
+        return
+    _add_runner_sketch(applets, "ex3e", "ex3eint", _chapter_code("### Exercise 3e"), [
+        ("title:'Exercise 3e'", "title:'Exercise 3e, integer version'"),
+        ("desc:'Move the slider either side of 2.5 V.",
+         "desc:'Move the slider either side of 2.5 V: the raw analogRead value is compared with 511, so no float is needed."),
+        ("yield* io.at('float vOut = readVolts(kPotPin);');\n      const v = yield* readVoltsShort('A1');\n"
+         "      setVars({vOut:f2(v), 'vOut < kThreshold': v < 2.5});\n"
+         "      yield* io.at('Serial.println(vOut);'); io.print(f2(v) + '\\n');\n"
+         "      yield* io.at('if (vOut < kThreshold) {');\n      if (v < 2.5){",
+         "yield* io.at('int reading = analogRead(kPotPin);'); const r = io.analogRead('A1');\n"
+         "      setVars({reading:r, kThreshold:511, 'reading < kThreshold': r < 511});\n"
+         "      yield* io.at('Serial.println(reading);'); io.print(r + '\\n');\n"
+         "      yield* io.at('if (reading < kThreshold) {');\n      if (r < 511){"),
+    ], "Exercise 3e — the same with whole numbers (no float)")
+    _add_runner_sketch(applets, "p8", "p8int", _chapter_code("### The code"), [
+        ("title:'RES / battery switch-over'", "title:'RES / battery switch-over, integer version'"),
+        ("pin:'A2', label:'Voltage at A2 (RES after the divider)'", "pin:'A0', label:'Voltage at A0 (RES after the divider)'"),
+        ("desc:'Drag the A2 voltage below 2.5 V",
+         "desc:'The raw analogRead value is compared with 511 (2.5 V), so no float is needed. Drag the A0 voltage below 2.5 V"),
+        ("      yield* io.at('useRes();', 1); yield* useRes();\n", ""),
+        ("yield* io.at('float vPin = readVolts(kResPin);');\n      const v = yield* readVoltsShort('A2');\n"
+         "      setVars({vPin:f2(v), 'vPin < kThresholdV (2.5)': v < 2.5});\n"
+         "      yield* io.at('Serial.println(vPin);'); io.print(f2(v) + '\\n');\n"
+         "      yield* io.at('if (vPin < kThresholdV) {');\n      if (v < 2.5){",
+         "yield* io.at('int reading = analogRead(kResPin);'); const r = io.analogRead('A0');\n"
+         "      setVars({reading:r, kSwitchReading:511, 'reading < kSwitchReading': r < 511});\n"
+         "      yield* io.at('Serial.println(reading);'); io.print(r + '\\n');\n"
+         "      yield* io.at('if (reading < kSwitchReading) {');\n      if (r < 511){"),
+        ("yield* io.at('useRes();', 2)", "yield* io.at('useRes();', 1)"),
+    ], "Switch-over — the same with whole numbers (no float)")
+    mec1019_res_backup_sketch(applets / "res-backup.html")
+
+
+def mec1019_res_backup_sketch(page):
+    """The RES battery-backup simulator shows a sketch for its settings. Replace
+    its float version with the chapter's whole-number one, with the simulator's
+    threshold turned into an analogRead value."""
+    if not page.exists():
+        return
+    html = page.read_text(encoding="utf-8")
+    m = re.search(r"function code\(th\)\{ return `.*?`; \}", html, re.S)
+    if not m:
+        print("warning: res-backup.html sketch not in the expected form; left as it is", file=sys.stderr)
+        return
+    code = _chapter_code("### The code")
+    code = re.sub(r"// Below this reading.*?\nconst int      kSwitchReading = 2500L \* 1023 / 5000;",
+                  "// Below this reading the RES is too low: ${th.toFixed(1)} V at A0 -> ${Math.floor(th*1000*1023/5000)}.\n"
+                  "// Worked out by the compiler, so the sketch uses no float at all.\n"
+                  "const int      kSwitchReading = ${Math.round(th*1000)}L * 1023 / 5000;", code, flags=re.S)
+    if "${Math.round(th*1000)}L" not in code:
+        print("warning: switch-over sketch not in the expected form; res-backup.html left as it is", file=sys.stderr)
+        return
+    code = code.replace("\\", "\\\\").replace("`", "\\`")
+    html = html.replace(m.group(0), "function code(th){ return `" + code + "`; }", 1)
+    html = html.replace("The slide version compares at 2.5 V; adjust the threshold above to see the generated code change.",
+                        "The threshold is an <code>analogRead</code> value worked out by the compiler, so the sketch uses no "
+                        "<code>float</code>; adjust the threshold above to see the generated code change.")
+    # The serial monitor shows what the sketch prints: the raw reading, and the
+    # switch decision uses the same whole-number comparison.
+    for old, new in (("s.textContent += RES_volt.toFixed(2)+'\\n';", "s.textContent += adc+'\\n';"),
+                     ("const onBattery = RES_volt < th;", "const onBattery = adc < Math.floor(th*1000*1023/5000);")):
+        html = html.replace(old, new, 1)
+    page.write_text(html, encoding="utf-8")
 
 
 # ---------------------------------------------------------------- MEC1002
