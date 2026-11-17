@@ -216,13 +216,63 @@ void loop() {
 }
 ```
 
-- **`const`** means the value can never change while the program runs. If you
-  accidentally write `kLedPin = 12;` later, the compiler stops with an error.
-- **`uint8_t`** is a whole number that uses 1 byte and holds 0 to 255: plenty for
-  a pin number. **`uint16_t`** uses 2 bytes, 0 to 65 535, enough for delays up to
-  about 65 s.
-- The **`k`** at the start of a name is a convention for *constant*: a fixed value
-  set at the top of the file.
+### Why `const`, unsigned types and the `k` prefix
+
+The first two lines of the sketch could have been written `int ledPin = 13;` and
+`int halfPeriodMs = 500;`, and the LED would still blink. Each part of
+`const uint8_t kLedPin = 13;` is there for a reason.
+
+**`const`: the value can't change.**
+
+- The LED is always on pin 13 while the sketch runs, so the value is locked with
+  `const`. If a line later in the code accidentally writes `kLedPin = 12;`, the
+  compiler stops with an error instead of letting the mistake through to the board.
+- It tells anyone reading the code that this is a fixed setting, not something the
+  program changes as it runs.
+- The compiler can put the number straight into the instructions that use it, so a
+  `const` often takes no RAM at all. That matters on a chip with only 2 KB of RAM
+  for variables.
+- It makes a hardware change a one-line edit: move the LED to pin 12 and you change
+  `13` to `12` at the top of the file, and every use follows.
+
+**`uint8_t` and `uint16_t` rather than `int`: unsigned, and the right size.**
+
+The name says what the type is: **u** for *unsigned*, **int** for integer, the
+number of **bits**, and **_t** for *type*.
+
+| Type | Size | Range | Used here for |
+|---|---|---|---|
+| `int` | 2 bytes (16 bits), signed | −32 768 to 32 767 | — |
+| `uint8_t` | 1 byte (8 bits), unsigned | 0 to 255 | `kLedPin`: pin numbers only go up to 19 on the Uno |
+| `uint16_t` | 2 bytes (16 bits), unsigned | 0 to 65 535 | `kHalfPeriodMs`: delays up to about 65 s |
+
+- **Unsigned means no negative numbers.** An `int` spends half its range on negative
+  values. A pin number or a time in milliseconds can never be negative, so an
+  unsigned type says so, and gives the whole range to positive values: a
+  `uint16_t` reaches 65 535, where an `int` stops at 32 767 (a delay of only
+  about 33 s).
+- **The smallest type that fits.** A pin number fits in one byte, so `uint8_t` uses
+  half the memory of an `int`. With 2 KB of RAM, choosing the size deliberately is a
+  good habit.
+- **The size is fixed.** An `int` is 2 bytes on the Uno but 4 bytes on many other
+  boards and computers, so its range changes from one to another. `uint8_t` and
+  `uint16_t` are the same size everywhere.
+- **When `int` is the right choice:** for values that can be negative, or for loop
+  counters that might step below 0 or past 255 (see [Pump drive
+  type](05-pump-drive-type.md#a-ramp-is-a-fade)), a signed `int` is safer.
+
+**The `k` prefix: it marks a constant.**
+
+The `k` at the start of `kLedPin` and `kHalfPeriodMs` is a naming convention, used
+in many style guides (including Google's C++ style), meaning *constant*.
+
+- Wherever `kLedPin` appears in the code, the `k` tells you straight away it's a fixed
+  setting from the top of the file, without scrolling back to check.
+- Ordinary variables, whose values change while the program runs, have no `k`: for
+  example `ledOn` and `lastToggleMs` in Section 8.
+- The compiler ignores it: `k` is only for the people reading the code. Other
+  conventions do the same job, such as writing constants in capitals
+  (`LED_PIN`). What matters is using one convention consistently.
 
 Pin 13 also drives the on-board "L" LED, which is a useful check before any
 external wiring.
