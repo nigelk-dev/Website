@@ -1,335 +1,640 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -9 78 72" width="1040" height="960">
-<title>Illustrative top view of the RenewableSwitchOver Arduino shield, drawn from its schematic</title>
-<rect x="-4" y="-9" width="78" height="72" rx="0" fill="#ffffff" stroke="none" stroke-width="0.1" />
-<text x="0" y="-5.4" font-size="1.7" text-anchor="start" fill="#16212B" font-weight="700" font-family="Helvetica, Arial, sans-serif">The RenewableSwitchOver shield (illustration from the schematic)</text>
-<text x="0" y="-3.2" font-size="1.15" text-anchor="start" fill="#56646F" font-weight="400" font-family="Helvetica, Arial, sans-serif">Top view, to scale on an Arduino Uno outline: the USB and power jacks are underneath on the left.</text>
-<path d="M0.8 0 L66.03999999999999 0 L66.03999999999999 1.27 L68.58 3.81 L68.58 38.1 L66.03999999999999 40.64 L66.03999999999999 51.82 L64.52 53.34 L0.8 53.34 Q0 53.34 0 52.540000000000006 L0 0.8 Q0 0 0.8 0 Z" fill="#1f6b3c" stroke="#164f2c" stroke-width="0.35"/>
-<path d="M0.8 0 L66.03999999999999 0 L66.03999999999999 1.27 L68.58 3.81 L68.58 38.1 L66.03999999999999 40.64 L66.03999999999999 51.82 L64.52 53.34 L0.8 53.34 Q0 53.34 0 52.540000000000006 L0 0.8 Q0 0 0.8 0 Z" fill="url(#weave)" opacity="0.25"/>
-<defs><pattern id="weave" width="1.6" height="1.6" patternUnits="userSpaceOnUse"><path d="M0 1.6 L1.6 0" stroke="#2f8a52" stroke-width="0.08"/></pattern></defs>
-<circle cx="15.24" cy="2.54" r="2.0" fill="#d6b04a"/><circle cx="15.24" cy="2.54" r="1.6" fill="#ffffff" stroke="#9aa5ad" stroke-width="0.1"/>
-<circle cx="13.97" cy="50.8" r="2.0" fill="#d6b04a"/><circle cx="13.97" cy="50.8" r="1.6" fill="#ffffff" stroke="#9aa5ad" stroke-width="0.1"/>
-<circle cx="66.04" cy="17.78" r="2.0" fill="#d6b04a"/><circle cx="66.04" cy="17.78" r="1.6" fill="#ffffff" stroke="#9aa5ad" stroke-width="0.1"/>
-<circle cx="66.04" cy="45.72" r="2.0" fill="#d6b04a"/><circle cx="66.04" cy="45.72" r="1.6" fill="#ffffff" stroke="#9aa5ad" stroke-width="0.1"/>
-<circle cx="18.796" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="18.796" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="18.796" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">SCL</text>
-<circle cx="21.336" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="21.336" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="21.336" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">SDA</text>
-<circle cx="23.875999999999998" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="23.875999999999998" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="23.875999999999998" y="4.9399999999999995" font-size="0.5" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">AREF</text>
-<circle cx="26.416" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="26.416" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="26.416" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">GND</text>
-<circle cx="28.956" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="28.956" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="28.956" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">13</text>
-<circle cx="31.496" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="31.496" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="31.496" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">12</text>
-<circle cx="34.036" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="34.036" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="34.036" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">11</text>
-<circle cx="36.576" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="36.576" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="36.576" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">10</text>
-<circle cx="39.116" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="39.116" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="39.116" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">9</text>
-<circle cx="41.656" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="41.656" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="41.656" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">8</text>
-<circle cx="45.72" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="45.72" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="45.72" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">7</text>
-<circle cx="48.26" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="48.26" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="48.26" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">6</text>
-<circle cx="50.8" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="50.8" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="50.8" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">5</text>
-<circle cx="53.339999999999996" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="53.339999999999996" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="53.339999999999996" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">4</text>
-<circle cx="55.879999999999995" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="55.879999999999995" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="55.879999999999995" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">3</text>
-<circle cx="58.42" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="58.42" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="58.42" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">2</text>
-<circle cx="60.96" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="60.96" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="60.96" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">1</text>
-<circle cx="63.5" cy="2.54" r="0.85" fill="#d6b04a"/>
-<circle cx="63.5" cy="2.54" r="0.45" fill="#0d2416"/>
-<text x="63.5" y="4.9399999999999995" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">0</text>
-<circle cx="27.94" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="27.94" cy="50.8" r="0.45" fill="#0d2416"/>
-<circle cx="30.48" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="30.48" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="30.48" y="49.199999999999996" font-size="0.5" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">IOREF</text>
-<circle cx="33.02" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="33.02" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="33.02" y="49.199999999999996" font-size="0.5" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">RESET</text>
-<circle cx="35.56" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="35.56" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="35.56" y="49.199999999999996" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">3V3</text>
-<circle cx="38.1" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="38.1" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="38.1" y="49.199999999999996" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">5V</text>
-<circle cx="40.64" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="40.64" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="40.64" y="49.199999999999996" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">GND</text>
-<circle cx="43.18" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="43.18" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="43.18" y="49.199999999999996" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">GND</text>
-<circle cx="45.72" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="45.72" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="45.72" y="49.199999999999996" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">VIN</text>
-<circle cx="50.8" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="50.8" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="50.8" y="49.199999999999996" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">A0</text>
-<circle cx="53.339999999999996" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="53.339999999999996" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="53.339999999999996" y="49.199999999999996" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">A1</text>
-<circle cx="55.879999999999995" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="55.879999999999995" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="55.879999999999995" y="49.199999999999996" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">A2</text>
-<circle cx="58.419999999999995" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="58.419999999999995" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="58.419999999999995" y="49.199999999999996" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">A3</text>
-<circle cx="60.959999999999994" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="60.959999999999994" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="60.959999999999994" y="49.199999999999996" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">A4</text>
-<circle cx="63.5" cy="50.8" r="0.85" fill="#d6b04a"/>
-<circle cx="63.5" cy="50.8" r="0.45" fill="#0d2416"/>
-<text x="63.5" y="49.199999999999996" font-size="0.7" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">A5</text>
-<rect x="17.526" y="1.27" width="25.4" height="2.54" rx="0" fill="none" stroke="#f4f4f0" stroke-width="0.15" />
-<rect x="44.449999999999996" y="1.27" width="20.32" height="2.54" rx="0" fill="none" stroke="#f4f4f0" stroke-width="0.15" />
-<rect x="26.67" y="49.529999999999994" width="20.319999999999997" height="2.54" rx="0" fill="none" stroke="#f4f4f0" stroke-width="0.15" />
-<rect x="49.529999999999994" y="49.529999999999994" width="15.240000000000002" height="2.54" rx="0" fill="none" stroke="#f4f4f0" stroke-width="0.15" />
-<rect x="33.3" y="6.6" width="23.0" height="13.4" rx="0.8" fill="none" stroke="#f4f4f0" stroke-width="0.18" stroke-dasharray="0.9 0.6" opacity="0.75"/>
-<text x="34.099999999999994" y="8.1" font-size="1.05" text-anchor="start" fill="#f4f4f0" font-weight="700" font-family="Helvetica, Arial, sans-serif">BATTERY SWITCH · D12</text>
-<rect x="34.65" y="14.825" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="36.6" y="14.825" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="35.3" y="14.975" width="1.4" height="1.25" rx="0" fill="#1b1b1b" stroke="none" stroke-width="0.1" />
-<text x="36.0" y="15.85" font-size="0.55" text-anchor="middle" fill="#e8e8e8" font-weight="400" font-family="Helvetica, Arial, sans-serif">2k4</text>
-<text x="36.0" y="17.525000000000002" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">R3</text>
-<rect x="38.449999999999996" y="14.95" width="2.9" height="1.3" rx="0" fill="#1b1b1b" stroke="none" stroke-width="0.1" />
-<rect x="38.699999999999996" y="16.25" width="0.5" height="0.7" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="40.6" y="16.25" width="0.5" height="0.7" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="39.65" y="14.25" width="0.5" height="0.7" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="38.15" y="14.65" width="3.5" height="1.9" rx="0" fill="none" stroke="#f4f4f0" stroke-width="0.15" />
-<text x="39.9" y="14.0" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">Q1</text>
-<rect x="39.125" y="9.05" width="1.55" height="0.75" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="39.125" y="11.0" width="1.55" height="0.75" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="39.275" y="9.700000000000001" width="1.25" height="1.4" rx="0" fill="#1b1b1b" stroke="none" stroke-width="0.1" />
-<text x="39.9" y="10.65" font-size="0.55" text-anchor="middle" fill="#e8e8e8" font-weight="400" font-family="Helvetica, Arial, sans-serif" transform="rotate(-90 39.9 10.65)">10k</text>
-<text x="38.375" y="10.700000000000001" font-size="0.85" text-anchor="end" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">R5</text>
-<rect x="42.300000000000004" y="8.7" width="6.6" height="2.2" rx="0.2" fill="#c9ccd2" stroke="#8a8f98" stroke-width="0.1" />
-<rect x="42.300000000000004" y="10.4" width="6.6" height="5.6" rx="0.3" fill="#1b1b1b" stroke="#000" stroke-width="0.1" />
-<rect x="42.87" y="16.0" width="0.9" height="1.6" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="47.43" y="16.0" width="0.9" height="1.6" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<text x="45.6" y="13.2" font-size="0.75" text-anchor="middle" fill="#cfcfcf" font-weight="400" font-family="Helvetica, Arial, sans-serif">+12V</text>
-<text x="45.6" y="14.4" font-size="0.55" text-anchor="middle" fill="#9a9a9a" font-weight="400" font-family="Helvetica, Arial, sans-serif">P-MOSFET</text>
-<text x="45.6" y="18.7" font-size="0.95" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">Q3</text>
-<rect x="52.05" y="8.399999999999999" width="2.7" height="1.0" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="52.05" y="13.8" width="2.7" height="1.0" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="51.6" y="9.2" width="3.6" height="4.8" rx="0.2" fill="#2a2a2a" stroke="#000" stroke-width="0.1" />
-<rect x="51.6" y="9.2" width="3.6" height="0.8" rx="0" fill="#9a9a9a" stroke="none" stroke-width="0.1" />
-<text x="53.4" y="12.2" font-size="0.55" text-anchor="middle" fill="#cfcfcf" font-weight="400" font-family="Helvetica, Arial, sans-serif" transform="rotate(-90 53.4 12.2)">1N5400</text>
-<text x="51.1" y="11.9" font-size="0.95" text-anchor="end" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">D1</text>
-<path d="M53.25 16.25 L52.15 16.25 L52.15 17.75 L53.25 17.75 L52.85 17.0 Z" fill="#d6b04a"/>
-<path d="M53.449999999999996 16.25 L54.65 16.25 L54.65 17.75 L53.449999999999996 17.75 L53.05 17.0 Z" fill="#d6b04a"/>
-<rect x="52.85" y="16.65" width="0.8" height="0.7" rx="0.3" fill="#cfd3d8" stroke="none" stroke-width="0.1" />
-<rect x="51.8" y="15.95" width="3.2" height="2.1" rx="0" fill="none" stroke="#f4f4f0" stroke-width="0.15" />
-<text x="53.4" y="19.1" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">JP3</text>
-<rect x="33.3" y="21.0" width="23.0" height="13.4" rx="0.8" fill="none" stroke="#f4f4f0" stroke-width="0.18" stroke-dasharray="0.9 0.6" opacity="0.75"/>
-<text x="34.099999999999994" y="22.5" font-size="1.05" text-anchor="start" fill="#f4f4f0" font-weight="700" font-family="Helvetica, Arial, sans-serif">RES SWITCH · D13</text>
-<rect x="34.65" y="29.225" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="36.6" y="29.225" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="35.3" y="29.375" width="1.4" height="1.25" rx="0" fill="#1b1b1b" stroke="none" stroke-width="0.1" />
-<text x="36.0" y="30.25" font-size="0.55" text-anchor="middle" fill="#e8e8e8" font-weight="400" font-family="Helvetica, Arial, sans-serif">2k4</text>
-<text x="36.0" y="31.925" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">R4</text>
-<rect x="38.449999999999996" y="29.35" width="2.9" height="1.3" rx="0" fill="#1b1b1b" stroke="none" stroke-width="0.1" />
-<rect x="38.699999999999996" y="30.65" width="0.5" height="0.7" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="40.6" y="30.65" width="0.5" height="0.7" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="39.65" y="28.65" width="0.5" height="0.7" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="38.15" y="29.05" width="3.5" height="1.9" rx="0" fill="none" stroke="#f4f4f0" stroke-width="0.15" />
-<text x="39.9" y="28.4" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">Q2</text>
-<rect x="39.125" y="23.45" width="1.55" height="0.75" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="39.125" y="25.400000000000002" width="1.55" height="0.75" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="39.275" y="24.1" width="1.25" height="1.4" rx="0" fill="#1b1b1b" stroke="none" stroke-width="0.1" />
-<text x="39.9" y="25.05" font-size="0.55" text-anchor="middle" fill="#e8e8e8" font-weight="400" font-family="Helvetica, Arial, sans-serif" transform="rotate(-90 39.9 25.05)">10k</text>
-<text x="38.375" y="25.1" font-size="0.85" text-anchor="end" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">R6</text>
-<rect x="42.300000000000004" y="23.099999999999998" width="6.6" height="2.2" rx="0.2" fill="#c9ccd2" stroke="#8a8f98" stroke-width="0.1" />
-<rect x="42.300000000000004" y="24.799999999999997" width="6.6" height="5.6" rx="0.3" fill="#1b1b1b" stroke="#000" stroke-width="0.1" />
-<rect x="42.87" y="30.4" width="0.9" height="1.6" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="47.43" y="30.4" width="0.9" height="1.6" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<text x="45.6" y="27.599999999999998" font-size="0.75" text-anchor="middle" fill="#cfcfcf" font-weight="400" font-family="Helvetica, Arial, sans-serif">Vdrive</text>
-<text x="45.6" y="28.799999999999997" font-size="0.55" text-anchor="middle" fill="#9a9a9a" font-weight="400" font-family="Helvetica, Arial, sans-serif">P-MOSFET</text>
-<text x="45.6" y="33.1" font-size="0.95" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">Q4</text>
-<rect x="52.05" y="22.8" width="2.7" height="1.0" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="52.05" y="28.2" width="2.7" height="1.0" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="51.6" y="23.6" width="3.6" height="4.8" rx="0.2" fill="#2a2a2a" stroke="#000" stroke-width="0.1" />
-<rect x="51.6" y="23.6" width="3.6" height="0.8" rx="0" fill="#9a9a9a" stroke="none" stroke-width="0.1" />
-<text x="53.4" y="26.6" font-size="0.55" text-anchor="middle" fill="#cfcfcf" font-weight="400" font-family="Helvetica, Arial, sans-serif" transform="rotate(-90 53.4 26.6)">1N5400</text>
-<text x="51.1" y="26.3" font-size="0.95" text-anchor="end" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">D2</text>
-<path d="M53.25 30.65 L52.15 30.65 L52.15 32.15 L53.25 32.15 L52.85 31.4 Z" fill="#d6b04a"/>
-<path d="M53.449999999999996 30.65 L54.65 30.65 L54.65 32.15 L53.449999999999996 32.15 L53.05 31.4 Z" fill="#d6b04a"/>
-<rect x="52.85" y="31.049999999999997" width="0.8" height="0.7" rx="0.3" fill="#cfd3d8" stroke="none" stroke-width="0.1" />
-<rect x="51.8" y="30.349999999999998" width="3.2" height="2.1" rx="0" fill="none" stroke="#f4f4f0" stroke-width="0.15" />
-<text x="53.4" y="33.5" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">JP4</text>
-<rect x="34.65" y="37.5" width="0.8" height="1.4" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="36.55" y="37.5" width="0.8" height="1.4" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="35.25" y="37.580000000000005" width="1.5" height="1.24" rx="0" fill="#f2f2ee" stroke="#bbb" stroke-width="0.08" />
-<circle cx="36.0" cy="38.2" r="0.42" fill="#e53935"/>
-<path d="M37.7 37.300000000000004 L37.7 39.1" stroke="#f4f4f0" stroke-width="0.15"/>
-<text x="36.0" y="36.95" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">D3</text>
-<text x="36.0" y="40.1" font-size="0.8" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">BAT ON</text>
-<rect x="34.65" y="41.625" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="36.6" y="41.625" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="35.3" y="41.775" width="1.4" height="1.25" rx="0" fill="#1b1b1b" stroke="none" stroke-width="0.1" />
-<text x="36.0" y="42.65" font-size="0.55" text-anchor="middle" fill="#e8e8e8" font-weight="400" font-family="Helvetica, Arial, sans-serif">360</text>
-<text x="36.0" y="44.324999999999996" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">R8</text>
-<rect x="39.05" y="37.5" width="0.8" height="1.4" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="40.949999999999996" y="37.5" width="0.8" height="1.4" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="39.65" y="37.580000000000005" width="1.5" height="1.24" rx="0" fill="#f2f2ee" stroke="#bbb" stroke-width="0.08" />
-<circle cx="40.4" cy="38.2" r="0.42" fill="#e53935"/>
-<path d="M42.1 37.300000000000004 L42.1 39.1" stroke="#f4f4f0" stroke-width="0.15"/>
-<text x="40.4" y="36.95" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">D4</text>
-<text x="40.4" y="40.1" font-size="0.8" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">RES ON</text>
-<rect x="39.05" y="41.625" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="41.0" y="41.625" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="39.699999999999996" y="41.775" width="1.4" height="1.25" rx="0" fill="#1b1b1b" stroke="none" stroke-width="0.1" />
-<text x="40.4" y="42.65" font-size="0.55" text-anchor="middle" fill="#e8e8e8" font-weight="400" font-family="Helvetica, Arial, sans-serif">360</text>
-<text x="40.4" y="44.324999999999996" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">R9</text>
-<rect x="43.6" y="35.3" width="12.7" height="11.6" rx="0.8" fill="none" stroke="#f4f4f0" stroke-width="0.18" stroke-dasharray="0.9 0.6" opacity="0.75"/>
-<text x="44.4" y="36.8" font-size="1.05" text-anchor="start" fill="#f4f4f0" font-weight="700" font-family="Helvetica, Arial, sans-serif">VOLTAGE SCALING</text>
-<rect x="45.025" y="39.55" width="1.55" height="0.75" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="45.025" y="41.5" width="1.55" height="0.75" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="45.175" y="40.199999999999996" width="1.25" height="1.4" rx="0" fill="#1b1b1b" stroke="none" stroke-width="0.1" />
-<text x="45.8" y="41.15" font-size="0.55" text-anchor="middle" fill="#e8e8e8" font-weight="400" font-family="Helvetica, Arial, sans-serif" transform="rotate(-90 45.8 41.15)">10k</text>
-<text x="45.8" y="43.199999999999996" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">R7</text>
-<rect x="48.5" y="38.9" width="4.2" height="4.0" rx="0.3" fill="#f1f1ec" stroke="#b8b8b0" stroke-width="0.1" />
-<circle cx="50.6" cy="40.9" r="1.45" fill="#d9dce0" stroke="#8a8f98" stroke-width="0.12"/>
-<path d="M49.7 40.9 L51.5 40.9 M50.6 40.0 L50.6 41.8" stroke="#555" stroke-width="0.3"/>
-<rect x="48.6" y="42.9" width="1.0" height="0.8" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="51.6" y="42.9" width="1.0" height="0.8" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="50.0" y="38.1" width="1.2" height="0.8" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<text x="50.6" y="44.6" font-size="0.75" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">SwitchOverADJ</text>
-<text x="53.2" y="40.0" font-size="0.85" text-anchor="start" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">RV1</text>
-<text x="53.2" y="41.2" font-size="0.7" text-anchor="start" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">trimmer</text>
-<circle cx="46.4" cy="45.3" r="0.95" fill="#d6b04a"/>
-<circle cx="46.4" cy="45.3" r="1.35" fill="none" stroke="#f4f4f0" stroke-width="0.15"/>
-<text x="46.4" y="43.5" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif"></text>
-<text x="46.4" y="47.699999999999996" font-size="0.75" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif"></text>
-<text x="48.0" y="45.65" font-size="0.75" text-anchor="start" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">TP1 · A0 (AnalogIn)</text>
-<rect x="16.6" y="6.6" width="16.0" height="40.3" rx="0.8" fill="none" stroke="#f4f4f0" stroke-width="0.18" stroke-dasharray="0.9 0.6" opacity="0.75"/>
-<text x="17.400000000000002" y="8.1" font-size="1.05" text-anchor="start" fill="#f4f4f0" font-weight="700" font-family="Helvetica, Arial, sans-serif">PUMP DRIVE · D2 D3 D4</text>
-<rect x="19.25" y="9.625" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="21.200000000000003" y="9.625" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="19.900000000000002" y="9.775" width="1.4" height="1.25" rx="0" fill="#c8a46a" stroke="none" stroke-width="0.1" />
-<text x="20.6" y="12.325000000000001" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">C1</text>
-<rect x="27.049999999999997" y="9.625" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="29.0" y="9.625" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="27.7" y="9.775" width="1.4" height="1.25" rx="0" fill="#c8a46a" stroke="none" stroke-width="0.1" />
-<text x="28.4" y="12.325000000000001" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">C2</text>
-<text x="24.5" y="10.75" font-size="0.75" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">100 nF</text>
-<rect x="17.5" y="16.465" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="29.9" y="16.465" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="17.5" y="17.735" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="29.9" y="17.735" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="17.5" y="19.005" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="29.9" y="19.005" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="17.5" y="20.275" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="29.9" y="20.275" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="17.5" y="21.545" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="29.9" y="21.545" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="17.5" y="22.814999999999998" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="29.9" y="22.814999999999998" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="17.5" y="24.085" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="29.9" y="24.085" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="17.5" y="25.355" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="29.9" y="25.355" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="17.5" y="26.625" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="29.9" y="26.625" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="17.5" y="27.895" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="29.9" y="27.895" width="1.6" height="0.44" rx="0" fill="#c9ccd2" stroke="none" stroke-width="0.1" />
-<rect x="19.0" y="14.45" width="11.0" height="15.9" rx="0.4" fill="#1b1b1b" stroke="#000" stroke-width="0.12" />
-<rect x="21.5" y="17.2" width="6.0" height="10.4" rx="0.2" fill="#2a2a2a" stroke="#3a3a3a" stroke-width="0.1" />
-<circle cx="20.2" cy="15.649999999999999" r="0.45" fill="#3d3d3d"/>
-<text x="24.5" y="22.0" font-size="1.3" text-anchor="middle" fill="#d8d8d8" font-weight="700" font-family="Helvetica, Arial, sans-serif">L298N</text>
-<text x="24.5" y="23.7" font-size="0.7" text-anchor="middle" fill="#9a9a9a" font-weight="400" font-family="Helvetica, Arial, sans-serif">dual H-bridge</text>
-<text x="24.5" y="13.649999999999999" font-size="0.95" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">U1</text>
-<rect x="20.9" y="32.3" width="1.4" height="3.4" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="26.7" y="32.3" width="1.4" height="3.4" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="21.9" y="32.45" width="5.2" height="3.1" rx="0" fill="#1b1b1b" stroke="none" stroke-width="0.1" />
-<text x="24.5" y="34.3" font-size="0.75" text-anchor="middle" fill="#e0e0e0" font-weight="400" font-family="Helvetica, Arial, sans-serif">0R2</text>
-<text x="24.5" y="37.0" font-size="0.8" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">R1 · current sense</text>
-<rect x="20.69" y="39.029999999999994" width="7.62" height="2.54" rx="0.2" fill="#1b1b1b" stroke="#000" stroke-width="0.1" />
-<rect x="21.64" y="39.98" width="0.64" height="0.64" fill="#d9c27a"/>
-<rect x="24.18" y="39.98" width="0.64" height="0.64" fill="#d9c27a"/>
-<rect x="26.72" y="39.98" width="0.64" height="0.64" fill="#d9c27a"/>
-<rect x="23.35" y="38.849999999999994" width="4.84" height="2.9" rx="0.35" fill="#2f6fd0" stroke="#1d4f9e" stroke-width="0.12" />
-<text x="25.77" y="40.62" font-size="0.6" text-anchor="middle" fill="#dbe7fb" font-weight="400" font-family="Helvetica, Arial, sans-serif">shunt</text>
-<text x="20.060000000000002" y="40.65" font-size="0.8" text-anchor="end" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">L298N</text>
-<text x="28.939999999999998" y="40.65" font-size="0.8" text-anchor="start" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">VPump</text>
-<text x="24.5" y="38.4" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">JP2 → M1</text>
-<rect x="20.69" y="43.629999999999995" width="7.62" height="2.54" rx="0.2" fill="#1b1b1b" stroke="#000" stroke-width="0.1" />
-<rect x="21.64" y="44.58" width="0.64" height="0.64" fill="#d9c27a"/>
-<rect x="24.18" y="44.58" width="0.64" height="0.64" fill="#d9c27a"/>
-<rect x="26.72" y="44.58" width="0.64" height="0.64" fill="#d9c27a"/>
-<rect x="23.35" y="43.449999999999996" width="4.84" height="2.9" rx="0.35" fill="#2f6fd0" stroke="#1d4f9e" stroke-width="0.12" />
-<text x="25.77" y="45.22" font-size="0.6" text-anchor="middle" fill="#dbe7fb" font-weight="400" font-family="Helvetica, Arial, sans-serif">shunt</text>
-<text x="20.060000000000002" y="45.25" font-size="0.8" text-anchor="end" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">L298N</text>
-<text x="28.939999999999998" y="45.25" font-size="0.8" text-anchor="start" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">GND</text>
-<text x="24.5" y="43.0" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">JP1 → M2</text>
-<rect x="58.6" y="5.4" width="7.6" height="10.16" rx="0.5" fill="#2a7fd6" stroke="#185a9e" stroke-width="0.15" />
-<rect x="65.2" y="6.34" width="1.2" height="3.2" rx="0" fill="#1d5fa8" stroke="none" stroke-width="0.1" />
-<circle cx="62.0" cy="7.94" r="1.7" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
-<path d="M61.0 7.340000000000001 L63.0 8.540000000000001" stroke="#555" stroke-width="0.35"/>
-<text x="59.45" y="8.24" font-size="0.8" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">+</text>
-<rect x="65.2" y="11.42" width="1.2" height="3.2" rx="0" fill="#1d5fa8" stroke="none" stroke-width="0.1" />
-<circle cx="62.0" cy="13.02" r="1.7" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
-<path d="M61.0 12.42 L63.0 13.62" stroke="#555" stroke-width="0.35"/>
-<text x="59.45" y="13.32" font-size="0.8" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">−</text>
-<text x="58.0" y="10.48" font-size="0.95" text-anchor="middle" fill="#f4f4f0" font-weight="700" font-family="Helvetica, Arial, sans-serif" transform="rotate(-90 58.0 10.48)">J2 BATT</text>
-<rect x="58.6" y="21.6" width="7.6" height="10.16" rx="0.5" fill="#2a7fd6" stroke="#185a9e" stroke-width="0.15" />
-<rect x="65.2" y="22.54" width="1.2" height="3.2" rx="0" fill="#1d5fa8" stroke="none" stroke-width="0.1" />
-<circle cx="62.0" cy="24.14" r="1.7" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
-<path d="M61.0 23.54 L63.0 24.740000000000002" stroke="#555" stroke-width="0.35"/>
-<text x="59.45" y="24.44" font-size="0.8" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">+</text>
-<rect x="65.2" y="27.619999999999997" width="1.2" height="3.2" rx="0" fill="#1d5fa8" stroke="none" stroke-width="0.1" />
-<circle cx="62.0" cy="29.22" r="1.7" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
-<path d="M61.0 28.619999999999997 L63.0 29.82" stroke="#555" stroke-width="0.35"/>
-<text x="59.45" y="29.52" font-size="0.8" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">−</text>
-<text x="58.0" y="26.68" font-size="0.95" text-anchor="middle" fill="#f4f4f0" font-weight="700" font-family="Helvetica, Arial, sans-serif" transform="rotate(-90 58.0 26.68)">J3 RENEW</text>
-<rect x="58.6" y="33.6" width="7.6" height="10.16" rx="0.5" fill="#2a7fd6" stroke="#185a9e" stroke-width="0.15" />
-<rect x="65.2" y="34.54" width="1.2" height="3.2" rx="0" fill="#1d5fa8" stroke="none" stroke-width="0.1" />
-<circle cx="62.0" cy="36.14" r="1.7" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
-<path d="M61.0 35.54 L63.0 36.74" stroke="#555" stroke-width="0.35"/>
-<text x="59.45" y="36.44" font-size="0.8" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">M1</text>
-<rect x="65.2" y="39.62" width="1.2" height="3.2" rx="0" fill="#1d5fa8" stroke="none" stroke-width="0.1" />
-<circle cx="62.0" cy="41.22" r="1.7" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
-<path d="M61.0 40.62 L63.0 41.82" stroke="#555" stroke-width="0.35"/>
-<text x="59.45" y="41.519999999999996" font-size="0.8" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">M2</text>
-<text x="58.0" y="38.68" font-size="0.95" text-anchor="middle" fill="#f4f4f0" font-weight="700" font-family="Helvetica, Arial, sans-serif" transform="rotate(-90 58.0 38.68)">J1 PUMP</text>
-<rect x="5.65" y="27.025000000000002" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="7.6" y="27.025000000000002" width="0.75" height="1.55" rx="0" fill="#d6b04a" stroke="none" stroke-width="0.1" />
-<rect x="6.3" y="27.175" width="1.4" height="1.25" rx="0" fill="#1b1b1b" stroke="none" stroke-width="0.1" />
-<text x="7.0" y="28.05" font-size="0.55" text-anchor="middle" fill="#e8e8e8" font-weight="400" font-family="Helvetica, Arial, sans-serif">10R</text>
-<text x="7.0" y="29.725" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">R2 · GNDS–GNDD</text>
-<circle cx="12.6" cy="27.8" r="0.95" fill="#d6b04a"/>
-<circle cx="12.6" cy="27.8" r="1.35" fill="none" stroke="#f4f4f0" stroke-width="0.15"/>
-<text x="12.6" y="26.0" font-size="0.85" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">TP2</text>
-<text x="12.6" y="30.2" font-size="0.75" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">GND_D</text>
-<text x="1.8" y="35.8" font-size="1.2" text-anchor="start" fill="#f4f4f0" font-weight="700" font-family="Helvetica, Arial, sans-serif">RenewableSwitchOver</text>
-<text x="1.8" y="37.6" font-size="0.85" text-anchor="start" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">MEC1019 · shield for Arduino Uno R3</text>
-<rect x="1.8" y="7.0" width="13" height="16" rx="1" fill="none" stroke="#f4f4f0" stroke-width="0.12" stroke-dasharray="0.6 0.5" opacity="0.6"/>
-<text x="8.3" y="14.4" font-size="0.8" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">keep clear:</text>
-<text x="8.3" y="15.7" font-size="0.8" text-anchor="middle" fill="#f4f4f0" font-weight="400" font-family="Helvetica, Arial, sans-serif">USB jack below</text>
-<text x="0" y="56.940000000000005" font-size="1.05" text-anchor="start" fill="#56646F" font-weight="400" font-family="Helvetica, Arial, sans-serif">Parts and nets are the schematic's; their positions are an illustration, grouped by function. The real board's layout may differ.</text>
-<text x="0" y="58.64000000000001" font-size="1.05" text-anchor="start" fill="#56646F" font-weight="400" font-family="Helvetica, Arial, sans-serif">Default jumper positions shown: JP1 and JP2 on direct drive, JP3 and JP4 bridged. Silkscreen pin labels follow the Uno R3.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="73.380 45.190 76.580 76.840" width="1100" height="1104">
+<title>The RenewableSwitchOver shield, top view, rendered from its KiCad board file</title>
+<rect x="73.380" y="45.190" width="76.580" height="76.840" fill="#ffffff"/>
+<defs><clipPath id="board"><path d="M77.380 57.690 L77.380 111.030 L143.420 111.030 L143.420 108.490 L145.960 105.950 L145.960 73.180 L143.420 70.640 L143.420 59.210 L141.900 57.690 L77.380 57.690 Z"/></clipPath></defs>
+<path d="M77.380 57.690 L77.380 111.030 L143.420 111.030 L143.420 108.490 L145.960 105.950 L145.960 73.180 L143.420 70.640 L143.420 59.210 L141.900 57.690 L77.380 57.690 Z" fill="#1d6a3a" stroke="#0f3d21" stroke-width="0.4"/>
+<g clip-path="url(#board)">
+<polygon points="140.766,58.605 140.791,58.612 140.844,58.644 140.897,58.697 140.902,58.704 140.918,58.725 140.924,58.735 140.939,58.804 140.914,58.869 140.858,58.911 140.858,58.911 140.851,58.914 140.808,58.922 140.777,58.922 140.753,58.925 140.753,58.925 140.574,58.954 140.378,59.017 140.378,59.017 140.194,59.111 140.028,59.232 140.028,59.232 139.882,59.378 139.882,59.378 139.761,59.544 139.729,59.608 139.717,59.623 139.708,59.636 139.699,59.646 139.639,59.681 139.569,59.678 139.515,59.642 139.509,59.635 139.493,59.610 139.459,59.544 139.338,59.378 139.338,59.378 139.338,59.378 139.338,59.378 139.192,59.232 139.192,59.232 139.192,59.232 139.192,59.232 139.026,59.111 139.026,59.111 139.026,59.111 139.020,59.108 138.968,59.082 138.968,59.082 138.842,59.017 138.646,58.954 138.646,58.954 138.646,58.954 138.646,58.954 138.471,58.926 138.454,58.923 138.443,58.922 138.443,58.922 138.237,58.922 138.237,58.922 138.213,58.925 138.213,58.925 138.034,58.954 137.838,59.017 137.838,59.017 137.654,59.111 137.488,59.232 137.488,59.232 137.342,59.378 137.342,59.378 137.221,59.544 137.189,59.608 137.177,59.623 137.168,59.636 137.159,59.646 137.099,59.681 137.029,59.678 136.975,59.642 136.969,59.635 136.953,59.610 136.919,59.544 136.798,59.378 136.798,59.378 136.798,59.378 136.798,59.378 136.652,59.232 136.652,59.232 136.652,59.232 136.652,59.232 136.486,59.111 136.486,59.111 136.486,59.111 136.480,59.108 136.428,59.082 136.428,59.082 136.302,59.017 136.106,58.954 136.106,58.954 136.106,58.954 136.106,58.954 135.931,58.926 135.914,58.923 135.903,58.922 135.903,58.922 135.697,58.922 135.697,58.922 135.673,58.925 135.673,58.925 135.494,58.954 135.298,59.017 135.298,59.017 135.114,59.111 134.948,59.232 134.948,59.232 134.802,59.378 134.802,59.378 134.681,59.544 134.649,59.608 134.637,59.623 134.628,59.636 134.619,59.646 134.559,59.681 134.489,59.678 134.435,59.642 134.429,59.635 134.413,59.610 134.379,59.544 134.258,59.378 134.258,59.378 134.258,59.378 134.258,59.378 134.112,59.232 134.112,59.232 134.112,59.232 134.112,59.232 133.946,59.111 133.946,59.111 133.946,59.111 133.940,59.108 133.888,59.082 133.888,59.082 133.762,59.017 133.566,58.954 133.566,58.954 133.566,58.954 133.566,58.954 133.391,58.926 133.374,58.923 133.363,58.922 133.363,58.922 133.157,58.922 133.157,58.922 133.133,58.925 133.133,58.925 132.954,58.954 132.758,59.017 132.758,59.017 132.574,59.111 132.408,59.232 132.408,59.232 132.262,59.378 132.262,59.378 132.141,59.544 132.109,59.608 132.097,59.623 132.088,59.636 132.079,59.646 132.019,59.681 131.949,59.678 131.895,59.642 131.889,59.635 131.873,59.610 131.839,59.544 131.718,59.378 131.718,59.378 131.718,59.378 131.718,59.378 131.572,59.232 131.572,59.232 131.572,59.232 131.572,59.232 131.406,59.111 131.406,59.111 131.406,59.111 131.400,59.108 131.348,59.082 131.348,59.082 131.222,59.017 131.026,58.954 131.026,58.954 131.026,58.954 131.026,58.954 130.851,58.926 130.834,58.923 130.823,58.922 130.823,58.922 130.617,58.922 130.617,58.922 130.593,58.925 130.593,58.925 130.414,58.954 130.218,59.017 130.218,59.017 130.034,59.111 129.868,59.232 129.868,59.232 129.722,59.378 129.722,59.378 129.601,59.544 129.569,59.608 129.557,59.623 129.548,59.636 129.539,59.646 129.479,59.681 129.409,59.678 129.355,59.642 129.349,59.635 129.333,59.610 129.299,59.544 129.178,59.378 129.178,59.378 129.178,59.378 129.178,59.378 129.032,59.232 129.032,59.232 129.032,59.232 129.032,59.232 128.866,59.111 128.866,59.111 128.866,59.111 128.860,59.108 128.808,59.082 128.808,59.082 128.682,59.017 128.486,58.954 128.486,58.954 128.486,58.954 128.486,58.954 128.311,58.926 128.294,58.923 128.283,58.922 128.283,58.922 128.077,58.922 128.077,58.922 128.053,58.925 128.053,58.925 127.874,58.954 127.678,59.017 127.678,59.017 127.494,59.111 127.328,59.232 127.328,59.232 127.182,59.378 127.182,59.378 127.061,59.544 127.029,59.608 127.017,59.623 127.008,59.636 126.999,59.646 126.939,59.681 126.869,59.678 126.815,59.642 126.809,59.635 126.793,59.610 126.759,59.544 126.638,59.378 126.638,59.378 126.638,59.378 126.638,59.378 126.492,59.232 126.492,59.232 126.492,59.232 126.492,59.232 126.326,59.111 126.326,59.111 126.326,59.111 126.320,59.108 126.268,59.082 126.268,59.082 126.142,59.017 125.946,58.954 125.946,58.954 125.946,58.954 125.946,58.954 125.771,58.926 125.754,58.923 125.743,58.922 125.743,58.922 125.537,58.922 125.537,58.922 125.513,58.925 125.513,58.925 125.334,58.954 125.138,59.017 125.138,59.017 124.954,59.111 124.788,59.232 124.788,59.232 124.642,59.378 124.642,59.378 124.521,59.544 124.489,59.608 124.477,59.623 124.468,59.636 124.459,59.646 124.399,59.681 124.329,59.678 124.275,59.642 124.269,59.635 124.253,59.610 124.219,59.544 124.098,59.378 124.098,59.378 124.098,59.378 124.098,59.378 123.952,59.232 123.952,59.232 123.952,59.232 123.952,59.232 123.786,59.111 123.786,59.111 123.786,59.111 123.780,59.108 123.728,59.082 123.728,59.082 123.602,59.017 123.406,58.954 123.406,58.954 123.406,58.954 123.406,58.954 123.231,58.926 123.214,58.923 123.203,58.922 123.203,58.922 122.997,58.922 122.997,58.922 122.973,58.925 122.973,58.925 122.794,58.954 122.598,59.017 122.598,59.017 122.414,59.111 122.248,59.232 122.248,59.232 122.102,59.378 122.102,59.378 121.981,59.544 121.887,59.728 121.887,59.728 121.824,59.924 121.791,60.127 121.791,60.333 121.824,60.536 121.887,60.732 121.887,60.732 121.981,60.916 122.090,61.066 122.102,61.082 122.102,61.082 122.102,61.082 122.248,61.228 122.248,61.228 122.248,61.228 122.248,61.228 122.263,61.240 122.270,61.244 122.270,61.244 122.279,61.251 122.414,61.349 122.531,61.409 122.531,61.409 122.589,61.438 122.598,61.443 122.599,61.443 122.602,61.444 122.644,61.458 122.703,61.477 122.703,61.477 122.703,61.477 122.794,61.506 122.895,61.522 122.997,61.538 122.997,61.538 123.203,61.538 123.203,61.538 123.406,61.506 123.602,61.443 123.786,61.349 123.952,61.228 124.098,61.082 124.219,60.916 124.251,60.852 124.272,60.824 124.281,60.814 124.341,60.779 124.411,60.782 124.465,60.818 124.471,60.825 124.487,60.850 124.521,60.916 124.630,61.066 124.642,61.082 124.642,61.082 124.642,61.082 124.788,61.228 124.788,61.228 124.788,61.228 124.788,61.228 124.803,61.240 124.810,61.244 124.810,61.244 124.819,61.251 124.954,61.349 125.071,61.409 125.071,61.409 125.129,61.438 125.138,61.443 125.139,61.443 125.142,61.444 125.184,61.458 125.243,61.477 125.243,61.477 125.243,61.477 125.334,61.506 125.435,61.522 125.537,61.538 125.537,61.538 125.743,61.538 125.743,61.538 125.946,61.506 126.142,61.443 126.326,61.349 126.492,61.228 126.638,61.082 126.759,60.916 126.791,60.852 126.812,60.824 126.821,60.814 126.881,60.779 126.951,60.782 127.005,60.818 127.011,60.825 127.027,60.850 127.061,60.916 127.170,61.066 127.182,61.082 127.182,61.082 127.182,61.082 127.328,61.228 127.328,61.228 127.328,61.228 127.328,61.228 127.343,61.240 127.350,61.244 127.350,61.244 127.359,61.251 127.494,61.349 127.611,61.409 127.611,61.409 127.669,61.438 127.678,61.443 127.679,61.443 127.682,61.444 127.724,61.458 127.783,61.477 127.783,61.477 127.783,61.477 127.874,61.506 127.975,61.522 128.077,61.538 128.077,61.538 128.283,61.538 128.283,61.538 128.486,61.506 128.682,61.443 128.866,61.349 129.032,61.228 129.178,61.082 129.299,60.916 129.331,60.852 129.352,60.824 129.361,60.814 129.421,60.779 129.491,60.782 129.545,60.818 129.551,60.825 129.567,60.850 129.601,60.916 129.710,61.066 129.722,61.082 129.722,61.082 129.722,61.082 129.868,61.228 129.868,61.228 129.868,61.228 129.868,61.228 129.883,61.240 129.890,61.244 129.890,61.244 129.899,61.251 130.034,61.349 130.151,61.409 130.151,61.409 130.209,61.438 130.218,61.443 130.219,61.443 130.222,61.444 130.264,61.458 130.323,61.477 130.323,61.477 130.323,61.477 130.414,61.506 130.515,61.522 130.617,61.538 130.617,61.538 130.823,61.538 130.823,61.538 131.026,61.506 131.222,61.443 131.406,61.349 131.572,61.228 131.718,61.082 131.839,60.916 131.871,60.852 131.892,60.824 131.901,60.814 131.961,60.779 132.031,60.782 132.085,60.818 132.091,60.825 132.107,60.850 132.141,60.916 132.250,61.066 132.262,61.082 132.262,61.082 132.262,61.082 132.408,61.228 132.408,61.228 132.408,61.228 132.408,61.228 132.423,61.240 132.430,61.244 132.430,61.244 132.439,61.251 132.574,61.349 132.691,61.409 132.691,61.409 132.749,61.438 132.758,61.443 132.759,61.443 132.762,61.444 132.804,61.458 132.863,61.477 132.863,61.477 132.863,61.477 132.954,61.506 133.055,61.522 133.157,61.538 133.157,61.538 133.363,61.538 133.363,61.538 133.566,61.506 133.762,61.443 133.946,61.349 134.112,61.228 134.258,61.082 134.379,60.916 134.411,60.852 134.432,60.824 134.441,60.814 134.501,60.779 134.571,60.782 134.625,60.818 134.631,60.825 134.647,60.850 134.681,60.916 134.790,61.066 134.802,61.082 134.802,61.082 134.802,61.082 134.948,61.228 134.948,61.228 134.948,61.228 134.948,61.228 134.963,61.240 134.970,61.244 134.970,61.244 134.979,61.251 135.114,61.349 135.231,61.409 135.231,61.409 135.289,61.438 135.298,61.443 135.299,61.443 135.302,61.444 135.344,61.458 135.403,61.477 135.403,61.477 135.403,61.477 135.494,61.506 135.595,61.522 135.697,61.538 135.697,61.538 135.903,61.538 135.903,61.538 136.106,61.506 136.302,61.443 136.486,61.349 136.652,61.228 136.798,61.082 136.919,60.916 136.951,60.852 136.972,60.824 136.981,60.814 137.041,60.779 137.111,60.782 137.165,60.818 137.171,60.825 137.187,60.850 137.221,60.916 137.330,61.066 137.342,61.082 137.342,61.082 137.342,61.082 137.488,61.228 137.488,61.228 137.488,61.228 137.488,61.228 137.503,61.240 137.510,61.244 137.510,61.244 137.519,61.251 137.654,61.349 137.771,61.409 137.771,61.409 137.829,61.438 137.838,61.443 137.839,61.443 137.842,61.444 137.884,61.458 137.943,61.477 137.943,61.477 137.943,61.477 138.034,61.506 138.135,61.522 138.237,61.538 138.237,61.538 138.443,61.538 138.443,61.538 138.646,61.506 138.842,61.443 139.026,61.349 139.192,61.228 139.338,61.082 139.459,60.916 139.491,60.852 139.512,60.824 139.521,60.814 139.581,60.779 139.651,60.782 139.705,60.818 139.711,60.825 139.727,60.850 139.761,60.916 139.870,61.066 139.882,61.082 139.882,61.082 139.882,61.082 140.028,61.228 140.028,61.228 140.028,61.228 140.028,61.228 140.043,61.240 140.050,61.244 140.050,61.244 140.059,61.251 140.194,61.349 140.311,61.409 140.311,61.409 140.369,61.438 140.378,61.443 140.379,61.443 140.382,61.444 140.424,61.458 140.483,61.477 140.483,61.477 140.483,61.477 140.574,61.506 140.675,61.522 140.777,61.538 140.777,61.538 140.983,61.538 140.983,61.538 141.186,61.506 141.382,61.443 141.566,61.349 141.732,61.228 141.878,61.082 141.999,60.916 142.093,60.732 142.156,60.536 142.189,60.333 142.189,60.306 142.194,60.271 142.197,60.260 142.234,60.201 142.298,60.172 142.367,60.182 142.374,60.185 142.410,60.210 142.901,60.701 142.922,60.729 142.935,60.752 142.950,60.812 142.950,67.304 142.947,67.317 142.948,67.326 142.945,67.339 142.942,67.350 142.937,67.356 142.937,67.360 142.932,67.370 142.923,67.379 142.904,67.408 142.889,67.415 142.884,67.421 142.870,67.424 142.840,67.437 142.825,67.435 142.816,67.438 142.797,67.431 142.771,67.427 142.770,67.427 142.758,67.418 142.750,67.415 142.743,67.406 142.727,67.394 142.727,67.394 142.721,67.387 142.717,67.382 142.593,67.258 142.593,67.258 142.444,67.166 142.444,67.166 142.416,67.156 142.278,67.110 142.278,67.110 142.175,67.100 142.175,67.100 141.963,67.100 141.963,69.941 141.962,69.941 141.963,69.941 141.957,69.976 141.945,70.019 141.943,70.026 141.942,70.026 141.942,72.458 141.937,72.493 141.930,72.519 141.930,74.875 142.130,74.875 142.130,74.875 142.130,74.875 142.233,74.865 142.399,74.809 142.399,74.809 142.548,74.717 142.672,74.593 142.711,74.530 142.720,74.521 142.725,74.512 142.734,74.503 142.742,74.496 142.749,74.492 142.752,74.490 142.761,74.484 142.773,74.481 142.805,74.466 142.822,74.468 142.829,74.466 142.843,74.470 142.874,74.474 142.886,74.484 142.895,74.487 142.908,74.502 142.928,74.519 142.928,74.519 142.929,74.520 142.934,74.534 142.940,74.541 142.941,74.552 142.948,74.570 142.949,74.571 142.950,74.590 142.950,102.192 142.945,102.227 142.942,102.238 142.935,102.249 142.934,102.254 142.923,102.266 142.904,102.296 142.892,102.302 142.888,102.307 142.870,102.312 142.840,102.325 142.829,102.324 142.820,102.326 142.798,102.319 142.771,102.315 142.770,102.315 142.761,102.308 142.754,102.306 142.727,102.282 142.727,102.282 142.716,102.267 142.672,102.197 142.672,102.197 142.548,102.073 142.399,101.981 142.399,101.981 142.376,101.973 142.233,101.925 142.233,101.925 142.130,101.915 142.130,101.915 141.930,101.915 141.930,104.665 142.130,104.665 142.130,104.665 142.130,104.665 142.233,104.655 142.399,104.599 142.399,104.599 142.548,104.507 142.672,104.383 142.711,104.320 142.720,104.311 142.725,104.302 142.734,104.293 142.742,104.286 142.749,104.282 142.752,104.280 142.761,104.274 142.773,104.271 142.805,104.256 142.822,104.258 142.829,104.256 142.843,104.260 142.874,104.264 142.886,104.274 142.895,104.277 142.908,104.292 142.928,104.309 142.928,104.309 142.929,104.310 142.934,104.324 142.940,104.331 142.941,104.342 142.948,104.360 142.949,104.361 142.950,104.380 142.950,104.985 142.945,105.020 142.937,105.047 142.911,105.094 141.449,106.745 141.449,106.745 141.422,106.767 141.401,106.781 141.335,106.800 137.976,106.787 137.941,106.782 137.937,106.781 137.930,106.779 137.871,106.741 137.842,106.677 137.853,106.608 137.856,106.601 137.881,106.565 139.072,105.374 139.141,105.270 139.189,105.155 139.214,105.032 139.214,104.908 139.214,104.744 139.217,104.716 139.219,104.709 139.223,104.694 139.261,104.635 139.261,104.635 139.269,104.628 139.298,104.609 139.303,104.607 139.303,104.607 139.454,104.514 139.579,104.389 139.672,104.238 139.728,104.069 139.738,103.966 139.738,103.965 140.530,103.965 140.540,104.068 140.540,104.068 140.540,104.068 140.596,104.234 140.596,104.234 140.688,104.383 140.812,104.507 140.961,104.599 140.961,104.599 141.127,104.655 141.127,104.655 141.127,104.655 141.127,104.655 141.230,104.665 141.430,104.665 141.430,104.665 141.430,103.540 140.530,103.540 140.530,103.965 139.738,103.965 139.738,103.269 139.738,102.615 140.530,102.615 140.530,102.615 140.530,103.040 141.430,103.040 141.430,101.915 141.230,101.915 141.230,101.915 141.230,101.915 141.230,101.915 141.127,101.925 141.127,101.925 140.961,101.981 140.961,101.981 140.961,101.981 140.961,101.981 140.861,102.042 140.812,102.073 140.688,102.197 140.688,102.197 140.598,102.342 140.596,102.346 140.596,102.346 140.540,102.512 140.540,102.512 140.530,102.615 139.738,102.615 139.738,102.614 139.738,102.614 139.737,102.604 139.728,102.511 139.672,102.342 139.579,102.191 139.454,102.066 139.454,102.066 139.454,102.066 139.357,102.006 139.357,102.006 139.303,101.973 139.303,101.973 139.303,101.973 139.303,101.973 139.134,101.917 139.031,101.906 139.031,101.906 138.129,101.906 138.129,101.907 138.129,101.907 138.129,101.907 138.026,101.917 137.857,101.973 137.857,101.973 137.857,101.973 137.706,102.066 137.706,102.066 137.581,102.191 137.581,102.191 137.488,102.342 137.488,102.342 137.488,102.342 137.432,102.511 137.422,102.614 137.422,102.614 137.422,102.614 137.422,103.966 137.422,103.966 137.422,103.966 137.432,104.068 137.432,104.069 137.432,104.069 137.488,104.238 137.488,104.238 137.570,104.370 137.581,104.389 137.581,104.389 137.581,104.389 137.706,104.514 137.706,104.514 137.826,104.588 137.843,104.602 137.853,104.610 137.862,104.621 137.893,104.684 137.884,104.753 137.880,104.762 137.854,104.800 136.237,106.418 136.208,106.439 136.185,106.451 136.126,106.466 128.352,106.466 128.352,106.466 128.352,106.466 128.317,106.461 128.302,106.457 128.244,106.419 128.242,106.418 128.215,106.363 128.213,106.355 128.211,106.329 128.213,104.675 128.218,104.640 128.222,104.625 128.229,104.615 128.260,104.567 128.261,104.565 128.316,104.538 128.324,104.536 128.350,104.534 133.841,104.534 133.849,104.531 133.921,104.517 134.008,104.500 134.168,104.433 134.313,104.336 137.536,101.113 137.585,101.041 137.633,100.969 137.633,100.968 137.633,100.968 137.633,100.968 137.700,100.808 137.733,100.637 137.733,96.645 138.333,96.645 138.333,96.645 138.333,96.645 138.333,97.495 139.368,97.495 139.435,97.515 139.481,97.567 139.491,97.637 139.490,97.643 139.482,97.681 139.482,97.809 139.489,97.844 139.490,97.847 139.484,97.916 139.441,97.972 139.375,97.995 139.368,97.995 138.333,97.995 138.333,98.845 138.343,98.948 138.343,98.948 138.343,98.948 138.398,99.114 138.398,99.114 138.490,99.263 138.614,99.387 138.763,99.479 138.763,99.479 138.930,99.535 138.930,99.535 138.930,99.535 138.930,99.535 139.033,99.545 139.882,99.545 139.882,99.545 139.882,98.509 139.902,98.442 139.955,98.396 140.024,98.386 140.031,98.387 140.068,98.395 140.197,98.395 140.234,98.387 140.304,98.394 140.359,98.437 140.382,98.502 140.382,98.509 140.382,99.545 141.232,99.545 141.232,99.545 141.232,99.545 141.335,99.535 141.502,99.479 141.502,99.479 141.651,99.387 141.775,99.263 141.867,99.114 141.867,99.114 141.922,98.948 141.922,98.948 141.932,98.845 141.933,98.845 141.933,97.995 140.897,97.995 140.830,97.975 140.784,97.923 140.774,97.853 140.775,97.847 140.776,97.844 140.782,97.809 140.782,97.681 140.775,97.643 140.781,97.574 140.824,97.518 140.890,97.495 140.897,97.495 141.932,97.495 141.932,96.645 141.932,96.645 141.932,96.645 141.922,96.542 141.867,96.376 141.867,96.376 141.775,96.227 141.651,96.103 141.502,96.011 141.502,96.011 141.502,96.011 141.335,95.955 141.335,95.955 141.232,95.945 141.232,95.945 140.382,95.945 140.382,96.981 140.363,97.048 140.310,97.094 140.241,97.104 140.234,97.103 140.229,97.101 140.197,97.095 140.197,97.095 140.068,97.095 140.068,97.095 140.031,97.103 139.961,97.096 139.906,97.053 139.883,96.988 139.882,96.981 139.882,95.945 139.033,95.945 139.033,95.945 139.033,95.945 139.033,95.945 138.930,95.955 138.930,95.955 138.763,96.011 138.763,96.011 138.763,96.011 138.763,96.011 138.664,96.072 138.614,96.103 138.490,96.227 138.483,96.239 138.405,96.365 138.398,96.376 138.398,96.376 138.343,96.542 138.343,96.542 138.333,96.645 137.733,96.645 137.733,96.383 137.739,96.348 137.746,96.322 137.777,96.270 139.578,94.469 139.606,94.448 139.623,94.439 139.685,94.424 139.696,94.424 139.725,94.428 139.779,94.443 140.014,94.474 140.014,94.474 140.251,94.474 140.251,94.474 140.486,94.443 140.715,94.381 140.934,94.290 141.139,94.172 141.327,94.028 141.495,93.860 141.639,93.672 141.758,93.467 141.849,93.248 141.910,93.019 141.941,92.784 141.941,92.546 141.910,92.311 141.849,92.082 141.758,91.863 141.639,91.658 141.495,91.470 141.495,91.470 141.495,91.470 141.495,91.470 141.327,91.302 141.327,91.302 141.327,91.302 141.327,91.302 141.327,91.302 141.141,91.159 141.140,91.158 141.139,91.158 141.139,91.158 141.007,91.082 140.934,91.040 140.934,91.040 140.859,91.008 140.715,90.949 140.486,90.887 140.253,90.857 140.251,90.856 140.251,90.856 140.251,90.856 140.014,90.856 140.014,90.856 140.014,90.856 140.008,90.857 140.007,90.857 139.779,90.887 139.550,90.949 139.331,91.040 139.331,91.040 139.331,91.040 139.126,91.158 139.126,91.158 138.938,91.302 138.938,91.302 138.938,91.302 138.770,91.470 138.770,91.470 138.770,91.470 138.626,91.658 138.626,91.658 138.507,91.863 138.507,91.863 138.507,91.863 138.416,92.082 138.355,92.311 138.324,92.546 138.324,92.546 138.324,92.546 138.324,92.784 138.324,92.784 138.355,93.019 138.355,93.019 138.355,93.019 138.355,93.019 138.356,93.023 138.356,93.023 138.369,93.070 138.373,93.105 138.372,93.124 138.354,93.185 138.349,93.194 138.331,93.217 136.164,95.384 136.164,95.384 136.164,95.384 136.066,95.530 136.066,95.530 136.066,95.532 136.064,95.537 136.000,95.690 136.000,95.690 135.966,95.860 135.966,100.115 135.966,100.115 135.966,100.115 135.961,100.150 135.954,100.175 135.923,100.228 133.433,102.718 133.405,102.739 133.382,102.751 133.322,102.766 132.349,102.766 132.332,102.762 132.314,102.761 132.303,102.758 132.288,102.749 132.282,102.747 132.278,102.745 132.271,102.739 132.267,102.735 132.244,102.721 132.230,102.690 132.226,102.685 132.226,102.680 132.215,102.657 132.220,102.626 132.219,102.616 132.222,102.608 132.225,102.588 132.245,102.563 132.250,102.553 132.255,102.550 132.261,102.542 132.263,102.540 132.282,102.528 132.422,102.453 132.423,102.453 132.423,102.453 132.423,102.453 132.577,102.327 132.703,102.173 132.792,102.006 132.796,101.998 132.796,101.998 132.796,101.998 132.854,101.808 132.869,101.660 132.868,98.760 132.854,98.612 132.796,98.422 132.796,98.422 132.796,98.422 132.794,98.418 132.794,98.418 132.793,98.417 132.777,98.386 132.703,98.247 132.703,98.247 132.683,98.223 132.577,98.093 132.423,97.967 132.423,97.967 132.423,97.967 132.423,97.967 132.328,97.916 132.248,97.874 132.153,97.845 132.153,97.845 132.150,97.844 132.116,97.822 131.986,97.809 131.951,97.806 131.951,97.806 131.917,97.802 131.910,97.802 131.910,97.802 130.810,97.802 130.810,97.802 130.774,97.805 130.662,97.816 130.472,97.874 130.297,97.967 130.297,97.967 130.242,98.013 130.212,98.031 130.197,98.037 130.128,98.045 130.123,98.044 130.072,98.023 130.070,98.022 130.054,98.009 128.794,96.748 128.773,96.720 128.767,96.710 128.752,96.641 128.777,96.576 128.833,96.534 128.836,96.533 128.840,96.531 128.883,96.523 129.061,96.523 129.061,96.523 129.164,96.513 129.333,96.457 129.484,96.364 129.609,96.239 129.702,96.088 129.758,95.919 129.768,95.816 129.768,95.815 130.560,95.815 130.570,95.918 130.570,95.918 130.570,95.918 130.626,96.084 130.626,96.084 130.718,96.233 130.842,96.357 130.991,96.449 130.991,96.449 131.157,96.505 131.157,96.505 131.157,96.505 131.157,96.505 131.260,96.515 131.460,96.515 131.960,96.515 132.160,96.515 132.160,96.515 132.160,96.515 132.263,96.505 132.429,96.449 132.429,96.449 132.578,96.357 132.702,96.233 132.794,96.084 132.794,96.084 132.850,95.918 132.850,95.918 132.860,95.815 132.860,95.815 132.860,95.390 131.960,95.390 131.960,96.515 131.460,96.515 131.460,96.515 131.460,95.390 130.560,95.390 130.560,95.815 129.768,95.815 129.768,94.465 130.560,94.465 130.560,94.465 130.560,94.465 130.560,94.890 131.460,94.890 131.960,94.890 132.860,94.890 132.860,94.465 132.860,94.465 132.850,94.362 132.794,94.196 132.794,94.196 132.702,94.047 132.578,93.923 132.429,93.831 132.429,93.831 132.406,93.823 132.263,93.775 132.263,93.775 132.160,93.765 132.160,93.765 131.960,93.765 131.960,94.890 131.460,94.890 131.460,93.765 131.260,93.765 131.260,93.765 131.260,93.765 131.260,93.765 131.157,93.775 131.157,93.775 130.991,93.831 130.991,93.831 130.991,93.831 130.991,93.831 130.891,93.892 130.842,93.923 130.718,94.047 130.718,94.047 130.628,94.192 130.626,94.196 130.626,94.196 130.570,94.362 130.570,94.362 130.560,94.465 129.768,94.465 129.768,94.464 129.758,94.361 129.702,94.192 129.609,94.041 129.484,93.916 129.345,93.831 129.333,93.823 129.333,93.823 129.333,93.823 129.164,93.767 129.061,93.757 129.061,93.757 128.368,93.757 128.368,93.756 128.368,93.757 128.333,93.751 128.318,93.747 128.260,93.709 128.258,93.708 128.231,93.653 128.229,93.645 128.226,93.619 128.232,89.175 128.234,89.160 128.237,89.140 128.241,89.125 128.279,89.067 128.281,89.065 128.336,89.038 128.343,89.036 128.369,89.034 135.441,89.034 135.449,89.031 135.521,89.017 135.608,89.000 135.768,88.933 135.913,88.836 137.736,87.013 137.785,86.941 137.833,86.868 137.833,86.868 137.833,86.868 137.833,86.868 137.900,86.708 137.934,86.537 137.934,83.505 138.333,83.505 138.333,83.505 138.333,83.505 138.333,84.355 139.368,84.355 139.435,84.375 139.481,84.427 139.491,84.497 139.490,84.503 139.482,84.541 139.482,84.669 139.490,84.707 139.484,84.776 139.441,84.832 139.375,84.855 139.368,84.855 138.333,84.855 138.333,85.705 138.343,85.808 138.343,85.808 138.397,85.970 138.398,85.974 138.398,85.974 138.490,86.123 138.614,86.247 138.763,86.339 138.763,86.339 138.930,86.395 138.930,86.395 138.930,86.395 138.930,86.395 139.033,86.405 139.882,86.405 139.882,86.405 139.882,85.369 139.902,85.302 139.955,85.256 140.024,85.246 140.031,85.247 140.068,85.255 140.197,85.255 140.234,85.247 140.304,85.254 140.359,85.297 140.382,85.362 140.382,85.369 140.382,86.405 141.232,86.405 141.232,86.405 141.232,86.405 141.335,86.395 141.502,86.339 141.502,86.339 141.651,86.247 141.775,86.123 141.867,85.974 141.867,85.974 141.922,85.808 141.922,85.808 141.932,85.705 141.933,85.705 141.933,84.855 140.897,84.855 140.830,84.835 140.784,84.783 140.774,84.713 140.775,84.707 140.782,84.669 140.782,84.541 140.775,84.503 140.781,84.434 140.824,84.378 140.890,84.355 140.897,84.355 141.932,84.355 141.932,83.505 141.932,83.505 141.932,83.505 141.922,83.402 141.867,83.236 141.867,83.236 141.775,83.087 141.651,82.963 141.502,82.871 141.502,82.871 141.502,82.871 141.335,82.815 141.335,82.815 141.232,82.805 141.232,82.805 140.382,82.805 140.382,83.841 140.363,83.908 140.310,83.954 140.241,83.964 140.234,83.963 140.229,83.961 140.197,83.955 140.197,83.955 140.068,83.955 140.068,83.955 140.031,83.963 139.961,83.956 139.906,83.913 139.883,83.848 139.882,83.841 139.882,82.805 139.033,82.805 139.033,82.805 139.033,82.805 139.033,82.805 138.930,82.815 138.930,82.815 138.763,82.871 138.763,82.871 138.763,82.871 138.763,82.871 138.668,82.930 138.614,82.963 138.490,83.087 138.398,83.236 138.398,83.236 138.343,83.402 138.343,83.402 138.333,83.505 137.934,83.505 137.934,83.043 137.939,83.008 137.946,82.982 137.977,82.930 139.578,81.329 139.606,81.308 139.623,81.299 139.685,81.284 139.696,81.284 139.725,81.288 139.779,81.303 140.014,81.334 140.014,81.334 140.251,81.334 140.251,81.334 140.486,81.303 140.715,81.241 140.934,81.150 141.139,81.032 141.327,80.888 141.495,80.720 141.639,80.532 141.758,80.327 141.849,80.108 141.910,79.879 141.941,79.644 141.941,79.406 141.910,79.171 141.849,78.942 141.758,78.723 141.639,78.518 141.495,78.330 141.495,78.330 141.495,78.330 141.495,78.330 141.327,78.162 141.327,78.162 141.327,78.162 141.327,78.162 141.327,78.162 141.141,78.019 141.140,78.018 141.139,78.018 141.139,78.018 140.992,77.933 140.934,77.900 140.934,77.900 140.836,77.859 140.715,77.809 140.516,77.756 140.486,77.747 140.486,77.747 140.486,77.747 140.253,77.717 140.251,77.716 140.251,77.716 140.251,77.716 140.014,77.716 140.014,77.716 140.014,77.716 140.008,77.717 140.007,77.717 139.779,77.747 139.550,77.809 139.331,77.900 139.331,77.900 139.331,77.900 139.126,78.018 139.126,78.018 138.938,78.162 138.938,78.162 138.938,78.162 138.770,78.330 138.770,78.330 138.770,78.330 138.626,78.518 138.626,78.518 138.507,78.723 138.507,78.723 138.507,78.723 138.416,78.942 138.355,79.171 138.324,79.406 138.324,79.406 138.324,79.644 138.324,79.644 138.355,79.876 138.355,79.876 138.355,79.879 138.355,79.879 138.355,79.879 138.366,79.918 138.366,79.918 138.366,79.919 138.369,79.930 138.373,79.965 138.372,79.984 138.354,80.045 138.349,80.054 138.331,80.077 136.364,82.044 136.364,82.044 136.364,82.044 136.267,82.189 136.267,82.189 136.267,82.189 136.200,82.350 136.200,82.352 136.200,82.354 136.182,82.444 136.182,82.444 136.167,82.520 136.167,86.015 136.166,86.015 136.167,86.015 136.161,86.050 136.154,86.075 136.123,86.128 135.033,87.218 135.005,87.239 134.982,87.251 134.922,87.266 128.376,87.266 128.376,87.266 128.376,87.266 128.341,87.261 128.326,87.257 128.268,87.219 128.267,87.218 128.239,87.163 128.237,87.155 128.235,87.129 128.237,84.958 128.242,84.923 128.247,84.908 128.285,84.849 128.285,84.849 128.286,84.848 128.341,84.820 128.348,84.819 128.375,84.816 129.710,84.816 129.745,84.821 129.760,84.825 129.818,84.863 129.818,84.863 129.818,84.863 129.818,84.863 129.820,84.865 129.847,84.919 129.849,84.927 129.852,84.953 129.852,85.632 129.856,85.681 129.866,85.780 129.924,85.970 130.008,86.128 130.017,86.145 130.017,86.146 130.017,86.146 130.017,86.146 130.143,86.299 130.273,86.405 130.297,86.425 130.297,86.425 130.472,86.519 130.472,86.519 130.472,86.519 130.475,86.520 130.570,86.548 130.604,86.571 130.662,86.576 130.662,86.576 130.662,86.576 130.673,86.577 130.673,86.577 130.673,86.577 130.810,86.591 131.910,86.591 132.058,86.576 132.248,86.519 132.423,86.425 132.577,86.299 132.703,86.146 132.796,85.970 132.854,85.780 132.869,85.632 132.868,82.733 132.854,82.585 132.796,82.395 132.796,82.395 132.796,82.395 132.794,82.391 132.794,82.390 132.793,82.389 132.733,82.276 132.703,82.220 132.703,82.219 132.678,82.189 132.577,82.066 132.423,81.940 132.423,81.940 132.423,81.940 132.423,81.940 132.423,81.940 132.248,81.846 132.248,81.846 132.248,81.846 132.150,81.817 132.116,81.794 131.968,81.780 131.951,81.778 131.951,81.778 131.917,81.775 131.910,81.774 131.910,81.774 130.810,81.774 130.810,81.774 130.774,81.778 130.662,81.789 130.472,81.846 130.297,81.940 130.297,81.940 130.242,81.985 130.212,82.003 130.197,82.010 130.128,82.018 130.123,82.017 130.072,81.995 130.070,81.994 130.054,81.981 128.924,80.850 128.903,80.822 128.897,80.812 128.882,80.744 128.907,80.678 128.963,80.636 128.966,80.635 128.970,80.634 129.013,80.626 129.061,80.626 129.061,80.626 129.164,80.615 129.333,80.560 129.484,80.467 129.609,80.341 129.702,80.190 129.758,80.022 129.768,79.918 129.768,79.917 130.560,79.917 130.570,80.020 130.570,80.020 130.570,80.020 130.626,80.187 130.626,80.187 130.718,80.336 130.842,80.460 130.991,80.552 130.991,80.552 131.157,80.607 131.157,80.607 131.157,80.607 131.157,80.607 131.260,80.617 131.460,80.617 131.960,80.617 132.160,80.617 132.160,80.617 132.160,80.617 132.263,80.607 132.429,80.552 132.429,80.552 132.578,80.460 132.702,80.336 132.794,80.187 132.794,80.187 132.850,80.020 132.850,80.020 132.860,79.917 132.860,79.917 132.860,79.493 131.960,79.493 131.960,80.617 131.460,80.617 131.460,80.617 131.460,79.493 130.560,79.493 130.560,79.917 129.768,79.917 129.768,79.171 129.768,78.568 130.560,78.568 130.560,78.568 130.560,78.568 130.560,78.993 131.460,78.993 131.960,78.993 132.860,78.993 132.860,78.568 132.860,78.568 132.850,78.465 132.794,78.298 132.794,78.298 132.702,78.149 132.578,78.025 132.429,77.933 132.429,77.933 132.406,77.925 132.263,77.878 132.263,77.878 132.160,77.868 132.160,77.868 131.960,77.868 131.960,78.993 131.460,78.993 131.460,77.868 131.260,77.868 131.260,77.868 131.260,77.868 131.260,77.868 131.157,77.878 131.157,77.878 130.991,77.933 130.991,77.933 130.991,77.933 130.991,77.933 130.891,77.995 130.842,78.025 130.718,78.149 130.718,78.149 130.628,78.295 130.626,78.298 130.626,78.298 130.570,78.465 130.570,78.465 130.560,78.568 129.768,78.568 129.768,78.567 129.768,78.567 129.768,78.564 129.758,78.463 129.702,78.295 129.609,78.144 129.484,78.018 129.345,77.933 129.333,77.925 129.333,77.925 129.333,77.925 129.164,77.870 129.061,77.859 129.061,77.859 128.388,77.859 128.388,77.859 128.388,77.859 128.353,77.854 128.338,77.850 128.279,77.812 128.278,77.810 128.251,77.756 128.249,77.748 128.246,77.721 128.250,74.825 128.254,74.804 127.523,74.073 127.502,74.045 127.496,74.035 127.481,73.966 127.506,73.901 127.562,73.859 127.566,73.858 127.569,73.856 127.612,73.849 129.852,73.849 129.859,73.846 129.897,73.839 129.970,73.824 130.085,73.776 130.189,73.707 130.502,73.394 130.503,73.393 130.530,73.373 130.545,73.365 130.611,73.349 130.624,73.350 130.656,73.356 130.675,73.362 130.680,73.364 130.899,73.398 130.899,73.398 131.121,73.398 131.121,73.398 131.340,73.364 131.551,73.295 131.748,73.195 131.928,73.064 132.084,72.908 132.169,72.791 132.194,72.765 132.205,72.757 132.270,72.732 132.338,72.746 132.345,72.749 132.387,72.786 132.476,72.908 132.632,73.064 132.734,73.138 132.812,73.195 132.812,73.195 132.812,73.195 132.905,73.242 132.980,73.280 133.003,73.292 133.003,73.292 133.004,73.293 133.008,73.295 133.010,73.296 133.014,73.297 133.171,73.348 133.220,73.364 133.439,73.398 133.439,73.398 133.661,73.398 133.661,73.398 133.880,73.364 133.902,73.356 133.937,73.350 133.954,73.350 134.019,73.366 134.031,73.373 134.057,73.393 134.656,73.992 134.760,74.061 134.760,74.061 134.760,74.061 134.760,74.061 134.875,74.109 134.995,74.133 134.997,74.133 134.998,74.133 134.998,74.133 134.998,74.133 137.287,74.133 137.322,74.139 137.337,74.143 137.396,74.181 137.396,74.181 137.396,74.181 137.396,74.181 137.399,74.185 137.425,74.233 137.426,74.235 137.430,74.255 137.432,74.279 137.432,74.279 137.488,74.448 137.488,74.448 137.510,74.484 137.581,74.599 137.706,74.724 137.857,74.817 138.026,74.873 138.129,74.883 139.031,74.883 139.134,74.873 139.303,74.817 139.454,74.724 139.579,74.599 139.672,74.448 139.728,74.279 139.738,74.176 139.738,74.175 140.530,74.175 140.540,74.278 140.540,74.278 140.540,74.278 140.596,74.444 140.596,74.444 140.688,74.593 140.812,74.717 140.961,74.809 140.961,74.809 141.127,74.865 141.127,74.865 141.127,74.865 141.127,74.865 141.230,74.875 141.430,74.875 141.430,74.875 141.430,73.750 140.530,73.750 140.530,74.175 139.738,74.175 139.738,73.400 139.738,72.825 140.530,72.825 140.530,72.825 140.530,73.250 141.430,73.250 141.430,72.077 141.435,72.042 141.436,72.037 141.442,72.016 141.442,71.260 140.530,71.260 140.530,71.710 140.540,71.813 140.540,71.813 140.540,71.813 140.541,71.814 140.596,71.979 140.596,71.979 140.596,71.979 140.596,71.979 140.688,72.128 140.688,72.128 140.727,72.167 140.748,72.195 140.755,72.209 140.770,72.277 140.770,72.279 140.751,72.337 140.746,72.344 140.730,72.365 140.688,72.407 140.688,72.407 140.598,72.552 140.596,72.556 140.596,72.556 140.540,72.722 140.540,72.722 140.530,72.825 139.738,72.825 139.738,72.824 139.738,72.824 139.734,72.776 139.728,72.721 139.672,72.552 139.579,72.401 139.545,72.368 139.545,72.368 139.545,72.368 139.524,72.340 139.517,72.326 139.502,72.258 139.502,72.256 139.521,72.198 139.526,72.191 139.542,72.170 139.579,72.134 139.672,71.983 139.728,71.814 139.738,71.711 139.738,70.310 140.530,70.310 140.530,70.310 140.530,70.760 141.442,70.760 141.442,69.569 141.448,69.534 141.460,69.490 141.462,69.484 141.462,69.484 141.463,69.484 141.463,68.750 140.550,68.750 140.550,69.200 140.560,69.303 140.560,69.303 140.560,69.303 140.616,69.469 140.616,69.469 140.708,69.618 140.708,69.618 140.734,69.645 140.755,69.673 140.763,69.687 140.778,69.755 140.777,69.757 140.758,69.815 140.754,69.821 140.737,69.842 140.688,69.892 140.688,69.892 140.597,70.038 140.596,70.041 140.596,70.041 140.540,70.207 140.540,70.207 140.530,70.310 139.738,70.310 139.738,70.309 139.728,70.206 139.672,70.037 139.579,69.886 139.558,69.865 139.537,69.837 139.529,69.823 139.528,69.818 139.514,69.755 139.515,69.753 139.534,69.695 139.538,69.689 139.555,69.668 139.565,69.657 139.599,69.624 139.692,69.473 139.748,69.304 139.758,69.201 139.758,67.800 140.550,67.800 140.550,67.800 140.550,68.250 141.463,68.250 141.463,67.100 141.250,67.100 141.250,67.100 141.250,67.100 141.250,67.100 141.147,67.110 141.147,67.110 140.981,67.166 140.981,67.166 140.981,67.166 140.981,67.166 140.898,67.217 140.832,67.258 140.708,67.382 140.708,67.382 140.618,67.527 140.616,67.531 140.616,67.531 140.560,67.697 140.560,67.697 140.550,67.800 139.758,67.800 139.758,67.799 139.748,67.696 139.692,67.527 139.599,67.376 139.474,67.251 139.335,67.166 139.323,67.158 139.323,67.158 139.323,67.158 139.154,67.102 139.051,67.091 139.051,67.091 138.124,67.091 138.124,67.092 138.124,67.092 138.124,67.092 138.021,67.102 137.852,67.158 137.852,67.158 137.852,67.158 137.701,67.251 137.701,67.251 137.576,67.376 137.576,67.376 137.483,67.527 137.483,67.527 137.483,67.527 137.427,67.696 137.423,67.737 137.415,67.769 137.414,67.772 137.408,67.786 137.365,67.841 137.365,67.841 137.361,67.844 137.310,67.865 137.308,67.865 137.288,67.867 136.688,67.867 136.565,67.891 136.565,67.891 136.450,67.939 136.450,67.939 136.346,68.008 136.346,68.008 135.137,69.218 135.108,69.239 135.085,69.251 135.026,69.266 122.902,69.266 122.867,69.261 122.841,69.254 122.789,69.223 122.109,68.543 122.088,68.515 122.082,68.505 122.067,68.436 122.092,68.371 122.148,68.329 122.155,68.326 122.198,68.319 122.231,68.319 122.231,68.319 122.450,68.284 122.661,68.215 122.858,68.115 123.038,67.984 123.194,67.828 123.284,67.704 123.309,67.678 123.320,67.670 123.385,67.644 123.454,67.658 123.454,67.658 123.460,67.662 123.502,67.698 123.508,67.706 123.509,67.708 124.050,67.166 124.112,67.133 124.181,67.138 124.237,67.180 124.245,67.192 124.260,67.217 124.260,67.217 124.260,67.217 124.353,67.310 124.378,67.325 124.426,67.375 124.440,67.444 124.414,67.509 124.404,67.520 123.862,68.061 123.862,68.061 123.862,68.061 123.926,68.107 124.024,68.157 124.123,68.207 124.123,68.207 124.227,68.241 124.332,68.276 124.550,68.310 124.770,68.310 124.770,68.310 124.988,68.276 125.197,68.207 125.394,68.107 125.425,68.085 125.452,68.075 125.458,68.061 124.916,67.520 124.883,67.458 124.888,67.389 124.930,67.333 124.942,67.325 124.967,67.310 125.060,67.217 125.075,67.192 125.125,67.144 125.194,67.130 125.259,67.156 125.270,67.166 125.811,67.708 125.811,67.708 125.811,67.708 125.814,67.704 125.839,67.678 125.850,67.670 125.915,67.644 125.983,67.658 125.989,67.662 126.032,67.698 126.096,67.786 126.126,67.828 126.282,67.984 126.384,68.058 126.462,68.115 126.462,68.115 126.462,68.115 126.555,68.162 126.630,68.200 126.653,68.212 126.653,68.212 126.654,68.213 126.658,68.215 126.660,68.216 126.664,68.217 126.766,68.250 126.870,68.284 127.089,68.319 127.089,68.319 127.311,68.319 127.311,68.319 127.530,68.284 127.741,68.215 127.938,68.115 128.118,67.984 128.274,67.828 128.359,67.711 128.384,67.685 128.395,67.677 128.460,67.652 128.528,67.666 128.535,67.669 128.577,67.706 128.666,67.828 128.822,67.984 128.924,68.058 129.002,68.115 129.002,68.115 129.002,68.115 129.095,68.162 129.170,68.200 129.193,68.212 129.193,68.212 129.194,68.213 129.198,68.215 129.200,68.216 129.204,68.217 129.306,68.250 129.410,68.284 129.629,68.319 129.629,68.319 129.851,68.319 129.851,68.319 130.070,68.284 130.281,68.215 130.478,68.115 130.658,67.984 130.814,67.828 130.899,67.711 130.924,67.685 130.935,67.677 131.000,67.652 131.068,67.666 131.075,67.669 131.117,67.706 131.206,67.828 131.362,67.984 131.464,68.058 131.542,68.115 131.542,68.115 131.542,68.115 131.635,68.162 131.710,68.200 131.733,68.212 131.733,68.212 131.734,68.213 131.738,68.215 131.740,68.216 131.744,68.217 131.846,68.250 131.950,68.284 132.169,68.319 132.169,68.319 132.391,68.319 132.391,68.319 132.610,68.284 132.821,68.215 133.018,68.115 133.198,67.984 133.354,67.828 133.485,67.648 133.585,67.451 133.654,67.240 133.689,67.021 133.689,66.799 133.654,66.580 133.654,66.580 133.654,66.580 133.588,66.377 133.588,66.377 133.585,66.369 133.585,66.369 133.585,66.369 133.583,66.365 133.583,66.364 133.582,66.363 133.508,66.218 133.485,66.172 133.354,65.992 133.198,65.836 133.018,65.705 132.836,65.613 132.821,65.605 132.821,65.605 132.821,65.605 132.711,65.569 132.610,65.536 132.500,65.519 132.391,65.501 132.391,65.501 132.169,65.501 132.139,65.506 132.139,65.506 131.950,65.536 131.950,65.536 131.950,65.536 131.942,65.539 131.928,65.544 131.893,65.550 131.876,65.550 131.811,65.534 131.799,65.527 131.773,65.507 128.489,62.223 128.489,62.223 128.385,62.154 128.385,62.154 128.270,62.106 128.270,62.106 128.147,62.081 128.147,62.081 128.147,62.081 113.092,62.081 113.092,62.081 113.092,62.081 113.057,62.076 113.042,62.072 112.983,62.034 112.983,62.034 112.983,62.034 112.983,62.034 112.982,62.033 112.954,61.978 112.953,61.971 112.950,61.944 112.950,61.375 112.955,61.340 112.959,61.327 112.996,61.269 113.060,61.240 113.124,61.247 113.133,61.251 113.159,61.266 113.274,61.349 113.391,61.409 113.391,61.409 113.449,61.438 113.458,61.443 113.459,61.443 113.462,61.444 113.504,61.458 113.563,61.477 113.563,61.477 113.563,61.477 113.654,61.506 113.755,61.522 113.857,61.538 113.857,61.538 114.063,61.538 114.063,61.538 114.266,61.506 114.462,61.443 114.646,61.349 114.812,61.228 114.958,61.082 115.079,60.916 115.111,60.852 115.132,60.824 115.141,60.814 115.201,60.779 115.271,60.782 115.325,60.818 115.331,60.825 115.347,60.850 115.381,60.916 115.490,61.066 115.502,61.082 115.502,61.082 115.502,61.082 115.648,61.228 115.648,61.228 115.648,61.228 115.648,61.228 115.663,61.240 115.670,61.244 115.670,61.244 115.679,61.251 115.814,61.349 115.931,61.409 115.931,61.409 115.989,61.438 115.998,61.443 115.999,61.443 116.002,61.444 116.044,61.458 116.103,61.477 116.103,61.477 116.103,61.477 116.194,61.506 116.295,61.522 116.397,61.538 116.397,61.538 116.603,61.538 116.603,61.538 116.806,61.506 117.002,61.443 117.186,61.349 117.352,61.228 117.498,61.082 117.619,60.916 117.651,60.852 117.672,60.824 117.681,60.814 117.741,60.779 117.811,60.782 117.865,60.818 117.871,60.825 117.887,60.850 117.921,60.916 118.030,61.066 118.042,61.082 118.042,61.082 118.042,61.082 118.188,61.228 118.188,61.228 118.188,61.228 118.188,61.228 118.203,61.240 118.210,61.244 118.210,61.244 118.219,61.251 118.354,61.349 118.471,61.409 118.471,61.409 118.529,61.438 118.538,61.443 118.539,61.443 118.542,61.444 118.584,61.458 118.643,61.477 118.643,61.477 118.643,61.477 118.734,61.506 118.835,61.522 118.937,61.538 118.937,61.538 119.143,61.538 119.143,61.538 119.346,61.506 119.542,61.443 119.726,61.349 119.892,61.228 120.038,61.082 120.159,60.916 120.253,60.732 120.316,60.536 120.349,60.333 120.349,60.127 120.316,59.924 120.316,59.924 120.316,59.924 120.288,59.837 120.253,59.728 120.253,59.728 120.253,59.728 120.250,59.723 120.250,59.723 120.249,59.721 120.200,59.623 120.200,59.623 120.159,59.544 120.159,59.544 120.144,59.523 120.144,59.523 120.144,59.523 120.038,59.378 120.038,59.378 120.038,59.378 120.038,59.378 119.892,59.232 119.892,59.232 119.892,59.232 119.892,59.232 119.726,59.111 119.726,59.111 119.726,59.111 119.720,59.108 119.668,59.082 119.668,59.082 119.542,59.017 119.346,58.954 119.346,58.954 119.346,58.954 119.346,58.954 119.171,58.926 119.154,58.923 119.143,58.922 119.143,58.922 118.937,58.922 118.937,58.922 118.913,58.925 118.913,58.925 118.734,58.954 118.538,59.017 118.538,59.017 118.354,59.111 118.188,59.232 118.188,59.232 118.042,59.378 118.042,59.378 117.921,59.544 117.889,59.608 117.877,59.623 117.868,59.636 117.859,59.646 117.799,59.681 117.729,59.678 117.675,59.642 117.669,59.635 117.653,59.610 117.619,59.544 117.498,59.378 117.498,59.378 117.498,59.378 117.498,59.378 117.352,59.232 117.352,59.232 117.352,59.232 117.352,59.232 117.186,59.111 117.186,59.111 117.186,59.111 117.180,59.108 117.128,59.082 117.128,59.082 117.002,59.017 116.806,58.954 116.806,58.954 116.806,58.954 116.806,58.954 116.631,58.926 116.614,58.923 116.603,58.922 116.603,58.922 116.397,58.922 116.397,58.922 116.373,58.925 116.373,58.925 116.194,58.954 115.998,59.017 115.998,59.017 115.814,59.111 115.648,59.232 115.648,59.232 115.502,59.378 115.502,59.378 115.381,59.544 115.349,59.608 115.337,59.623 115.328,59.636 115.319,59.646 115.259,59.681 115.189,59.678 115.135,59.642 115.129,59.635 115.113,59.610 115.079,59.544 114.958,59.378 114.958,59.378 114.958,59.378 114.958,59.378 114.812,59.232 114.812,59.232 114.812,59.232 114.812,59.232 114.646,59.111 114.646,59.111 114.646,59.111 114.640,59.108 114.588,59.082 114.588,59.082 114.462,59.017 114.266,58.954 114.266,58.954 114.266,58.954 114.266,58.954 114.263,58.953 114.262,58.952 114.262,58.952 114.241,58.945 114.238,58.943 114.228,58.939 114.176,58.892 114.157,58.825 114.157,58.823 114.171,58.767 114.173,58.763 114.186,58.744 114.252,58.661 114.277,58.637 114.297,58.623 114.348,58.602 114.350,58.602 114.362,58.601 114.363,58.600 114.363,58.601 114.370,58.600 140.731,58.600" fill="#2b8a4f" stroke="none"/>
+<polygon points="127.788,63.354 127.814,63.361 127.866,63.392 129.751,65.277 129.772,65.305 129.778,65.315 129.782,65.333 129.790,65.348 129.789,65.366 129.793,65.384 129.786,65.400 129.785,65.418 129.775,65.432 129.768,65.449 129.754,65.460 129.743,65.474 129.712,65.491 129.705,65.494 129.662,65.501 129.629,65.501 129.520,65.519 129.410,65.536 129.199,65.605 129.002,65.705 128.992,65.713 128.928,65.759 128.834,65.827 128.827,65.831 128.666,65.992 128.581,66.109 128.556,66.135 128.545,66.143 128.480,66.168 128.412,66.154 128.412,66.154 128.412,66.154 128.412,66.154 128.405,66.151 128.363,66.114 128.279,65.998 128.279,65.998 128.274,65.992 128.118,65.836 128.118,65.836 127.938,65.705 127.756,65.613 127.741,65.605 127.741,65.605 127.741,65.605 127.631,65.569 127.530,65.536 127.420,65.519 127.311,65.501 127.311,65.501 127.089,65.501 127.089,65.501 126.980,65.519 126.870,65.536 126.659,65.605 126.462,65.705 126.452,65.713 126.388,65.759 126.294,65.827 126.287,65.831 126.126,65.992 126.126,65.992 126.036,66.116 126.036,66.116 126.018,66.135 126.011,66.142 126.000,66.150 125.935,66.176 125.866,66.162 125.866,66.162 125.866,66.162 125.866,66.162 125.860,66.158 125.818,66.122 125.811,66.112 125.811,66.112 125.811,66.112 125.270,66.654 125.208,66.687 125.139,66.682 125.083,66.640 125.075,66.628 125.060,66.603 124.967,66.510 124.942,66.495 124.894,66.445 124.880,66.376 124.906,66.311 124.916,66.300 125.458,65.759 125.458,65.759 125.394,65.713 125.394,65.713 125.197,65.613 125.197,65.613 124.988,65.544 124.877,65.527 124.770,65.510 124.770,65.510 124.550,65.510 124.332,65.544 124.123,65.613 124.123,65.613 123.926,65.713 123.926,65.713 123.862,65.759 123.862,65.759 124.404,66.300 124.437,66.362 124.432,66.431 124.390,66.487 124.378,66.495 124.353,66.510 124.353,66.510 124.260,66.603 124.260,66.603 124.245,66.628 124.195,66.676 124.126,66.690 124.061,66.664 124.050,66.654 123.509,66.112 123.509,66.112 123.509,66.112 123.506,66.116 123.488,66.135 123.481,66.142 123.470,66.150 123.405,66.176 123.337,66.162 123.337,66.162 123.331,66.158 123.288,66.122 123.288,66.122 123.194,65.992 123.038,65.836 122.858,65.705 122.676,65.613 122.661,65.605 122.661,65.605 122.661,65.605 122.551,65.569 122.450,65.536 122.340,65.519 122.231,65.501 122.231,65.501 122.009,65.501 122.009,65.501 121.900,65.519 121.790,65.536 121.579,65.605 121.382,65.705 121.372,65.713 121.308,65.759 121.214,65.827 121.207,65.831 121.046,65.992 120.961,66.109 120.936,66.135 120.925,66.143 120.860,66.168 120.792,66.154 120.792,66.154 120.792,66.154 120.792,66.154 120.785,66.151 120.743,66.114 120.659,65.998 120.659,65.998 120.654,65.992 120.498,65.836 120.498,65.836 120.318,65.705 120.136,65.613 120.121,65.605 120.121,65.605 120.121,65.605 120.011,65.569 119.910,65.536 119.800,65.519 119.691,65.501 119.691,65.501 119.490,65.501 119.490,65.501 119.490,65.501 119.455,65.496 119.430,65.489 119.377,65.458 118.668,64.749 118.668,64.749 118.668,64.749 118.523,64.652 118.523,64.652 118.523,64.652 118.363,64.585 118.363,64.585 118.192,64.552 118.192,64.552 118.192,64.552 113.092,64.552 113.092,64.551 113.092,64.552 113.057,64.546 113.042,64.542 112.983,64.504 112.983,64.504 112.983,64.504 112.983,64.504 112.982,64.503 112.954,64.448 112.953,64.441 112.950,64.414 112.950,63.490 112.955,63.455 112.959,63.440 112.997,63.382 112.997,63.382 112.997,63.382 112.999,63.380 113.053,63.353 113.061,63.351 113.087,63.349 127.753,63.349" fill="#2b8a4f" stroke="none"/>
+<polygon points="108.320,75.870 108.340,75.886 108.380,75.926 108.414,75.987 108.416,76.014 108.416,82.445 108.397,82.512 108.344,82.558 108.293,82.569 107.499,82.569 107.396,82.580 107.227,82.635 107.227,82.635 107.076,82.728 107.076,82.728 106.951,82.854 106.951,82.854 106.858,83.005 106.858,83.005 106.802,83.173 106.799,83.208 106.772,83.272 106.715,83.312 106.675,83.319 106.017,83.319 105.950,83.299 105.929,83.283 105.830,83.184 105.830,83.184 105.657,83.058 105.595,83.026 105.466,82.961 105.466,82.961 105.263,82.895 105.158,82.878 105.052,82.862 104.838,82.862 104.768,82.873 104.627,82.895 104.424,82.961 104.424,82.961 104.233,83.058 104.060,83.184 103.955,83.289 103.893,83.322 103.824,83.317 103.768,83.276 103.751,83.245 103.706,83.124 103.618,83.007 103.501,82.919 103.364,82.868 103.304,82.862 103.304,82.862 101.506,82.862 101.506,82.862 101.446,82.868 101.446,82.868 101.309,82.919 101.192,83.007 101.104,83.124 101.053,83.261 101.053,83.261 101.046,83.321 101.046,85.119 101.053,85.179 101.053,85.179 101.085,85.264 101.104,85.316 101.192,85.433 101.242,85.471 101.284,85.527 101.291,85.570 101.291,99.004 101.272,99.071 101.219,99.116 101.211,99.120 101.079,99.169 100.962,99.257 100.874,99.374 100.823,99.511 100.823,99.511 100.817,99.571 100.817,101.369 100.823,101.429 100.823,101.429 100.872,101.560 100.874,101.566 100.962,101.683 101.079,101.771 101.216,101.822 101.243,101.825 101.276,101.828 101.276,101.829 103.074,101.829 103.074,101.828 103.101,101.826 103.134,101.822 103.271,101.771 103.388,101.683 103.476,101.566 103.521,101.445 103.563,101.389 103.628,101.365 103.697,101.380 103.725,101.401 103.830,101.506 104.003,101.632 104.096,101.680 104.194,101.729 104.194,101.729 104.275,101.755 104.397,101.795 104.608,101.829 104.608,101.829 104.822,101.829 104.822,101.829 105.033,101.795 105.236,101.729 105.427,101.632 105.600,101.506 105.751,101.355 105.877,101.182 105.974,100.991 105.981,100.969 105.994,100.929 106.034,100.872 106.098,100.844 106.112,100.844 106.675,100.844 106.742,100.863 106.788,100.916 106.799,100.955 106.802,100.989 106.858,101.158 106.858,101.158 106.951,101.309 106.951,101.309 106.967,101.325 107.001,101.386 106.996,101.456 106.967,101.500 106.928,101.539 106.835,101.690 106.835,101.690 106.780,101.858 106.769,101.962 106.769,103.313 106.769,103.313 106.777,103.393 106.780,103.417 106.835,103.585 106.928,103.736 107.054,103.862 107.205,103.955 107.373,104.010 107.477,104.021 108.378,104.021 108.482,104.010 108.650,103.955 108.801,103.862 108.927,103.736 109.020,103.585 109.075,103.417 109.086,103.313 109.086,102.426 109.106,102.359 109.122,102.339 109.665,101.796 109.726,101.763 109.796,101.768 109.852,101.810 109.876,101.875 109.876,101.897 109.869,101.962 109.869,103.313 109.869,103.313 109.877,103.393 109.880,103.417 109.935,103.585 110.028,103.736 110.154,103.862 110.305,103.955 110.473,104.010 110.577,104.021 111.478,104.021 111.582,104.010 111.750,103.955 111.901,103.862 112.027,103.736 112.120,103.585 112.175,103.417 112.186,103.313 112.186,103.168 112.206,103.100 112.258,103.055 112.310,103.043 118.229,103.043 118.296,103.063 118.340,103.111 118.414,103.257 118.420,103.269 118.537,103.413 118.681,103.530 118.847,103.614 119.026,103.662 119.103,103.668 120.477,103.668 120.554,103.662 120.733,103.614 120.899,103.530 121.043,103.413 121.160,103.269 121.244,103.103 121.292,102.924 121.299,102.847 121.298,101.973 121.292,101.896 121.261,101.778 121.262,101.708 121.302,101.650 121.366,101.622 121.435,101.634 121.446,101.640 121.542,101.700 121.542,101.700 121.542,101.700 121.711,101.755 121.814,101.766 121.926,101.766 121.993,101.786 122.039,101.838 122.050,101.890 122.050,107.669 122.046,107.685 122.046,107.700 122.035,107.724 122.032,107.733 122.029,107.737 121.981,107.804 121.934,107.897 121.932,107.900 121.909,107.921 121.888,107.944 121.883,107.945 121.880,107.948 121.850,107.953 121.820,107.960 121.816,107.959 121.811,107.960 121.783,107.948 121.754,107.938 121.751,107.934 121.747,107.933 121.738,107.920 121.715,107.893 121.672,107.809 121.552,107.643 121.552,107.643 121.407,107.498 121.241,107.378 121.059,107.285 120.864,107.222 120.810,107.213 120.810,108.057 120.753,108.024 120.626,107.990 120.494,107.990 120.367,108.024 120.310,108.057 120.310,107.213 120.256,107.222 120.061,107.285 119.879,107.378 119.713,107.498 119.713,107.498 119.568,107.643 119.568,107.643 119.448,107.809 119.400,107.902 119.353,107.953 119.285,107.970 119.219,107.947 119.180,107.902 119.132,107.809 119.012,107.643 119.012,107.643 118.867,107.498 118.701,107.378 118.519,107.285 118.324,107.222 118.270,107.213 118.270,108.057 118.213,108.024 118.086,107.990 117.954,107.990 117.827,108.024 117.770,108.057 117.770,107.213 117.716,107.222 117.521,107.285 117.339,107.378 117.173,107.498 117.173,107.498 117.028,107.643 117.028,107.643 116.908,107.809 116.865,107.893 116.817,107.944 116.749,107.960 116.683,107.938 116.644,107.893 116.599,107.804 116.584,107.783 116.478,107.638 116.478,107.638 116.332,107.492 116.332,107.492 116.166,107.371 116.166,107.371 116.166,107.371 116.108,107.342 115.982,107.277 115.786,107.214 115.611,107.186 115.583,107.181 115.377,107.181 115.353,107.185 115.174,107.214 114.978,107.277 114.794,107.371 114.628,107.492 114.628,107.492 114.482,107.638 114.482,107.638 114.361,107.804 114.320,107.883 114.273,107.934 114.205,107.951 114.139,107.929 114.100,107.883 114.059,107.804 113.938,107.638 113.938,107.638 113.792,107.492 113.792,107.492 113.626,107.371 113.626,107.371 113.626,107.371 113.568,107.342 113.442,107.277 113.246,107.214 113.071,107.186 113.043,107.181 112.837,107.181 112.813,107.185 112.634,107.214 112.438,107.277 112.254,107.371 112.088,107.492 112.088,107.492 111.942,107.638 111.942,107.638 111.821,107.804 111.780,107.883 111.733,107.934 111.665,107.951 111.599,107.929 111.560,107.883 111.519,107.804 111.398,107.638 111.398,107.638 111.252,107.492 111.252,107.492 111.086,107.371 111.086,107.371 111.086,107.371 111.028,107.342 110.902,107.277 110.706,107.214 110.531,107.186 110.503,107.181 110.297,107.181 110.273,107.185 110.094,107.214 109.898,107.277 109.714,107.371 109.548,107.492 109.548,107.492 109.402,107.638 109.402,107.638 109.281,107.804 109.240,107.883 109.193,107.934 109.125,107.951 109.059,107.929 109.020,107.883 108.979,107.804 108.858,107.638 108.858,107.638 108.712,107.492 108.712,107.492 108.546,107.371 108.546,107.371 108.546,107.371 108.488,107.342 108.362,107.277 108.166,107.214 107.991,107.186 107.963,107.181 107.757,107.181 107.733,107.185 107.554,107.214 107.358,107.277 107.174,107.371 107.008,107.492 107.008,107.492 106.862,107.638 106.847,107.658 106.792,107.700 106.722,107.706 106.661,107.674 106.626,107.613 106.624,107.598 106.622,107.581 106.622,107.581 106.589,107.492 106.571,107.444 106.483,107.327 106.366,107.239 106.229,107.188 106.169,107.181 106.169,107.181 104.471,107.181 104.471,107.181 104.411,107.188 104.411,107.188 104.274,107.239 104.157,107.327 104.069,107.444 104.018,107.581 104.018,107.581 104.011,107.641 104.011,108.858 103.992,108.925 103.939,108.970 103.888,108.981 101.999,108.981 101.932,108.962 101.911,108.945 94.068,101.102 94.035,101.041 94.040,100.971 94.041,100.967 94.116,100.787 94.184,100.533 94.219,100.272 94.219,100.008 94.184,99.747 94.116,99.493 94.074,99.392 94.015,99.250 94.015,99.250 93.884,99.022 93.723,98.813 93.723,98.813 93.537,98.627 93.537,98.627 93.328,98.466 93.100,98.335 93.100,98.335 92.857,98.234 92.603,98.166 92.342,98.132 92.342,98.132 92.342,98.132 92.078,98.132 92.078,98.132 92.078,98.132 91.817,98.166 91.563,98.234 91.320,98.335 91.320,98.335 91.092,98.466 90.883,98.627 90.883,98.627 90.697,98.813 90.697,98.813 90.536,99.022 90.405,99.250 90.405,99.250 90.330,99.430 90.286,99.484 90.220,99.506 90.216,99.507 85.404,99.507 85.337,99.487 85.316,99.470 83.120,97.274 83.086,97.213 83.084,97.186 83.084,94.194 83.103,94.127 83.120,94.106 83.132,94.094 83.193,94.061 83.263,94.066 83.319,94.108 83.343,94.173 83.342,94.201 83.341,94.203 83.341,94.397 83.372,94.588 83.432,94.772 83.432,94.772 83.519,94.944 83.633,95.100 83.633,95.100 83.770,95.237 83.770,95.237 83.906,95.336 83.926,95.351 84.039,95.408 84.098,95.438 84.098,95.438 84.190,95.468 84.282,95.498 84.473,95.528 84.473,95.528 84.667,95.528 84.667,95.528 84.858,95.498 85.042,95.438 85.214,95.351 85.370,95.237 85.507,95.100 85.621,94.944 85.708,94.772 85.768,94.588 85.799,94.397 85.799,94.203 85.768,94.012 85.712,93.839 85.708,93.828 85.708,93.828 85.654,93.722 85.621,93.656 85.606,93.636 85.507,93.500 85.507,93.500 85.370,93.363 85.370,93.363 85.214,93.249 85.214,93.249 85.214,93.249 85.159,93.221 85.042,93.162 85.042,93.162 85.000,93.148 84.942,93.108 84.915,93.044 84.927,92.975 84.974,92.924 85.000,92.912 85.042,92.898 85.042,92.898 85.085,92.876 85.214,92.811 85.370,92.697 85.507,92.560 85.621,92.404 85.708,92.232 85.768,92.048 85.799,91.857 85.799,91.663 85.768,91.472 85.708,91.288 85.708,91.288 85.678,91.229 85.621,91.116 85.536,90.999 85.507,90.960 85.507,90.960 85.370,90.823 85.370,90.823 85.214,90.709 85.214,90.709 85.214,90.709 85.136,90.670 85.042,90.622 85.042,90.622 85.000,90.608 84.942,90.568 84.915,90.504 84.927,90.435 84.974,90.384 85.000,90.372 85.042,90.358 85.042,90.358 85.214,90.271 85.370,90.157 85.507,90.020 85.621,89.864 85.708,89.692 85.768,89.508 85.799,89.317 85.799,89.123 85.768,88.932 85.708,88.748 85.708,88.748 85.678,88.689 85.621,88.576 85.606,88.556 85.507,88.420 85.507,88.420 85.370,88.283 85.370,88.283 85.214,88.169 85.214,88.169 85.214,88.169 85.139,88.131 85.042,88.082 85.042,88.082 84.858,88.022 84.731,88.002 84.667,87.992 84.473,87.992 84.410,88.002 84.282,88.022 84.098,88.082 84.098,88.082 83.926,88.169 83.770,88.283 83.770,88.283 83.633,88.420 83.633,88.420 83.519,88.576 83.432,88.748 83.432,88.748 83.372,88.932 83.341,89.123 83.341,89.317 83.372,89.508 83.432,89.692 83.432,89.692 83.519,89.864 83.633,90.020 83.633,90.020 83.770,90.157 83.770,90.157 83.906,90.256 83.926,90.271 84.039,90.328 84.098,90.358 84.098,90.358 84.140,90.372 84.198,90.412 84.225,90.476 84.213,90.545 84.166,90.596 84.140,90.608 84.098,90.622 84.098,90.622 83.926,90.709 83.770,90.823 83.770,90.823 83.633,90.960 83.633,90.960 83.519,91.116 83.432,91.288 83.432,91.288 83.372,91.472 83.341,91.663 83.341,91.857 83.341,91.857 83.364,91.998 83.355,92.067 83.329,92.105 82.237,93.197 82.046,93.388 82.002,93.432 81.958,93.476 81.889,93.580 81.889,93.580 81.841,93.695 81.841,93.695 81.817,93.818 81.817,97.562 81.841,97.685 81.841,97.685 81.889,97.800 81.889,97.800 81.958,97.904 81.958,97.904 84.686,100.632 84.686,100.632 84.780,100.695 84.780,100.695 84.783,100.697 84.790,100.701 84.905,100.749 85.028,100.773 85.028,100.773 85.028,100.773 90.216,100.773 90.283,100.793 90.328,100.846 90.330,100.850 90.405,101.030 90.405,101.030 90.536,101.258 90.697,101.467 90.697,101.467 90.883,101.653 90.883,101.653 91.092,101.814 91.320,101.945 91.320,101.945 91.440,101.995 91.563,102.046 91.817,102.114 92.078,102.148 92.078,102.148 92.342,102.148 92.342,102.148 92.603,102.114 92.857,102.046 93.037,101.971 93.107,101.964 93.169,101.995 93.172,101.998 100.685,109.510 100.718,109.572 100.713,109.641 100.671,109.697 100.606,109.722 100.596,109.722 80.223,109.601 80.156,109.581 80.111,109.528 80.100,109.477 80.100,84.960 90.984,84.960 90.984,84.960 91.096,85.047 91.096,85.047 91.324,85.178 91.324,85.178 91.566,85.278 91.819,85.346 91.819,85.346 92.079,85.380 92.079,85.380 92.341,85.380 92.341,85.380 92.601,85.346 92.601,85.346 92.854,85.278 93.096,85.178 93.096,85.178 93.324,85.047 93.324,85.046 93.436,84.960 93.436,84.960 92.210,83.734 90.984,84.960 80.100,84.960 80.100,83.249 90.210,83.249 90.210,83.511 90.244,83.771 90.244,83.771 90.312,84.024 90.412,84.266 90.412,84.266 90.543,84.494 90.543,84.494 90.630,84.606 91.856,83.380 91.856,83.380 92.564,83.380 92.564,83.380 93.790,84.606 93.790,84.606 93.876,84.494 93.877,84.494 94.008,84.266 94.008,84.266 94.108,84.024 94.176,83.771 94.176,83.771 94.210,83.511 94.210,83.511 94.210,83.249 94.210,83.249 94.176,82.989 94.176,82.989 94.108,82.736 94.008,82.494 94.008,82.494 93.877,82.266 93.877,82.266 93.790,82.154 93.790,82.154 92.564,83.380 91.856,83.380 90.630,82.154 90.630,82.154 90.543,82.266 90.412,82.494 90.412,82.494 90.312,82.736 90.244,82.989 90.244,82.989 90.210,83.249 80.100,83.249 80.100,81.800 90.984,81.800 90.984,81.800 92.210,83.026 93.436,81.800 93.324,81.713 93.324,81.713 93.096,81.582 93.096,81.582 92.854,81.482 92.601,81.414 92.601,81.414 92.341,81.380 92.079,81.380 91.819,81.414 91.819,81.414 91.566,81.482 91.324,81.582 91.324,81.582 91.096,81.713 90.984,81.800 80.100,81.800 80.100,75.974 80.120,75.907 80.172,75.861 80.224,75.850 108.253,75.850" fill="#2b8a4f" stroke="none"/>
+<polygon points="120.094,108.297 120.060,108.424 120.060,108.556 120.094,108.683 120.127,108.740 118.453,108.740 118.486,108.683 118.520,108.556 118.520,108.424 118.486,108.297 118.453,108.240 120.127,108.240" fill="#2b8a4f" stroke="none"/>
+<polygon points="121.993,95.793 122.039,95.846 122.050,95.897 122.050,96.225 122.030,96.292 121.978,96.338 121.926,96.349 121.814,96.349 121.814,96.349 121.711,96.360 121.542,96.415 121.542,96.415 121.391,96.508 121.266,96.634 121.190,96.757 121.138,96.803 121.069,96.815 121.007,96.788 120.889,96.693 120.719,96.609 120.534,96.563 120.491,96.560 120.040,96.560 120.040,97.686 120.020,97.753 119.968,97.799 119.916,97.810 119.790,97.810 119.790,97.936 119.770,98.003 119.718,98.049 119.666,98.060 118.290,98.060 118.290,98.261 118.293,98.304 118.339,98.489 118.423,98.659 118.423,98.659 118.543,98.807 118.606,98.858 118.645,98.915 118.648,98.985 118.612,99.045 118.606,99.051 118.537,99.107 118.420,99.251 118.420,99.251 118.340,99.409 118.292,99.460 118.229,99.477 115.122,99.477 115.055,99.457 115.010,99.404 114.998,99.353 114.998,98.660 114.995,98.627 114.984,98.512 114.926,98.322 114.926,98.322 114.926,98.322 114.833,98.147 114.833,98.147 114.707,97.993 114.553,97.867 114.553,97.867 114.378,97.774 114.283,97.745 114.188,97.716 114.188,97.716 114.188,97.716 114.073,97.705 114.040,97.701 114.040,97.701 113.816,97.701 113.749,97.682 113.703,97.629 113.694,97.560 113.723,97.496 113.729,97.490 113.860,97.359 118.290,97.359 118.290,97.560 119.540,97.560 119.540,96.560 119.089,96.560 119.046,96.563 118.861,96.609 118.691,96.693 118.691,96.693 118.543,96.813 118.543,96.813 118.423,96.961 118.423,96.961 118.339,97.131 118.293,97.316 118.290,97.359 113.860,97.359 113.949,97.269 114.525,96.693 115.409,95.810 115.470,95.776 115.496,95.773 121.926,95.773" fill="#2b8a4f" stroke="none"/>
+<polygon points="121.993,79.896 122.039,79.948 122.050,80.000 122.050,80.528 122.030,80.595 121.978,80.640 121.926,80.651 121.814,80.651 121.814,80.652 121.711,80.662 121.542,80.718 121.542,80.718 121.391,80.811 121.266,80.936 121.264,80.939 121.261,80.941 121.261,80.941 121.261,80.941 121.206,80.980 121.137,80.983 121.076,80.948 121.070,80.940 121.037,80.900 120.889,80.781 120.889,80.781 120.719,80.696 120.534,80.650 120.491,80.647 120.040,80.647 120.040,81.773 120.020,81.841 119.968,81.886 119.916,81.897 119.790,81.897 119.790,82.023 119.770,82.091 119.718,82.136 119.666,82.147 118.290,82.147 118.290,82.349 118.293,82.391 118.339,82.576 118.423,82.747 118.423,82.747 118.543,82.895 118.606,82.945 118.645,83.003 118.648,83.073 118.612,83.133 118.606,83.138 118.537,83.194 118.420,83.339 118.420,83.339 118.340,83.496 118.292,83.547 118.229,83.564 115.122,83.564 115.055,83.544 115.010,83.492 114.998,83.440 114.998,82.748 114.997,82.736 114.984,82.600 114.926,82.410 114.926,82.410 114.926,82.410 114.833,82.235 114.833,82.234 114.707,82.081 114.553,81.955 114.553,81.955 114.378,81.861 114.242,81.820 114.188,81.804 114.188,81.804 114.188,81.804 114.073,81.792 114.040,81.789 114.040,81.789 114.020,81.789 113.953,81.769 113.907,81.717 113.897,81.647 113.926,81.584 113.932,81.577 114.063,81.446 118.290,81.446 118.290,81.647 119.540,81.647 119.540,80.647 119.089,80.647 119.046,80.650 118.861,80.696 118.691,80.781 118.691,80.781 118.543,80.900 118.543,80.900 118.423,81.048 118.423,81.048 118.339,81.219 118.293,81.404 118.290,81.446 114.063,81.446 114.153,81.357 114.698,80.811 115.597,79.912 115.658,79.879 115.685,79.876 121.926,79.876" fill="#2b8a4f" stroke="none"/>
+<line x1="108.0125" y1="100.21" x2="104.975" y2="100.21" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="104.975" y1="100.21" x2="104.715" y2="100.47" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="110.9875" y1="99.335001" x2="110.9875" y2="100.21" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="125.06" y1="100.21" x2="131.36" y2="100.21" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="115.182501" y1="95.14" x2="110.9875" y2="99.335001" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="127.49" y1="96.34" x2="131.36" y2="100.21" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="123.49" y1="95.14" x2="115.182501" y2="95.14" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="124.69" y1="96.34" x2="127.49" y2="96.34" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="123.49" y1="95.14" x2="124.69" y2="96.34" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="135.06" y1="73.5" x2="133.55" y2="71.99" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="138.58" y1="73.5" x2="135.06" y2="73.5" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="101.28" y1="63.89" x2="121.64" y2="63.89" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="121.64" y1="63.89" x2="124.66" y2="66.91" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="121.95" y1="107.1" x2="120.56" y2="108.49" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="138.58" y1="104.97" x2="136.45" y2="107.1" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="138.58" y1="103.29" x2="138.58" y2="104.97" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="136.45" y1="107.1" x2="121.95" y2="107.1" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="122.9075" y1="86.4825" x2="122.49" y2="86.9" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="135.35" y1="88.15" x2="126.7275" y2="88.15" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="137.05" y1="82.6075" x2="137.05" y2="86.45" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="140.1325" y1="79.525" x2="137.05" y2="82.6075" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="122.49" y1="84.91" x2="122.49" y2="86.9" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="125.06" y1="86.4825" x2="122.9075" y2="86.4825" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="126.7275" y1="88.15" x2="125.06" y2="86.4825" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="137.05" y1="86.45" x2="135.35" y2="88.15" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="122.49" y1="81.81" x2="120.1025" y2="84.1975" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="122.5625" y1="81.8825" x2="122.49" y2="81.81" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="119.79" y1="84.1975" x2="113.49" y2="84.1975" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="120.1025" y1="84.1975" x2="119.79" y2="84.1975" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="125.06" y1="81.8825" x2="122.5625" y2="81.8825" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="119.79" y1="102.41" x2="111.255" y2="102.41" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="111.255" y1="102.41" x2="111.0275" y2="102.6375" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="119.79" y1="100.11" x2="113.49" y2="100.11" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="122.49" y1="97.5075" x2="122.3925" y2="97.5075" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="122.3925" y1="97.5075" x2="119.79" y2="100.11" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="125.06" y1="97.91" x2="122.8925" y2="97.91" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="122.8925" y1="97.91" x2="122.49" y2="97.5075" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="116.9" y1="90" x2="113.15" y2="93.75" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="122.49" y1="90" x2="116.9" y2="90" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="82.45" y1="93.88" x2="84.57" y2="91.76" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="101.685" y1="109.615" x2="92.21" y2="100.14" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="85.09" y1="100.14" x2="82.45" y2="97.5" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="127.055" y1="109.615" x2="101.685" y2="109.615" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="128.18" y1="108.49" x2="127.055" y2="109.615" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="82.45" y1="97.5" x2="82.45" y2="93.88" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="92.21" y1="100.14" x2="85.09" y2="100.14" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="118.105" y1="65.435" x2="119.58" y2="66.91" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="122.57" y1="69.9" x2="135.35" y2="69.9" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="104.235" y1="65.435" x2="118.105" y2="65.435" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="119.58" y1="66.91" x2="122.57" y2="69.9" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="101.28" y1="68.39" x2="104.235" y2="65.435" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="102.175" y1="100.47" x2="102.175" y2="84.45" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="135.35" y1="69.9" x2="136.75" y2="68.5" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="136.75" y1="68.5" x2="138.5875" y2="68.5" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="105.2125" y1="83.9525" x2="104.945" y2="84.22" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="108.0125" y1="83.9525" x2="105.2125" y2="83.9525" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="107.9275" y1="86.5625" x2="109.05" y2="85.44" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="107.9" y1="74.55" x2="107.8" y2="74.45" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="109.05" y1="75.7" x2="107.9" y2="74.55" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="109.05" y1="85.44" x2="109.05" y2="75.7" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="119.79" y1="86.4975" x2="111.0925" y2="86.4975" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="111.0925" y1="86.4975" x2="111.0275" y2="86.5625" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="128.61" y1="79.2425" x2="126.465" y2="79.2425" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="123.49" y1="79.2425" x2="115.371002" y2="79.2425" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="124.69" y1="80.4425" x2="127.62" y2="80.4425" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="110.9875" y1="83.626002" x2="110.9875" y2="83.9525" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="125.06" y1="84.1825" x2="131.36" y2="84.1825" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="115.371002" y1="79.2425" x2="110.9875" y2="83.626002" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="127.62" y1="80.4425" x2="131.36" y2="84.1825" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="123.49" y1="79.2425" x2="124.69" y2="80.4425" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="131.01" y1="71.99" x2="129.785" y2="73.215" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="129.785" y1="73.215" x2="96.065" y2="73.215" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="92.75" y1="67.34" x2="96.2" y2="63.89" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="96.065" y1="73.215" x2="92.75" y2="69.9" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="92.75" y1="69.9" x2="92.75" y2="67.34" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="128.61" y1="95.14" x2="126.465" y2="95.14" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="138.3225" y1="70.765" x2="127.155" y2="70.765" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="127.155" y1="70.765" x2="125.93" y2="71.99" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="138.5675" y1="71.01" x2="138.3225" y2="70.765" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="100.105" y1="64.485" x2="100.105" y2="63.403299" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="128.085" y1="62.715" x2="132.28" y2="66.91" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="100.793299" y1="62.715" x2="128.085" y2="62.715" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="100.105" y1="63.403299" x2="100.793299" y2="62.715" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="96.2" y1="68.39" x2="100.105" y2="64.485" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="136.85" y1="95.9475" x2="136.85" y2="100.55" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="124.3925" y1="102.51" x2="125.06" y2="102.51" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="126.2" y1="103.65" x2="125.06" y2="102.51" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="140.1325" y1="92.665" x2="136.85" y2="95.9475" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="133.75" y1="103.65" x2="126.2" y2="103.65" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="136.85" y1="100.55" x2="133.75" y2="103.65" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="122.49" y1="100.6075" x2="124.3925" y2="102.51" stroke="#2b8a4f" stroke-width="0.75" stroke-linecap="round"/>
+<line x1="109.8" y1="100.765" x2="109.8" y2="74.5" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="107.9275" y1="102.6375" x2="109.8" y2="100.765" stroke="#2b8a4f" stroke-width="0.25" stroke-linecap="round"/>
+<line x1="108.0125" y1="100.21" x2="104.975" y2="100.21" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="104.975" y1="100.21" x2="104.715" y2="100.47" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="110.9875" y1="99.335001" x2="110.9875" y2="100.21" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="125.06" y1="100.21" x2="131.36" y2="100.21" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="115.182501" y1="95.14" x2="110.9875" y2="99.335001" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="127.49" y1="96.34" x2="131.36" y2="100.21" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="123.49" y1="95.14" x2="115.182501" y2="95.14" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="124.69" y1="96.34" x2="127.49" y2="96.34" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="123.49" y1="95.14" x2="124.69" y2="96.34" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="135.06" y1="73.5" x2="133.55" y2="71.99" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="138.58" y1="73.5" x2="135.06" y2="73.5" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="101.28" y1="63.89" x2="121.64" y2="63.89" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="121.64" y1="63.89" x2="124.66" y2="66.91" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="121.95" y1="107.1" x2="120.56" y2="108.49" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="138.58" y1="104.97" x2="136.45" y2="107.1" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="138.58" y1="103.29" x2="138.58" y2="104.97" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="136.45" y1="107.1" x2="121.95" y2="107.1" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="122.9075" y1="86.4825" x2="122.49" y2="86.9" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="135.35" y1="88.15" x2="126.7275" y2="88.15" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="137.05" y1="82.6075" x2="137.05" y2="86.45" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="140.1325" y1="79.525" x2="137.05" y2="82.6075" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="122.49" y1="84.91" x2="122.49" y2="86.9" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="125.06" y1="86.4825" x2="122.9075" y2="86.4825" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="126.7275" y1="88.15" x2="125.06" y2="86.4825" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="137.05" y1="86.45" x2="135.35" y2="88.15" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="122.49" y1="81.81" x2="120.1025" y2="84.1975" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="122.5625" y1="81.8825" x2="122.49" y2="81.81" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="119.79" y1="84.1975" x2="113.49" y2="84.1975" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="120.1025" y1="84.1975" x2="119.79" y2="84.1975" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="125.06" y1="81.8825" x2="122.5625" y2="81.8825" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="119.79" y1="102.41" x2="111.255" y2="102.41" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="111.255" y1="102.41" x2="111.0275" y2="102.6375" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="119.79" y1="100.11" x2="113.49" y2="100.11" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="122.49" y1="97.5075" x2="122.3925" y2="97.5075" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="122.3925" y1="97.5075" x2="119.79" y2="100.11" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="125.06" y1="97.91" x2="122.8925" y2="97.91" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="122.8925" y1="97.91" x2="122.49" y2="97.5075" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="116.9" y1="90" x2="113.15" y2="93.75" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="122.49" y1="90" x2="116.9" y2="90" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="82.45" y1="93.88" x2="84.57" y2="91.76" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="101.685" y1="109.615" x2="92.21" y2="100.14" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="85.09" y1="100.14" x2="82.45" y2="97.5" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="127.055" y1="109.615" x2="101.685" y2="109.615" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="128.18" y1="108.49" x2="127.055" y2="109.615" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="82.45" y1="97.5" x2="82.45" y2="93.88" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="92.21" y1="100.14" x2="85.09" y2="100.14" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="118.105" y1="65.435" x2="119.58" y2="66.91" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="122.57" y1="69.9" x2="135.35" y2="69.9" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="104.235" y1="65.435" x2="118.105" y2="65.435" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="119.58" y1="66.91" x2="122.57" y2="69.9" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="101.28" y1="68.39" x2="104.235" y2="65.435" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="102.175" y1="100.47" x2="102.175" y2="84.45" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="135.35" y1="69.9" x2="136.75" y2="68.5" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="136.75" y1="68.5" x2="138.5875" y2="68.5" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="105.2125" y1="83.9525" x2="104.945" y2="84.22" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="108.0125" y1="83.9525" x2="105.2125" y2="83.9525" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="107.9275" y1="86.5625" x2="109.05" y2="85.44" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="107.9" y1="74.55" x2="107.8" y2="74.45" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="109.05" y1="75.7" x2="107.9" y2="74.55" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="109.05" y1="85.44" x2="109.05" y2="75.7" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="119.79" y1="86.4975" x2="111.0925" y2="86.4975" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="111.0925" y1="86.4975" x2="111.0275" y2="86.5625" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="128.61" y1="79.2425" x2="126.465" y2="79.2425" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="123.49" y1="79.2425" x2="115.371002" y2="79.2425" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="124.69" y1="80.4425" x2="127.62" y2="80.4425" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="110.9875" y1="83.626002" x2="110.9875" y2="83.9525" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="125.06" y1="84.1825" x2="131.36" y2="84.1825" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="115.371002" y1="79.2425" x2="110.9875" y2="83.626002" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="127.62" y1="80.4425" x2="131.36" y2="84.1825" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="123.49" y1="79.2425" x2="124.69" y2="80.4425" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="131.01" y1="71.99" x2="129.785" y2="73.215" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="129.785" y1="73.215" x2="96.065" y2="73.215" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="92.75" y1="67.34" x2="96.2" y2="63.89" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="96.065" y1="73.215" x2="92.75" y2="69.9" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="92.75" y1="69.9" x2="92.75" y2="67.34" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="128.61" y1="95.14" x2="126.465" y2="95.14" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="138.3225" y1="70.765" x2="127.155" y2="70.765" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="127.155" y1="70.765" x2="125.93" y2="71.99" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="138.5675" y1="71.01" x2="138.3225" y2="70.765" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="100.105" y1="64.485" x2="100.105" y2="63.403299" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="128.085" y1="62.715" x2="132.28" y2="66.91" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="100.793299" y1="62.715" x2="128.085" y2="62.715" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="100.105" y1="63.403299" x2="100.793299" y2="62.715" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="96.2" y1="68.39" x2="100.105" y2="64.485" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="136.85" y1="95.9475" x2="136.85" y2="100.55" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="124.3925" y1="102.51" x2="125.06" y2="102.51" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="126.2" y1="103.65" x2="125.06" y2="102.51" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="140.1325" y1="92.665" x2="136.85" y2="95.9475" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="133.75" y1="103.65" x2="126.2" y2="103.65" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="136.85" y1="100.55" x2="133.75" y2="103.65" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="122.49" y1="100.6075" x2="124.3925" y2="102.51" stroke="#3a9c5f" stroke-width="0.26249999999999996" stroke-linecap="round" opacity="0.6"/>
+<line x1="109.8" y1="100.765" x2="109.8" y2="74.5" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<line x1="107.9275" y1="102.6375" x2="109.8" y2="100.765" stroke="#3a9c5f" stroke-width="0.0875" stroke-linecap="round" opacity="0.6"/>
+<circle cx="117.1" cy="82.35" r="0.4" fill="#2b8a4f" stroke="#3a9c5f" stroke-width="0.1"/>
+<circle cx="117.1" cy="82.35" r="0.2" fill="#20262b"/>
+<circle cx="117.2" cy="96.8" r="0.4" fill="#2b8a4f" stroke="#3a9c5f" stroke-width="0.1"/>
+<circle cx="117.2" cy="96.8" r="0.2" fill="#20262b"/>
+<circle cx="113.15" cy="93.75" r="0.4" fill="#2b8a4f" stroke="#3a9c5f" stroke-width="0.1"/>
+<circle cx="113.15" cy="93.75" r="0.2" fill="#20262b"/>
+<circle cx="107.9" cy="74.55" r="0.4" fill="#2b8a4f" stroke="#3a9c5f" stroke-width="0.1"/>
+<circle cx="107.9" cy="74.55" r="0.2" fill="#20262b"/>
+<circle cx="109.8" cy="74.5" r="0.4" fill="#2b8a4f" stroke="#3a9c5f" stroke-width="0.1"/>
+<circle cx="109.8" cy="74.5" r="0.2" fill="#20262b"/>
+</g>
+<rect x="107.300" y="99.335" width="1.425" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="110.275" y="99.335" width="1.425" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="137.930" y="72.625" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="141.030" y="72.625" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="92.210" cy="83.380" r="1.500" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="121.840" y="84.035" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-90.000 122.490 84.910)"/>
+<rect x="121.840" y="80.935" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-90.000 122.490 81.810)"/>
+<rect x="118.790" y="101.660" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 119.790 102.410)"/>
+<rect x="118.790" y="99.360" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 119.790 100.110)"/>
+<rect x="112.490" y="98.210" width="2.000" height="3.800" rx="0.500" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 113.490 100.110)"/>
+<rect x="118.790" y="97.060" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 119.790 97.810)"/>
+<circle cx="84.570" cy="94.300" r="0.720" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="84.570" cy="94.300" r="0.400" fill="#20262b"/>
+<circle cx="84.570" cy="91.760" r="0.720" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="84.570" cy="91.760" r="0.400" fill="#20262b"/>
+<circle cx="84.570" cy="89.220" r="0.720" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="84.570" cy="89.220" r="0.400" fill="#20262b"/>
+<rect x="101.555" y="83.370" width="1.700" height="1.700" rx="0.000" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-90.000 102.405 84.220)"/>
+<circle cx="102.405" cy="84.220" r="0.500" fill="#20262b"/>
+<circle cx="104.945" cy="84.220" r="0.850" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="104.945" cy="84.220" r="0.500" fill="#20262b"/>
+<rect x="107.278" y="85.688" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="110.377" y="85.688" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="125.752" y="78.368" width="1.425" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 126.465 79.243)"/>
+<rect x="122.778" y="78.368" width="1.425" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 123.490 79.243)"/>
+<rect x="124.060" y="81.133" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="124.060" y="83.433" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="130.360" y="82.282" width="2.000" height="3.800" rx="0.500" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="124.060" y="85.733" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="137.925" y="67.600" width="1.325" height="1.800" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="141.050" y="67.600" width="1.325" height="1.800" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="95.350" y="63.040" width="1.700" height="1.700" rx="0.000" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-90.000 96.200 63.890)"/>
+<circle cx="96.200" cy="63.890" r="0.500" fill="#20262b"/>
+<circle cx="98.740" cy="63.890" r="0.850" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="98.740" cy="63.890" r="0.500" fill="#20262b"/>
+<circle cx="101.280" cy="63.890" r="0.850" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="101.280" cy="63.890" r="0.500" fill="#20262b"/>
+<rect x="127.960" y="94.265" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="131.060" y="94.265" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="118.790" y="85.748" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 119.790 86.498)"/>
+<rect x="118.790" y="83.448" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 119.790 84.198)"/>
+<rect x="112.490" y="82.297" width="2.000" height="3.800" rx="0.500" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 113.490 84.198)"/>
+<rect x="118.790" y="81.148" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 119.790 81.898)"/>
+<rect x="114.870" y="71.090" width="1.800" height="1.800" rx="0.000" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="115.770" cy="71.990" r="0.500" fill="#20262b"/>
+<circle cx="117.040" cy="66.910" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="117.040" cy="66.910" r="0.500" fill="#20262b"/>
+<circle cx="118.310" cy="71.990" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="118.310" cy="71.990" r="0.500" fill="#20262b"/>
+<circle cx="119.580" cy="66.910" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="119.580" cy="66.910" r="0.500" fill="#20262b"/>
+<circle cx="120.850" cy="71.990" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="120.850" cy="71.990" r="0.500" fill="#20262b"/>
+<circle cx="122.120" cy="66.910" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="122.120" cy="66.910" r="0.500" fill="#20262b"/>
+<circle cx="123.390" cy="71.990" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="123.390" cy="71.990" r="0.500" fill="#20262b"/>
+<circle cx="124.660" cy="66.910" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="124.660" cy="66.910" r="0.500" fill="#20262b"/>
+<circle cx="125.930" cy="71.990" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="125.930" cy="71.990" r="0.500" fill="#20262b"/>
+<circle cx="127.200" cy="66.910" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="127.200" cy="66.910" r="0.500" fill="#20262b"/>
+<circle cx="128.470" cy="71.990" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="128.470" cy="71.990" r="0.500" fill="#20262b"/>
+<circle cx="129.740" cy="66.910" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="129.740" cy="66.910" r="0.500" fill="#20262b"/>
+<circle cx="131.010" cy="71.990" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="131.010" cy="71.990" r="0.500" fill="#20262b"/>
+<circle cx="132.280" cy="66.910" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="132.280" cy="66.910" r="0.500" fill="#20262b"/>
+<circle cx="133.550" cy="71.990" r="0.900" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="133.550" cy="71.990" r="0.500" fill="#20262b"/>
+<rect x="124.060" y="97.160" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="124.060" y="99.460" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="130.360" y="98.310" width="2.000" height="3.800" rx="0.500" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="124.060" y="101.760" width="2.000" height="1.500" rx="0.375" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="92.210" cy="100.140" r="1.500" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="127.960" y="78.368" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="131.060" y="78.368" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="107.300" y="83.078" width="1.425" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="110.275" y="83.078" width="1.425" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="101.325" y="99.620" width="1.700" height="1.700" rx="0.000" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-90.000 102.175 100.470)"/>
+<circle cx="102.175" cy="100.470" r="0.500" fill="#20262b"/>
+<circle cx="104.715" cy="100.470" r="0.850" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="104.715" cy="100.470" r="0.500" fill="#20262b"/>
+<rect x="138.832" y="83.305" width="2.600" height="2.600" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-90.000 140.132 84.605)"/>
+<circle cx="140.132" cy="84.605" r="0.650" fill="#20262b"/>
+<circle cx="140.132" cy="79.525" r="1.300" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="140.132" cy="79.525" r="0.650" fill="#20262b"/>
+<rect x="125.752" y="94.265" width="1.425" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 126.465 95.140)"/>
+<rect x="122.778" y="94.265" width="1.425" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 123.490 95.140)"/>
+<rect x="121.840" y="99.733" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-90.000 122.490 100.608)"/>
+<rect x="121.840" y="96.633" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-90.000 122.490 97.508)"/>
+<rect x="84.625" y="62.088" width="2.600" height="2.600" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 85.925 63.388)"/>
+<circle cx="85.925" cy="63.388" r="0.650" fill="#20262b"/>
+<circle cx="80.845" cy="63.388" r="1.300" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="80.845" cy="63.388" r="0.650" fill="#20262b"/>
+<rect x="141.030" y="102.415" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 141.680 103.290)"/>
+<rect x="137.930" y="102.415" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-180.000 138.580 103.290)"/>
+<rect x="121.840" y="86.025" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 122.490 86.900)"/>
+<rect x="121.840" y="89.125" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 122.490 90.000)"/>
+<rect x="95.350" y="67.540" width="1.700" height="1.700" rx="0.000" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-90.000 96.200 68.390)"/>
+<circle cx="96.200" cy="68.390" r="0.500" fill="#20262b"/>
+<circle cx="98.740" cy="68.390" r="0.850" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="98.740" cy="68.390" r="0.500" fill="#20262b"/>
+<circle cx="101.280" cy="68.390" r="0.850" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="101.280" cy="68.390" r="0.500" fill="#20262b"/>
+<rect x="107.278" y="101.763" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="110.377" y="101.763" width="1.300" height="1.750" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="137.905" y="70.110" width="1.325" height="1.800" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="141.030" y="70.110" width="1.325" height="1.800" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<rect x="138.832" y="96.445" width="2.600" height="2.600" rx="0.250" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-90.000 140.132 97.745)"/>
+<circle cx="140.132" cy="97.745" r="0.650" fill="#20262b"/>
+<circle cx="140.132" cy="92.665" r="1.300" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05"/>
+<circle cx="140.132" cy="92.665" r="0.650" fill="#20262b"/>
+<rect x="104.520" y="107.690" width="1.600" height="1.600" rx="0.000" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 105.320 108.490)"/>
+<circle cx="105.320" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="107.060" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 107.860 108.490)"/>
+<circle cx="107.860" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="109.600" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 110.400 108.490)"/>
+<circle cx="110.400" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="112.140" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 112.940 108.490)"/>
+<circle cx="112.940" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="114.680" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 115.480 108.490)"/>
+<circle cx="115.480" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="117.220" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 118.020 108.490)"/>
+<circle cx="118.020" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="119.760" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 120.560 108.490)"/>
+<circle cx="120.560" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="122.300" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 123.100 108.490)"/>
+<circle cx="123.100" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="127.380" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 128.180 108.490)"/>
+<circle cx="128.180" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="129.920" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 130.720 108.490)"/>
+<circle cx="130.720" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="132.460" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 133.260 108.490)"/>
+<circle cx="133.260" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="135.000" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 135.800 108.490)"/>
+<circle cx="135.800" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="137.540" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 138.340 108.490)"/>
+<circle cx="138.340" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="140.080" y="107.690" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 140.880 108.490)"/>
+<circle cx="140.880" cy="108.490" r="0.500" fill="#20262b"/>
+<rect x="140.080" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 140.880 60.230)"/>
+<circle cx="140.880" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="137.540" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 138.340 60.230)"/>
+<circle cx="138.340" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="135.000" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 135.800 60.230)"/>
+<circle cx="135.800" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="132.460" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 133.260 60.230)"/>
+<circle cx="133.260" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="129.920" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 130.720 60.230)"/>
+<circle cx="130.720" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="127.380" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 128.180 60.230)"/>
+<circle cx="128.180" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="124.840" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 125.640 60.230)"/>
+<circle cx="125.640" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="122.300" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 123.100 60.230)"/>
+<circle cx="123.100" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="118.240" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 119.040 60.230)"/>
+<circle cx="119.040" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="115.700" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 116.500 60.230)"/>
+<circle cx="116.500" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="113.160" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 113.960 60.230)"/>
+<circle cx="113.960" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="110.620" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 111.420 60.230)"/>
+<circle cx="111.420" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="108.080" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 108.880 60.230)"/>
+<circle cx="108.880" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="105.540" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 106.340 60.230)"/>
+<circle cx="106.340" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="103.000" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 103.800 60.230)"/>
+<circle cx="103.800" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="100.460" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 101.260 60.230)"/>
+<circle cx="101.260" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="97.920" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 98.720 60.230)"/>
+<circle cx="98.720" cy="60.230" r="0.500" fill="#20262b"/>
+<rect x="95.380" y="59.430" width="1.600" height="1.600" rx="0.800" fill="#d9b44a" stroke="#a8862c" stroke-width="0.05" transform="rotate(-270.000 96.180 60.230)"/>
+<circle cx="96.180" cy="60.230" r="0.500" fill="#20262b"/>
+<text x="94.040" y="67.900" font-size="1.050" text-anchor="start" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 94.040 67.540)" opacity="1.0">PWM</text>
+<text x="104.400" y="68.500" font-size="1.050" text-anchor="start" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 104.400 68.140)" opacity="1.0">Direct</text>
+<text x="80.100" y="109.269" font-size="1.312" text-anchor="start" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 80.100 109.600)" opacity="1.0">MEC1019 </text>
+<text x="80.100" y="110.831" font-size="1.312" text-anchor="start" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 80.100 109.600)" opacity="1.0">Fireman Rev 0.2</text>
+<text x="91.800" y="78.969" font-size="1.312" text-anchor="start" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="700" transform="rotate(-0.000 91.800 79.300)" opacity="1.0">School of Mechanical and </text>
+<text x="91.800" y="80.531" font-size="1.312" text-anchor="start" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="700" transform="rotate(-0.000 91.800 79.300)" opacity="1.0">Manufacturing Engineering</text>
+<line x1="107.040" y1="99.075" x2="107.040" y2="101.345" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="107.040" y1="101.345" x2="111.100" y2="101.345" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="111.100" y1="99.075" x2="107.040" y2="99.075" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="139.403" y1="72.590" x2="140.857" y2="72.590" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="139.403" y1="74.410" x2="140.857" y2="74.410" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<text x="92.210" y="81.342" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 92.210 80.982)" opacity="1.0">TP2</text>
+<circle cx="92.210" cy="83.380" r="1.750" fill="none" stroke="#f5f5f0" stroke-width="0.12" opacity="1.0"/>
+<line x1="121.580" y1="84.087" x2="121.580" y2="82.633" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="123.400" y1="84.087" x2="123.400" y2="82.633" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<text x="116.555" y="100.620" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 116.555 100.260)" opacity="1.0">Q1</text>
+<line x1="114.730" y1="96.700" x2="114.730" y2="97.960" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="114.730" y1="103.520" x2="114.730" y2="102.260" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="118.490" y1="96.700" x2="114.730" y2="96.700" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="118.490" y1="103.520" x2="114.730" y2="103.520" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<polygon points="119.770,103.420 120.010,103.750 119.530,103.750 119.770,103.420" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0.12" stroke-linejoin="round" opacity="1.0"/>
+<text x="80.900" y="92.120" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 80.900 91.760)" opacity="1.0">SwitchOverADJ</text>
+<line x1="82.040" y1="86.885" x2="87.090" y2="86.885" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="82.040" y1="96.635" x2="82.040" y2="86.885" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="87.090" y1="86.885" x2="87.090" y2="96.635" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="87.090" y1="96.635" x2="82.040" y2="96.635" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<text x="100.025" y="84.580" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 100.025 84.220)" opacity="1.0">JP4</text>
+<line x1="101.025" y1="85.600" x2="101.025" y2="84.220" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="102.405" y1="85.600" x2="101.025" y2="85.600" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="103.675" y1="82.840" x2="106.325" y2="82.840" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="103.675" y1="85.600" x2="103.675" y2="82.840" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="103.675" y1="85.600" x2="106.325" y2="85.600" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="106.325" y1="85.600" x2="106.325" y2="82.840" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="108.750" y1="85.653" x2="110.205" y2="85.653" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="108.750" y1="87.472" x2="110.205" y2="87.472" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<text x="124.978" y="77.773" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 124.978 77.413)" opacity="1.0">Renew ON</text>
+<line x1="123.378" y1="80.378" x2="127.438" y2="80.378" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="127.438" y1="78.108" x2="123.378" y2="78.108" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="127.438" y1="80.378" x2="127.438" y2="78.108" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="126.360" y1="80.773" x2="130.120" y2="80.773" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="126.360" y1="87.593" x2="130.120" y2="87.593" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="130.120" y1="80.773" x2="130.120" y2="82.032" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="130.120" y1="87.593" x2="130.120" y2="86.333" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<polygon points="125.080,80.873 124.840,80.543 125.320,80.543 125.080,80.873" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0.12" stroke-linejoin="round" opacity="1.0"/>
+<line x1="139.439" y1="67.590" x2="140.861" y2="67.590" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="139.439" y1="69.410" x2="140.861" y2="69.410" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="94.820" y1="65.270" x2="94.820" y2="63.890" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="96.200" y1="65.270" x2="94.820" y2="65.270" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="97.470" y1="62.510" x2="102.660" y2="62.510" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="97.470" y1="65.270" x2="97.470" y2="62.510" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="97.470" y1="65.270" x2="102.660" y2="65.270" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="102.660" y1="65.270" x2="102.660" y2="62.510" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="129.433" y1="94.230" x2="130.887" y2="94.230" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="129.433" y1="96.050" x2="130.887" y2="96.050" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<text x="116.785" y="84.752" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 116.785 84.392)" opacity="1.0">Q2</text>
+<line x1="114.730" y1="80.788" x2="114.730" y2="82.047" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="114.730" y1="87.608" x2="114.730" y2="86.348" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="118.490" y1="80.788" x2="114.730" y2="80.788" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="118.490" y1="87.608" x2="114.730" y2="87.608" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<polygon points="119.770,87.508 120.010,87.838 119.530,87.838 119.770,87.508" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0.12" stroke-linejoin="round" opacity="1.0"/>
+<text x="124.710" y="65.140" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 124.710 64.780)" opacity="1.0">U1</text>
+<text x="124.660" y="74.200" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 124.660 73.840)" opacity="1.0">Motor Driver</text>
+<line x1="114.450" y1="62.300" x2="134.870" y2="62.300" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="114.450" y1="64.010" x2="134.870" y2="64.010" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="114.450" y1="67.520" x2="114.450" y2="62.300" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="115.160" y1="67.520" x2="115.160" y2="70.830" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="116.053" y1="67.520" x2="114.450" y2="67.520" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="116.380" y1="67.864" x2="116.380" y2="70.830" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="117.700" y1="67.864" x2="117.700" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="118.593" y1="67.520" x2="118.027" y2="67.520" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="118.920" y1="67.864" x2="118.920" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="120.240" y1="67.864" x2="120.240" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="121.133" y1="67.520" x2="120.567" y2="67.520" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="121.460" y1="67.864" x2="121.460" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="122.780" y1="67.864" x2="122.780" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="122.810" y1="62.300" x2="122.810" y2="64.010" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="123.673" y1="67.520" x2="123.107" y2="67.520" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="124.000" y1="67.864" x2="124.000" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="125.320" y1="67.864" x2="125.320" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="126.213" y1="67.520" x2="125.647" y2="67.520" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="126.510" y1="62.300" x2="126.510" y2="64.010" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="126.540" y1="67.864" x2="126.540" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="127.860" y1="67.864" x2="127.860" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="128.753" y1="67.520" x2="128.187" y2="67.520" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="129.080" y1="67.864" x2="129.080" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="130.400" y1="67.864" x2="130.400" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="131.293" y1="67.520" x2="130.727" y2="67.520" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="131.620" y1="67.864" x2="131.620" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="132.940" y1="67.864" x2="132.940" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="134.160" y1="67.520" x2="134.160" y2="71.003" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="134.870" y1="62.300" x2="134.870" y2="67.520" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="134.870" y1="67.520" x2="133.267" y2="67.520" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<text x="128.210" y="100.570" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 128.210 100.210)" opacity="1.0">Q3</text>
+<line x1="126.360" y1="96.800" x2="130.120" y2="96.800" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="126.360" y1="103.620" x2="130.120" y2="103.620" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="130.120" y1="96.800" x2="130.120" y2="98.060" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="130.120" y1="103.620" x2="130.120" y2="102.360" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<polygon points="125.080,96.900 124.840,96.570 125.320,96.570 125.080,96.900" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0.12" stroke-linejoin="round" opacity="1.0"/>
+<text x="92.210" y="98.102" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 92.210 97.742)" opacity="1.0">TP1</text>
+<circle cx="92.210" cy="100.140" r="1.750" fill="none" stroke="#f5f5f0" stroke-width="0.12" opacity="1.0"/>
+<line x1="129.433" y1="78.333" x2="130.887" y2="78.333" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="129.433" y1="80.153" x2="130.887" y2="80.153" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="107.040" y1="82.817" x2="107.040" y2="85.088" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="107.040" y1="85.088" x2="111.100" y2="85.088" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="111.100" y1="82.817" x2="107.040" y2="82.817" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="100.795" y1="101.850" x2="100.795" y2="100.470" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="102.175" y1="101.850" x2="100.795" y2="101.850" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="103.445" y1="99.090" x2="106.095" y2="99.090" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="103.445" y1="101.850" x2="103.445" y2="99.090" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="103.445" y1="101.850" x2="106.095" y2="101.850" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="106.095" y1="101.850" x2="106.095" y2="99.090" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<text x="139.960" y="82.220" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 139.960 81.860)" opacity="1.0">J3</text>
+<text x="133.580" y="82.930" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 133.580 82.570)" opacity="1.0">-ve Renew +ve</text>
+<line x1="134.812" y1="76.865" x2="144.852" y2="76.865" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="134.812" y1="87.265" x2="134.812" y2="76.865" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="137.832" y1="87.265" x2="137.832" y2="76.865" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="142.732" y1="87.265" x2="142.732" y2="76.865" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="144.232" y1="87.265" x2="144.232" y2="76.865" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="144.852" y1="76.865" x2="144.852" y2="84.305" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="144.852" y1="84.905" x2="144.852" y2="87.265" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="144.852" y1="87.265" x2="134.812" y2="87.265" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<polygon points="144.852,84.605 145.463,84.165 145.463,85.045" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0.12" stroke-linejoin="round" opacity="1.0"/>
+<text x="125.000" y="93.360" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 125.000 93.000)" opacity="1.0">Battery ON</text>
+<line x1="123.378" y1="96.275" x2="127.438" y2="96.275" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="127.438" y1="94.005" x2="123.378" y2="94.005" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="127.438" y1="96.275" x2="127.438" y2="94.005" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="121.580" y1="99.785" x2="121.580" y2="98.330" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="123.400" y1="99.785" x2="123.400" y2="98.330" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<text x="83.345" y="63.698" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 83.345 63.338)" opacity="1.0">J1</text>
+<text x="83.695" y="70.148" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 83.695 69.788)" opacity="1.0">Pump Output</text>
+<line x1="78.185" y1="58.668" x2="85.625" y2="58.668" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="78.185" y1="68.708" x2="78.185" y2="58.668" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="86.225" y1="58.668" x2="88.585" y2="58.668" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="88.585" y1="58.668" x2="88.585" y2="68.708" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="88.585" y1="59.288" x2="78.185" y2="59.288" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="88.585" y1="60.788" x2="78.185" y2="60.788" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="88.585" y1="65.688" x2="78.185" y2="65.688" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="88.585" y1="68.708" x2="78.185" y2="68.708" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<polygon points="85.925,58.668 85.485,58.058 86.365,58.058" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0.12" stroke-linejoin="round" opacity="1.0"/>
+<text x="140.130" y="105.480" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 140.130 105.120)" opacity="1.0">R2</text>
+<line x1="140.857" y1="102.380" x2="139.403" y2="102.380" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="140.857" y1="104.200" x2="139.403" y2="104.200" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="121.580" y1="87.723" x2="121.580" y2="89.177" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="123.400" y1="87.723" x2="123.400" y2="89.177" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<polygon points="85.693,77.523 85.945,77.565 86.165,77.633 86.250,77.672 86.376,77.735 86.376,77.922 86.376,78.108 86.231,78.021 86.023,77.918 85.801,77.845 85.576,77.805 85.357,77.799 85.155,77.828 85.054,77.860 84.882,77.954 84.730,78.093 84.601,78.273 84.496,78.493 84.433,78.686 84.402,78.846 84.384,79.035 84.378,79.238 84.385,79.435 84.406,79.610 84.420,79.679 84.502,79.924 84.616,80.133 84.761,80.305 84.937,80.438 85.140,80.531 85.179,80.543 85.374,80.573 85.590,80.562 85.824,80.508 86.073,80.413 86.193,80.354 86.376,80.258 86.376,80.442 86.376,80.625 86.181,80.706 85.888,80.803 85.579,80.861 85.266,80.877 84.963,80.850 84.928,80.844 84.643,80.769 84.383,80.655 84.154,80.506 83.957,80.324 83.797,80.112 83.676,79.874 83.619,79.698 83.592,79.547 83.578,79.365 83.577,79.169 83.589,78.979 83.615,78.811 83.619,78.792 83.709,78.510 83.836,78.261 83.999,78.046 84.197,77.865 84.429,77.720 84.693,77.612 84.987,77.542 85.310,77.510 85.415,77.508" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0" stroke-linejoin="round" opacity="1.0"/>
+<polygon points="80.907,77.584 81.174,77.585 81.396,77.587 81.581,77.591 81.733,77.598 81.858,77.609 81.964,77.624 82.055,77.645 82.139,77.670 82.220,77.703 82.305,77.742 82.319,77.749 82.530,77.880 82.707,78.047 82.849,78.247 82.955,78.479 83.023,78.738 83.052,79.024 83.053,79.083 83.032,79.392 82.968,79.676 82.865,79.933 82.722,80.161 82.542,80.358 82.326,80.521 82.076,80.649 81.827,80.732 81.768,80.745 81.707,80.756 81.638,80.765 81.555,80.771 81.450,80.776 81.318,80.778 81.151,80.780 80.944,80.780 80.834,80.780 80.032,80.780 80.032,79.182 80.762,79.182 80.762,80.504 80.982,80.503 81.109,80.500 81.242,80.491 81.354,80.479 81.366,80.477 81.581,80.421 81.771,80.329 81.929,80.204 82.050,80.050 82.054,80.043 82.126,79.898 82.179,79.739 82.215,79.556 82.236,79.340 82.241,79.229 82.243,78.964 82.226,78.740 82.189,78.550 82.130,78.389 82.049,78.249 81.973,78.155 81.850,78.050 81.696,77.968 81.507,77.911 81.281,77.875 81.013,77.861 80.957,77.861 80.762,77.860 80.762,79.182 80.032,79.182 80.032,77.583" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0" stroke-linejoin="round" opacity="1.0"/>
+<polygon points="87.864,73.037 88.192,73.064 88.479,73.116 88.725,73.194 88.930,73.296 89.092,73.424 89.211,73.576 89.286,73.752 89.297,73.795 89.316,73.990 89.288,74.201 89.216,74.425 89.101,74.662 88.943,74.910 88.745,75.168 88.508,75.433 88.232,75.705 87.920,75.982 87.573,76.262 87.192,76.544 86.778,76.826 86.345,77.100 86.238,77.164 86.146,77.215 86.078,77.249 86.042,77.261 86.038,77.260 86.053,77.239 86.103,77.196 86.180,77.137 86.278,77.067 86.308,77.047 86.617,76.827 86.921,76.594 87.213,76.355 87.482,76.117 87.722,75.886 87.912,75.684 88.141,75.406 88.325,75.143 88.464,74.897 88.557,74.668 88.605,74.457 88.607,74.263 88.564,74.089 88.476,73.934 88.343,73.799 88.164,73.685 87.940,73.592 87.791,73.549 87.647,73.522 87.463,73.504 87.249,73.493 87.015,73.490 86.772,73.496 86.529,73.509 86.297,73.530 86.124,73.552 85.506,73.667 84.863,73.823 84.198,74.021 83.513,74.259 82.810,74.537 82.092,74.854 81.360,75.209 81.268,75.257 81.096,75.343 80.969,75.405 80.885,75.443 80.845,75.455 80.849,75.443 80.896,75.407 80.905,75.400 80.967,75.360 81.065,75.301 81.191,75.226 81.339,75.139 81.500,75.046 81.667,74.951 81.832,74.858 81.987,74.772 82.126,74.696 82.222,74.644 82.700,74.405 83.205,74.175 83.726,73.958 84.255,73.757 84.782,73.575 85.298,73.416 85.793,73.283 86.206,73.191 86.474,73.140 86.711,73.101 86.931,73.073 87.151,73.053 87.387,73.040 87.496,73.036" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0" stroke-linejoin="round" opacity="1.0"/>
+<polygon points="88.732,72.529 88.940,72.538 89.111,72.554 89.156,72.561 89.472,72.624 89.743,72.707 89.970,72.812 90.157,72.938 90.303,73.087 90.339,73.136 90.439,73.324 90.492,73.530 90.498,73.752 90.457,73.990 90.369,74.245 90.235,74.515 90.054,74.801 89.827,75.102 89.665,75.293 89.574,75.392 89.466,75.503 89.346,75.623 89.219,75.746 89.090,75.867 88.965,75.982 88.848,76.085 88.745,76.173 88.662,76.240 88.603,76.281 88.575,76.291 88.574,76.291 88.585,76.268 88.627,76.220 88.693,76.153 88.769,76.082 89.096,75.769 89.385,75.461 89.635,75.161 89.843,74.870 90.009,74.590 90.130,74.325 90.193,74.131 90.221,73.963 90.226,73.786 90.208,73.616 90.169,73.468 90.146,73.417 90.062,73.291 89.945,73.165 89.811,73.057 89.708,72.994 89.552,72.927 89.364,72.864 89.160,72.811 88.958,72.773 88.956,72.772 88.805,72.756 88.616,72.746 88.400,72.741 88.168,72.742 87.932,72.749 87.704,72.761 87.496,72.779 87.433,72.786 86.841,72.873 86.223,72.996 85.582,73.154 84.925,73.344 84.257,73.564 83.583,73.811 82.909,74.083 82.239,74.379 81.580,74.695 80.936,75.030 80.312,75.382 79.715,75.747 79.148,76.125 78.734,76.425 78.587,76.534 78.474,76.617 78.396,76.671 78.353,76.697 78.348,76.694 78.380,76.661 78.434,76.612 78.484,76.570 78.568,76.504 78.675,76.420 78.800,76.324 78.934,76.223 78.962,76.201 79.627,75.724 80.324,75.270 81.048,74.842 81.794,74.442 82.556,74.073 83.330,73.736 84.110,73.434 84.891,73.169 85.669,72.943 86.437,72.758 87.191,72.617 87.323,72.597 87.524,72.572 87.754,72.552 88.000,72.538 88.252,72.529 88.500,72.526" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0" stroke-linejoin="round" opacity="1.0"/>
+<polygon points="89.359,71.726 89.772,71.756 90.144,71.813 90.477,71.896 90.772,72.008 91.031,72.147 91.256,72.315 91.299,72.354 91.486,72.555 91.623,72.763 91.712,72.979 91.752,73.206 91.745,73.445 91.742,73.470 91.681,73.748 91.578,74.034 91.432,74.331 91.241,74.640 91.006,74.963 90.724,75.300 90.590,75.448 90.307,75.740 89.985,76.044 89.630,76.356 89.249,76.670 88.850,76.979 88.439,77.279 88.055,77.542 87.708,77.772 87.719,78.754 87.722,79.034 87.727,79.269 87.732,79.464 87.740,79.625 87.750,79.756 87.762,79.863 87.778,79.952 87.799,80.028 87.823,80.095 87.853,80.159 87.860,80.174 87.954,80.305 88.087,80.409 88.251,80.482 88.441,80.522 88.562,80.529 88.782,80.512 88.968,80.459 89.124,80.370 89.256,80.241 89.307,80.170 89.348,80.107 89.381,80.046 89.409,79.984 89.431,79.913 89.448,79.830 89.461,79.729 89.471,79.604 89.479,79.450 89.484,79.262 89.488,79.034 89.491,78.761 89.491,78.754 89.502,77.771 89.684,77.652 89.768,77.598 89.837,77.557 89.879,77.535 89.885,77.533 89.889,77.557 89.892,77.627 89.894,77.737 89.896,77.882 89.896,78.056 89.896,78.256 89.895,78.475 89.893,78.634 89.890,78.926 89.886,79.173 89.881,79.380 89.875,79.551 89.866,79.693 89.855,79.809 89.841,79.906 89.824,79.989 89.802,80.061 89.776,80.130 89.745,80.199 89.734,80.222 89.628,80.386 89.482,80.536 89.307,80.664 89.113,80.762 88.941,80.817 88.790,80.843 88.612,80.861 88.427,80.869 88.255,80.866 88.143,80.856 87.877,80.801 87.642,80.717 87.442,80.606 87.279,80.469 87.157,80.309 87.123,80.245 87.092,80.172 87.067,80.094 87.047,80.005 87.031,79.901 87.020,79.774 87.012,79.618 87.008,79.429 87.006,79.199 87.005,79.010 87.005,78.819 87.004,78.645 87.002,78.494 87.000,78.373 86.997,78.287 86.995,78.243 86.993,78.238 86.969,78.250 86.907,78.283 86.814,78.335 86.696,78.401 86.560,78.478 86.471,78.528 86.353,78.594 86.211,78.672 86.051,78.758 85.879,78.850 85.701,78.944 85.523,79.037 85.350,79.127 85.189,79.210 85.044,79.283 84.923,79.344 84.830,79.389 84.771,79.415 84.754,79.421 84.740,79.402 84.740,79.398 84.760,79.378 84.817,79.340 84.900,79.290 84.980,79.245 85.186,79.131 85.427,78.991 85.693,78.830 85.980,78.654 86.279,78.466 86.584,78.270 86.888,78.073 87.183,77.877 87.463,77.687 87.721,77.508 87.908,77.374 88.385,77.017 88.832,76.657 89.248,76.297 89.630,75.940 89.977,75.585 90.288,75.237 90.561,74.896 90.794,74.564 90.985,74.243 91.134,73.935 91.238,73.643 91.272,73.504 91.307,73.238 91.295,72.988 91.238,72.756 91.136,72.545 90.989,72.356 90.969,72.336 90.797,72.196 90.582,72.078 90.323,71.983 90.020,71.909 89.846,71.880 89.698,71.864 89.510,71.854 89.294,71.849 89.059,71.849 88.816,71.853 88.576,71.863 88.348,71.877 88.145,71.896 88.068,71.905 87.322,72.021 86.549,72.179 85.750,72.378 85.608,72.417 85.406,72.472 85.248,72.515 85.130,72.545 85.047,72.563 84.997,72.571 84.974,72.569 84.975,72.558 84.979,72.554 85.011,72.538 85.086,72.511 85.195,72.474 85.333,72.431 85.491,72.382 85.665,72.331 85.845,72.279 86.027,72.227 86.202,72.179 86.364,72.137 86.424,72.121 86.958,71.996 87.474,71.894 87.966,71.815 88.431,71.759 88.863,71.729 89.258,71.723" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0" stroke-linejoin="round" opacity="1.0"/>
+<line x1="94.820" y1="69.770" x2="94.820" y2="68.390" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="96.200" y1="69.770" x2="94.820" y2="69.770" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="97.470" y1="67.010" x2="102.660" y2="67.010" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="97.470" y1="69.770" x2="97.470" y2="67.010" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="97.470" y1="69.770" x2="102.660" y2="69.770" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="102.660" y1="69.770" x2="102.660" y2="67.010" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="108.750" y1="101.728" x2="110.205" y2="101.728" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="108.750" y1="103.547" x2="110.205" y2="103.547" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="139.419" y1="70.100" x2="140.841" y2="70.100" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="139.419" y1="71.920" x2="140.841" y2="71.920" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<text x="140.030" y="95.500" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 140.030 95.140)" opacity="1.0">J2</text>
+<text x="133.460" y="95.500" font-size="1.050" text-anchor="middle" fill="#f5f5f0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 133.460 95.140)" opacity="1.0">-ve Batt +ve</text>
+<line x1="134.812" y1="90.005" x2="144.852" y2="90.005" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="134.812" y1="100.405" x2="134.812" y2="90.005" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="137.832" y1="100.405" x2="137.832" y2="90.005" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="142.732" y1="100.405" x2="142.732" y2="90.005" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="144.232" y1="100.405" x2="144.232" y2="90.005" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="144.852" y1="90.005" x2="144.852" y2="97.445" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="144.852" y1="98.045" x2="144.852" y2="100.405" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<line x1="144.852" y1="100.405" x2="134.812" y2="100.405" stroke="#f5f5f0" stroke-width="0.12" stroke-linecap="round" opacity="1.0"/>
+<polygon points="144.852,97.745 145.463,97.305 145.463,98.185" fill="#f5f5f0" stroke="#f5f5f0" stroke-width="0.12" stroke-linejoin="round" opacity="1.0"/>
+<polygon points="108.450,99.410 110.550,99.410 110.550,101.010 108.450,101.010" fill="#262626" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<polygon points="108.450,99.410 108.900,99.410 108.900,101.010 108.450,101.010" fill="#b8b8b8" stroke="none" stroke-width="0.08" opacity="1.0"/>
+<polygon points="139.080,72.700 141.180,72.700 141.180,74.300 139.080,74.300" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="140.130" y="73.717" font-size="0.62" text-anchor="middle" fill="#e0e0e0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 140.130 73.500)">0R2</text>
+<polygon points="121.690,84.410 121.690,82.310 123.290,82.310 123.290,84.410" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="122.490" y="83.577" font-size="0.62" text-anchor="middle" fill="#e0e0e0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 122.490 83.360)">10k</text>
+<polygon points="118.490,103.460 114.790,103.460 114.790,96.760 118.490,96.760" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="116.640" y="100.390" font-size="0.8" text-anchor="middle" fill="#bdbdbd" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 116.640 100.110)">Q1</text>
+<polygon points="86.980,86.995 86.980,96.525 82.150,96.525 82.150,86.995" fill="#2f5fb3" stroke="#1d3f7a" stroke-width="0.12" opacity="1.0"/>
+<polygon points="101.165,85.460 101.165,82.980 106.185,82.980 106.185,85.460" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="0.92"/>
+<polygon points="108.428,85.763 110.528,85.763 110.528,87.362 108.428,87.362" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="109.478" y="86.779" font-size="0.62" text-anchor="middle" fill="#e0e0e0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 109.478 86.562)">2k4</text>
+<polygon points="126.028,80.043 123.928,80.043 123.928,78.443 126.028,78.443" fill="#f3f1ea" stroke="#b9b5a8" stroke-width="0.08" opacity="1.0"/>
+<circle cx="124.978" cy="79.243" r="0.42" fill="#e53935"/>
+<polygon points="126.360,80.833 130.060,80.833 130.060,87.532 126.360,87.532" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="128.210" y="84.463" font-size="0.8" text-anchor="middle" fill="#bdbdbd" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 128.210 84.183)">Q4</text>
+<polygon points="139.100,67.700 141.200,67.700 141.200,69.300 139.100,69.300" fill="#c9a66b" stroke="#8a6d3b" stroke-width="0.08" opacity="1.0"/>
+<polygon points="94.960,65.130 94.960,62.650 102.520,62.650 102.520,65.130" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="0.92"/>
+<polygon points="129.110,94.340 131.210,94.340 131.210,95.940 129.110,95.940" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="130.160" y="95.357" font-size="0.62" text-anchor="middle" fill="#e0e0e0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 130.160 95.140)">360R</text>
+<polygon points="118.490,87.547 114.790,87.547 114.790,80.848 118.490,80.848" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="116.640" y="84.478" font-size="0.8" text-anchor="middle" fill="#bdbdbd" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 116.640 84.198)">Q2</text>
+<polygon points="114.560,62.410 134.760,62.410 134.760,71.990 114.560,71.990" fill="#1b1b1b" stroke="#000" stroke-width="0.1" opacity="1.0"/>
+<polygon points="114.560,62.410 134.760,62.410 134.760,66.721 114.560,66.721" fill="#b9bec5" stroke="#7d838a" stroke-width="0.1" opacity="1.0"/>
+<text x="124.660" y="69.775" font-size="1.2" text-anchor="middle" fill="#d8d8d8" font-family="Helvetica, Arial, sans-serif" font-weight="700" transform="rotate(-0.000 124.660 69.355)">L298N</text>
+<polygon points="126.360,96.860 130.060,96.860 130.060,103.560 126.360,103.560" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="128.210" y="100.490" font-size="0.8" text-anchor="middle" fill="#bdbdbd" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 128.210 100.210)">Q3</text>
+<polygon points="129.110,78.443 131.210,78.443 131.210,80.043 129.110,80.043" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="130.160" y="79.460" font-size="0.62" text-anchor="middle" fill="#e0e0e0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 130.160 79.243)">360R</text>
+<polygon points="108.450,83.153 110.550,83.153 110.550,84.752 108.450,84.752" fill="#262626" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<polygon points="108.450,83.153 108.900,83.153 108.900,84.752 108.450,84.752" fill="#b8b8b8" stroke="none" stroke-width="0.08" opacity="1.0"/>
+<polygon points="100.935,101.710 100.935,99.230 105.955,99.230 105.955,101.710" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="0.92"/>
+<polygon points="134.933,87.145 134.933,76.985 144.732,76.985 144.732,87.145" fill="#2a7fd6" stroke="#185a9e" stroke-width="0.15" opacity="0.95"/>
+<polygon points="126.028,95.940 123.928,95.940 123.928,94.340 126.028,94.340" fill="#f3f1ea" stroke="#b9b5a8" stroke-width="0.08" opacity="1.0"/>
+<circle cx="124.978" cy="95.140" r="0.42" fill="#e53935"/>
+<polygon points="121.690,100.108 121.690,98.008 123.290,98.008 123.290,100.108" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="122.490" y="99.275" font-size="0.62" text-anchor="middle" fill="#e0e0e0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 122.490 99.058)">10k</text>
+<polygon points="88.465,68.588 78.305,68.588 78.305,58.788 88.465,58.788" fill="#2a7fd6" stroke="#185a9e" stroke-width="0.15" opacity="0.95"/>
+<polygon points="141.180,104.090 139.080,104.090 139.080,102.490 141.180,102.490" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="140.130" y="103.507" font-size="0.62" text-anchor="middle" fill="#e0e0e0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 140.130 103.290)">10R</text>
+<polygon points="123.290,87.400 123.290,89.500 121.690,89.500 121.690,87.400" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="122.490" y="88.667" font-size="0.62" text-anchor="middle" fill="#e0e0e0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 122.490 88.450)">10k</text>
+<polygon points="94.960,69.630 94.960,67.150 102.520,67.150 102.520,69.630" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="0.92"/>
+<polygon points="108.428,101.838 110.528,101.838 110.528,103.438 108.428,103.438" fill="#1b1b1b" stroke="#000" stroke-width="0.08" opacity="1.0"/>
+<text x="109.478" y="102.855" font-size="0.62" text-anchor="middle" fill="#e0e0e0" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-0.000 109.478 102.638)">2k4</text>
+<polygon points="139.080,70.210 141.180,70.210 141.180,71.810 139.080,71.810" fill="#c9a66b" stroke="#8a6d3b" stroke-width="0.08" opacity="1.0"/>
+<polygon points="134.933,100.285 134.933,90.125 144.732,90.125 144.732,100.285" fill="#2a7fd6" stroke="#185a9e" stroke-width="0.15" opacity="0.95"/>
+<circle cx="85.780" cy="88.195" r="0.85" fill="#d7b25a" stroke="#8a6d1f" stroke-width="0.1"/>
+<line x1="85.180" y1="88.195" x2="86.380" y2="88.195" stroke="#6b5414" stroke-width="0.22"/>
+<rect x="102.085" y="83.900" width="0.64" height="0.64" fill="#e2c766"/>
+<rect x="104.625" y="83.900" width="0.64" height="0.64" fill="#e2c766"/>
+<rect x="95.880" y="63.570" width="0.64" height="0.64" fill="#e2c766"/>
+<rect x="98.420" y="63.570" width="0.64" height="0.64" fill="#e2c766"/>
+<rect x="100.960" y="63.570" width="0.64" height="0.64" fill="#e2c766"/>
+<rect x="101.855" y="100.150" width="0.64" height="0.64" fill="#e2c766"/>
+<rect x="104.395" y="100.150" width="0.64" height="0.64" fill="#e2c766"/>
+<circle cx="140.132" cy="84.605" r="1.75" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
+<line x1="139.132" y1="85.605" x2="141.132" y2="83.605" stroke="#555" stroke-width="0.38"/>
+<circle cx="140.132" cy="79.525" r="1.75" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
+<line x1="139.132" y1="80.525" x2="141.132" y2="78.525" stroke="#555" stroke-width="0.38"/>
+<circle cx="85.925" cy="63.388" r="1.75" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
+<line x1="86.925" y1="64.388" x2="84.925" y2="62.388" stroke="#555" stroke-width="0.38"/>
+<circle cx="80.845" cy="63.388" r="1.75" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
+<line x1="81.845" y1="64.388" x2="79.845" y2="62.388" stroke="#555" stroke-width="0.38"/>
+<rect x="95.880" y="68.070" width="0.64" height="0.64" fill="#e2c766"/>
+<rect x="98.420" y="68.070" width="0.64" height="0.64" fill="#e2c766"/>
+<rect x="100.960" y="68.070" width="0.64" height="0.64" fill="#e2c766"/>
+<circle cx="140.132" cy="97.745" r="1.75" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
+<line x1="139.132" y1="98.745" x2="141.132" y2="96.745" stroke="#555" stroke-width="0.38"/>
+<circle cx="140.132" cy="92.665" r="1.75" fill="#c9ccd2" stroke="#777" stroke-width="0.12"/>
+<line x1="139.132" y1="93.665" x2="141.132" y2="91.665" stroke="#555" stroke-width="0.38"/>
+<polygon points="100.885,85.740 100.885,82.700 106.465,82.700 106.465,85.740" fill="#2f6fd0" stroke="#1d4f9e" stroke-width="0.12" opacity="0.95"/>
+<text x="103.675" y="84.430" font-size="0.6" text-anchor="middle" fill="#dbe7fb" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 103.675 84.220)">shunt</text>
+<polygon points="100.655,101.990 100.655,98.950 106.235,98.950 106.235,101.990" fill="#2f6fd0" stroke="#1d4f9e" stroke-width="0.12" opacity="0.95"/>
+<text x="103.445" y="100.680" font-size="0.6" text-anchor="middle" fill="#dbe7fb" font-family="Helvetica, Arial, sans-serif" font-weight="400" transform="rotate(-90.000 103.445 100.470)">shunt</text>
+<text x="77.380" y="48.590" font-size="2.0" font-weight="700" fill="#16212B" font-family="Helvetica, Arial, sans-serif">The RenewableSwitchOver shield</text>
+<text x="77.380" y="51.190" font-size="1.25" fill="#56646F" font-family="Helvetica, Arial, sans-serif">Top view, rendered from the KiCad board file (SSE_SurfaceMount.kicad_pcb).</text>
+<text x="77.380" y="52.990" font-size="1.25" fill="#56646F" font-family="Helvetica, Arial, sans-serif">Lighter green under the solder mask is copper: the ground pours and the tracks.</text>
+<text x="77.380" y="116.830" font-size="1.2" fill="#56646F" font-family="Helvetica, Arial, sans-serif">JP1 and JP2 are left open: fit a shunt on each to choose PWM (L298N) or Direct drive, as marked on the silkscreen.</text>
+<text x="77.380" y="118.730" font-size="1.2" fill="#56646F" font-family="Helvetica, Arial, sans-serif">JP3 and JP4 are shown bridged, as in the schematic. The Arduino Uno plugs in underneath.</text>
 </svg>

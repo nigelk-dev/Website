@@ -35,11 +35,12 @@ By the end of this chapter you should be able to:
 
 [![The RenewableSwitchOver schematic (KiCad). Click it to open it full size.](images/renewable-switchover-schematic.png)](images/renewable-switchover-schematic.png)
 
-![An illustration of the RenewableSwitchOver shield, drawn from the schematic on an Arduino Uno outline: the L298N pump driver with C1, C2, the R1 current-sense resistor and jumpers JP1 and JP2 on the left; the battery switch (R3, Q1, R5, Q3, D1, JP3) and the RES switch (R4, Q2, R6, Q4, D2, JP4) in the middle; the Battery ON and Renew ON LEDs with R8 and R9; R7 and the SwitchOverADJ trimmer with TP1; screw terminals J2 (battery), J3 (renewable) and J1 (pump) along the right-hand edge; R2 and TP2 on the left. Part positions are illustrative.](images/renewable-switchover-shield.svg)
+![The RenewableSwitchOver shield, top view, rendered from its KiCad board file: the pump terminal J1 and jumpers JP1 and JP2 (marked PWM and Direct) at the top left; the L298N motor driver along the top; the RES switch (Q2, Q4) and battery switch (Q1, Q3) in the middle, each with its diode, 2k4 and 10k resistors, indicator LED and jumper; the Renew and Batt screw terminals on the right with R2; the SwitchOverADJ trimmer and test points TP1 and TP2 on the left. The Arduino Uno plugs in underneath.](images/renewable-switchover-shield.svg)
 
-The illustration above places the schematic's parts on the shield, grouped by
-the blocks of the project diagram. It is drawn from the schematic, so the parts
-and connectors are right, but the real board's layout may differ.
+The board itself, rendered from its KiCad layout. Try finding each part from the
+schematic on it: the silkscreen names some parts (Q1–Q4, TP1, TP2, R2), and the
+others carry their values (2k4, 10k, 360R, 0R2) or labels (Renew ON, Battery
+ON, SwitchOverADJ).
 
 A few things help when reading the schematic:
 
