@@ -332,3 +332,36 @@ table.kc-tt td.kc-cell.kc-in-no { color: var(--stop); }
 .kc-wave-row.kc-good { border-color: var(--flow); }
 .kc-wave-row.kc-good > span.kc-hi::after { background: var(--flow); }
 .kc-wave-axis { grid-column: 2; display: flex; justify-content: space-between; font: .7rem var(--font-mono); color: var(--muted); }
+
+/* ---------------------------------------------------------------------------
+   Hand-drawn flow diagrams (inline SVG, e.g. the Project Overview page)
+   --------------------------------------------------------------------------- */
+.flow-diagram {
+  --fd-group-bg: #ffffde;
+  --fd-group-line: #aaaa33;
+  --fd-node-bg: #ececff;
+  --fd-node-line: #9370db;
+  --fd-ink: #333;
+  margin: 1.5rem 0;
+}
+body.quarto-dark .flow-diagram {
+  --fd-group-bg: #3b3b26;
+  --fd-group-line: #8c8c3a;
+  --fd-node-bg: #2f2f4a;
+  --fd-node-line: #9f86e0;
+  --fd-ink: #e6e6e6;
+}
+/* Below ~900px wide the text would be too small, so the figure scrolls sideways */
+.flow-diagram { overflow-x: auto; }
+.flow-diagram svg { display: block; width: 100%; min-width: 900px; height: auto; }
+.flow-diagram text {
+  fill: var(--fd-ink);
+  font-size: 16px;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.flow-diagram .title { font-weight: 700; }
+.flow-diagram .group { fill: var(--fd-group-bg); stroke: var(--fd-group-line); }
+.flow-diagram .node { fill: var(--fd-node-bg); stroke: var(--fd-node-line); }
+.flow-diagram .link { fill: none; stroke: var(--fd-ink); stroke-width: 1.5; }
+.flow-diagram marker path { fill: var(--fd-ink); }
