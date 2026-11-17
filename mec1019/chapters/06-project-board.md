@@ -454,10 +454,10 @@ The code is split into small functions, each doing one thing:
   like these keep every sum in whole numbers.
 - **`kToBattery` and `kToRes`** are the two hysteresis thresholds, worked out by
   the compiler as `analogRead` values: 8 V from the RES puts
-  $8000 	imes 0.300 = 2400$ mV on A0, a reading of $2400 	imes 1023 / 5000 = 491$;
+  $8000 \times 0.300 = 2400$ mV on A0, a reading of $2400 \times 1023 / 5000 = 491$;
   9 V gives 552. Below 491 switch to the battery, above 552 switch back; between
   them nothing changes. The `L` in `8000L` makes the compiler use `long` maths,
-  because $8000 	imes 300 = 2\,400\,000$ does not fit in an `int`.
+  because $8000 \times 300 = 2\,400\,000$ does not fit in an `int`.
 - **`kRampMs`** is how long a ramp from 0 to full drive takes; **`kSampleMs`** is
   how often the RES is read.
 
