@@ -4,7 +4,7 @@ Inside the microcontroller system in the
 [project overview](../project-overview.qmd), the first step is **read input
 voltage**: turn the scaled RES voltage on A0 into a number, and turn that number
 back into the RES voltage. The second step is the **control decision**: is the
-RES high enough to run the pump, or should the board switch to the battery?
+RES high enough to run the pump, or should the system switch to the battery?
 This chapter covers both, using a potentiometer on the bench as a stand-in for
 the RES.
 
@@ -382,19 +382,18 @@ voltage is always measured *relative to* something: without a shared ground,
 
 > ▶️ **[Run it in the code runner](applets/code-runner.html#p5res)** — move the RES voltage slider and follow the reading back to the source voltage.
 
-### On the board: measure the fraction
+### Measure the fraction
 
-On the RenewableSwitchOver board the divider is R7 and the SwitchOverADJ trimmer
-([Voltage regulation](01-voltage-regulation.md#on-the-board-r7-and-the-switchoveradj-trimmer)),
-so $k$ depends on where the trimmer is set. Measure it instead of calculating
-it:
+Resistor tolerances, or an adjustable divider
+([Voltage regulation](01-voltage-regulation.md#setting-an-adjustable-divider-safely)),
+mean the real fraction can differ from the calculated one. Measure it instead:
 
-1. Apply a known RES voltage to J3, e.g. 12.0 V from a bench supply, measured with
-   a multimeter.
-2. Measure the voltage at **TP1** (A0), e.g. 3.60 V.
+1. Apply a known voltage across the divider, e.g. 12.0 V from a bench supply,
+   measured with a multimeter.
+2. Measure the voltage at the divider's output (the analogue pin), e.g. 3.60 V.
 3. $k = 3.60 / 12.0 = 0.300$. Put that in the code as `const float kRatio = 0.300;`.
 
-Measure again whenever the trimmer is moved.
+If the divider uses a trimmer, measure again whenever it is moved.
 
 ---
 
@@ -403,8 +402,7 @@ Measure again whenever the trimmer is moved.
 The decision is Exercise 7.3 with the LED replaced by the supply: if the RES is
 high enough, use it; otherwise use the battery. The functions `useRes()` and
 `useBattery()` switch the supplies; [Switching
-circuitry](04-switching-circuitry.md) writes them for both the relay module and
-the project board.
+circuitry](04-switching-circuitry.md) writes them for the relay module.
 
 ```cpp
 if (vPin < kThresholdV) {
@@ -422,7 +420,7 @@ it through the divider to get the threshold at the pin:
 $$V_{pin} = k\,V_{RES} \qquad\Longleftrightarrow\qquad V_{RES} = \frac{V_{pin}}{k}$$
 
 With $R_1 = 2.172R_2$ ($k = 1/3.172$), a threshold of 2.5 V at the pin means the
-board switches at $2.5 \times 3.172 \approx 7.9$ V at the RES. Setting the threshold
+system switches at $2.5 \times 3.172 \approx 7.9$ V at the RES. Setting the threshold
 too close to 5 V (say 4.8 V) means the RES is used only when it is within about
 4 % of its maximum, which wastes most of the renewable energy.
 
@@ -470,6 +468,6 @@ void loop() {
 - Decide on whole-number `analogRead` values where you can: convert the thresholds
   once, and use `float` volts only for display. It saves over 1 KB of flash.
 - Divide the pin voltage by the divider fraction $k$ to recover the RES voltage.
-  On the board, measure $k$ at TP1.
+  Measure $k$ with a multimeter rather than trusting the resistor values.
 - Choose the threshold from the pump's minimum voltage, scaled through the divider,
   and add **hysteresis** so the supply doesn't chatter.

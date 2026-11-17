@@ -38,6 +38,8 @@ website:
               text: "4 · Switching circuitry"
             - href: mec1019/notes/05-pump-drive-type.md
               text: "5 · Pump drive type"
+            - href: mec1019/notes/06-project-board.md
+              text: "6 · Advanced: the project board"
         - section: "Electrical drives"
           contents:
             - section: "DC machines"

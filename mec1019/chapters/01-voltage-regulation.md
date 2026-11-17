@@ -4,8 +4,8 @@ The first block after the renewable energy source (RES) in the
 [project overview](../project-overview.qmd) is **voltage regulation**. Its job
 is to bring the RES voltage, which can be anywhere from 0 V to about 16 V, into
 the 0–5 V range that an Arduino analogue input can safely measure. This chapter
-explains why that matters, how a **voltage divider** does it, and how the
-divider on the RenewableSwitchOver board is set up.
+explains why that matters, how a **voltage divider** does it, and how to set
+up an adjustable divider safely.
 
 ## Learning outcomes
 
@@ -15,7 +15,7 @@ By the end of this chapter you should be able to:
 - Tell the difference between scaling a voltage for **measurement** and regulating a supply for **power**
 - Calculate the current and output voltage of a voltage divider
 - Choose divider resistors from a source's maximum voltage
-- Use a potentiometer as an adjustable divider, and set the trimmer on the project board safely
+- Use a potentiometer as an adjustable divider, and set one up safely to monitor a source
 
 ---
 
@@ -258,53 +258,44 @@ for the RES: turning it lets you test your monitoring code at your desk, as in
 
 ---
 
-## 7. On the board: R7 and the SwitchOverADJ trimmer
+## 7. Setting an adjustable divider safely
 
-The RenewableSwitchOver board (its full schematic is in
-[Switching circuitry](04-switching-circuitry.md#the-renewableswitchover-board))
-uses a fixed resistor **and** a trimmer for its voltage regulation block:
-
-| Part | Connection |
-|---|---|
-| J3 (Renew) | RES +ve (the net called **Vdrive**) and RES −ve (ground, **GNDS**) |
-| R7, 10 kΩ | From Vdrive to the top of the trimmer |
-| SwitchOverADJ trimmer | Its track from R7 to GNDS; its **wiper** is the net **AnalogIn** |
-| AnalogIn | Arduino **A0**, and test point **TP1** (SO_tp) |
-
-So the divider's "top" resistor is R7 plus the part of the track above the
-wiper, and the "bottom" resistor is the part of the track below it. With a
+A common way to monitor a source is a **fixed resistor in series with a
+trimmer**: the fixed resistor $R_F$ goes from the source to the top of the
+trimmer, the bottom of the trimmer goes to ground, and the trimmer's wiper goes
+to the analogue pin. The divider's "top" resistor is then $R_F$ plus the part of
+the track above the wiper, and the "bottom" resistor is the part below it. With a
 trimmer of total resistance $R_T$ and $R_{low}$ below the wiper:
 
-$$V_{A0} = V_{RES}\,\frac{R_{low}}{10\ \text{k}\Omega + R_T}$$
+$$V_{pin} = V_{RES}\,\frac{R_{low}}{R_F + R_T}$$
 
-Turning the trimmer changes $R_{low}$ from 0 to $R_T$, so the fraction at A0 can
-be anything from 0 up to $R_T/(10\ \text{k}\Omega + R_T)$.
+Turning the trimmer changes $R_{low}$ from 0 to $R_T$, so the fraction at the
+pin can be anything from 0 up to $R_T/(R_F + R_T)$.
 
-> ⚠️ **Set the trimmer before you trust the reading.** With a 10 kΩ trimmer, the
-> largest fraction is $10/(10+10) = 0.5$: a 16 V RES would put **8 V** on A0 with
-> the trimmer turned fully up, well over the 5 V limit. Check the value printed on
-> your trimmer, then:
+> ⚠️ **Set the trimmer before you trust the reading.** With $R_F$ = 10 kΩ and a
+> 10 kΩ trimmer, the largest fraction is $10/(10+10) = 0.5$: a 16 V RES would put
+> **8 V** on the pin with the trimmer turned fully up, well over the 5 V limit.
 >
 > 1. Connect the largest voltage the RES can produce (or a bench supply set to it,
->    e.g. 16 V) to J3.
-> 2. Measure from **TP1** to ground with a multimeter.
-> 3. Adjust the trimmer until TP1 reads **just under 5 V** (4.8 V gives a margin).
+>    e.g. 16 V) across the divider.
+> 2. Measure the wiper voltage to ground with a multimeter.
+> 3. Adjust the trimmer until it reads **just under 5 V** (4.8 V gives a margin).
 >
-> Only then connect the Arduino.
+> Only then connect the wiper to the Arduino.
 
 ### Why an adjustable divider?
 
-- **Calibration.** One board can be matched to sources with different maximum
+- **Calibration.** One circuit can be matched to sources with different maximum
   voltages, and resistor tolerances no longer matter: you set the fraction you
   want, then measure it.
-- **The switch-over point.** The code compares the A0 voltage with a fixed
-  threshold. Turning the trimmer changes the RES voltage at which that threshold
-  is reached, which is why it is called **SwitchOverADJ**. If the code switches
-  at 2.5 V on A0 and the trimmer gives a fraction $k$, the RES switches over at
-  $V_{RES} = 2.5 / k$. With $k = 0.3$ that is 8.3 V.
+- **Moving the switch-over point.** The code compares the pin voltage with a
+  fixed threshold. Turning the trimmer changes the RES voltage at which that
+  threshold is reached. If the code switches at 2.5 V on the pin and the trimmer
+  gives a fraction $k$, the RES switches over at $V_{RES} = 2.5 / k$. With
+  $k = 0.3$ that is 8.3 V.
 
 [Read input voltage](03-read-input-voltage.md) shows how the Arduino turns the
-A0 reading back into the RES voltage, using the fraction you measure here.
+reading back into the RES voltage, using the fraction you measure here.
 
 ---
 
@@ -318,6 +309,5 @@ A0 reading back into the RES voltage, using the fraction you measure here.
   sets the current and the power wasted.
 - Design from the **maximum** source voltage: $R_1 = (V_{max}/5 - 1)\,R_2$, with
   $R_2$ around 10 kΩ, rounding $R_1$ up.
-- A potentiometer or trimmer is an adjustable divider. On the board, R7 and the
-  SwitchOverADJ trimmer feed A0: set it at TP1 so the RES maximum gives just under
-  5 V.
+- A potentiometer or trimmer is an adjustable divider. Before connecting it to the
+  Arduino, set it with a multimeter so the RES maximum gives just under 5 V.

@@ -166,12 +166,13 @@ MEC1019_PAGES = re.compile(r"https://nigelk-dev\.github\.io/MEC1019_Sustainable_
 
 
 # Introduction to microcontrollers is written in this repository
-# (mec1019/chapters/), one chapter per block of the project overview diagram.
+# (mec1019/chapters/): one chapter per block of the project overview diagram,
+# then an advanced chapter on the RenewableSwitchOver board.
 # Only the images and applets come from the course repository; the chapters'
 # own images (e.g. the board schematic) are in mec1019/chapters/images/.
 MEC1019_CHAPTERS = Path(__file__).resolve().parent.parent / "mec1019" / "chapters"
 MEC1019_FILES = ["01-voltage-regulation.md", "02-arduino.md", "03-read-input-voltage.md",
-                 "04-switching-circuitry.md", "05-pump-drive-type.md"]
+                 "04-switching-circuitry.md", "05-pump-drive-type.md", "06-project-board.md"]
 MEC1019_SUBTITLE = "Introduction to microcontrollers"
 # The pages that used to be built from the course notes redirect to the
 # chapter that now covers their topic.

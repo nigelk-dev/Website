@@ -1,13 +1,14 @@
 # Pump drive type
 
 The last block in the [project overview](../project-overview.qmd) is the **pump
-drive type**: how the selected supply is applied to the pump. The
-RenewableSwitchOver board offers two ways, chosen with jumpers:
+drive type**: how the selected supply is applied to the pump. There are two
+ways to do it:
 
 - **Direct drive:** the pump is connected straight to the switched supply, at full
   voltage, the moment the supply is switched in.
-- **Slow start:** the pump is driven through an **L298N H-bridge**, and the
-  Arduino ramps its voltage up with **PWM** over a second or two.
+- **Slow start:** the pump is driven through a motor driver (an **L298N
+  H-bridge** module), and the Arduino ramps its voltage up with **PWM** over a
+  second or two.
 
 The difference that matters most is the **inrush current**: the surge a motor
 draws when it starts, or when its supply suddenly jumps. This chapter explains
@@ -21,7 +22,7 @@ By the end of this chapter you should be able to:
   supply voltage steps up
 - Describe the advantages and disadvantages of direct drive
 - Use PWM and `analogWrite` to vary the average voltage applied to a load
-- Explain how the L298N drives the pump on the project board
+- Wire and control an L298N motor driver module
 - Write a non-blocking slow-start ramp, and compare it with direct drive
 
 ---
@@ -67,10 +68,10 @@ for a moment) while the pump slows down. Only a step **up** causes a surge.
   switch-over threshold, so the Arduino switches to the battery, the RES recovers,
   it switches back, and the pump is hit again: an oscillation that hysteresis
   alone may not stop.
-- **Stress on the parts.** Diodes D1/D2 (1N5400: 3 A continuous), the MOSFETs, the
-  battery, connectors and wiring all carry the peak. The L298N is rated at 2 A
-  continuous per channel, with a short non-repetitive peak of 3 A: a 6 A start is
-  well beyond it.
+- **Stress on the parts.** The relay contacts, the battery, connectors and wiring
+  all carry the peak, and relay contacts that switch a surge arc and wear. A
+  typical L298N module is rated at 2 A continuous per channel, with a short peak
+  of 3 A: a 6 A start is well beyond it.
 - **Mechanical shock.** A pump that jumps to full speed jolts its mounting and can
   cause **water hammer** in the pipework.
 
@@ -78,18 +79,18 @@ for a moment) while the pump slows down. Only a step **up** causes a surge.
 
 ## 2. Direct drive
 
-In direct drive the jumpers connect the pump straight to the supply: **M1 to
-VPump** and **M2 to ground**. The L298N is bypassed, and the pump runs whenever a
-supply is switched in. The switching code in [Switching
-circuitry](04-switching-circuitry.md#code-for-the-board) is all it needs.
+In direct drive the pump is connected straight to the switched supply: in the
+relay circuit of [Switching circuitry](04-switching-circuitry.md#the-switch-over-with-relays),
+the pump is the load on the relays' NO outputs. It runs at full voltage whenever
+a supply is switched in, and the switching code is all it needs.
 
 | Advantages | Disadvantages |
 |---|---|
 | **Simple:** no driver, no PWM, no extra code | **Full inrush current** at every start: several times the running current |
-| **No extra voltage loss:** the pump gets VPump (only the diode drop is lost) | **A surge at every switch-over** to a higher supply |
+| **No extra voltage loss:** the pump gets the full supply voltage | **A surge at every switch-over** to a higher supply |
 | **Full torque immediately**, useful for a pump that needs a kick to start | Surges can **sag the RES** below the threshold and cause repeated switching |
-| **Silent:** no PWM whine | **Stresses** the diodes, MOSFETs, battery and wiring; mechanical shock and water hammer |
-| Fails safe: no code is needed to keep the pump running | **No speed control**: the pump runs at whatever the supply voltage gives |
+| **Silent:** no PWM whine | **Stresses** the relay contacts, battery and wiring; mechanical shock and water hammer |
+| Keeps working even if the code stops | **No speed control**: the pump runs at whatever the supply voltage gives |
 
 ---
 
@@ -190,64 +191,45 @@ with the Arduino](02-arduino.md#blocking-vs-non-blocking-timing).
 
 ---
 
-## 4. The L298N on the project board
+## 4. The L298N motor driver
 
 An Arduino pin can't drive a pump even with PWM: it can only supply 20 mA at 5 V.
-The board uses an **L298N**, a dual **H-bridge** driver. One of its two channels,
-channel B, drives the pump. It switches VPump onto the pump, under the control of
-three logic pins:
+A common solution is an **L298N module**, a dual **H-bridge** driver on a small
+board with screw terminals. One of its two channels drives the pump.
 
-| L298N pin | Net | Arduino pin | Role |
-|---|---|---|---|
-| IN3 | InC | **D3** (PWM) | Sets OUT3 high or low |
-| IN4 | InD | **D2** | Sets OUT4 high or low |
-| EnB | Enable | **D4** | Turns channel B on (HIGH) or off (LOW) |
-| Vs | VPump | — | The supply the pump receives |
-| Vss | +5V | — | The L298N's logic supply |
+### Wiring the module
+
+| Module terminal | Connect to | Role |
+|---|---|---|
+| +12V (motor supply, Vs) | The switched supply: the relays' NO outputs | The supply the pump receives |
+| GND | The common ground rail | Shared with the Arduino and the supplies |
+| OUT3, OUT4 | The pump | Channel B outputs |
+| ENB | Arduino **D9** (a PWM pin), after removing the ENB jumper | Turns channel B on and off: the PWM goes here |
+| IN3 | Arduino **D8** | Sets OUT3 high or low |
+| IN4 | Arduino **D7** | Sets OUT4 high or low |
+
+Most modules also have a 5 V regulator for their own logic, enabled by a jumper.
+With a motor supply of 12 V or less, leave that jumper in and don't connect the
+module's 5 V terminal to the Arduino's 5 V.
 
 ### How an H-bridge drives a motor
 
 Each output (OUT3, OUT4) can be switched to the supply or to ground, so the pump
 can be driven either way round, or stopped:
 
-| EnB | IN3 | IN4 | OUT3 | OUT4 | Pump |
+| ENB | IN3 | IN4 | OUT3 | OUT4 | Pump |
 |---|---|---|---|---|---|
-| HIGH | HIGH | LOW | VPump | GND | Runs one way |
-| HIGH | LOW | HIGH | GND | VPump | Runs the other way |
-| HIGH | HIGH | HIGH | VPump | VPump | Brakes: both terminals joined |
+| HIGH | HIGH | LOW | Supply | GND | Runs one way |
+| HIGH | LOW | HIGH | GND | Supply | Runs the other way |
+| HIGH | HIGH | HIGH | Supply | Supply | Brakes: both terminals joined |
 | HIGH | LOW | LOW | GND | GND | Brakes: both terminals joined |
 | LOW | any | any | off | off | Coasts: outputs disconnected |
 
-### The jumpers: choosing the drive type
-
-**JP1** and **JP2** connect the pump terminals (J1: M1, M2) either to the L298N
-or straight to the supply:
-
-| Jumper | Direct drive | Slow start (L298N) |
-|---|---|---|
-| JP2 → M1 | VPump | OUT4 |
-| JP1 → M2 | GND (GNDS) | OUT3 |
-
-Check the positions against the silkscreen on your board. In direct drive, M1 is
-the positive terminal. To run the pump the same way round through the L298N, OUT4
-must be the positive side: **IN4 HIGH**, with IN3 LOW to drive.
-
-### PWM on IN3
-
-EnB is on **D4, which is not a PWM pin**, so the PWM has to go on IN3 (D3, which
-is). With **EnB HIGH and IN4 HIGH**:
-
-- IN3 **LOW**: OUT4 = VPump, OUT3 = GND: the pump is **driven**.
-- IN3 **HIGH**: both outputs at VPump: the pump's terminals are joined, and the
-  current circulates through the bridge (brake).
-
-So the drive is the time IN3 spends **LOW**. To drive the pump at a level from 0
-to 255, write the inverse: `analogWrite(3, 255 - level)`.
-
-> 💡 If the pump's direction doesn't matter (or you swap its wires for L298N
-> mode), hold IN4 **LOW** and write `analogWrite(3, level)` directly. Moving Enable
-> to a PWM pin in a future board revision would also allow the more common "PWM on
-> enable" method.
+To run the pump at a controlled speed: set **IN3 HIGH and IN4 LOW** once to fix
+the direction (swap them, or the pump wires, if it runs backwards), then use
+`analogWrite` on **ENB**. During each "on" part of the PWM cycle the pump is
+driven; during each "off" part the outputs are disconnected and the pump coasts.
+The drive level is simply the `analogWrite` value: 0 is off, 255 is full drive.
 
 ### Things to know about the L298N
 
@@ -256,13 +238,11 @@ to 255, write the inverse: `analogWrite(3, 255 - level)`.
   direct drive.
 - **Current limit.** 2 A continuous per channel. A slow start keeps the pump
   within it; a direct start through the L298N would not.
-- **Current sense.** SENSE_A and SENSE_B go to ground through **R1 (0.2 Ω)**. The
-  voltage across R1 is $0.2\,\Omega \times I$, so an oscilloscope across R1 shows
-  the pump current: 1 A gives 0.2 V. It is the easiest way to *see* the inrush
-  current, and to compare the two drive types.
 - **PWM whine.** At about 490 Hz the pump may hum audibly while it ramps.
-- **Decoupling.** C1 and C2 (100 nF) on +5V and VPump smooth the switching
-  spikes.
+- **Seeing the inrush.** Put a small resistor (0.1–0.2 Ω, rated for the current) in
+  series with the pump's supply and look at the voltage across it with an
+  oscilloscope: $V = IR$, so 1 A across 0.2 Ω gives 0.2 V. It is the easiest way to
+  *see* the inrush current and compare the two drive types.
 
 ---
 
@@ -280,28 +260,36 @@ above its running value.
   switch, then ramp.
 - **At a switch-over to a lower supply:** no surge, so no ramp is needed.
 
+Cutting the drive before a switch-over also means the relay contacts switch a
+smaller current, so they arc less.
+
 ### The code
 
 The ramp is **non-blocking**: `loop()` keeps checking the RES while the pump
-speeds up, and a switch-over during a ramp is handled straight away.
+speeds up, and a switch-over during a ramp is handled straight away. The supply
+switching is the relay circuit from [Switching
+circuitry](04-switching-circuitry.md#the-switch-over-with-relays), with the
+relays' NO outputs feeding the L298N's motor supply instead of the pump.
 
 ```cpp
 /*
- * RenewableSwitchOver board: supply switch-over with a slow-started pump.
- * Pins from the schematic: A0 = AnalogIn (trimmer wiper),
- *   D13 = renewableOn, D12 = batteryOn (both active-HIGH),
- *   D3 = InC (L298N IN3, PWM), D2 = InD (IN4), D4 = Enable (EnB).
- * Jumpers JP1/JP2 set to the L298N outputs.
+ * RES / battery switch-over with a slow-started pump.
+ * Hardware: divider mid-point -> A0 (R1 = 22 kΩ, R2 = 10 kΩ);
+ *   D12 -> IN2 (RES relay), D13 -> IN1 (battery relay), active-LOW module;
+ *   relay NO outputs -> L298N +12V; pump on OUT3/OUT4;
+ *   D9 -> ENB (PWM, jumper removed), D8 -> IN3, D7 -> IN4; all grounds joined.
  */
 
-const uint8_t  kSensePin   = A0;
-const uint8_t  kResOnPin   = 13;      // renewableOn
-const uint8_t  kBatOnPin   = 12;      // batteryOn
-const uint8_t  kIn3Pin     = 3;       // InC: a PWM pin
-const uint8_t  kIn4Pin     = 2;       // InD
-const uint8_t  kEnablePin  = 4;       // Enable (EnB)
+const uint8_t  kResPin     = A0;      // divider mid-point
+const uint8_t  kResRelay   = 12;      // IN2: connects the RES
+const uint8_t  kBatRelay   = 13;      // IN1: connects the battery
+const uint8_t  kEnbPin     = 9;       // L298N ENB: a PWM pin
+const uint8_t  kIn3Pin     = 8;       // L298N IN3
+const uint8_t  kIn4Pin     = 7;       // L298N IN4
+const uint8_t  kRelayOn    = LOW;     // the relay module is active-LOW
+const uint8_t  kRelayOff   = HIGH;
 
-const float    kRatio      = 0.300;   // fraction of the RES voltage at A0, measured at TP1
+const float    kRatio      = 0.3125;  // divider fraction: 10k / (22k + 10k); measure yours
 const float    kBatteryV   = 12.0;    // battery voltage (measure yours)
 const float    kToBatteryV = 8.0;     // RES volts: switch to the battery below this ...
 const float    kToResV     = 9.0;     // ... and back to the RES only above this
@@ -317,17 +305,15 @@ uint8_t       rampFrom     = 0;       // drive level when the current ramp start
 unsigned long rampStartMs  = 0;
 unsigned long lastSampleMs = 0;
 
-// The RES voltage, from the A0 reading and the measured divider fraction.
+// The RES voltage, from the A0 reading and the divider fraction.
 float readResVolts() {
-  return analogRead(kSensePin) * (kAdcVref / kAdcMax) / kRatio;
+  return analogRead(kResPin) * (kAdcVref / kAdcMax) / kRatio;
 }
 
-// Drive the pump at 'lvl' (0 to 255). IN4 is held HIGH, so IN3 LOW drives the
-// pump (the same way round as direct drive) and IN3 HIGH doesn't: the drive is
-// the time IN3 spends LOW, so write the inverse.
+// Drive the pump at 'lvl' (0 to 255): the PWM duty cycle on ENB.
 void setPump(uint8_t lvl) {
   level = lvl;
-  analogWrite(kIn3Pin, 255 - lvl);
+  analogWrite(kEnbPin, lvl);
 }
 
 // Start a ramp from 'from' up to full drive.
@@ -348,34 +334,36 @@ void updateRamp(unsigned long now) {
   }
 }
 
-// Change supply. If the new supply is higher, first cut the drive so the pump's
-// average voltage stays about the same, then let it ramp back up.
+// Change supply, old relay off before new relay on (break before make).
+// If the new supply is higher, first cut the drive so the pump's average
+// voltage stays about the same, then let it ramp back up.
 void changeSupply(bool toBattery, float vRes) {
   float vOld = toBattery ? vRes : kBatteryV;
   float vNew = toBattery ? kBatteryV : vRes;
   if (vNew > vOld) {
     startRamp((uint8_t)(level * vOld / vNew));
   }
-  // Make before break: diodes D1/D2 stop the supplies feeding each other.
-  digitalWrite(toBattery ? kBatOnPin : kResOnPin, HIGH);
-  digitalWrite(toBattery ? kResOnPin : kBatOnPin, LOW);
+  digitalWrite(toBattery ? kResRelay : kBatRelay, kRelayOff);   // break ...
+  digitalWrite(toBattery ? kBatRelay : kResRelay, kRelayOn);    // ... then make
   onBattery = toBattery;
 }
 
 void setup() {
-  pinMode(kResOnPin, OUTPUT);
-  pinMode(kBatOnPin, OUTPUT);
+  digitalWrite(kResRelay, kRelayOff);   // both relays off until we decide
+  digitalWrite(kBatRelay, kRelayOff);
+  pinMode(kResRelay, OUTPUT);
+  pinMode(kBatRelay, OUTPUT);
+  pinMode(kEnbPin, OUTPUT);
   pinMode(kIn3Pin, OUTPUT);
   pinMode(kIn4Pin, OUTPUT);
-  pinMode(kEnablePin, OUTPUT);
 
-  digitalWrite(kIn4Pin, HIGH);        // sets the pump's direction
-  setPump(0);                         // no drive yet
-  digitalWrite(kEnablePin, HIGH);     // L298N channel B on
+  digitalWrite(kIn3Pin, HIGH);          // sets the pump's direction
+  digitalWrite(kIn4Pin, LOW);
+  setPump(0);                           // no drive yet
 
   onBattery = readResVolts() < kToBatteryV;
-  digitalWrite(onBattery ? kBatOnPin : kResOnPin, HIGH);
-  startRamp(0);                       // slow start from standstill
+  digitalWrite(onBattery ? kBatRelay : kResRelay, kRelayOn);
+  startRamp(0);                         // slow start from standstill
 }
 
 void loop() {
@@ -386,9 +374,9 @@ void loop() {
     lastSampleMs = now;
     float vRes = readResVolts();
     if (!onBattery && vRes < kToBatteryV) {
-      changeSupply(true, vRes);       // RES clearly too low
+      changeSupply(true, vRes);         // RES clearly too low
     } else if (onBattery && vRes > kToResV) {
-      changeSupply(false, vRes);      // RES clearly recovered
+      changeSupply(false, vRes);        // RES clearly recovered
     }
   }
 
@@ -399,8 +387,8 @@ void loop() {
 
 **How it works**
 
-- **`setPump()`** is the only place that knows about the inverted PWM on IN3. The
-  rest of the code thinks in drive levels, 0 to 255.
+- **`setPump()`** is the only place that touches the L298N's PWM pin. The rest of
+  the code thinks in drive levels, 0 to 255.
 - **`startRamp()`** records where and when a ramp begins; **`updateRamp()`** works
   out the level from the time since then:
   $\text{level} = \text{from} + (255 - \text{from}) \times t / T_{ramp}$. The `255UL`
@@ -413,20 +401,22 @@ void loop() {
 
 **Things to set for your hardware**
 
-- `kRatio` (measured at TP1) and `kBatteryV` (measure the battery).
+- `kRatio` (measured as in [Read input
+  voltage](03-read-input-voltage.md#measure-the-fraction)) and `kBatteryV`
+  (measure the battery).
 - `kToBatteryV` and `kToResV` from the pump's minimum working voltage.
-- `kRampMs`: longer means a smaller surge but a slower start. Measure the current
-  across R1 with an oscilloscope and lengthen the ramp until the peak is close to
-  the running current.
+- `kRampMs`: longer means a smaller surge but a slower start. Watch the current
+  with an oscilloscope and lengthen the ramp until the peak is close to the
+  running current.
 
 ### Advantages and disadvantages
 
 | Advantages | Disadvantages |
 |---|---|
-| **Low inrush current:** the current rises with the back-EMF instead of jumping to $V/R$ | **More parts:** an H-bridge driver (here the L298N), and the jumpers set correctly |
+| **Low inrush current:** the current rises with the back-EMF instead of jumping to $V/R$ | **More parts:** a motor driver (here an L298N module) |
 | **Smooth switch-overs:** the drive is matched to the new supply, so no surge | **More code**, and it must be non-blocking so monitoring continues |
 | **Keeps the RES stable:** no surge to drag it below the threshold, so no false switch-overs | **Voltage loss:** about 2 V in the L298N, so the pump never gets the full supply |
-| **Gentler on the diodes, MOSFETs, battery, wiring and the pump**; no water hammer | **Slower to reach full flow**: the pump takes the ramp time to get going |
+| **Gentler on the relay contacts, battery, wiring and the pump**; no water hammer | **Slower to reach full flow**: the pump takes the ramp time to get going |
 | **Keeps the L298N within its 2 A rating** | **PWM whine** from the pump, and some heat in the L298N |
 | **Speed control** for free: the same PWM can run the pump slower when less flow is needed | At very low duty cycles the pump may hum without turning |
 
@@ -439,9 +429,9 @@ void loop() {
 | **Inrush at start-up** | Full: $V/R$, several times the running current | Small: rises with speed |
 | **Surge at a switch-over** | Yes, whenever the supply steps up | No: drive matched, then ramped |
 | **Effect on the RES** | Can sag it below the threshold and cause repeated switching | Stays stable |
-| **Voltage at the pump** | VPump (minus the diode drop) | VPump minus about 2 V more (L298N) |
+| **Voltage at the pump** | The full supply | About 2 V less (L298N) |
 | **Time to full flow** | Immediate | The ramp time (e.g. 2 s) |
-| **Parts and code** | Jumpers to direct; switching code only | L298N; ramp code with `millis()` |
+| **Parts and code** | Relays only; switching code only | L298N module; ramp code with `millis()` |
 | **Speed control** | None | Yes, with the same PWM |
 
 For a renewable source that can't supply large surges, **slow start** is the
@@ -460,8 +450,8 @@ start at reduced voltage.
 - **Direct drive** is simple and loses no extra voltage, but takes the full surge at
   every start and every switch-over to a higher supply.
 - **PWM** sets an average voltage: $V_{avg} = V_{supply} \times \text{value}/255$.
-- On the board, the L298N drives the pump: EnB (D4) HIGH and IN4 (D2) HIGH, with
-  PWM on IN3 (D3) written as `255 - level`. JP1/JP2 choose direct or L298N drive.
+- An **L298N** drives the pump: IN3 and IN4 set the direction, and `analogWrite` on
+  ENB sets the drive level.
 - A **slow start** ramps the drive up with non-blocking `millis()` code, and cuts the
   drive before switching to a higher supply, keeping the current near its running
   value.

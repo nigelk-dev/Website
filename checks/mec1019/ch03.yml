@@ -190,11 +190,11 @@
 
 - type: numeric
   q: |
-    With {Vr} V applied to J3, a multimeter reads {Vt} V at TP1. What divider fraction $k$ should go in the code as `kRatio`?
+    With {Vr} V across a divider, a multimeter reads {Vt} V at its output (the analogue pin). What divider fraction $k$ should go in the code as `kRatio`?
   vars:
     Vr: [12, 9, 16, 0.5]
     Vt: [3.6, 2, 4.8, 0.1]
   answer: Vt / Vr
   unit: ""
   solution: |
-    k = V_TP1 / V_RES = {Vt} / {Vr} = **{=Vt / Vr|3}**
+    k = V_out / V_in = {Vt} / {Vr} = **{=Vt / Vr|3}**

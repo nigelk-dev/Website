@@ -159,22 +159,22 @@
 
 - type: numeric
   q: |
-    On the board, R7 (10 kΩ) feeds the top of a {Rt} kΩ SwitchOverADJ trimmer. With the trimmer turned **fully up** (wiper at the
+    A 10 kΩ fixed resistor feeds the top of a {Rt} kΩ trimmer, whose wiper goes to A0. With the trimmer turned **fully up** (wiper at the
     top of its track) and the RES at {Vm} V, what voltage reaches A0?
   vars:
     Rt: [10, 5, 20, 5]
     Vm: [16, 12, 18, 1]
   answer: Vm * Rt / (10 + Rt)
   unit: V
-  hint: With the wiper at the top, the whole trimmer is the bottom resistor of the divider and R7 is the top one.
+  hint: With the wiper at the top, the whole trimmer is the bottom resistor of the divider and the fixed resistor is the top one.
   solution: |
     V_A0 = {Vm} × {Rt} / (10 + {Rt}) = **{=Vm * Rt / (10 + Rt)} V**. Anything over 5 V is above the Arduino's limit, so set the
-    trimmer at TP1 before connecting the Arduino.
+    trimmer with a multimeter before connecting the Arduino.
 
 - type: order
-  q: Put the steps for setting the SwitchOverADJ trimmer safely in order.
+  q: Put the steps for setting an adjustable divider safely in order.
   items:
-    - Connect the largest voltage the RES can produce (or a bench supply set to it) to J3
-    - Measure the voltage from TP1 to ground with a multimeter
-    - Adjust the trimmer until TP1 reads just under 5 V
-    - Connect the Arduino
+    - Connect the largest voltage the RES can produce (or a bench supply set to it) across the divider
+    - Measure the wiper voltage to ground with a multimeter
+    - Adjust the trimmer until the wiper reads just under 5 V
+    - Connect the wiper to the Arduino

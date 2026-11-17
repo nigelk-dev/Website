@@ -35,7 +35,7 @@ milliamps.
 
 The project uses three of these patterns: an analogue voltage through a divider
 (the RES voltage on A0), digital outputs through driver transistors (the
-switching circuitry), and PWM to an H-bridge (the L298N pump driver).
+switching circuitry), and PWM to an H-bridge motor driver (the pump drive).
 
 ---
 
@@ -69,8 +69,8 @@ the **Microchip ATmega328P**:
 | D0/D1 (RX/TX) | Used by `Serial` and for uploading; avoid using them as general I/O |
 
 The 20 mA pin limit is the reason the project never powers anything heavier
-than an LED straight from a pin: the supplies are switched through transistors
-and the pump through the L298N.
+than an LED straight from a pin: the supplies are switched through relays and
+the pump through a motor driver.
 
 ---
 
@@ -126,8 +126,8 @@ A solderless breadboard is a matrix of spring-contact clips:
 ![Breadboard — holes in the same strip are connected, holes in different strips are not](images/p1-03.png)
 
 The clips are rated at roughly 1 A and add 10–50 mΩ per contact. That is fine
-for LEDs and sensors but rules breadboards out for motor currents: the project
-board puts the supply and pump connections on screw terminals.
+for LEDs and sensors but rules breadboards out for motor currents: put the
+supply and pump connections on screw terminals or a soldered board.
 
 > 🔧 **Try it:** [Breadboard continuity lab](applets/breadboard.html) — add wires and components, reveal the hidden strips, test continuity between any two holes, and check whether each component is placed correctly.
 
@@ -156,10 +156,6 @@ $$R = \frac{V_s - V_f}{I_F}$$
 From a 5 V pin, a red LED ($V_f \approx 2$ V) at 15 mA needs
 $R = (5 - 2)/0.015 = 200\ \Omega$ → use the next standard value up, **220 Ω**.
 Always round **up**, and check the resistor's power, $P = I^2R$.
-
-The project board uses the same idea for its two supply indicators (D3
-"Battery ON" and D4 "Renew ON", each with a 360 Ω resistor, see
-[Switching circuitry](04-switching-circuitry.md)).
 
 > ▶️ **[LED circuit explorer](applets/led-circuit.html)** — choose a supply and LED colour, slide through the standard resistor values and watch the current. Pick a resistor that is too small and the LED burns out.
 
@@ -216,8 +212,8 @@ void loop() {
 - The **`k`** at the start of a name is a convention for *constant*: a fixed value
   set at the top of the file.
 
-Pin 13 also drives the on-board "L" LED. On the project board, pin 13 is
-**renewableOn**, so the "L" LED lights whenever the RES is switched in.
+Pin 13 also drives the on-board "L" LED, which is a useful check before any
+external wiring.
 
 > ▶️ **[Run it: Example 1a in the code runner](applets/code-runner.html#ex1a)** — the active line is highlighted as the LED blinks.
 

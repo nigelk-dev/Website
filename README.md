@@ -26,7 +26,10 @@ drives and Manufacturing Automation group their chapters into parts.
 Introduction to microcontrollers is structured around its project instead: the
 *Project Overview* page (`mec1019/project-overview.qmd`) shows the system
 diagram, and there is one chapter per block of it (voltage regulation, the
-Arduino, read input voltage, switching circuitry, pump drive type). The chapters
+Arduino, read input voltage, switching circuitry, pump drive type), built on a
+breadboard with a relay module and an L298N module. A sixth, advanced chapter
+covers the RenewableSwitchOver board and its schematic; the first five don't
+mention it. The chapters
 are Markdown files in `mec1019/chapters/`, written in the same style as the
 course notes: `images/...` and `applets/...` links, and a line starting
 `> ▶️` or `> 🔧` with an applet link becomes a live embedded applet. Their own

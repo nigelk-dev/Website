@@ -156,29 +156,6 @@
   solution: |
     level = 255 × {Vo} / {Vn} = **{=255 * Vo / Vn|3}**, i.e. {Vo} V average from the {Vn} V supply. Then it ramps back up to 255.
 
-- type: mcq
-  q: With EnB HIGH and IN4 HIGH, what happens when IN3 is **LOW**?
-  options:
-    - text: OUT4 is at VPump and OUT3 at ground, so the pump is driven (M1 positive, as in direct drive)
-      correct: true
-    - text: Both outputs are at VPump, so the pump brakes
-      why: That's IN3 HIGH, the same as IN4.
-    - text: The outputs are disconnected and the pump coasts
-      why: That's EnB LOW.
-    - text: The pump runs backwards at full speed
-
-- type: tune
-  q: |
-    On the board, IN4 is held HIGH and the PWM goes on IN3, so the pump is driven while IN3 is **LOW**. Set the
-    `analogWrite` value on IN3 so the pump gets **75 % drive (±1)**.
-  controls:
-    - {name: v, label: analogWrite value on IN3, min: 0, max: 255, step: 1, value: 128}
-  readouts:
-    - {label: Pump drive, expr: "(255 - v) / 255 * 100", unit: "%", min: 0, max: 100}
-  target:
-    - {readout: 0, min: 74, max: 76}
-  explain: The drive is the time IN3 spends LOW, so write the inverse, `analogWrite(3, 255 - level)`; 75 % drive is 191, written as 64.
-
 - type: multi
   q: Which are advantages of a **slow start** over direct drive? Select all that apply.
   options:
@@ -202,3 +179,25 @@
     - text: Because `millis()` makes the PWM frequency higher
     - text: Because a `for` loop can't count past 255
       why: An `int` counter can; the problem is that the loop blocks everything else.
+
+- type: mcq
+  q: An L298N module drives the pump with IN3 HIGH, IN4 LOW and `analogWrite` on ENB. What happens during the **off** part of each PWM cycle?
+  options:
+    - text: ENB is LOW, so the outputs are disconnected and the pump coasts
+      correct: true
+    - text: The pump runs backwards
+      why: The direction is set by IN3 and IN4, which don't change.
+    - text: Both outputs are joined to the supply, so the pump brakes
+      why: That happens with IN3 and IN4 both HIGH and ENB HIGH.
+    - text: The L298N connects the pump straight to the Arduino's 5 V
+
+- type: tune
+  q: |
+    The pump is driven through an L298N module with the PWM on ENB. Set the `analogWrite` value so the pump gets **75 % drive (±1)**.
+  controls:
+    - {name: v, label: analogWrite value on ENB, min: 0, max: 255, step: 1, value: 128}
+  readouts:
+    - {label: Pump drive, expr: "v / 255 * 100", unit: "%", min: 0, max: 100}
+  target:
+    - {readout: 0, min: 74, max: 76}
+  explain: The drive is the duty cycle on ENB, value / 255; 75 % is 191.
