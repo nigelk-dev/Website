@@ -2,11 +2,17 @@
 
 Inside the microcontroller system in the
 [project overview](../project-overview.qmd), the first step is **read input
-voltage**: turn the scaled RES voltage on A0 into a number, and turn that number
-back into the RES voltage. The second step is the **control decision**: is the
-RES high enough to run the pump, or should the system switch to the battery?
-This chapter covers both, using a potentiometer on the bench as a stand-in for
-the RES.
+voltage**: `analogRead` turns the scaled voltage on an analogue pin into a whole
+number from 0 to 1023. The second step is the **control decision**: is that
+number high enough to run the pump from the RES, or should the system switch to
+the battery?
+
+The Arduino never needs to know the voltage in volts to make that decision. It
+only needs to know whether the reading is above or below a switch-over point,
+and that comparison works perfectly with whole numbers. This chapter starts with
+a `float` to show what the numbers mean, then does everything with whole
+numbers, which is the better way to program a small microcontroller. A
+potentiometer on the bench stands in for the RES.
 
 ```{=html}
 <figure class="flow-diagram">
@@ -20,35 +26,39 @@ the RES.
 
 By the end of this chapter you should be able to:
 
-- Read an analogue voltage with `analogRead` and convert the result to volts
-- Make decisions from a voltage with `if`, `else if` and `else`
-- Make the same decisions with whole numbers, and explain why that saves memory
-- Recover the RES voltage from the divider reading
-- Choose a switch-over threshold, and add hysteresis so the supply doesn't chatter
+- Read an analogue voltage with `analogRead`, and explain what the readings 0–1023
+  mean in volts
+- Explain why whole numbers are better than `float` on an Arduino
+- Turn a voltage threshold into an `analogRead` value once, when the sketch compiles
+- Make decisions with `if`, `else if` and `else` on whole-number readings
+- Choose the RES switch-over point as a reading, and add hysteresis so the supply
+  doesn't chatter
 
 ---
 
-## 1. `analogRead`
+## 1. `analogRead`: what the numbers mean
 
 The analogue pins (A0–A5) contain a **10-bit analogue-to-digital converter
-(ADC)**: $2^{10} = 1024$ levels.
+(ADC)**: $2^{10} = 1024$ levels. `analogRead(pin)` returns a whole number from 0
+to 1023:
 
 | Voltage on pin | `analogRead()` returns |
 |---|---|
 | 0 V | 0 |
+| 1 V | 205 |
 | 2.5 V | ≈ 512 |
 | 5 V | 1023 |
 
-Convert back to volts with:
+Each step is about $5/1023 \approx 4.9$ mV. That is why [Voltage
+measurement](01-voltage-regulation.md) scales the RES maximum to just under 5 V:
+the whole range of 1024 steps is used.
+
+To turn a reading into volts, so that **a person** can see what it means:
 
 $$V = \frac{5}{1023}\times\text{reading}$$
 
-Write the constants as `5.0` and `1023.0` (with decimal points) so C++ does
-**floating-point** division: `5/1023` in whole numbers is 0!
-
-Each step is about 4.9 mV at the pin. That is why [Voltage
-regulation](01-voltage-regulation.md) scales the RES maximum to just under 5 V:
-the whole range of 1024 steps is used.
+That needs a `float` (a number with a decimal point). Section 3 shows it once, and
+then shows why the Arduino itself is better off without it.
 
 ---
 
@@ -82,9 +92,11 @@ All the exercises use the same connection: the pot's outer pins to **5 V** and
 
 ## 3. Exercise 7.1 — read the pot voltage
 
+### With a `float`: seeing what the numbers mean
+
 ```cpp
 /*
- * Exercise 7.1: Read the potentiometer voltage and print it.
+ * Exercise 7.1: Read the potentiometer voltage and print it in volts.
  * Hardware: pot outer pins to 5 V and GND, wiper to A1.
  */
 
@@ -93,37 +105,117 @@ const float    kAdcVref  = 5.0;      // analogRead reference voltage (V)
 const float    kAdcMax   = 1023.0;   // largest analogRead value
 const uint16_t kSampleMs = 500;      // time between readings (ms)
 
-// Read an analogue pin and return the voltage on it (0 to 5 V).
-float readVolts(uint8_t pin) {
-  int reading = analogRead(pin);              // 0 to 1023
-  return reading * (kAdcVref / kAdcMax);      // scale to volts
-}
-
 void setup() {
   Serial.begin(9600);                // start the Serial Monitor link
   // Analogue pins are inputs by default, so no pinMode() is needed.
 }
 
 void loop() {
-  float vOut = readVolts(kPotPin);   // wiper voltage
-  Serial.println(vOut);              // one value per line, ideal for the Serial Plotter
+  int   reading = analogRead(kPotPin);             // 0 to 1023
+  float volts   = reading * (kAdcVref / kAdcMax);  // e.g. 512 -> 2.50
+  Serial.print(reading);
+  Serial.print(" = ");
+  Serial.print(volts);
+  Serial.println(" V");
   delay(kSampleMs);
 }
 ```
 
-Open **Tools › Serial Monitor** (or **Serial Plotter** for a live graph) and turn
-the knob.
+Open **Tools › Serial Monitor** and turn the knob: each line shows the raw reading
+and the voltage it stands for, e.g. `512 = 2.50 V`. Write the constants as `5.0`
+and `1023.0`, with decimal points: `5/1023` in whole numbers is **0**.
 
-- **`readVolts(pin)`** wraps the two steps (read, then convert) in a function that
-  hands back the answer with `return`. It is reused in the exercises that follow.
-- **No `pinMode()`**: analogue pins start up as inputs. A common mistake is
-  `pinMode(vOut, INPUT)`, which passes the *voltage variable* instead of the *pin*.
+> ▶️ **[Run it: Exercise 7.1 in the code runner](applets/code-runner.html#ex2d)** — turn the simulated pot and watch the reading and the voltage change together.
 
-> ▶️ **[Run it: Exercise 7.1 in the code runner](applets/code-runner.html#ex2d)** — turn the simulated pot and follow `readVolts()`.
+### Without a `float`: the better way
+
+The same readout works in whole numbers if the voltage is in **millivolts**:
+2502 mV is 2.502 V, and it's still a whole number.
+
+```cpp
+/*
+ * Exercise 7.1, integer version: read the pot voltage with no float.
+ * Hardware: pot outer pins to 5 V and GND, wiper to A1.
+ */
+
+const uint8_t  kPotPin    = A1;     // pot wiper
+const long     kAdcVrefMv = 5000;   // analogRead reference voltage, in millivolts
+const int      kAdcMax    = 1023;   // largest analogRead value
+const uint16_t kSampleMs  = 500;    // time between readings (ms)
+
+// Read an analogue pin and return the voltage on it in millivolts (0 to 5000).
+int readMillivolts(uint8_t pin) {
+  int reading = analogRead(pin);                 // 0 to 1023
+  return reading * kAdcVrefMv / kAdcMax;         // whole-number maths, e.g. 512 -> 2502
+}
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int mv = readMillivolts(kPotPin);    // wiper voltage in mV
+  Serial.print(mv);
+  Serial.println(" mV");               // e.g. "2502 mV" means 2.502 V
+  delay(kSampleMs);
+}
+```
+
+- **`kAdcVrefMv` is a `long`** so that `reading × 5000` (up to about 5.1 million) is
+  worked out in 4-byte `long` maths; it would overflow a 2-byte `int` (maximum
+  32 767). The answer, 0 to 5000, fits back in an `int`.
+- **Multiply first, then divide.** `reading / 1023 * 5000` would throw the fraction
+  away straight away and give only 0 or 5000.
 
 ---
 
-## 4. Exercise 7.2 — dimmer switch
+## 4. Why whole numbers are better
+
+**Memory.** The ATmega328P has no hardware for decimal (floating-point) maths. As
+soon as a sketch uses a `float` (multiplying, dividing, comparing or printing
+one), the compiler adds a library of software routines to program memory. These
+are the real sizes from compiling the exercises for the Uno:
+
+| Exercise | Flash used, `float` | Flash used, integer | Saved |
+|---|---|---|---|
+| 7.1 | 3 780 bytes | 2 690 bytes | **1 090 bytes** (29%) |
+| 7.3 | 3 890 bytes | 2 648 bytes | **1 242 bytes** (32%) |
+| 7.4 | 3 982 bytes | 2 726 bytes | **1 256 bytes** (32%) |
+
+A `float` variable also takes **4 bytes** of RAM, where an `int` takes **2**, on a
+chip with only 2 KB of RAM.
+
+**Speed.** Each `float` sum runs as a block of software, many times slower than a
+whole-number sum, which is a single instruction or two.
+
+**Exactness.** Whole numbers are exact. Many decimals can't be stored exactly in a
+`float` (0.2 is stored as 0.200000003…), so small errors can build up and a
+comparison can land on the wrong side of a threshold.
+
+**The decision doesn't need volts.** `reading > 511` is exactly the same test as
+`volts > 2.5`. So instead of converting **every reading** into volts, convert the
+**threshold** into a reading once:
+
+$$\text{reading} = \frac{\text{millivolts} \times 1023}{5000}$$
+
+| Threshold | Volts | Millivolts | As an `analogRead` value |
+|---|---|---|---|
+| Exercise 7.3 switching point | 2.5 V | 2500 | 511 |
+| Exercise 7.4, top of the red band | 2.0 V | 2000 | 409 |
+| Exercise 7.4, top of the green band | 3.5 V | 3500 | 716 |
+
+Written in the code as `const int kThreshold = 2500L * 1023 / 5000;`, the sum uses
+only constants, so the **compiler** works it out (511) when you press Verify. The
+Arduino never does it. The `L` makes 2500 a `long`, because 2500 × 1023 (about
+2.6 million) is too big for an `int`.
+
+> ✅ **Rule of thumb:** make decisions on whole numbers (`analogRead` values or
+> millivolts). Use a `float` only when you really need a fraction, and convert to
+> volts only when a person has to read the value.
+
+---
+
+## 5. Exercise 7.2 — dimmer switch
 
 ```cpp
 /*
@@ -150,31 +242,29 @@ void loop() {
   and off quickly (PWM); [Pump drive type](05-pump-drive-type.md) explains it in
   full, because it is how the pump is ramped up.
 - **`map(value, fromLow, fromHigh, toLow, toHigh)`** rescales a number from one
-  range to another: 0 → 0, 1023 → 255, 512 → 127.
+  range to another, entirely in whole numbers: 0 → 0, 1023 → 255, 512 → 127. No
+  `float` needed.
 - There is **no `delay()`**, so the brightness follows the knob immediately.
 
 > ▶️ **[Run it: Exercise 7.2 in the code runner](applets/code-runner.html#ex2d1)** — turn the simulated pot and watch `map()` set the LED brightness.
 
 ---
 
-## 5. Exercise 7.3 — switch at 2.5 V
+## 6. Exercise 7.3 — switch at 2.5 V
 
 ```cpp
 /*
- * Exercise 7.3: Blue LED on above 2.5 V, off at or below 2.5 V.
+ * Exercise 7.3: Blue LED on above 2.5 V, off at or below 2.5 V, with no float.
  * Hardware: pot wiper to A1; blue LED + 220 Ω resistor on D13.
  */
 
-const uint8_t  kPotPin    = A1;
-const uint8_t  kBluePin   = 13;
-const float    kThreshold = 2.5;      // switching voltage (V)
-const float    kAdcVref   = 5.0;
-const float    kAdcMax    = 1023.0;
-const uint16_t kSampleMs  = 500;
+const uint8_t  kPotPin   = A1;       // pot wiper
+const uint8_t  kBluePin  = 13;       // blue LED
+const uint16_t kSampleMs = 500;
 
-float readVolts(uint8_t pin) {
-  return analogRead(pin) * (kAdcVref / kAdcMax);
-}
+// 2.5 V as an analogRead value: 2500 mV x 1023 / 5000 mV = 511.
+// Only constants, so the compiler works this out once; the Arduino never does.
+const int kThreshold = 2500L * 1023 / 5000;
 
 void setup() {
   Serial.begin(9600);
@@ -182,38 +272,37 @@ void setup() {
 }
 
 void loop() {
-  float vOut = readVolts(kPotPin);
-  Serial.println(vOut);
+  int reading = analogRead(kPotPin);  // 0 to 1023, no conversion
+  Serial.println(reading);
 
-  if (vOut > kThreshold) {
+  if (reading > kThreshold) {
     digitalWrite(kBluePin, HIGH);     // above 2.5 V: LED on
   } else {
     digitalWrite(kBluePin, LOW);      // 2.5 V or below: LED off
   }
-
   delay(kSampleMs);
 }
 ```
 
-- **`if (vOut > kThreshold)`** tests a condition. If it is true, the first block
+- **`if (reading > kThreshold)`** tests a condition. If it is true, the first block
   runs; otherwise the `else` block runs. Exactly one of the two always runs.
 - **`kThreshold`** is a named constant, so changing the switching point means
-  editing one number.
-- **Common mistake:** writing the test the wrong way round (`vOut < kThreshold` →
-  HIGH) lights the LED *below* 2.5 V instead of above it.
+  editing one number, written in millivolts so it is easy to read.
+- **Common mistake:** writing the test the wrong way round (`reading < kThreshold`
+  → HIGH) lights the LED *below* 2.5 V instead of above it.
 
 This **threshold** is exactly what the project uses for its control decision:
 replace the blue LED with "use the RES".
 
-> ▶️ **[Run it: Exercise 7.3 in the code runner](applets/code-runner.html#ex2d2)** — move the pot either side of 2.5 V and see which branch runs.
+> ▶️ **[Run it: Exercise 7.3 in the code runner](applets/code-runner.html#ex2d2)** — the code runner shows the `float` version of this exercise: compare `vOut > 2.5` there with `reading > 511` here. Both switch at exactly the same knob position.
 
 ---
 
-## 6. Exercise 7.4 — three voltage bands
+## 7. Exercise 7.4 — three voltage bands
 
 ```cpp
 /*
- * Exercise 7.4: Show which voltage band the pot is in.
+ * Exercise 7.4: Show which voltage band the pot is in, with no float.
  *   0 to 2 V     -> red LED
  *   >2 to 3.5 V  -> green LED
  *   >3.5 to 5 V  -> blue LED
@@ -224,15 +313,11 @@ const uint8_t  kPotPin   = A1;
 const uint8_t  kRedPin   = 11;
 const uint8_t  kGreenPin = 12;
 const uint8_t  kBluePin  = 13;
-const float    kLowMax   = 2.0;       // top of the red band (V)
-const float    kMidMax   = 3.5;       // top of the green band (V)
-const float    kAdcVref  = 5.0;
-const float    kAdcMax   = 1023.0;
 const uint16_t kSampleMs = 500;
 
-float readVolts(uint8_t pin) {
-  return analogRead(pin) * (kAdcVref / kAdcMax);
-}
+// Thresholds as analogRead values, worked out by the compiler.
+const int kLowMax = 2000L * 1023 / 5000;    // 2.0 V -> 409
+const int kMidMax = 3500L * 1023 / 5000;    // 3.5 V -> 716
 
 // Turn each LED on (true) or off (false) in one call.
 void setLeds(bool red, bool green, bool blue) {
@@ -249,15 +334,15 @@ void setup() {
 }
 
 void loop() {
-  float vOut = readVolts(kPotPin);
-  Serial.println(vOut);
+  int reading = analogRead(kPotPin);    // 0 to 1023: a whole number, no conversion
+  Serial.println(reading);
 
-  if (vOut <= kLowMax) {
-    setLeds(true, false, false);      // 0 to 2 V: red only
-  } else if (vOut <= kMidMax) {
-    setLeds(false, true, false);      // above 2 V, up to 3.5 V: green only
+  if (reading <= kLowMax) {
+    setLeds(true, false, false);        // 0 to 2 V: red only
+  } else if (reading <= kMidMax) {
+    setLeds(false, true, false);        // above 2 V, up to 3.5 V: green only
   } else {
-    setLeds(false, false, true);      // above 3.5 V: blue only
+    setLeds(false, false, true);        // above 3.5 V: blue only
   }
 
   delay(kSampleMs);
@@ -266,8 +351,11 @@ void loop() {
 
 - **`if ... else if ... else`** checks the conditions in order and runs **only the
   first one that is true**. By the time the `else if` is tested, we already know
-  the voltage is above 2 V, so there is no need to test that again.
+  the reading is above 409, so there is no need to test that again.
 - Because only one branch runs, exactly one LED is ever lit.
+- **`Serial.println(reading)`** prints the raw 0–1023 value. Printing
+  `reading * 5.0 / 1023` instead would bring back the whole `float` library, even
+  if nothing else used one.
 
 | Operator | Meaning |
 |---|---|
@@ -276,191 +364,97 @@ void loop() {
 | `&&` | AND — both conditions true |
 | `\|\|` | OR — either condition true |
 
-> ▶️ **[Run it: Exercise 7.4 in the code runner](applets/code-runner.html#ex2e)** — move the pot through the three bands and watch the `else if` chain.
+> ▶️ **[Run it: Exercise 7.4 in the code runner](applets/code-runner.html#ex2eint)** — move the pot through the three bands; the Variables panel shows the raw `reading` being compared with 409 and 716. Compare it with [the `float` version](applets/code-runner.html#ex2e).
 
 ---
 
-## 7. Do you need a `float`?
+## 8. The control decision: RES or battery
 
-Exercise 7.4 converts every reading into volts (a `float`) and then compares the
-volts with 2.0 and 3.5. The decision only needs to know **which band** the pot
-is in, and that can be decided from the whole-number `analogRead` value. Convert
-the two **thresholds** into `analogRead` values once, instead of converting
-**every reading** into volts.
-
-| Threshold | Volts | As an `analogRead` value ($V \times 1023 / 5$) |
-|---|---|---|
-| Top of the red band | 2.0 V | 409 |
-| Top of the green band | 3.5 V | 716 |
-
-```cpp
-// Thresholds as analogRead values, in millivolts so the sums stay whole numbers.
-// The compiler works these out once, when you press Verify.
-const int kLowMax = 2000L * 1023 / 5000;    // 2.0 V -> 409
-const int kMidMax = 3500L * 1023 / 5000;    // 3.5 V -> 716
-
-void loop() {
-  int reading = analogRead(kPotPin);        // 0 to 1023: no conversion
-  if (reading <= kLowMax) {
-    setLeds(true, false, false);
-  } else if (reading <= kMidMax) {
-    setLeds(false, true, false);
-  } else {
-    setLeds(false, false, true);
-  }
-  delay(kSampleMs);
-}
-```
-
-**Why it is worth it.** The ATmega328P has no hardware for decimal maths. As soon
-as a sketch uses a `float`, the compiler adds a library of software routines to
-program memory, and every `float` sum runs many times slower than whole-number
-maths. A `float` also takes 4 bytes of RAM where an `int` takes 2.
-
-| Exercise | Flash used, `float` | Flash used, integer | Saved |
-|---|---|---|---|
-| 7.1 | 3 780 bytes | 2 690 bytes | **1 090 bytes** (29%) |
-| 7.3 | 3 890 bytes | 2 648 bytes | **1 242 bytes** (32%) |
-| 7.4 | 3 982 bytes | 2 726 bytes | **1 256 bytes** (32%) |
-
-- **The `L`** makes 2000 a `long`, because 2000 × 1023 (about 2 million) is too
-  big for a 2-byte `int` (maximum 32 767).
-- Multiply **first**, then divide: `reading / 1023 * 5000` would throw the
-  fraction away straight away and give only 0 or 5000.
-
-> ✅ **Rule of thumb:** make decisions on whole numbers (`analogRead` values or
-> millivolts). Use a `float` only when you really need a fraction, and convert to
-> volts only when a person has to read the value.
-
-> ▶️ **[Run it: the integer version in the code runner](applets/code-runner.html#ex2eint)** — the Variables panel shows the raw `reading` being compared with 409 and 716.
-
----
-
-## 8. From the reading back to the RES voltage
-
-On the project, A0 sees the RES voltage scaled down by the divider. To get the
-real RES voltage, run the divider backwards: divide the pin voltage by the
-divider's fraction $k = R_2/(R_1+R_2)$.
-
-```cpp
-/*
- * Measure the RES voltage through a voltage divider.
- * Divider: R1 = 22 kΩ (top), R2 = 10 kΩ (bottom); mid-point to A0.
- * The RES negative and the Arduino GND must be connected together.
- */
-
-const uint8_t  kResPin   = A0;         // divider mid-point
-const float    kR1       = 22000.0;    // top resistor (Ω)
-const float    kR2       = 10000.0;    // bottom resistor (Ω)
-const float    kRatio    = kR2 / (kR1 + kR2);   // fraction of the RES voltage at the pin: 0.3125
-const float    kAdcVref  = 5.0;
-const float    kAdcMax   = 1023.0;
-const uint16_t kSampleMs = 200;
-
-void setup() {
-  Serial.begin(9600);
-}
-
-void loop() {
-  int   reading = analogRead(kResPin);            // 0 to 1023
-  float vPin    = reading * (kAdcVref / kAdcMax); // voltage at the A0 pin
-  float vRes    = vPin / kRatio;                  // undo the divider: the real RES voltage
-
-  Serial.print("A0: ");                  // prints e.g. "A0: 3.91 V   RES: 12.51 V"
-  Serial.print(vPin);
-  Serial.print(" V   RES: ");
-  Serial.print(vRes);
-  Serial.println(" V");
-  delay(kSampleMs);
-}
-```
-
-With the RES at 12.5 V as an example:
-
-| Step | Line | Example |
-|---|---|---|
-| 1. The divider scales the RES voltage down | `kRatio = kR2 / (kR1 + kR2)` | 10 000 ÷ 32 000 = 0.3125, so the pin sees 12.5 × 0.3125 = 3.91 V |
-| 2. The ADC turns the pin voltage into a number | `analogRead(kResPin)` | 3.91 ÷ 5 × 1023 ≈ 800 |
-| 3a. Convert the number back to the pin voltage | `reading * (kAdcVref / kAdcMax)` | 800 × 5 ÷ 1023 = 3.91 V |
-| 3b. Undo the divider | `vPin / kRatio` | 3.91 ÷ 0.3125 = 12.5 V |
-
-**Share the ground.** The RES −ve and the Arduino GND must be connected. A
-voltage is always measured *relative to* something: without a shared ground,
-`analogRead` has no reference and returns meaningless values.
-
-> ▶️ **[Run it in the code runner](applets/code-runner.html#p5res)** — move the RES voltage slider and follow the reading back to the source voltage.
-
-### Measure the fraction
-
-Resistor tolerances, or an adjustable divider
-([Voltage measurement](01-voltage-regulation.md#setting-an-adjustable-divider-safely)),
-mean the real fraction can differ from the calculated one. Measure it instead:
-
-1. Apply a known voltage across the divider, e.g. 12.0 V from a bench supply,
-   measured with a multimeter.
-2. Measure the voltage at the divider's output (the analogue pin), e.g. 3.60 V.
-3. $k = 3.60 / 12.0 = 0.300$. Put that in the code as `const float kRatio = 0.300;`.
-
-If the divider uses a trimmer, measure again whenever it is moved.
-
----
-
-## 9. The control decision: RES or battery
-
-The decision is Exercise 7.3 with the LED replaced by the supply: if the RES is
-high enough, use it; otherwise use the battery. The functions `useRes()` and
-`useBattery()` switch the supplies; [Switching
+The decision is Exercise 7.3 with the LED replaced by the supply: if the reading
+is high enough, use the RES; otherwise use the battery. The functions `useRes()`
+and `useBattery()` switch the supplies; [Switching
 circuitry](04-switching-circuitry.md) writes them for the relay module.
 
 ```cpp
-if (vPin < kThresholdV) {
+if (reading < kSwitchReading) {
   useBattery();                // RES voltage has dropped
 } else {
   useRes();                    // RES is fine
 }
 ```
 
-### Choosing the threshold
+The only question is what number `kSwitchReading` should be. There are two ways
+to find it, and neither needs a `float` in the sketch.
 
-Start from the **minimum RES voltage the pump needs** to run properly, then scale
-it through the divider to get the threshold at the pin:
+### Choosing the switch-over voltage
 
-$$V_{pin} = k\,V_{RES} \qquad\Longleftrightarrow\qquad V_{RES} = \frac{V_{pin}}{k}$$
+Start from the **minimum RES voltage the pump needs** to run properly, say 8 V.
+Setting the switch-over point too close to the RES maximum (for example 4.8 V at
+the pin, when 5 V is the maximum) means the RES is used only when it is within
+about 4 % of its peak, which wastes most of the renewable energy.
 
-With $R_1 = 2.172R_2$ ($k = 1/3.172$), a threshold of 2.5 V at the pin means the
-system switches at $2.5 \times 3.172 \approx 7.9$ V at the RES. Setting the threshold
-too close to 5 V (say 4.8 V) means the RES is used only when it is within about
-4 % of its maximum, which wastes most of the renewable energy.
+### Calculate the reading at compile time
+
+The divider scales the RES voltage by $R_2/(R_1+R_2)$, and the ADC turns the pin
+voltage into a reading. Put both steps into one constant, in millivolts and ohms,
+and the compiler does the sum:
+
+```cpp
+const long kR1 = 22000;             // divider, top resistor (ohms)
+const long kR2 = 10000;             // divider, bottom resistor (ohms)
+const long kSwitchMv = 8000;        // switch to the battery below 8 V at the RES
+
+// 8000 mV x 10k / 32k = 2500 mV at the pin -> 2500 x 1023 / 5000 = 511
+const int kSwitchReading = kSwitchMv * kR2 / (kR1 + kR2) * 1023 / 5000;
+```
+
+Every value is a `long`, so the intermediate sums (up to about 80 million) fit,
+and the result, 511, fits in an `int`. The sketch then compares each reading with
+511: no division, no `float`, while it runs.
+
+### Or measure the reading
+
+Resistor tolerances, or an adjustable divider ([Voltage
+measurement](01-voltage-regulation.md#setting-an-adjustable-divider-safely)),
+mean the real divider can differ from the calculation. Measuring avoids the
+maths altogether:
+
+1. Set a bench supply to the switch-over voltage, e.g. 8.0 V, and connect it where
+   the RES goes.
+2. Upload a sketch that prints `analogRead(A0)` to the Serial Monitor, as in
+   Exercise 7.1.
+3. Note the number, e.g. 508, and use it: `const int kSwitchReading = 508;`.
+
+If the divider uses a trimmer, measure again whenever it is moved.
 
 ### Hysteresis: stop the chatter
 
-If the RES voltage hovers right at the threshold (a gusty wind turbine, a cloud
-passing the panel), a single threshold flips the supply back and forth on every
-reading. Relays wear out, and the pump is repeatedly hit with a new supply. Use
-two thresholds:
+If the RES voltage hovers right at the switch-over point (a gusty wind turbine, a
+cloud passing the panel), a single threshold flips the supply back and forth on
+every reading. Relays wear out, and the pump is repeatedly hit with a new supply.
+Use two thresholds:
 
 ```cpp
-const float kToBatteryV = 2.3;   // switch to the battery below this
-const float kToResV     = 2.7;   // switch back to the RES only above this
+const int kToBattery = 2300L * 1023 / 5000;   // 2.3 V at the pin -> 470
+const int kToRes     = 2700L * 1023 / 5000;   // 2.7 V at the pin -> 552
 
 void loop() {
-  float vPin = readVolts(kResPin);
+  int reading = analogRead(kResPin);
 
-  if (vPin < kToBatteryV) {
+  if (reading < kToBattery) {
     useBattery();                // clearly too low
-  } else if (vPin > kToResV) {
+  } else if (reading > kToRes) {
     useRes();                    // clearly recovered
   }
-  // Between 2.3 and 2.7 V neither branch runs, so the supply stays as it is.
+  // Between 470 and 552 neither branch runs, so the supply stays as it is.
 
   delay(kSampleMs);
 }
 ```
 
-- With one threshold at 2.5 V, a reading that wobbles 2.49 → 2.51 → 2.49 switches
-  every time.
-- With two thresholds there is a **dead band** from 2.3 V to 2.7 V. Inside it,
-  nothing changes, so the pump stays on whichever supply it already had.
+- With one threshold, a reading that wobbles 510 → 512 → 510 switches every time.
+- With two thresholds there is a **dead band** from 470 to 552. Inside it, nothing
+  changes, so the pump stays on whichever supply it already had.
 - This is the same idea as a home thermostat, which doesn't switch the heating on
   and off at exactly one temperature.
 
@@ -470,12 +464,15 @@ void loop() {
 
 ## Key points
 
-- `analogRead` returns 0–1023 for 0–5 V; convert with `reading * (5.0 / 1023.0)`.
-- `if / else if / else` turns a voltage into decisions; only the first true branch
-  runs.
-- Decide on whole-number `analogRead` values where you can: convert the thresholds
-  once, and use `float` volts only for display. It saves over 1 KB of flash.
-- Divide the pin voltage by the divider fraction $k$ to recover the RES voltage.
-  Measure $k$ with a multimeter rather than trusting the resistor values.
-- Choose the threshold from the pump's minimum voltage, scaled through the divider,
-  and add **hysteresis** so the supply doesn't chatter.
+- `analogRead` returns a whole number, 0–1023, for 0–5 V: about 4.9 mV per step.
+  Converting to volts (`reading * 5.0 / 1023.0`) is useful for **understanding**
+  the numbers, or for showing them to a person.
+- On an Arduino, **avoid `float`** for decisions: it adds over 1 KB of program
+  memory, runs much more slowly, and isn't exact. Whole numbers are smaller,
+  faster and exact.
+- Convert each **threshold** into a reading once, with constants the compiler works
+  out (`2500L * 1023 / 5000`), instead of converting every reading into volts.
+- The RES switch-over point is just a reading: calculate it at compile time from
+  the divider, or measure it with a bench supply.
+- `if / else if / else` turns a reading into decisions; add **hysteresis** so the
+  supply doesn't chatter.

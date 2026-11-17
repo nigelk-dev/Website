@@ -409,9 +409,11 @@ void loop() {
 
 **Things to set for your hardware**
 
-- `kRatio` (measured as in [Read input
-  voltage](03-read-input-voltage.md#measure-the-fraction)) and `kBatteryV`
-  (measure the battery).
+- `kRatio`, the divider fraction: apply a known voltage across the divider and
+  divide the voltage at A0 by it, both measured with a multimeter. Measure
+  `kBatteryV` too. (This sketch uses a `float` because it works out the pump's
+  average voltage at a switch-over; the switching decision itself could use whole
+  numbers, as in [Read input voltage](03-read-input-voltage.md).)
 - `kToBatteryV` and `kToResV` from the pump's minimum working voltage.
 - `kRampMs`: longer means a smaller surge but a slower start. Watch the current
   with an oscilloscope and lengthen the ramp until the peak is close to the

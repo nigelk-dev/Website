@@ -114,8 +114,9 @@ the threshold is reached ($V_{RES} = V_{threshold} / k$).
 
 ## 4. Reading the input on the board
 
-Because the fraction depends on where the trimmer is set, measure it, as in
-[Read input voltage](03-read-input-voltage.md#measure-the-fraction):
+Because the fraction depends on where the trimmer is set, measure it (the same
+idea as measuring the switch-over reading in [Read input
+voltage](03-read-input-voltage.md#or-measure-the-reading)):
 
 1. Apply a known RES voltage to **J3**, e.g. 12.0 V from a bench supply, measured
    with a multimeter.

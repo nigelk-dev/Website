@@ -12,8 +12,8 @@ Arduino, then building the complete RES / battery switch-over on a breadboard.
 ```{=html}
 <figure class="flow-diagram">
 <figcaption>System overview · Switching circuitry</figcaption>
-<a class="fd-light" href="images/system-switching-light.png"><img src="images/system-switching-light.png" width="1600" height="370" alt="Project overview diagram with the switching circuitry highlighted, fed by the RES, the 12 V backup battery and the control decision; everything else is faded."></a>
-<a class="fd-dark" href="images/system-switching-dark.png"><img src="images/system-switching-dark.png" width="1600" height="370" alt="Project overview diagram with the switching circuitry highlighted, fed by the RES, the 12 V backup battery and the control decision; everything else is faded."></a>
+<a class="fd-light" href="images/system-switching-light.png"><img src="images/system-switching-light.png" width="1600" height="370" alt="Project overview diagram with the switching circuitry highlighted, fed by the renewable energy source, the 12 V backup battery and the control decision; everything else is faded."></a>
+<a class="fd-dark" href="images/system-switching-dark.png"><img src="images/system-switching-dark.png" width="1600" height="370" alt="Project overview diagram with the switching circuitry highlighted, fed by the renewable energy source, the 12 V backup battery and the control decision; everything else is faded."></a>
 </figure>
 ```
 
@@ -230,16 +230,10 @@ pot chooses which relay is on.
 const uint8_t  kPotPin     = A1;
 const uint8_t  kBlueRelay  = 13;      // IN1: switches the blue LED
 const uint8_t  kGreenRelay = 12;      // IN2: switches the green LED
-const float    kThreshold  = 2.5;     // switching voltage (V)
-const float    kAdcVref    = 5.0;
-const float    kAdcMax     = 1023.0;
+const int      kThreshold  = 2500L * 1023 / 5000;   // 2.5 V as a reading: 511
 const uint16_t kSampleMs   = 100;
 const uint8_t  kRelayOn    = LOW;     // active-LOW module
 const uint8_t  kRelayOff   = HIGH;
-
-float readVolts(uint8_t pin) {
-  return analogRead(pin) * (kAdcVref / kAdcMax);
-}
 
 // Switch a relay on (true) or off (false), hiding the active-LOW detail.
 void setRelay(uint8_t pin, bool on) {
@@ -255,10 +249,10 @@ void setup() {
 }
 
 void loop() {
-  float vOut = readVolts(kPotPin);
-  Serial.println(vOut);
+  int reading = analogRead(kPotPin);      // 0 to 1023, no float
+  Serial.println(reading);
 
-  if (vOut < kThreshold) {
+  if (reading < kThreshold) {
     setRelay(kBlueRelay, false);          // off first ...
     setRelay(kGreenRelay, true);          // ... then on: green LED lit
   } else {
@@ -335,16 +329,13 @@ resistor and LED stand in for the pump.
 const uint8_t  kResPin     = A0;       // divider mid-point
 const uint8_t  kResRelay   = 12;       // IN2: connects the RES to the load
 const uint8_t  kBatRelay   = 13;       // IN1: connects the battery to the load
-const float    kThresholdV = 2.5;      // below this (at the pin) the RES is too low
-const float    kAdcVref    = 5.0;
-const float    kAdcMax     = 1023.0;
 const uint16_t kSampleMs   = 100;
 const uint8_t  kRelayOn    = LOW;      // the relay module is active-LOW
 const uint8_t  kRelayOff   = HIGH;
 
-float readVolts(uint8_t pin) {
-  return analogRead(pin) * (kAdcVref / kAdcMax);
-}
+// Below this reading the RES is too low: 2.5 V at the pin -> 511.
+// Worked out by the compiler, so the sketch uses no float at all.
+const int      kSwitchReading = 2500L * 1023 / 5000;
 
 // Power the load from the RES. The battery is disconnected first.
 void useRes() {
@@ -367,10 +358,10 @@ void setup() {
 }
 
 void loop() {
-  float vPin = readVolts(kResPin);       // 1. read the RES voltage first ...
-  Serial.println(vPin);
+  int reading = analogRead(kResPin);     // 1. read the RES first ...
+  Serial.println(reading);
 
-  if (vPin < kThresholdV) {              // 2. ... then decide
+  if (reading < kSwitchReading) {        // 2. ... then decide
     useBattery();
   } else {
     useRes();
@@ -384,6 +375,9 @@ void loop() {
   so `loop()` reads like the specification.
 - **Off before on.** Each function disconnects the old source *before* connecting
   the new one, so the RES and battery are never connected together.
+- **Whole numbers only.** The threshold is an `analogRead` value, as in [Read
+  input voltage](03-read-input-voltage.md#why-whole-numbers-are-better), so the
+  sketch never needs a `float`.
 - **Read, then decide.** Each decision uses the latest reading. Add the
   hysteresis from [Read input voltage](03-read-input-voltage.md#hysteresis-stop-the-chatter)
   so the relays don't chatter when the RES hovers near the threshold.

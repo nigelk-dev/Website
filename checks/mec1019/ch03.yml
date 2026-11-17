@@ -43,11 +43,11 @@
     - text: It does need one, or the LED won't light
 
 - type: mcq
-  q: Exercise 7.3 used `if (Vout < 2.5)` to switch the blue LED **on**. What's wrong with that?
+  q: A version of Exercise 7.3 used `if (reading < kThreshold)` to switch the blue LED **on**. What's wrong with that?
   options:
     - text: It lights the LED below 2.5 V, but the task asks for it to light above 2.5 V
       correct: true
-    - text: "`if` can't compare floats"
+    - text: "`if` can't compare whole numbers"
     - text: It should use `==`
       why: An exact `==` on a measured voltage would almost never be true.
     - text: Nothing
@@ -55,10 +55,10 @@
 - type: cloze
   q: Complete the three-band logic (red 0–2 V, green above 2 to 3.5 V, blue above 3.5 V).
   code: |
-    float vOut = readVolts(kPotPin);
-    if (vOut [[<=]] kLowMax) {
+    int reading = analogRead(kPotPin);
+    if (reading [[<=]] kLowMax) {
       setLeds(true, false, false);
-    } [[else if]] (vOut <= kMidMax) {
+    } [[else if]] (reading <= kMidMax) {
       setLeds(false, true, false);
     } [[else]] {
       setLeds(false, false, true);
@@ -82,23 +82,35 @@
 
 - type: numeric
   q: |
-    A divider with $R_1$ = 22 kΩ and $R_2$ = 10 kΩ feeds A0, and `analogRead` returns {r}. What is the RES voltage?
+    A divider with $R_1$ = 22 kΩ and $R_2$ = 10 kΩ feeds A0. The system should switch to the battery when the RES falls below
+    {Vs} V. What `analogRead` value should `kSwitchReading` be?
   vars:
-    r: [800, 100, 1000, 1]
-  answer: r * 5 / 1023 / (10 / 32)
-  unit: V
+    Vs: [8, 5, 15, 0.5]
+  answer: Vs * 1000 * 10 / 32 * 1023 / 5000
+  unit: ""
   tol: 1
-  hint: Convert the reading to the pin voltage ($\times 5/1023$), then undo the divider by dividing by $R_2/(R_1 + R_2)$.
+  hint: Scale the RES voltage through the divider ($\times 10/32$) to get the pin voltage, then turn it into a reading ($\times 1023/5$).
   solution: |
-    V_pin = {r} × 5 / 1023 = {=r * 5 / 1023} V; ratio = 10/32 = 0.3125; V_RES = {=r * 5 / 1023} / 0.3125 = **{=r * 5 / 1023 / (10 / 32)} V**
+    V_pin = {Vs} × 10/32 = {=Vs * 10 / 32} V; reading = {=Vs * 10 / 32} × 1023 / 5 = **{=Vs * 1000 * 10 / 32 * 1023 / 5000|3}**.
+    The sketch compares each reading with that whole number: no `float` needed while it runs.
 
 - type: cloze
-  q: Complete the lines that turn a reading back into the RES voltage.
+  q: Complete the line that turns a 2.5 V threshold into an `analogRead` value, using only whole numbers.
   code: |
-    const float kRatio = kR2 / ([[kR1 + kR2|kR1+kR2|kR2 + kR1]]);
-    int   reading = [[analogRead]](kResPin);
-    float vPin    = reading * (5.0 / [[1023.0|1023]]);
-    float vRes    = vPin [[/ ~ * ~ +]] kRatio;
+    const int kThreshold = [[2500L|2500l]] * [[1023]] / [[5000]];   // 2.5 V -> 511
+  explain: The voltage is written in millivolts so the sum stays whole. The `L` makes the sum a `long` (2500 × 1023 is too big for an `int`), and multiplying before dividing keeps the precision. The compiler works it out once.
+
+- type: multi
+  q: Why is it better to make the decision with whole-number readings than with `float` volts on an Arduino Uno? Select all that apply.
+  options:
+    - text: Using `float` adds over 1 KB of maths routines to program memory
+      correct: true
+    - text: Whole-number sums run many times faster on the ATmega328P
+      correct: true
+    - text: Whole numbers are exact; many decimals can't be stored exactly in a `float`
+      correct: true
+    - text: "`analogRead` can only be compared with a `float`"
+      why: "`analogRead` returns a whole number, so comparing it with a whole-number threshold is natural."
 
 - type: multi
   q: What else must be done for the divider reading to be correct? Select all that apply.
@@ -150,10 +162,10 @@
 - type: cloze
   q: Complete the hysteresis version of `loop()`.
   code: |
-    float vPin = readVolts(kResPin);
-    if (vPin < [[kToBatteryV ~ kToResV]]) {
+    int reading = analogRead(kResPin);
+    if (reading < [[kToBattery ~ kToRes]]) {
       useBattery();
-    } else if (vPin > [[kToResV ~ kToBatteryV]]) {
+    } else if (reading > [[kToRes ~ kToBattery]]) {
       useRes();
     }
   explain: There is no final `else`. Inside the dead band, `loop()` does nothing.
@@ -189,12 +201,11 @@
     don't chatter.
 
 - type: numeric
-  q: |
-    With {Vr} V across a divider, a multimeter reads {Vt} V at its output (the analogue pin). What divider fraction $k$ should go in the code as `kRatio`?
+  q: What `analogRead` value corresponds to a threshold of {mv} mV at the pin? (Use reading = millivolts × 1023 / 5000, rounded down.)
   vars:
-    Vr: [12, 9, 16, 0.5]
-    Vt: [3.6, 2, 4.8, 0.1]
-  answer: Vt / Vr
+    mv: [2300, 500, 4800, 100]
+  answer: floor(mv * 1023 / 5000)
   unit: ""
+  tol: 0.3
   solution: |
-    k = V_out / V_in = {Vt} / {Vr} = **{=Vt / Vr|3}**
+    {mv} × 1023 / 5000 = **{=floor(mv * 1023 / 5000)}** (whole-number division drops the fraction).
