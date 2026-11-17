@@ -368,13 +368,113 @@ void loop() {
 - **Whole numbers only.** The threshold is an `analogRead` value, as in [Read
   input voltage](03-read-input-voltage.md#why-whole-numbers-are-better), so the
   sketch never needs a `float`.
-- **Read, then decide.** Each decision uses the latest reading. Add the
-  hysteresis from [Read input voltage](03-read-input-voltage.md#hysteresis-stop-the-chatter)
-  so the relays don't chatter when the RES hovers near the threshold.
+- **Read, then decide.** Each decision uses the latest reading.
 
 > ▶️ **[Run it: the switch-over sketch in the code runner](applets/code-runner.html#p8int)** — drag the A0 voltage below 2.5 V: the raw `reading` drops below 511 and the load moves to the battery.
 
-> 🔧 **Try it:** [RES battery-backup simulator](applets/res-backup.html) — vary the wind, the divider and the threshold, and watch the Arduino switch the load between the RES and the battery.
+### Why hysteresis?
+
+The sketch above has **one** threshold: below 511 the load goes to the battery,
+at 511 or above it goes back to the RES. That works when the RES voltage moves
+cleanly through the threshold, but a renewable source rarely does:
+
+- A **gusty wind** or a **passing cloud** makes the RES voltage wobble. Near the
+  threshold the readings go 509, 513, 508, 512 … and the sketch switches supply on
+  **every** reading, ten times a second. This is called **chatter**.
+- Each switch is two relay clicks. Relays are rated for a limited number of
+  operations, and contacts that switch under load arc and wear.
+- The load gets a new supply each time. A pump is hit with a current surge at
+  every step up in voltage (see [Pump drive type](05-pump-drive-type.md#the-catch-inrush-current)),
+  and that surge can drag the RES voltage down, which causes yet another switch.
+
+**Hysteresis** fixes this with **two** thresholds instead of one: switch to the
+battery only when the RES is *clearly* too low, and back to the RES only when it
+has *clearly* recovered. In between is a **dead band** where nothing changes.
+
+> 🔧 **Try it:** [RES battery-backup simulator](applets/res-backup.html) — tick "Gusty" and set the wind so the trace hovers around the threshold: watch the switch-over count climb. Then tick "Hysteresis": the two dashed lines are the two thresholds, and the supply only changes when the trace leaves the band between them.
+
+### Adding hysteresis
+
+The same sketch with two thresholds, 0.2 V either side of 2.5 V at A0:
+
+```cpp
+/*
+ * The switch-over with hysteresis: two thresholds, so the relays don't
+ * chatter when the RES voltage hovers near the switch-over point.
+ * Hardware: as the switch-over sketch above.
+ */
+
+const uint8_t  kResPin     = A0;       // divider mid-point
+const uint8_t  kResRelay   = 12;       // IN2: connects the RES to the load
+const uint8_t  kBatRelay   = 13;       // IN1: connects the battery to the load
+const uint16_t kSampleMs   = 100;
+const uint8_t  kRelayOn    = LOW;      // the relay module is active-LOW
+const uint8_t  kRelayOff   = HIGH;
+
+// Two thresholds, worked out by the compiler: a dead band either side of 2.5 V.
+const int      kToBattery  = 2300L * 1023 / 5000;   // 2.3 V at A0 -> 470
+const int      kToRes      = 2700L * 1023 / 5000;   // 2.7 V at A0 -> 552
+
+// Power the load from the RES. The battery is disconnected first.
+void useRes() {
+  digitalWrite(kBatRelay, kRelayOff);
+  digitalWrite(kResRelay, kRelayOn);
+}
+
+// Power the load from the battery. The RES is disconnected first.
+void useBattery() {
+  digitalWrite(kResRelay, kRelayOff);
+  digitalWrite(kBatRelay, kRelayOn);
+}
+
+void setup() {
+  Serial.begin(9600);
+  digitalWrite(kResRelay, kRelayOff);    // both relays off until we decide
+  digitalWrite(kBatRelay, kRelayOff);
+  pinMode(kResRelay, OUTPUT);
+  pinMode(kBatRelay, OUTPUT);
+
+  if (analogRead(kResPin) < kToRes) {    // start on the battery unless the
+    useBattery();                        // RES is clearly good enough
+  } else {
+    useRes();
+  }
+}
+
+void loop() {
+  int reading = analogRead(kResPin);     // 1. read the RES ...
+  Serial.println(reading);
+
+  if (reading < kToBattery) {            // 2. ... then decide
+    useBattery();                        // clearly too low
+  } else if (reading > kToRes) {
+    useRes();                            // clearly recovered
+  }
+  // Between 470 and 552 nothing changes: the load stays on its supply.
+
+  delay(kSampleMs);
+}
+```
+
+> ▶️ **[Run it: the switch-over with hysteresis in the code runner](applets/code-runner.html#p8hys)** — drag the A0 voltage slowly down from 3.5 V: nothing happens at 2.5 V, the load moves to the battery only below 2.3 V (470), and comes back only above 2.7 V (552).
+
+**How the hysteresis is implemented**
+
+- **Two constants replace one.** `kToBattery` (470) and `kToRes` (552) are both
+  `analogRead` values worked out by the compiler, so there is still no `float`.
+  The gap between them, 0.4 V at A0, is the dead band: make it wider than the
+  wobble you see on the serial monitor.
+- **`else if` instead of `else`.** The single-threshold sketch always ran one of
+  its two branches. Here, a reading between 470 and 552 matches **neither**
+  condition, so no relay is touched and the load stays on whichever supply it
+  already had.
+- **The relays are the memory.** Nothing in the code stores which supply is in
+  use: the relays keep their state until `useRes()` or `useBattery()` changes it.
+  Calling `useBattery()` again when the battery is already connected changes
+  nothing (and makes no click).
+- **A decision in `setup()`.** With a dead band, a reading inside the band at
+  power-up would leave both relays off. `setup()` therefore picks a supply
+  straight away: the RES only if it is clearly good enough, otherwise the battery.
 
 ---
 

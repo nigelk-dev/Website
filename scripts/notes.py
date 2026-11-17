@@ -348,6 +348,25 @@ def mec1019_runner_extras(applets):
          "      yield* io.at('if (reading < kSwitchReading) {');\n      if (r < 511){"),
         ("yield* io.at('useRes();', 2)", "yield* io.at('useRes();', 1)"),
     ], "Switch-over — the same with whole numbers (no float)")
+    _add_runner_sketch(applets, "p8int", "p8hys", _chapter_code("### Adding hysteresis"), [
+        ("title:'RES / battery switch-over, integer version'", "title:'RES / battery switch-over with hysteresis'"),
+        ("desc:'The raw analogRead value is compared with 511 (2.5 V), so no float is needed. Drag the A0 voltage below 2.5 V to switch the load to the battery, and back above it to return to the RES.",
+         "desc:'Two thresholds: below 470 (2.3 V) the load goes to the battery, above 552 (2.7 V) it goes back to the RES, and in between nothing changes. Drag the A0 voltage slowly across 2.5 V and back."),
+        ("      yield* io.at('pinMode(kBatRelay, OUTPUT);'); io.pinMode(13);\n",
+         "      yield* io.at('pinMode(kBatRelay, OUTPUT);'); io.pinMode(13);\n"
+         "      yield* io.at('if (analogRead(kResPin) < kToRes) {'); const r0 = io.analogRead('A0');\n"
+         "      if (r0 < 552){ yield* io.at('useBattery();', 1); yield* useBattery(); }\n"
+         "      else { yield* io.at('} else {'); yield* io.at('useRes();', 1); yield* useRes(); }\n"),
+        ("      setVars({reading:r, kSwitchReading:511, 'reading < kSwitchReading': r < 511});\n",
+         "      setVars({reading:r, kToBattery:470, kToRes:552, 'reading < kToBattery': r < 470, 'reading > kToRes': r > 552});\n"),
+        ("      yield* io.at('if (reading < kSwitchReading) {');\n"
+         "      if (r < 511){ yield* io.at('useBattery();'); yield* useBattery(); }\n"
+         "      else { yield* io.at('} else {'); yield* io.at('useRes();', 1); yield* useRes(); }\n",
+         "      yield* io.at('if (reading < kToBattery) {');\n"
+         "      if (r < 470){ yield* io.at('useBattery();', 2); yield* useBattery(); }\n"
+         "      else { yield* io.at('} else if (reading > kToRes) {');\n"
+         "        if (r > 552){ yield* io.at('useRes();', 2); yield* useRes(); } }\n"),
+    ], "Switch-over with hysteresis — two thresholds")
     mec1019_res_backup_sketch(applets / "res-backup.html")
 
 
@@ -364,21 +383,73 @@ def mec1019_res_backup_sketch(page):
         return
     code = _chapter_code("### The code")
     code = re.sub(r"// Below this reading.*?\nconst int      kSwitchReading = 2500L \* 1023 / 5000;",
-                  "// Below this reading the RES is too low: ${th.toFixed(1)} V at A0 -> ${Math.floor(th*1000*1023/5000)}.\n"
+                  "// Below this reading the RES is too low: ${th.toFixed(1)} V at A0 -> ${rd(th)}.\n"
                   "// Worked out by the compiler, so the sketch uses no float at all.\n"
-                  "const int      kSwitchReading = ${Math.round(th*1000)}L * 1023 / 5000;", code, flags=re.S)
-    if "${Math.round(th*1000)}L" not in code:
-        print("warning: switch-over sketch not in the expected form; res-backup.html left as it is", file=sys.stderr)
+                  "const int      kSwitchReading = ${mv(th)}L * 1023 / 5000;", code, flags=re.S)
+    hys = _chapter_code("### Adding hysteresis")
+    hys = re.sub(r"// Two thresholds.*?\nconst int      kToBattery  = 2300L \* 1023 / 5000;   // 2.3 V at A0 -> 470\n"
+                 r"const int      kToRes      = 2700L \* 1023 / 5000;   // 2.7 V at A0 -> 552",
+                 "// Two thresholds, worked out by the compiler: a dead band either side of ${th.toFixed(1)} V.\n"
+                 "const int      kToBattery  = ${mv(th-band)}L * 1023 / 5000;   // ${(th-band).toFixed(1)} V at A0 -> ${rd(th-band)}\n"
+                 "const int      kToRes      = ${mv(th+band)}L * 1023 / 5000;   // ${(th+band).toFixed(1)} V at A0 -> ${rd(th+band)}",
+                 hys, flags=re.S)
+    hys = hys.replace("// Between 470 and 552 nothing changes", "// Between ${rd(th-band)} and ${rd(th+band)} nothing changes")
+    if "${mv(th)}L" not in code or "${mv(th-band)}L" not in hys or "${rd(th-band)} and" not in hys:
+        print("warning: switch-over sketches not in the expected form; res-backup.html left as it is", file=sys.stderr)
         return
-    code = code.replace("\\", "\\\\").replace("`", "\\`")
-    html = html.replace(m.group(0), "function code(th){ return `" + code + "`; }", 1)
+    q = lambda c: c.replace("\\", "\\\\").replace("`", "\\`")
+    html = html.replace(m.group(0),
+        "const mv = v => Math.round(v*1000), rd = v => Math.floor(mv(v)*1023/5000);\n"
+        "function code(th, hys, band){ return hys ? `" + q(hys) + "` : `" + q(code) + "`; }", 1)
     html = html.replace("The slide version compares at 2.5 V; adjust the threshold above to see the generated code change.",
-                        "The threshold is an <code>analogRead</code> value worked out by the compiler, so the sketch uses no "
-                        "<code>float</code>; adjust the threshold above to see the generated code change.")
-    # The serial monitor shows what the sketch prints: the raw reading, and the
-    # switch decision uses the same whole-number comparison.
-    for old, new in (("s.textContent += RES_volt.toFixed(2)+'\\n';", "s.textContent += adc+'\\n';"),
-                     ("const onBattery = RES_volt < th;", "const onBattery = adc < Math.floor(th*1000*1023/5000);")):
+                        "The thresholds are <code>analogRead</code> values worked out by the compiler, so the sketch uses no "
+                        "<code>float</code>; change the threshold or tick Hysteresis above to see the generated code change.")
+    # hysteresis toggle and dead band, under the threshold slider
+    html = html.replace('<p class="note" id="thNote"></p>',
+        '<p class="note" id="thNote"></p>\n'
+        '    <label><input id="hys" type="checkbox"> Hysteresis (two thresholds)</label>\n'
+        '    <label for="band">Dead band either side of the threshold (V): <b id="bandLbl"></b></label>\n'
+        '    <input id="band" type="range" min="0.1" max="1" step="0.1" value="0.2">', 1)
+    html = html.replace('<div class="stat"><span>pin 12 (RES_relay) / pin 13 (BAT_relay)</span><b id="pins"></b></div>',
+        '<div class="stat"><span>pin 12 (kResRelay) / pin 13 (kBatRelay)</span><b id="pins"></b></div>\n'
+        '    <div class="stat"><span>Switch-overs on this chart</span><b id="nsw"></b></div>', 1)
+    html = html.replace('<span>A0 voltage (RES_volt)</span>', '<span>A0 voltage (reading)</span>', 1)
+    # the decision: one threshold, or two with the supply kept in between
+    for old, new in (
+        ("s.textContent += RES_volt.toFixed(2)+'\\n';", "s.textContent += adc+'\\n';"),
+        ("const onBattery = RES_volt < th;",
+         "const hys = $('hys').checked, band = +$('band').value;\n"
+         "  $('band').disabled = !hys; $('bandLbl').textContent = '±' + band.toFixed(1) + ' V';\n"
+         "  if (!hys) onBat = adc < rd(th);\n"
+         "  else if (adc < rd(th-band)) onBat = true;\n"
+         "  else if (adc > rd(th+band)) onBat = false;\n"
+         "  const onBattery = onBat;"),
+        ("let t = 0, noise = 0;", "let t = 0, noise = 0, onBat = false;\nif (location.hash === '#hys') document.getElementById('hys').checked = true;"),
+        ("$('sRES').classList.toggle('on', !onBattery);",
+         "let nsw = 0; for (let i = 1; i < hist.length; i++) if (hist[i][1] !== hist[i-1][1]) nsw++;\n"
+         "  $('nsw').textContent = nsw;\n  $('sRES').classList.toggle('on', !onBattery);"),
+        ("$('va0').innerHTML = a0>5 ? `<span class=\"bad\">${a0.toFixed(2)} V — over 5 V, change the divider!</span>` : RES_volt.toFixed(2)+' V';",
+         "$('va0').innerHTML = a0>5 ? `<span class=\"bad\">${a0.toFixed(2)} V — over 5 V, change the divider!</span>` : RES_volt.toFixed(2)+' V ('+adc+')';"),
+        ("drawChart(th);", "drawChart(th, hys ? band : 0);"),
+        # a real analogRead jitters by a few counts, which is what makes a single threshold chatter
+        ("const adc = Math.min(1023, Math.round(a0/5*1023)),",
+         "const adc = Math.max(0, Math.min(1023, Math.round(a0/5*1023 + (Math.random()-0.5)*8))),"),
+        ("if (th !== lastTh) { lastTh = th; $('code').textContent = code(th); }",
+         "const key = th + '|' + hys + '|' + band;\n"
+         "  if (key !== lastTh) { lastTh = key; $('code').textContent = code(th, hys, band); }"),
+        ("function drawChart(th){", "function drawChart(th, band){"),
+        ("  const yTh = H-pad - th/5*(H-2*pad+10);\n"
+         "  g.strokeStyle='#c98a00'; g.setLineDash([6,4]); g.beginPath(); g.moveTo(pad,yTh); g.lineTo(W-5,yTh); g.stroke(); g.setLineDash([]);\n"
+         "  g.fillStyle='#c98a00'; g.fillText('threshold', W-70, yTh-5);",
+         "  const yOf = v => H-pad - v/5*(H-2*pad+10);\n"
+         "  const lines = band ? [[th+band, 'back to RES', -5], [th-band, 'to battery', 14]] : [[th, 'threshold', -5]];\n"
+         "  if (band){ g.fillStyle='rgba(201,138,0,.10)'; g.fillRect(pad, yOf(th+band), W-5-pad, yOf(th-band)-yOf(th+band)); }\n"
+         "  for (const [v, txt, dy] of lines){ const y = yOf(v);\n"
+         "    g.strokeStyle='#c98a00'; g.setLineDash([6,4]); g.beginPath(); g.moveTo(pad,y); g.lineTo(W-5,y); g.stroke(); g.setLineDash([]);\n"
+         "    g.fillStyle='#c98a00'; g.fillText(txt, W-80, y+dy); }"),
+    ):
+        if old not in html:
+            print(f"warning: res-backup.html: {old[:40]!r} not found", file=sys.stderr)
         html = html.replace(old, new, 1)
     page.write_text(html, encoding="utf-8")
 
