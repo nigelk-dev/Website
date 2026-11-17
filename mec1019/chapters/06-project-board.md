@@ -297,8 +297,9 @@ This combines everything: reading the RES on A0, the switch-over with hysteresis
 using the MOSFET switches (make before break), and the pump drive through the
 board's L298N with the inverted PWM on IN3: a **slow start on the RES**, and
 **direct drive on the battery**. It has the same structure as the
-sketch in [Pump drive type](05-pump-drive-type.md#the-code); only the pins and
-the two hardware functions, `setPump()` and `changeSupply()`, differ.
+sketch in [Pump drive type](05-pump-drive-type.md#the-code), including the slow
+start on the RES only; only the pins, the divider constant and the two hardware
+functions, `setPump()` and `changeSupply()`, differ.
 
 ```cpp
 /*
@@ -454,7 +455,7 @@ The code is split into small functions, each doing one thing:
 | Function | Job | Called from |
 |---|---|---|
 | `resMillivolts(reading)` | Turn an A0 reading into the RES voltage in millivolts | `changeSupply()` |
-| `setPump(lvl)` | Set the pump's drive level on the L298N | `startRamp()`, `updateRamp()`, `setup()` |
+| `setPump(lvl)` | Set the pump's drive level on the L298N | `startRamp()`, `updateRamp()`, `changeSupply()`, `setup()` |
 | `startRamp(from)` | Begin a ramp from a given level (RES only) | `setup()`, `changeSupply()` |
 | `updateRamp(now)` | Move the ramp on by the time that has passed | every pass of `loop()` |
 | `changeSupply(toBattery, reading)` | Switch the MOSFETs: direct drive on the battery, a ramp on the RES if needed | `loop()` |
@@ -483,7 +484,7 @@ The code is split into small functions, each doing one thing:
 | Variable | Remembers | Why it's needed |
 |---|---|---|
 | `onBattery` | Which supply is switched in | The hysteresis test depends on it: the threshold to cross is different on each supply |
-| `level` | The pump's drive level now, 0 to 255 | `changeSupply()` scales it, and `updateRamp()` stops when it reaches 255 |
+| `level` | The pump's drive level now, 0 to 255 | `changeSupply()` scales it when switching to a higher RES; `updateRamp()` stops when it reaches 255, which is where it stays on the battery |
 | `rampFrom` | The level the current ramp started at | A ramp after a switch-over starts part-way up, not from 0 |
 | `rampStartMs` | When the current ramp started | `updateRamp()` works the level out from the time since then |
 | `lastSampleMs` | When the RES was last read | So it is read every 100 ms, not on every pass |
@@ -595,19 +596,30 @@ if (!toBattery) {
   once: **direct drive**. Any ramp still in progress ends there, because
   `updateRamp()` does nothing once `level` is 255.
 
-Then the switch itself, **make before break**:
+Then the switch itself, **make before break**, and on the battery, full drive:
 
 ```cpp
 digitalWrite(toBattery ? kBatOnPin : kResOnPin, HIGH);   // new supply on ...
 digitalWrite(toBattery ? kResOnPin : kBatOnPin, LOW);    // ... then old supply off
+onBattery = toBattery;
+if (onBattery) {
+  setPump(255);                     // battery: direct drive, full drive at once
+}
 ```
 
-`setPump(255)` comes *after* the switch, so full drive is only applied once the
-battery is connected. For a few microseconds both MOSFETs are on. That is safe on this board because
+For a few microseconds both MOSFETs are on. That is safe on this board because
 diodes D1 and D2 stop either supply pushing current into the other, and it means
 the pump never loses its supply during a switch-over. With the relay module this
 order would short the RES to the battery: that is why the Chapter 4 and 5
 sketches do it the other way round.
+
+`setPump(255)` comes *after* the switch, so full drive is only applied once the
+battery is connected.
+
+> ⚠️ **Direct drive on the battery still goes through the L298N.** The pump's
+> start-up surge flows through U1, so check your pump's start current at 12 V
+> against the L298N's 3 A peak, as in [Pump drive type](05-pump-drive-type.md#the-code).
+> If it is higher, keep a short ramp on the battery as well.
 
 #### `setup()`: a safe start
 
@@ -667,10 +679,11 @@ so it returns at once.
 | PWM pin | ENB on D9 | IN3 on D3 (EnB on D4 held HIGH) |
 | `setPump()` | `analogWrite(9, level)` | `analogWrite(3, 255 - level)` |
 | Divider fraction | From the two resistors, `kR1` and `kR2` | Measured at TP1, stored in thousandths |
-| Slow start | On every start, and at every step up in supply | Only on the RES; direct drive on the battery |
 
-For **direct drive**, move JP1/JP2 to the direct positions: the L298N is then
-bypassed, and only the supply switching matters.
+The sketch's direct drive on the battery is still through the L298N, just at full
+drive. To bypass the L298N altogether, move JP1/JP2 to the **Direct** positions:
+the pump is then on VPump on both supplies, the PWM has no effect, and only the
+supply switching matters.
 
 ---
 

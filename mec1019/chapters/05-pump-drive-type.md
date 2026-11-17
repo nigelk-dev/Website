@@ -237,13 +237,18 @@ above its running value.
 - **At start-up:** ramp the drive from 0 to 100 % over a set time, e.g. 2 s.
 - **At a switch-over to a higher supply:** first **reduce** the drive so the
   pump's average voltage stays about the same, switch the supply, then ramp back
-  up to 100 %. For example, running flat out on an 8 V RES and switching to a 12 V
-  battery, drop the drive to $255 \times 8/12 = 170$ (about 8 V average from 12 V),
-  switch, then ramp.
+  up to 100 %. For example, running flat out on a 12 V battery and switching to a
+  16 V RES, drop the drive to $255 \times 12/16 = 191$ (about 12 V average from
+  16 V), switch, then ramp.
 - **At a switch-over to a lower supply:** no surge, so no ramp is needed.
 
 Cutting the drive before a switch-over also means the relay contacts switch a
 smaller current, so they arc less.
+
+**Only the RES needs it.** The surge matters because the RES sags under it. The
+battery is a stiff supply that delivers the start-up surge without its voltage
+dropping, so the project uses the **slow start on the RES** and **direct drive on
+the battery**: full drive at once, and full flow without waiting for a ramp.
 
 A slow start needs two things that direct drive doesn't:
 
@@ -419,11 +424,12 @@ choose the supply; the L298N decides how much of it reaches the pump.
 The ramp is **non-blocking**: `loop()` keeps checking the RES while the pump
 speeds up, and a switch-over during a ramp is handled straight away. The
 switching part is the direct-drive sketch from section 1 with its hysteresis; the
-new parts are `setPump()`, `startRamp()` and `updateRamp()`.
+new parts are `setPump()`, `startRamp()` and `updateRamp()`. The pump is
+slow-started only on the RES; on the battery it is driven directly.
 
 ```cpp
 /*
- * RES / battery switch-over with a slow-started pump.
+ * RES / battery switch-over: slow start on the RES, direct drive on the battery.
  * Hardware: divider mid-point -> A0 (R1 = 22 kΩ, R2 = 10 kΩ);
  *   D12 -> IN2 (RES relay), D13 -> IN1 (battery relay), active-LOW module;
  *   relay NO outputs -> L298N +12V; pump on OUT3/OUT4;
@@ -489,18 +495,23 @@ void updateRamp(unsigned long now) {
 }
 
 // Change supply, old relay off before new relay on (break before make).
-// If the new supply is higher, first cut the drive so the pump's average
-// voltage stays about the same, then let it ramp back up.
+// The slow start is only for the RES: the battery can supply the pump's
+// start-up surge, so on the battery the pump is driven directly.
 void changeSupply(bool toBattery, int reading) {
-  int resMv = resMillivolts(reading);
-  int oldMv = toBattery ? resMv : kBatteryMv;
-  int newMv = toBattery ? kBatteryMv : resMv;
-  if (newMv > oldMv) {
-    startRamp((long)level * oldMv / newMv);
+  if (!toBattery) {
+    // To the RES. If it is higher than the battery, first cut the drive so the
+    // pump's average voltage stays about the same, then let it ramp back up.
+    int resMv = resMillivolts(reading);
+    if (resMv > kBatteryMv) {
+      startRamp((long)level * kBatteryMv / resMv);
+    }
   }
   digitalWrite(toBattery ? kResRelay : kBatRelay, kRelayOff);   // break ...
   digitalWrite(toBattery ? kBatRelay : kResRelay, kRelayOn);    // ... then make
   onBattery = toBattery;
+  if (onBattery) {
+    setPump(255);                       // battery: direct drive, full drive at once
+  }
 }
 
 void setup() {
@@ -518,7 +529,11 @@ void setup() {
 
   onBattery = analogRead(kResPin) < kToBattery;
   digitalWrite(onBattery ? kBatRelay : kResRelay, kRelayOn);
-  startRamp(0);                         // slow start from standstill
+  if (onBattery) {
+    setPump(255);                       // battery: direct drive
+  } else {
+    startRamp(0);                       // RES: slow start from standstill
+  }
 }
 
 void loop() {
@@ -549,10 +564,17 @@ void loop() {
   $\text{level} = \text{from} + (255 - \text{from}) \times t / T_{ramp}$. The `255UL`
   makes the sum use `unsigned long` maths, because $255 \times 2000$ is too big for
   an `int`.
-- **`changeSupply()`** compares the old and new supply voltages. Only a step **up**
-  causes a surge, so only then is the drive cut before the switch. Going from an
-  8 V RES to the 12 V battery at full drive, the drive becomes
-  $255 \times 8000 / 12000 = 170$.
+- **`changeSupply()`** treats the two supplies differently:
+  - **To the battery:** after the switch, `setPump(255)` gives full drive at once,
+    which is direct drive. A ramp still in progress simply ends, because
+    `updateRamp()` does nothing once `level` is 255.
+  - **To the RES:** only a step **up** causes a surge, so the drive is cut only if
+    the RES is higher than the battery. From the 12 V battery to a 16 V RES at
+    full drive, the drive becomes $255 \times 12000 / 16000 = 191$, then ramps
+    back up. Usually the RES is lower (it has only just recovered past 9 V), and
+    the pump simply carries on at full drive, a little slower.
+- **`setup()`** starts the pump to suit the supply: `startRamp(0)` on the RES,
+  `setPump(255)` on the battery.
 - **No `float`.** The decision compares the raw reading with `kToBattery` (511)
   and `kToRes` (575), which the compiler works out from the resistors, as in
   [Read input voltage](03-read-input-voltage.md#why-whole-numbers-are-better).
@@ -563,6 +585,13 @@ void loop() {
   overflowing an `int`; multiplying before dividing keeps the precision.
 - **Nothing blocks.** Each pass of `loop()` takes well under a millisecond, so the
   RES is checked every 100 ms even in the middle of a ramp.
+
+> ⚠️ **Direct drive on the battery still goes through the L298N.** The pump's full
+> start-up current, $V/R$, flows through it: 6 A for the example pump in section 1,
+> well beyond the L298N's 3 A peak. Measure your pump's winding resistance and
+> work out its start current at 12 V. If it is more than about 3 A, keep a short
+> ramp on the battery too, e.g. replace `setPump(255)` with a 0.5 s ramp from the
+> current level, or use a pump with a smaller start current.
 
 **Things to set for your hardware**
 
@@ -602,8 +631,9 @@ void loop() {
 For a renewable source that can't supply large surges, **slow start** is the
 better choice: it protects the source, the switching parts and the pump, and the
 cost (a little voltage, and a second or two to reach full flow) is small. Direct
-drive suits a stiff supply such as the battery alone, or a pump that struggles to
-start at reduced voltage.
+drive suits a stiff supply such as the battery, or a pump that struggles to start
+at reduced voltage. That is why the sketch in section 5 uses both: **slow start
+on the RES, direct drive on the battery**.
 
 ---
 
@@ -621,4 +651,5 @@ start at reduced voltage.
   ENB sets the drive level.
 - A **slow start** ramps the drive up with non-blocking `millis()` code, and cuts the
   drive before switching to a higher supply, keeping the current near its running
-  value.
+  value. It is needed on the RES, which sags under a surge; on the stiff battery
+  the pump can be driven directly.
