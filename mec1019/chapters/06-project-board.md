@@ -10,8 +10,8 @@ introduced the idea.
 ```{=html}
 <figure class="flow-diagram">
 <figcaption>System overview · The whole system</figcaption>
-<a class="fd-light" href="images/system-overview-light.png"><img src="images/system-overview-light.png" width="1600" height="370" alt="Project overview diagram: solar and wind (the RES, 0–16 V) pass through voltage scaling (0–5 V) to the microcontroller, which reads the input voltage and decides between the RES and the 12 V battery; the switching circuitry supplies the pump drive (direct drive or slow start) and the pump."></a>
-<a class="fd-dark" href="images/system-overview-dark.png"><img src="images/system-overview-dark.png" width="1600" height="370" alt="Project overview diagram: solar and wind (the RES, 0–16 V) pass through voltage scaling (0–5 V) to the microcontroller, which reads the input voltage and decides between the RES and the 12 V battery; the switching circuitry supplies the pump drive (direct drive or slow start) and the pump."></a>
+<a class="fd-light" href="images/system-board-light.png"><img src="images/system-board-light.png" width="1600" height="370" alt="Project overview diagram for the project board: the microcontroller system box encloses voltage scaling, read input voltage, the control decision, the switching circuitry and the pump drive type (direct drive or slow start). Solar and wind (the RES, 0–16 V) and the 12 V battery feed in from outside, and the pump is outside."></a>
+<a class="fd-dark" href="images/system-board-dark.png"><img src="images/system-board-dark.png" width="1600" height="370" alt="Project overview diagram for the project board: the microcontroller system box encloses voltage scaling, read input voltage, the control decision, the switching circuitry and the pump drive type (direct drive or slow start). Solar and wind (the RES, 0–16 V) and the 12 V battery feed in from outside, and the pump is outside."></a>
 </figure>
 ```
 
