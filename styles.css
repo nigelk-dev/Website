@@ -334,45 +334,21 @@ table.kc-tt td.kc-cell.kc-in-no { color: var(--stop); }
 .kc-wave-axis { grid-column: 2; display: flex; justify-content: space-between; font: .7rem var(--font-mono); color: var(--muted); }
 
 /* ---------------------------------------------------------------------------
-   Hand-drawn flow diagrams (inline SVG, e.g. the Project Overview page), in
-   the Applet Lab design of the course applets and knowledge checks: slate
-   panels, white cards, teal accent, IBM Plex text, Barlow Semi Condensed
-   labels. Each group has its own accent colour.
+   Diagram figures (e.g. the Project Overview page), framed like the Applet
+   Lab panels. The diagram is a light and a dark PNG; the site's theme toggle
+   picks one. Clicking it opens the full-size image.
    --------------------------------------------------------------------------- */
 .flow-diagram {
-  --bg: #E8ECEE; --panel: #F7F9FA; --editor: #FFFFFF; --ink: #16212B; --muted: #56646F; --line: #C8D1D7;
-  --accent: #00807F; --c1: #2F6FD0; --c2: #E08A00; --c3: #119A45; --c4: #8A4FB8;
-  --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
-  --font-head: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+  --bg: #E8ECEE; --ink: #16212B; --muted: #56646F; --line: #C8D1D7;
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   margin: 1.5rem 0; padding: 14px 16px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg);
-  /* Below ~900px wide the text would be too small, so the figure scrolls sideways */
-  overflow-x: auto;
 }
-body.quarto-dark .flow-diagram {
-  --bg: #10161B; --panel: #172027; --editor: #0C1216; --ink: #E2E8EC; --muted: #95A3AD; --line: #2A353E;
-  --accent: #3CC4C2; --c1: #62A2F5; --c2: #FFB52E; --c3: #3FD97C; --c4: #C08BE0;
-}
+body.quarto-dark .flow-diagram { --bg: #10161B; --ink: #E2E8EC; --muted: #95A3AD; --line: #2A353E; }
 .flow-diagram figcaption {
   margin: 0 0 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line);
   font: 600 .72rem/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
 }
-.flow-diagram svg { display: block; width: 100%; min-width: 900px; height: auto; }
-.flow-diagram text { fill: var(--ink); font: 500 16px var(--font-body); text-anchor: middle; dominant-baseline: central; }
-.flow-diagram text.sub { font-weight: 400; fill: var(--muted); }
-.flow-diagram .group { fill: var(--panel); stroke: var(--line); }
-.flow-diagram .group.mcu { fill: color-mix(in srgb, var(--accent) 5%, var(--panel)); }
-.flow-diagram .group.drive { fill: color-mix(in srgb, var(--c4) 7%, var(--panel)); }
-.flow-diagram .title { font: 700 15px var(--font-head); letter-spacing: .06em; text-transform: uppercase; text-anchor: start; }
-.flow-diagram .title.res { fill: var(--c3); }
-.flow-diagram .title.bat { fill: var(--c2); }
-.flow-diagram .title.mcu { fill: var(--accent); }
-.flow-diagram .title.drive { fill: var(--c4); }
-.flow-diagram .bar.res { fill: var(--c3); }
-.flow-diagram .bar.bat { fill: var(--c2); }
-.flow-diagram .bar.mcu { fill: var(--accent); }
-.flow-diagram .bar.drive { fill: var(--c4); }
-.flow-diagram .node { fill: var(--editor); stroke: var(--line); }
-.flow-diagram .link { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-linejoin: round; }
-.flow-diagram marker path { fill: var(--muted); }
-.flow-diagram .elabel { font: 600 13px var(--font-mono); fill: var(--ink); }
+.flow-diagram a { display: block; cursor: zoom-in; }
+.flow-diagram img { display: block; width: 100%; height: auto; }
+.flow-diagram .fd-dark, body.quarto-dark .flow-diagram .fd-light { display: none; }
+body.quarto-dark .flow-diagram .fd-dark { display: block; }
