@@ -22,26 +22,57 @@
 }
 .applet > p a.applet-open { white-space: nowrap; }
 
-/* Home page word cloud (assets/wordcloud.js) */
+/* Home page word cloud (assets/wordcloud.js), in the Applet Lab design of the
+   diagrams, applets and knowledge checks: a slate frame with a monospaced
+   header, a lighter inner panel, IBM Plex text, Barlow Semi Condensed labels,
+   and one colour per course from the diagrams' group palette. */
 .wordcloud {
-  --wc-ink: #1f6fb8;
-  --wc-line: rgba(90, 100, 115, .32);
+  --bg: #E8ECEE; --panel: #F7F9FA; --editor: #FFFFFF; --ink: #16212B; --muted: #56646F; --line: #C8D1D7;
+  --accent: #00807F;
+  --wc-mec1019: #00807F; --wc-mec1002: #E08A00; --wc-mec1043-1062: #8A4FB8;
+  --wc-link: rgba(86, 100, 111, .32);
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-head: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   position: relative;
   margin: 1.25rem 0 2rem;
-  border: 1px solid var(--bs-border-color);
+  padding: 14px 16px 0;
+  border: 1px solid var(--line);
   border-radius: 10px;
-  background:
-    radial-gradient(ellipse at 50% 45%, rgba(127, 127, 127, .07), transparent 70%),
-    rgba(127, 127, 127, .03);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
   overflow: hidden;
 }
 body.quarto-dark .wordcloud {
-  --wc-ink: #8cc0f5;
-  --wc-line: rgba(200, 210, 225, .26);
+  --bg: #10161B; --panel: #172027; --editor: #0C1216; --ink: #E2E8EC; --muted: #95A3AD; --line: #2A353E;
+  --accent: #3CC4C2;
+  --wc-mec1019: #3CC4C2; --wc-mec1002: #FFB52E; --wc-mec1043-1062: #C08BE0;
+  --wc-link: rgba(149, 163, 173, .28);
 }
+.wordcloud .wc-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px;
+  margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line);
+}
+.wordcloud .wc-title {
+  font: 600 .72rem/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+}
+.wordcloud .wc-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-left: auto; }
+.wordcloud .wc-key {
+  display: inline-flex; align-items: center; gap: 7px;
+  font: 700 .74rem/1.2 var(--font-head); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--wc-c);
+}
+.wordcloud .wc-key::before { content: ""; width: 4px; height: 13px; border-radius: 2px; background: var(--wc-c); }
+.wordcloud [data-course="mec1019"] { --wc-c: var(--wc-mec1019); }
+.wordcloud [data-course="mec1002"] { --wc-c: var(--wc-mec1002); }
+.wordcloud [data-course="mec1043-1062"] { --wc-c: var(--wc-mec1043-1062); }
 .wordcloud .wc-stage {
   position: relative;
   height: clamp(340px, 40vw, 580px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
   touch-action: pan-y;
   opacity: 0;
   transition: opacity .6s ease;
@@ -52,56 +83,62 @@ body.quarto-dark .wordcloud {
   pointer-events: none;
 }
 .wordcloud .wc-links line {
-  stroke: var(--wc-line);
+  stroke: var(--wc-link);
   stroke-width: calc(.6px + var(--s) * 1.4px);
   transition: stroke .2s, opacity .2s;
 }
 .wordcloud .wc-word {
   position: absolute; left: 0; top: 0;
+  font-family: var(--font-body);
   font-size: calc((.78rem + var(--k) * 1.35rem) * var(--wc-scale, 1));
-  font-weight: calc(400 + var(--k) * 300);
+  font-weight: calc(400 + var(--k) * 200);
   line-height: 1.15;
-  letter-spacing: -.01em;
   white-space: nowrap;
   text-decoration: none;
-  padding: 0 .1em;
-  border-radius: 4px;
+  padding: .08em .3em;
+  border: 1px solid transparent;
+  border-radius: 6px;
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
   will-change: transform;
-  transition: opacity .2s, color .2s, background-color .2s;
+  transition: opacity .2s, color .2s, background-color .2s, border-color .2s;
+  /* each word in its course's colour; smaller (less used) words are paler */
+  color: var(--wc-c, var(--accent));
+  color: color-mix(in srgb, var(--wc-c, var(--accent)) calc(55% + var(--k) * 45%), var(--panel));
 }
-.wordcloud .wc-word:hover, .wordcloud .wc-word:focus-visible { text-decoration: underline; }
+.wordcloud .wc-word:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .wordcloud.dragging .wc-word { cursor: grabbing; }
-/* one colour for every word; smaller (less used) words are paler */
-.wordcloud .wc-word {
-  color: var(--wc-ink);
-  color: color-mix(in srgb, var(--wc-ink) calc(60% + var(--k) * 40%), var(--bs-body-bg));
-}
 .wordcloud.focused .wc-word:not(.on):not(.near) { opacity: .22; }
-.wordcloud.focused .wc-links line:not(.on) { opacity: .25; }
-.wordcloud .wc-links line.on { stroke: var(--bs-body-color); opacity: .7; }
-.wordcloud .wc-word.on { background: rgba(127, 127, 127, .14); }
+.wordcloud.focused .wc-links line:not(.on) { opacity: .2; }
+.wordcloud .wc-links line.on { stroke: var(--accent); opacity: .85; }
+/* the focused word becomes a card, like a block in the diagrams */
+.wordcloud .wc-word.on {
+  background: var(--editor);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  color: var(--ink);
+}
+.wordcloud .wc-word.near { color: var(--wc-c, var(--accent)); }
 .wordcloud .wc-tip {
-  position: absolute; left: .75rem; top: .75rem;
+  position: absolute; left: .75rem; top: .75rem; z-index: 2;
   max-width: min(22rem, calc(100% - 1.5rem));
-  padding: .45rem .65rem;
-  font-size: .82rem; line-height: 1.35;
-  background: var(--bs-body-bg);
-  border: 1px solid var(--bs-border-color);
+  padding: .5rem .7rem;
+  font: .82rem/1.4 var(--font-body);
+  color: var(--ink);
+  background: var(--editor);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
   border-radius: 6px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
   pointer-events: none;
 }
-.wordcloud .wc-tip span { display: block; opacity: .8; }
+.wordcloud .wc-tip strong { font-family: var(--font-mono); font-weight: 600; }
+.wordcloud .wc-tip span { display: block; color: var(--muted); }
 .wordcloud figcaption {
-  padding: .55rem .85rem;
-  font-size: .85rem;
-  border-top: 1px solid var(--bs-border-color);
-  background: rgba(127, 127, 127, .06);
+  padding: .65rem .1rem .8rem;
+  font: .84rem/1.45 var(--font-body);
+  color: var(--muted);
 }
-.wordcloud figcaption { opacity: .85; }
 
 /* Wide screens: let the page content fill the space between the docked
    sidebar and the right edge (or the table of contents), instead of

@@ -7,8 +7,15 @@ Welcome. This site hosts teaching materials and projects.
 
 ```{=html}
 <figure class="wordcloud" data-src="assets/wordcloud.json" aria-label="Word cloud of the most used terms in the course notes">
-  <div class="wc-stage"></div>
-  <div class="wc-tip" role="status" hidden></div>
+  <div class="wc-head">
+    <span class="wc-title">Term map</span>
+    <span class="wc-legend">
+      <span class="wc-key" data-course="mec1019">Introduction to microcontrollers</span>
+      <span class="wc-key" data-course="mec1002">Electrical drives</span>
+      <span class="wc-key" data-course="mec1043-1062">Manufacturing Automation</span>
+    </span>
+  </div>
+  <div class="wc-stage"><div class="wc-tip" role="status" hidden></div></div>
   <figcaption>
     The most used terms across the course notes, linked when they share a paragraph. Hover to trace connections, drag to move, click to open the page that uses a term most.
   </figcaption>

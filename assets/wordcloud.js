@@ -28,6 +28,7 @@
     var nodes = data.nodes.map(function (d, i) {
       var a = document.createElement('a');
       a.className = 'wc-word';
+      a.setAttribute('data-course', d.c);       // coloured by course in styles.css
       a.href = d.url;
       a.textContent = d.t;
       a.setAttribute('aria-label', d.t + ': ' + d.page);
