@@ -24,15 +24,13 @@
 
 /* Home page word cloud (assets/wordcloud.js), in the Applet Lab design of the
    diagrams, applets and knowledge checks: a slate frame with a monospaced
-   header, a lighter inner panel, IBM Plex text, Barlow Semi Condensed labels,
-   and one colour per course from the diagrams' group palette. */
+   header, a lighter inner panel, IBM Plex text, and every word in the teal
+   accent used for Introduction to microcontrollers. */
 .wordcloud {
   --bg: #E8ECEE; --panel: #F7F9FA; --editor: #FFFFFF; --ink: #16212B; --muted: #56646F; --line: #C8D1D7;
   --accent: #00807F;
-  --wc-mec1019: #00807F; --wc-mec1002: #E08A00; --wc-mec1043-1062: #8A4FB8;
   --wc-link: rgba(86, 100, 111, .32);
   --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
-  --font-head: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   position: relative;
   margin: 1.25rem 0 2rem;
@@ -47,7 +45,6 @@
 body.quarto-dark .wordcloud {
   --bg: #10161B; --panel: #172027; --editor: #0C1216; --ink: #E2E8EC; --muted: #95A3AD; --line: #2A353E;
   --accent: #3CC4C2;
-  --wc-mec1019: #3CC4C2; --wc-mec1002: #FFB52E; --wc-mec1043-1062: #C08BE0;
   --wc-link: rgba(149, 163, 173, .28);
 }
 .wordcloud .wc-head {
@@ -57,16 +54,6 @@ body.quarto-dark .wordcloud {
 .wordcloud .wc-title {
   font: 600 .72rem/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
 }
-.wordcloud .wc-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-left: auto; }
-.wordcloud .wc-key {
-  display: inline-flex; align-items: center; gap: 7px;
-  font: 700 .74rem/1.2 var(--font-head); letter-spacing: .06em; text-transform: uppercase;
-  color: var(--wc-c);
-}
-.wordcloud .wc-key::before { content: ""; width: 4px; height: 13px; border-radius: 2px; background: var(--wc-c); }
-.wordcloud [data-course="mec1019"] { --wc-c: var(--wc-mec1019); }
-.wordcloud [data-course="mec1002"] { --wc-c: var(--wc-mec1002); }
-.wordcloud [data-course="mec1043-1062"] { --wc-c: var(--wc-mec1043-1062); }
 .wordcloud .wc-stage {
   position: relative;
   height: clamp(340px, 40vw, 580px);
@@ -103,9 +90,7 @@ body.quarto-dark .wordcloud {
   -webkit-user-select: none;
   will-change: transform;
   transition: opacity .2s, color .2s, background-color .2s, border-color .2s;
-  /* each word in its course's colour; smaller (less used) words are paler */
-  color: var(--wc-c, var(--accent));
-  color: color-mix(in srgb, var(--wc-c, var(--accent)) calc(55% + var(--k) * 45%), var(--panel));
+  color: var(--accent);               /* every word in the teal accent; size shows use */
 }
 .wordcloud .wc-word:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .wordcloud.dragging .wc-word { cursor: grabbing; }
@@ -119,7 +104,6 @@ body.quarto-dark .wordcloud {
   box-shadow: 0 0 0 1px var(--accent);
   color: var(--ink);
 }
-.wordcloud .wc-word.near { color: var(--wc-c, var(--accent)); }
 .wordcloud .wc-tip {
   position: absolute; left: .75rem; top: .75rem; z-index: 2;
   max-width: min(22rem, calc(100% - 1.5rem));
