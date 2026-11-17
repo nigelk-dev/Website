@@ -20,7 +20,9 @@
   .pick-menu { position:absolute; right:0; top:calc(100% + 4px); z-index:5; background:var(--panel); border:1px solid var(--line);
                border-radius:8px; padding:6px 12px; box-shadow:0 6px 18px rgba(0,0,0,.18); min-width:270px; }
   .pick-menu label { margin:6px 0; text-transform:none; letter-spacing:0; font: .85rem var(--font-body); color:var(--ink); cursor:pointer; }
-  @media (max-width: 860px) { .top { grid-template-columns: 1fr; } .code-box { flex:none; height:420px; } }
+  .mid { display:grid; gap:18px; grid-template-columns: 1fr minmax(260px, 340px); align-items:start; margin-top:18px; }
+  .mid > * { min-width:0; }
+  @media (max-width: 860px) { .top, .mid { grid-template-columns: 1fr; } .code-box { flex:none; height:420px; } }
   .charts canvas { width:100%; height:150px; display:block; }
   .charts canvas.scope { height:130px; }
   .chart-head { display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin:14px 0 4px; }
@@ -108,7 +110,8 @@
   </div>
 </div>
 
-<div class="card charts" style="margin-top:18px">
+<div class="mid">
+<div class="card charts">
   <div class="row" style="justify-content:space-between; margin-bottom:6px">
     <h2 style="margin:0">Graphs</h2>
     <details class="pick" id="pick">
@@ -149,8 +152,6 @@
     </div>
   <p class="note" id="noCharts" hidden>No graphs selected: choose some from the Graphs menu.</p>
 </div>
-
-<div class="grid" style="margin-top:18px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
     <div class="card">
       <h2>The board</h2>
       <div class="src">
@@ -175,14 +176,15 @@
       <div class="stat"><span>last <code>reading</code></span><b id="vRead"></b></div>
       <div class="stat"><span><code>kToBattery</code> / <code>kToRes</code></span><b id="vTh"></b></div>
     </div>
-  <div class="card">
+</div>
+
+<div class="card" style="margin-top:18px">
     <h2>What happened</h2>
     <div class="log" id="log"></div>
     <p class="note">The sketch prints nothing: this log is the simulator's commentary on what each decision did.</p>
     <h2 style="margin-top:16px">The model</h2>
     <p class="note" style="margin-top:0">Battery 12 V; diodes D1/D2 drop 0.8 V; the L298N drops 1.8 V; pump winding 2 Ω, 0.8 A running at full speed, load rising with the square of its speed. The divider is set so A0 sees 0.300 of the RES voltage, as <code>kRatioPermil = 300</code> assumes. Readings jitter by ±1 count.</p>
   </div>
-</div>
 </main>
 
 <script>
