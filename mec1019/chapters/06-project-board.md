@@ -408,6 +408,212 @@ void loop() {
 }
 ```
 
+### How the code works
+
+#### The big picture: two jobs at once
+
+The sketch has two jobs, and it must never stop doing either of them:
+
+1. **Watch the RES** and choose the supply: every 100 ms.
+2. **Ramp the pump** up smoothly whenever it starts or steps up to a higher
+   supply: on every pass of `loop()`.
+
+There is no `delay()` anywhere. Instead, `loop()` runs many thousands of times a
+second, and each job checks the time with `millis()` to decide whether it has
+anything to do *right now*. This is the non-blocking pattern from [Getting
+started with the Arduino](02-arduino.md#blocking-vs-non-blocking-timing). A
+`delay(2000)` for the ramp would leave the RES unwatched for two seconds, which is
+exactly when a gust or a cloud could need a switch-over.
+
+The code is split into small functions, each doing one thing:
+
+| Function | Job | Called from |
+|---|---|---|
+| `readResVolts()` | Turn the A0 reading into the RES voltage | `setup()`, `loop()` |
+| `setPump(lvl)` | Set the pump's drive level on the L298N | `startRamp()`, `updateRamp()`, `setup()` |
+| `startRamp(from)` | Begin a ramp from a given level | `setup()`, `changeSupply()` |
+| `updateRamp(now)` | Move the ramp on by the time that has passed | every pass of `loop()` |
+| `changeSupply(toBattery, vRes)` | Switch the MOSFETs, cutting the drive first if needed | `loop()` |
+
+#### The constants: pins and settings
+
+- **Pins** are named after the schematic's nets: `kResOnPin` is `renewableOn`
+  (D13), `kBatOnPin` is `batteryOn` (D12), and the three L298N pins are `InC`
+  (D3), `InD` (D2) and `Enable` (D4). If a board revision moves a net, only these
+  lines change.
+- **`kRatio`** is the divider fraction you measured at TP1 ([Section
+  4](#reading-the-input-on-the-board)). **`kBatteryV`** is your battery's voltage.
+- **`kToBatteryV` and `kToResV`** are the two hysteresis thresholds, in RES volts:
+  below 8 V switch to the battery, above 9 V switch back. Between them nothing
+  changes.
+- **`kRampMs`** is how long a ramp from 0 to full drive takes; **`kSampleMs`** is
+  how often the RES is read.
+
+#### The variables: what the sketch remembers
+
+| Variable | Remembers | Why it's needed |
+|---|---|---|
+| `onBattery` | Which supply is switched in | The hysteresis test depends on it: the threshold to cross is different on each supply |
+| `level` | The pump's drive level now, 0 to 255 | `changeSupply()` scales it, and `updateRamp()` stops when it reaches 255 |
+| `rampFrom` | The level the current ramp started at | A ramp after a switch-over starts part-way up, not from 0 |
+| `rampStartMs` | When the current ramp started | `updateRamp()` works the level out from the time since then |
+| `lastSampleMs` | When the RES was last read | So it is read every 100 ms, not on every pass |
+
+They are declared outside any function (**global**), so they keep their values
+from one pass of `loop()` to the next.
+
+#### `readResVolts()`: from reading to RES volts
+
+```cpp
+return analogRead(kSensePin) * (kAdcVref / kAdcMax) / kRatio;
+```
+
+Two steps in one line: the reading becomes the voltage at A0 (× 5 / 1023), and
+dividing by the divider fraction gives the voltage at J3. With a 12.0 V RES and
+`kRatio = 0.300`:
+
+$$V_{A0} = 12.0 \times 0.300 = 3.60\ \text{V} \;\rightarrow\; \text{reading} \approx 736
+\;\rightarrow\; \frac{736 \times 5 / 1023}{0.300} \approx 12.0\ \text{V}$$
+
+This sketch works in volts, with `float`, because `changeSupply()` compares the
+RES and battery *voltages* to scale the drive. The switching decision alone could
+use whole-number readings, as in [Read input voltage](03-read-input-voltage.md):
+`kToBatteryV = 8.0` is a reading of $8.0 \times 0.300 \times 1023 / 5 \approx 491$.
+
+#### `setPump()`: the inverted PWM
+
+```cpp
+analogWrite(kIn3Pin, 255 - lvl);
+```
+
+On the board, IN4 is held HIGH and the PWM goes to IN3 ([Section
+6](#the-boards-l298n)). The pump is driven only while IN3 is **LOW**, so the
+drive is the inverse of the `analogWrite` value:
+
+| `level` | `analogWrite(3, …)` | IN3 is LOW for | Pump |
+|---|---|---|---|
+| 0 | 255 | 0 % of the time | Not driven (both outputs at VPump) |
+| 64 | 191 | 25 % | Slow |
+| 128 | 127 | 50 % | Half drive |
+| 255 | 0 | 100 % | Full drive: the whole supply |
+
+`setPump()` is the **only** function that touches the L298N's PWM pin, and it
+also records `level`. The rest of the sketch thinks in drive levels, 0 to 255,
+and never needs to know about the inversion. On the breadboard, with the PWM on
+ENB, only this one line is different.
+
+#### `startRamp()` and `updateRamp()`: a ramp without blocking
+
+`startRamp(from)` sets the pump to `from` and notes the level and the time. It
+returns at once; the ramp itself happens in `updateRamp()`, a little at a time:
+
+```cpp
+setPump(rampFrom + (255UL - rampFrom) * t / kRampMs);
+```
+
+where `t` is the time since the ramp started. The level rises in a straight line
+from `rampFrom` when $t = 0$ to 255 when $t$ reaches `kRampMs`. For a start from standstill
+(`rampFrom = 0`, `kRampMs = 2000`):
+
+| Time since start | Level | Average voltage on a 12 V supply |
+|---|---|---|
+| 0 ms | 0 | 0 V |
+| 500 ms | 63 | about 3 V |
+| 1000 ms | 127 | about 6 V |
+| 1500 ms | 191 | about 9 V |
+| 2000 ms or more | 255 | 12 V (less the L298N's drop) |
+
+Three details make it work:
+
+- **`255UL`** forces the sum into `unsigned long` maths. $255 \times 2000 = 510\,000$
+  is far too big for an `int` (maximum 32 767) and would overflow.
+- **Multiply before dividing.** `t / kRampMs` alone would be 0 until the end of the
+  ramp (whole-number division), so the level would jump straight from 0 to 255.
+- **`if (level == 255) return;`** Once the pump is at full drive, there is nothing
+  to do, so `updateRamp()` returns straight away on every later pass.
+
+#### `changeSupply()`: switching without a surge
+
+Only a step **up** in supply voltage causes a surge ([Pump drive
+type](05-pump-drive-type.md#a-switch-over-causes-a-surge-too)), so the function
+first compares the old and new supply:
+
+```cpp
+float vOld = toBattery ? vRes : kBatteryV;
+float vNew = toBattery ? kBatteryV : vRes;
+if (vNew > vOld) {
+  startRamp((uint8_t)(level * vOld / vNew));
+}
+```
+
+`? :` picks one of two values: going *to* the battery, the old supply is the RES
+and the new one the battery; going back, the other way round.
+
+- **RES → battery** with the pump at full drive on a 7.8 V RES: the new supply is
+  higher, so the drive is cut to $255 \times 7.8 / 12 \approx 165$. The pump's
+  average voltage stays at about 7.8 V, so there is no surge, and the ramp then
+  takes it up to 12 V.
+- **Battery → RES** at 9.2 V: the new supply is lower, so there is no surge and no
+  ramp. The pump simply slows a little.
+
+Then the switch itself, **make before break**:
+
+```cpp
+digitalWrite(toBattery ? kBatOnPin : kResOnPin, HIGH);   // new supply on ...
+digitalWrite(toBattery ? kResOnPin : kBatOnPin, LOW);    // ... then old supply off
+```
+
+For a few microseconds both MOSFETs are on. That is safe on this board because
+diodes D1 and D2 stop either supply pushing current into the other, and it means
+the pump never loses its supply during a switch-over. With the relay module this
+order would short the RES to the battery: that is why the Chapter 4 and 5
+sketches do it the other way round.
+
+#### `setup()`: a safe start
+
+The order of the lines matters:
+
+1. **Pins become outputs.** Until now (during reset) they were inputs, so Q1 and Q2
+   had no base current and both supplies were off.
+2. **IN4 HIGH, then `setPump(0)`**: the direction is set and the pump is not driven
+   (IN3 held HIGH) *before* the L298N is enabled.
+3. **Enable HIGH**: the L298N's channel B is on, but with no drive yet.
+4. **Choose a supply.** If the RES is below `kToBatteryV`, start on the battery;
+   otherwise on the RES.
+5. **`startRamp(0)`**: the pump starts with a slow start from standstill, never a
+   direct start.
+
+#### `loop()`: watching and ramping
+
+```cpp
+if (now - lastSampleMs >= kSampleMs) {
+```
+
+This is true once every 100 ms. Subtracting the times, rather than comparing
+`now` with a future time, keeps working when `millis()` rolls over to 0 after
+about 49 days.
+
+Inside it, the hysteresis test uses `onBattery`:
+
+- **On the RES**, only one thing matters: has it dropped below 8 V? If so, change to
+  the battery.
+- **On the battery**, only: has the RES recovered above 9 V? If so, change back.
+
+A RES wobbling between 8 and 9 V therefore causes no switching at all. Finally,
+outside the 100 ms test, **`updateRamp(now)`** runs on every pass, so a ramp keeps
+moving even while the RES is being read.
+
+#### A run-through
+
+| When | What the RES does | What the sketch does |
+|---|---|---|
+| Power-up | 12 V | `setup()` picks the RES (12 V is above 8 V) and starts a ramp from 0 |
+| 0–2 s | 12 V | `updateRamp()` takes the drive from 0 to 255; the RES is read every 100 ms and nothing changes |
+| 30 s | Drops to 8.5 V | Still above 8 V: no change (in the dead band) |
+| 31 s | Drops to 7.8 V | Below 8 V: `changeSupply(true, 7.8)`. The battery is higher, so the drive is cut to 165, the battery switched in, then the RES out; the ramp takes 165 back to 255 |
+| 40 s | Recovers to 8.8 V | On the battery, and not yet above 9 V: no change |
+| 41 s | Recovers to 9.2 V | Above 9 V: `changeSupply(false, 9.2)`. The RES is lower, so no ramp: switch the RES in, the battery out; the pump carries on at full drive, a little slower |
+
 **What differs from the breadboard sketch**
 
 | | Breadboard (Chapter 5) | Board |
