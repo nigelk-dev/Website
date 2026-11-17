@@ -101,12 +101,12 @@
   <div class="card code-card">
     <h2>Example 6.1: the sketch, as it runs</h2>
     <div class="row" style="margin-bottom:8px">
-      <button id="step1" class="secondary" disabled>Step: one pass of loop()</button>
-      <button id="stepRead" class="secondary" disabled>Step to the next RES reading</button>
+      <button id="step1" class="secondary" title="Pauses the simulator, then runs one pass of loop() (1 ms)">Step: one pass of loop()</button>
+      <button id="stepRead" class="secondary" title="Pauses the simulator, then runs loop() until it next reads A0">Step to the next RES reading</button>
       <label style="margin:0 0 0 auto"><input id="follow" type="checkbox" checked> Follow the code</label>
     </div>
     <div class="code-box"><div class="code-wrap" id="codeWrap"><pre class="code" id="code"></pre></div></div>
-    <p class="note"><span class="key hot"></span>running now · <span class="key warm"></span>ran in the last 2 s, fading · <span class="key flash"></span><code>setup()</code> or <code>changeSupply()</code>: a decision that just happened. <code>loop()</code> runs once every millisecond; it reads the RES on one pass in 100. Pause, then step through one pass at a time, or use slow motion.</p>
+    <p class="note"><span class="key hot"></span>running now · <span class="key warm"></span>ran in the last 2 s, fading · <span class="key flash"></span><code>setup()</code> or <code>changeSupply()</code>: a decision that just happened. <code>loop()</code> runs once every millisecond; it reads the RES on one pass in 100. Press a Step button to pause and step through one pass at a time (▶ Run carries on), or use slow motion.</p>
   </div>
 </div>
 
@@ -528,7 +528,7 @@ function drawCharts() {
 
 // ---------------------------------------------------------------- readouts
 function readouts() {
-  $('clock').textContent = `t = ${simT.toFixed(1)} s`;
+  $('clock').textContent = `t = ${(Math.round(simT * 1000) / 1000).toFixed(3)} s`;
   $('vocLbl').textContent = (+$('voc').value).toFixed(1) + ' V';
   $('rintLbl').textContent = (+$('rint').value).toFixed(1) + ' Ω';
   const hl = (v, t, f) => `<span class="${v ? 'ok' : 'muted'}">${v ? t : f}</span>`;
@@ -587,16 +587,20 @@ function frame(now) {
 $('voc').addEventListener('input', () => { M.vocTarget = +$('voc').value; });
 $('rint').addEventListener('input', () => { M.rint = +$('rint').value; });
 $('noramp').addEventListener('change', () => { noRamp = $('noramp').checked; log(noRamp ? 'What if: no ramp. startRamp() now jumps to full drive; reset to see a direct start.' : 'Ramp restored.'); });
-$('pause').addEventListener('click', () => {
-  running = !running; pausedAt = performance.now();
+function setRunning(on) {
+  running = on; pausedAt = performance.now();
   $('pause').textContent = running ? '❚❚ Pause' : '▶ Run';
-  $('step1').disabled = $('stepRead').disabled = running;
-});
-$('step1').addEventListener('click', () => { pausedAt = performance.now(); hotFrom = pass + 1; step(); });
+  last = performance.now();
+}
+$('pause').addEventListener('click', () => setRunning(!running));
+// The step buttons pause the simulator first, so they can be pressed at any time.
+$('step1').addEventListener('click', () => { setRunning(false); hotFrom = pass + 1; step(); redraw(); });
 $('stepRead').addEventListener('click', () => {           // run until loop() next reads the RES
-  pausedAt = performance.now();
+  setRunning(false);
   for (let k = 0; k < kSampleMs + 1; k++) { hotFrom = pass + 1; step(); if (sampled) break; }
+  redraw();
 });
+function redraw() { drawCharts(); readouts(); showCode(); }
 $('reset').addEventListener('click', () => reset('Reset: the pins are inputs until setup() runs.'));
 let scen = null;
 function scenario(steps, name) {          // steps: [[after seconds, open-circuit volts], ...]
