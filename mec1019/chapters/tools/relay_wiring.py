@@ -336,7 +336,7 @@ def ex3c(green=False, pot=False):
     return d, foot
 
 
-def switchover(step):
+def switchover(step, pump=False):
     titles = {1: "Step 1: power and signals from the Arduino to the relay module",
               2: "Step 2: RES power in through the RES relay",
               3: "Step 3: battery power in through the battery relay",
@@ -379,6 +379,21 @@ def switchover(step):
         gx, gy = d.bot_pin["GND"]
         d.wire([(gx, gy), (gx, 845), (42, 845), (42, 40), (d.rail_x(2), 40), (d.rail_x(2), d.rail("tn"))], COL["GND"],
                "Arduino GND → − rail", (50, 270))
+    if pump:                                  # direct drive: show where the pump goes
+        x0, x1 = d.cx(c) - 16, d.cx(c + 5) + 16
+        y0, y1 = d.row("e") - 10, d.row("j") + 12
+        d.texts.append(f'<rect x="{x0}" y="{y0}" width="{x1-x0}" height="{y1-y0}" rx="8" fill="#00807F14" '
+                       f'stroke="#00807F" stroke-width="3" stroke-dasharray="8 5"/>')
+        ym = (y0 + y1) / 2
+        d.texts.append(f'<path d="M{x0-112} {ym} L{x0-4} {ym} M{x0-14} {ym-6} L{x0-4} {ym} L{x0-14} {ym+6}" fill="none" '
+                       f'stroke="#00807F" stroke-width="2.5"/>')
+        d.note(x0 - 136, ym - 13, [("The pump goes here,", True, "#00807F"), ("in place of the LED", True, "#00807F"),
+                                   ("and 220 Ω resistor", True, "#00807F")], "end", 14)
+        d.texts.append(f'<rect x="36" y="6" width="560" height="28" fill="#ffffff"/>')
+        d.note(40, 26, [("Direct drive: where the pump goes", True, INK)], "start", 16)
+        return save("switchover-pump", d, (
+            "Direct drive: the pump takes the place of the LED and 220 Ω resistor. Its + lead goes to the + rail fed by both relays' NO outputs,",
+            "its − lead to the − rail. Run the pump's wires to the relay terminals directly: breadboard strips can't carry a pump's current."))
     foot = {
         1: ("5V → VCC and GND → GND power the relay coils; pin 13 drives IN1 (the battery relay) and pin 12 drives IN2 (the RES relay).",),
         2: ("RES + → COM of relay 2; its NO output feeds the bottom + rail, which supplies the load; RES − goes to the − rail.",),
@@ -503,5 +518,6 @@ for g, p, n in ((False, False, "relay-3c"), (True, False, "relay-3d"), (True, Tr
     save(n, d, foot)
 for s in range(1, 6):
     switchover(s)
+switchover(5, pump=True)
 module_sides()
 mechanism()

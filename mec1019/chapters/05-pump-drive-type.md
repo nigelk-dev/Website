@@ -60,7 +60,7 @@ in place of the LED that stood in for it.
 Build the switch-over circuit as in [Switching
 circuitry](04-switching-circuitry.md#building-it), then replace the load:
 
-![The switch-over circuit from Switching circuitry. For direct drive, the pump takes the place of the LED and resistor on the load rail fed by both relays' NO terminals.](images/switchover-step5.svg)
+![The switch-over circuit from Switching circuitry, with the load highlighted: for direct drive, the pump takes the place of the LED and 220 Ω resistor, between the + rail fed by both relays' NO terminals and the − rail.](images/switchover-pump.svg)
 
 | Connection | From | To |
 |---|---|---|
