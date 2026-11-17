@@ -298,8 +298,7 @@ using the MOSFET switches (make before break), and the pump drive through the
 board's L298N with the inverted PWM on IN3, with a **slow start on both
 supplies**. It has the same structure as the sketch in [Pump drive
 type](05-pump-drive-type.md#the-code); the pins, the divider constant and the two
-hardware functions, `setPump()` and `changeSupply()`, differ, and the board ramps
-on the battery as well as on the RES.
+hardware functions, `setPump()` and `changeSupply()`, differ.
 
 ```cpp
 /*
@@ -432,8 +431,8 @@ The sketch has two jobs, and it must never stop doing either of them:
 voltage sag and could trigger a false switch-over ([Pump drive
 type](05-pump-drive-type.md#why-the-surge-matters-in-this-project)). On the
 battery, which doesn't sag, the surge would instead go through the L298N and the
-sense resistor R1, which can't carry it ([Direct drive on the battery and the
-L298N](05-pump-drive-type.md#direct-drive-on-the-battery-and-the-l298n)). So the
+sense resistor R1, which can't carry it ([Why the battery needs a ramp
+too](05-pump-drive-type.md#why-the-battery-needs-a-ramp-too)). So the
 board ramps the pump on **both** supplies: the current never jumps far above its
 running value, whichever supply is switched in. The price is a two-second wait
 for full flow after a start.
@@ -669,7 +668,6 @@ moving even while the RES is being read. Once a ramp has finished, the drive is
 | PWM pin | ENB on D9 | IN3 on D3 (EnB on D4 held HIGH) |
 | `setPump()` | `analogWrite(9, level)` | `analogWrite(3, 255 - level)` |
 | Divider fraction | From the two resistors, `kR1` and `kR2` | Measured at TP1, stored in thousandths |
-| Slow start | On the RES only; direct drive on the battery | On both supplies |
 
 The ramp needs the L298N. To bypass it altogether, move JP1/JP2 to the
 **Direct** positions: the pump is then on VPump on both supplies, the PWM has no
