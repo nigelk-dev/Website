@@ -279,6 +279,7 @@ def mec1019(src, dest, excluded):
         page.write_text(mec1019_part_refs(html), encoding="utf-8")
     mec1019_runner_extras(dest / "applets")
     mec1019_applet_labels(dest / "applets")
+    mec1019_own_applets(dest / "applets")
 
 
 def _chapter_code(after_heading, chapter="04-switching-circuitry.md"):
@@ -386,6 +387,20 @@ def mec1019_applet_labels(applets):
     if not n:
         print("warning: code runner menu not in the expected form", file=sys.stderr)
     runner.write_text(html, encoding="utf-8")
+
+
+def mec1019_own_applets(applets):
+    """Applets that live with the chapters, not in the course notes: the board
+    simulator for Example 6.1. Its sketch is the chapter's, so they always match."""
+    own = MEC1019_CHAPTERS / "applets"
+    if not own.is_dir():
+        return
+    applets.mkdir(parents=True, exist_ok=True)
+    board = _chapter_code("### Example 6.1", "06-project-board.md")
+    for page in own.glob("*.html"):
+        html = page.read_text(encoding="utf-8")
+        html = html.replace('/*SKETCH*/""', json.dumps(board, ensure_ascii=False))
+        (applets / page.name).write_text(html, encoding="utf-8")
 
 
 def mec1019_runner_extras(applets):

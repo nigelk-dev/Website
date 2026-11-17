@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Board Simulator</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  .top { display:grid; gap:18px; grid-template-columns: minmax(260px, 340px) 1fr; align-items:start; }
+  @media (max-width: 860px) { .top { grid-template-columns: 1fr; } }
+  .charts canvas { width:100%; height:150px; display:block; }
+  .charts canvas.scope { height:130px; }
+  .chart-head { display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin:14px 0 4px; }
+  .chart-head:first-child { margin-top:0; }
+  .chart-head h3 { font: 600 .75rem var(--font-head); text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0; }
+  .chart-head span { font: .78rem var(--font-mono); color:var(--muted); }
+  .clock { font: 600 1.1rem var(--font-mono); font-variant-numeric: tabular-nums; }
+  .scen { display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-top:8px; }
+  .scen button { font-size:.78rem; padding:6px 8px; }
+  .pins td:first-child { font-family: var(--font-mono); }
+  .pins td { padding:4px 6px; }
+  .dot { display:inline-block; width:11px; height:11px; border-radius:50%; background:var(--track); vertical-align:-1px; margin-right:6px; border:1px solid var(--line); }
+  .dot.on { background:#e53935; box-shadow:0 0 0 3px rgba(229,57,53,.22); border-color:#b71c1c; }
+  .leds { display:flex; gap:18px; margin:6px 0 4px; font-size:.85rem; }
+  .src { display:flex; gap:10px; margin:8px 0 10px; }
+  .src div { flex:1; border:2px solid var(--line); border-radius:8px; padding:7px; text-align:center; font-size:.85rem; }
+  .src div b { display:block; font-family: var(--font-head); font-size:1rem; }
+  .src div.on { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .whatif { border:1px dashed var(--bad); border-radius:8px; padding:6px 10px; margin-top:10px; }
+  .whatif label { margin:0; color:var(--bad); }
+  .code-wrap { max-height: 520px; overflow:auto; background:var(--editor); border:1px solid var(--line); border-radius:6px; }
+  .code { font: .78rem/1.5 var(--font-mono); margin:0; padding:8px 0; counter-reset: ln; white-space:pre; }
+  .code .ln { display:block; padding:0 12px 0 0; }
+  .code .ln::before { counter-increment: ln; content: counter(ln); display:inline-block; width:3.2em; padding-right:.9em; text-align:right; color:var(--muted); opacity:.6; }
+  .code .ln.active { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+  .code .ln.flash { background: rgba(229,57,53,.13); box-shadow: inset 3px 0 0 var(--bad); }
+  .log { height: 150px; overflow:auto; font: .76rem/1.45 var(--font-mono); background:var(--editor); border:1px solid var(--line); border-radius:6px; padding:8px 10px; white-space:pre-wrap; }
+  .legend { display:flex; gap:14px; flex-wrap:wrap; font-size:.78rem; color:var(--muted); margin-top:4px; }
+  .legend i { display:inline-block; width:14px; height:3px; vertical-align:middle; margin-right:5px; border-radius:2px; }
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="javascript:history.back()">← Back to notes</a>
+<h1>Board simulator: Example 6.1</h1>
+<p class="lead">The RenewableSwitchOver board running Example 6.1. The simulator runs the sketch's own logic, with the same whole-number sums, against a model of the RES, the battery, the MOSFET switches, the L298N and the pump. Change the RES and watch what the Arduino reads, how it switches the supply, and how the ramp keeps the pump current down.</p>
+
+<div class="top">
+  <div>
+    <div class="card">
+      <h2>Renewable source</h2>
+      <div class="row" style="justify-content:space-between">
+        <span class="clock" id="clock">t = 0.0 s</span>
+        <span class="row">
+          <button id="pause" class="secondary">❚❚ Pause</button>
+          <select id="speed" style="width:auto" aria-label="Speed">
+            <option value="0.5">½×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="5">5×</option>
+          </select>
+        </span>
+      </div>
+      <label for="voc">RES voltage (open circuit): <b id="vocLbl"></b></label>
+      <input id="voc" type="range" min="0" max="16" step="0.1" value="12">
+      <label><input id="gust" type="checkbox"> Gusty (random changes)</label>
+      <label for="rint">RES internal resistance: <b id="rintLbl"></b></label>
+      <input id="rint" type="range" min="0" max="3" step="0.1" value="1.2">
+      <p class="note" style="margin-top:2px">A solar panel or small turbine sags when it supplies current: this is how much.</p>
+      <div class="scen">
+        <button class="secondary" id="sCloud">Cloud passes</button>
+        <button class="secondary" id="sGust">Wind near 8 V</button>
+        <button class="secondary" id="sHigh">Strong wind, 16 V</button>
+        <button class="secondary" id="sNight">Power-up at night</button>
+      </div>
+      <button id="reset" style="width:100%; margin-top:8px">↺ Reset the Arduino (power-up)</button>
+      <div class="whatif">
+        <label><input id="noramp" type="checkbox"> What if: no ramp</label>
+        <p class="note" style="margin:2px 0 0">Changes the sketch so <code>startRamp()</code> jumps straight to full drive: a direct start through the L298N.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h2>The board</h2>
+      <div class="src">
+        <div id="srcRes"><b>RES</b><span class="muted">Q4 via D13</span></div>
+        <div id="srcBat"><b>Battery</b><span class="muted">Q3 via D12</span></div>
+      </div>
+      <div class="leds"><span><i class="dot" id="ledRes"></i>D4 Renew ON</span><span><i class="dot" id="ledBat"></i>D3 Battery ON</span></div>
+      <table class="pins" style="width:100%">
+        <tr><th>Pin</th><th>Net</th><th>Now</th></tr>
+        <tr><td>A0</td><td>AnalogIn</td><td id="pA0"></td></tr>
+        <tr><td>D13</td><td>renewableOn</td><td id="pD13"></td></tr>
+        <tr><td>D12</td><td>batteryOn</td><td id="pD12"></td></tr>
+        <tr><td>D3</td><td>InC (IN3)</td><td id="pD3"></td></tr>
+        <tr><td>D2</td><td>InD (IN4)</td><td id="pD2"></td></tr>
+        <tr><td>D4</td><td>Enable</td><td id="pD4"></td></tr>
+      </table>
+      <h2 style="margin-top:16px">Variables</h2>
+      <div class="stat"><span><code>onBattery</code></span><b id="vOn"></b></div>
+      <div class="stat"><span><code>level</code></span><b id="vLevel"></b></div>
+      <div class="stat"><span><code>rampFrom</code></span><b id="vFrom"></b></div>
+      <div class="stat"><span>time since <code>rampStartMs</code></span><b id="vRamp"></b></div>
+      <div class="stat"><span>last <code>reading</code></span><b id="vRead"></b></div>
+      <div class="stat"><span><code>kToBattery</code> / <code>kToRes</code></span><b id="vTh"></b></div>
+    </div>
+  </div>
+
+  <div class="card charts">
+    <div class="chart-head"><h3>Analogue input: A0 reading</h3><span id="hA0"></span></div>
+    <canvas id="cA0"></canvas>
+    <div class="legend"><span><i style="background:var(--ok)"></i>on the RES</span><span><i style="background:var(--warn)"></i>on the battery</span><span><i style="background:var(--muted)"></i>491 / 552 thresholds, dead band shaded</span></div>
+
+    <div class="chart-head"><h3>RES voltage at J3</h3><span id="hRes"></span></div>
+    <canvas id="cRes"></canvas>
+    <div class="legend"><span><i style="background:var(--muted)"></i>open circuit</span><span><i style="background:var(--ok)"></i>at the terminals, sagging under load</span></div>
+
+    <div class="chart-head"><h3>Pump drive: PWM duty and pump voltage</h3><span id="hDrive"></span></div>
+    <canvas id="cDrive"></canvas>
+    <div class="legend"><span><i style="background:var(--accent)"></i><code>level</code> as a duty cycle (%)</span><span><i style="background:#8A4FB8"></i>average pump voltage (V)</span></div>
+
+    <div class="chart-head"><h3>Pump current through the L298N</h3><span id="hCur"></span></div>
+    <canvas id="cCur"></canvas>
+    <div class="legend"><span><i style="background:var(--accent)"></i>pump current</span><span><i style="background:var(--bad)"></i>L298N limits: 2 A continuous, 2.5 A peaks</span></div>
+
+    <div class="chart-head"><h3>Scope: the PWM now (3 periods, about 6 ms)</h3><span id="hScope"></span></div>
+    <canvas id="cScope" class="scope"></canvas>
+    <div class="legend"><span><i style="background:var(--warn)"></i>IN3 (D3): the pump is driven while it is LOW</span><span><i style="background:#8A4FB8"></i>voltage across the pump</span></div>
+  </div>
+</div>
+
+<div class="grid" style="margin-top:18px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+  <div class="card">
+    <h2>Example 6.1: the sketch</h2>
+    <div class="code-wrap" id="codeWrap"><pre class="code" id="code"></pre></div>
+    <p class="note">Highlighted: the function the Arduino is busy with. Red flashes: a call that just happened (<code>setup()</code>, <code>changeSupply()</code>).</p>
+  </div>
+  <div class="card">
+    <h2>What happened</h2>
+    <div class="log" id="log"></div>
+    <p class="note">The sketch prints nothing: this log is the simulator's commentary on what each decision did.</p>
+    <h2 style="margin-top:16px">The model</h2>
+    <p class="note" style="margin-top:0">Battery 12 V; diodes D1/D2 drop 0.8 V; the L298N drops 1.8 V; pump winding 2 Ω, 0.8 A running at full speed, load rising with the square of its speed. The divider is set so A0 sees 0.300 of the RES voltage, as <code>kRatioPermil = 300</code> assumes. Readings jitter by ±1 count.</p>
+  </div>
+</div>
+</main>
+
+<script>
+const SKETCH = /*SKETCH*/"";
+const $ = id => document.getElementById(id);
+const trunc = Math.trunc;
+
+// ---------------------------------------------------------------- constants from the sketch
+const num = (re, d) => { const m = SKETCH.match(re); return m ? Number(m[1]) : d; };
+const kRatioPermil = num(/kRatioPermil\s*=\s*(\d+)/, 300);
+const kBatteryMv   = num(/kBatteryMv\s*=\s*(\d+)/, 12000);
+const toBatMv      = num(/kToBattery\s*=\s*(\d+)L/, 8000);
+const toResMv      = num(/kToRes\s*=\s*(\d+)L/, 9000);
+const kRampMs      = num(/kRampMs\s*=\s*(\d+)/, 2000);
+const kSampleMs    = num(/kSampleMs\s*=\s*(\d+)/, 100);
+// const int kToBattery = 8000L * kRatioPermil / 1000 * 1023 / 5000;   (whole-number maths)
+const kToBattery = trunc(trunc(toBatMv * kRatioPermil / 1000) * 1023 / 5000);
+const kToRes     = trunc(trunc(toResMv * kRatioPermil / 1000) * 1023 / 5000);
+
+// ---------------------------------------------------------------- the sketch, ported line for line
+const A = { onBattery:false, level:0, rampFrom:0, rampStartMs:0, lastSampleMs:0, lastReading:0 };
+const pin = { d13:0, d12:0, d3:255, d2:0, d4:0, outputs:false };
+let millis = 0, simT = 0, noRamp = false;
+let bootAt = 0;                                   // millis() restarts at 0 on reset
+
+function resMillivolts(reading) {                 // (long)reading * 5000 / 1023 * 1000 / kRatioPermil
+  return trunc(trunc(trunc(reading * 5000 / 1023) * 1000) / kRatioPermil);
+}
+function setPump(lvl) { A.level = lvl; pin.d3 = 255 - lvl; }
+function startRamp(from) {
+  if (noRamp) { setPump(255); return; }           // the "what if" change
+  setPump(from); A.rampFrom = from; A.rampStartMs = millis;
+  mark('startRamp');
+}
+function updateRamp(now) {
+  if (A.level === 255) return;
+  mark('updateRamp');
+  const t = now - A.rampStartMs;
+  if (t >= kRampMs) setPump(255);
+  else setPump(A.rampFrom + trunc((255 - A.rampFrom) * t / kRampMs));
+}
+function changeSupply(toBattery, reading) {
+  flash('changeSupply');
+  const resMv = resMillivolts(reading);
+  const oldMv = toBattery ? resMv : kBatteryMv;
+  const newMv = toBattery ? kBatteryMv : resMv;
+  const before = A.level;
+  if (newMv > oldMv) startRamp(trunc(A.level * oldMv / newMv));
+  if (toBattery) { pin.d12 = 1; pin.d13 = 0; } else { pin.d13 = 1; pin.d12 = 0; }   // make before break
+  A.onBattery = toBattery;
+  log(`changeSupply(${toBattery}, ${reading}): RES about ${resMv} mV, ${toBattery ? 'to the battery' : 'back to the RES'}. ` +
+      (newMv > oldMv ? (noRamp ? 'Higher supply: no ramp (what if), full drive.' : `Higher supply: drive cut ${before} → ${trunc(before * oldMv / newMv)}, then ramped.`)
+                     : 'Lower supply: no ramp needed.'));
+}
+function setup() {
+  flash('setup');
+  pin.outputs = true;
+  pin.d2 = 1;                                     // IN4 HIGH: direction
+  setPump(0);                                     // no drive yet
+  pin.d4 = 1;                                     // Enable
+  const r = analogRead();
+  A.lastReading = r;
+  A.onBattery = r < kToBattery;
+  if (A.onBattery) pin.d12 = 1; else pin.d13 = 1;
+  startRamp(0);
+  log(`setup(): reading ${r} ${A.onBattery ? '<' : '≥'} ${kToBattery}, so starting on the ${A.onBattery ? 'battery' : 'RES'}${noRamp ? ', full drive at once (what if)' : ', ramp from 0'}.`);
+}
+function loop() {
+  const now = millis;
+  if (now - A.lastSampleMs >= kSampleMs) {
+    A.lastSampleMs = now;
+    const reading = analogRead();
+    A.lastReading = reading;
+    if (!A.onBattery && reading < kToBattery) changeSupply(true, reading);
+    else if (A.onBattery && reading > kToRes) changeSupply(false, reading);
+  }
+  updateRamp(now);
+}
+
+// ---------------------------------------------------------------- the hardware model
+const M = { vocTarget:12, voc:12, vterm:12, gust:0, rint:1.2, omega:0, i:0, vpump:0, vout:0 };
+const VBAT = 12.0, VDIODE = 0.8, VL298 = 1.8, RW = 2.0, KE = 7.8, IRUN = 0.8, J = 0.6;
+function analogRead() {
+  const a0mv = Math.max(0, M.vterm * 1000) * kRatioPermil / 1000;
+  const r = Math.min(1023, trunc(a0mv * 1023 / 5000) + Math.round((Math.random() - 0.5) * 2));
+  return Math.max(0, r);
+}
+function supplyV() {                              // VPump: the switched-in supply, less its diode
+  let v = 0;
+  if (pin.d13) v = Math.max(v, M.vterm - VDIODE);
+  if (pin.d12) v = Math.max(v, VBAT - VDIODE);
+  return Math.max(0, v);
+}
+function physics(dt) {                            // dt in seconds
+  // the RES: wanders towards the slider, with optional gusts
+  if ($('gust').checked) M.gust = 0.995 * M.gust + 0.005 * ((Math.random() - 0.5) * 60);
+  else M.gust *= 0.99;
+  M.voc += (M.vocTarget + M.gust - M.voc) * Math.min(1, dt / 0.35);
+  M.voc = Math.max(0, Math.min(17, M.voc));
+  // pump through the L298N: average voltage = duty x (VPump - L298N drop)
+  const duty = pin.outputs && pin.d4 ? A.level / 255 : 0;
+  M.vpump = supplyV();
+  M.vout = duty * Math.max(0, M.vpump - VL298);
+  const e = KE * M.omega;
+  M.i = Math.max(0, (M.vout - e) / RW);
+  M.omega += (M.i - IRUN * M.omega * M.omega) / J * dt;
+  if (M.omega < 0) M.omega = 0;
+  // the RES sags by its internal resistance x the current it supplies (duty x pump current)
+  const resLoad = pin.d13 && !(pin.d12 && VBAT > M.vterm) ? duty * M.i : 0;
+  M.vterm += (Math.max(0, M.voc - M.rint * resLoad) - M.vterm) * Math.min(1, dt / 0.005);
+}
+
+// ---------------------------------------------------------------- history for the charts
+const HIST_S = 20, hist = [];
+function record() {
+  hist.push({ t: simT, read: A.lastReading, bat: A.onBattery, voc: M.voc, vterm: M.vterm, duty: A.level / 255 * 100, vout: M.vout, i: M.i });
+  while (hist.length && hist[0].t < simT - HIST_S) hist.shift();
+}
+
+// ---------------------------------------------------------------- the sketch display
+const lines = SKETCH.split('\n');
+const fnRange = {};
+lines.forEach((l, k) => {
+  const m = l.match(/^(?:void|int|bool|uint8_t)\s+(\w+)\(/);
+  if (m) { let e = k; while (e < lines.length && lines[e] !== '}') e++; fnRange[m[1]] = [k, e]; }
+});
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+$('code').innerHTML = lines.map((l, k) => `<span class="ln" data-k="${k}">${esc(l) || ' '}</span>`).join('');
+const lineEls = [...document.querySelectorAll('#code .ln')];
+const marks = {}, flashes = {};
+function mark(fn) { marks[fn] = performance.now(); }
+function flash(fn) { flashes[fn] = performance.now(); }
+function showCode() {
+  const now = performance.now();
+  const active = new Set(), fl = new Set();
+  for (const [fn, t] of Object.entries(marks)) if (now - t < 250) active.add(fn);
+  for (const [fn, t] of Object.entries(flashes)) if (now - t < 1500) fl.add(fn);
+  active.add('loop');
+  lineEls.forEach(e => e.classList.remove('active', 'flash'));
+  for (const fn of active) { const r = fnRange[fn]; if (r) for (let k = r[0]; k <= r[1]; k++) lineEls[k].classList.add('active'); }
+  for (const fn of fl) { const r = fnRange[fn]; if (r) for (let k = r[0]; k <= r[1]; k++) { lineEls[k].classList.remove('active'); lineEls[k].classList.add('flash'); } }
+}
+
+// ---------------------------------------------------------------- log
+function log(msg) {
+  const el = $('log');
+  el.textContent += `t = ${simT.toFixed(1).padStart(5)} s  ${msg}\n`;
+  if (el.textContent.length > 6000) el.textContent = el.textContent.slice(-4000);
+  el.scrollTop = el.scrollHeight;
+}
+
+// ---------------------------------------------------------------- charts
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function prep(c) {
+  const dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = c.clientHeight;
+  if (c.width !== Math.round(w * dpr)) { c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); }
+  const g = c.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+  g.font = '11px "IBM Plex Mono", monospace';
+  return { g, w, h };
+}
+function axes(g, w, h, lo, hi, ticks, fmt, pad) {
+  g.strokeStyle = css('--line'); g.fillStyle = css('--muted'); g.lineWidth = 1;
+  for (const v of ticks) {
+    const y = yOf(v, lo, hi, h, pad);
+    g.beginPath(); g.moveTo(pad.l, y); g.lineTo(w - pad.r, y); g.stroke();
+    g.fillText(fmt(v), 2, y + 4);
+  }
+}
+const PAD = { l: 44, r: 8, t: 8, b: 16 };
+const yOf = (v, lo, hi, h, pad) => h - pad.b - (v - lo) / (hi - lo) * (h - pad.t - pad.b);
+const xOf = (t, w, pad) => pad.l + (t - (simT - HIST_S)) / HIST_S * (w - pad.l - pad.r);
+function timeAxis(g, w, h) {
+  g.fillStyle = css('--muted');
+  for (let s = Math.ceil(simT - HIST_S); s <= simT; s++) if (s % 5 === 0 && s >= 0) {
+    const x = xOf(s, w, PAD); g.fillText(`${s}s`, x - 8, h - 3);
+  }
+}
+function trace(g, w, h, key, lo, hi, colourOf, width = 2) {
+  for (let k = 1; k < hist.length; k++) {
+    const a = hist[k - 1], b = hist[k];
+    g.strokeStyle = colourOf(b); g.lineWidth = width;
+    g.beginPath(); g.moveTo(xOf(a.t, w, PAD), yOf(a[key], lo, hi, h, PAD)); g.lineTo(xOf(b.t, w, PAD), yOf(b[key], lo, hi, h, PAD)); g.stroke();
+  }
+}
+function hline(g, w, h, v, lo, hi, colour, dash) {
+  const y = yOf(v, lo, hi, h, PAD);
+  g.strokeStyle = colour; g.lineWidth = 1.5; g.setLineDash(dash || []);
+  g.beginPath(); g.moveTo(PAD.l, y); g.lineTo(w - PAD.r, y); g.stroke(); g.setLineDash([]);
+}
+function drawCharts() {
+  const ok = css('--ok'), warn = css('--warn'), acc = css('--accent'), bad = css('--bad'), muted = css('--muted'), purple = '#8A4FB8';
+  const supplyCol = p => p.bat ? warn : ok;
+  // A0 reading
+  { const { g, w, h } = prep($('cA0')); const lo = 0, hi = 1023;
+    g.fillStyle = 'rgba(183,121,31,.16)';
+    const y1 = yOf(kToRes, lo, hi, h, PAD), y2 = yOf(kToBattery, lo, hi, h, PAD);
+    g.fillRect(PAD.l, y1, w - PAD.l - PAD.r, y2 - y1);
+    axes(g, w, h, lo, hi, [0, 256, 512, 768, 1023], v => String(v), PAD);
+    hline(g, w, h, kToBattery, lo, hi, muted, [5, 4]); hline(g, w, h, kToRes, lo, hi, muted, [5, 4]);
+    trace(g, w, h, 'read', lo, hi, supplyCol); timeAxis(g, w, h); }
+  // RES voltage
+  { const { g, w, h } = prep($('cRes')); const lo = 0, hi = 17;
+    axes(g, w, h, lo, hi, [0, 4, 8, 12, 16], v => v + ' V', PAD);
+    trace(g, w, h, 'voc', lo, hi, () => muted, 1.5); trace(g, w, h, 'vterm', lo, hi, () => ok); timeAxis(g, w, h); }
+  // drive
+  { const { g, w, h } = prep($('cDrive')); const lo = 0, hi = 100;
+    axes(g, w, h, lo, hi, [0, 25, 50, 75, 100], v => v + '%', PAD);
+    trace(g, w, h, 'duty', lo, hi, () => acc);
+    // pump voltage on the same chart, scaled 0-16 V to 0-100
+    for (let k = 1; k < hist.length; k++) { const a = hist[k - 1], b = hist[k];
+      g.strokeStyle = purple; g.lineWidth = 1.5; g.beginPath();
+      g.moveTo(xOf(a.t, w, PAD), yOf(a.vout / 16 * 100, lo, hi, h, PAD)); g.lineTo(xOf(b.t, w, PAD), yOf(b.vout / 16 * 100, lo, hi, h, PAD)); g.stroke(); }
+    g.fillStyle = purple; for (const v of [4, 8, 12]) g.fillText(v + ' V', w - PAD.r - 34, yOf(v / 16 * 100, lo, hi, h, PAD) - 3);
+    timeAxis(g, w, h); }
+  // current
+  { const { g, w, h } = prep($('cCur')); const lo = 0, hi = 6;
+    axes(g, w, h, lo, hi, [0, 1, 2, 3, 4, 5, 6], v => v + ' A', PAD);
+    hline(g, w, h, 2, lo, hi, bad, [3, 3]); hline(g, w, h, 2.5, lo, hi, bad);
+    trace(g, w, h, 'i', lo, hi, p => p.i > 2.5 ? bad : acc); timeAxis(g, w, h); }
+  // scope: three PWM periods at about 490 Hz
+  { const { g, w, h } = prep($('cScope')); const pad = { l: 44, r: 8, t: 8, b: 8 };
+    const level = A.level, lowFrac = level / 255;           // IN3 is LOW for level/255 of each period
+    const midY = h / 2, top1 = pad.t + 10, bot1 = midY - 12, top2 = midY + 14, bot2 = h - pad.b - 4;
+    g.fillStyle = muted; g.fillText('IN3', 4, (top1 + bot1) / 2 + 4); g.fillText('pump', 4, (top2 + bot2) / 2 + 4);
+    g.strokeStyle = css('--line'); g.lineWidth = 1; g.setLineDash([3, 3]);
+    for (const y of [top1, bot1, top2, bot2]) { g.beginPath(); g.moveTo(pad.l, y); g.lineTo(w - pad.r, y); g.stroke(); }
+    g.setLineDash([]);
+    g.fillText('HIGH', w - pad.r - 32, top1 - 2); g.fillText('LOW', w - pad.r - 26, bot1 - 2);
+    g.fillText(Math.max(0, M.vpump - VL298).toFixed(1) + ' V', w - pad.r - 40, top2 - 2); g.fillText('0 V', w - pad.r - 24, bot2 - 2);
+    const W = w - pad.l - pad.r, P = W / 3;
+    const on = pin.outputs && pin.d4 && M.vpump > VL298;
+    g.lineWidth = 2;
+    g.strokeStyle = warn; g.beginPath();
+    for (let k = 0; k < 3; k++) {                   // IN3: LOW first (driving), then HIGH
+      const x0 = pad.l + k * P, xm = x0 + P * lowFrac, x1 = x0 + P;
+      g.moveTo(x0, lowFrac > 0 ? bot1 : top1); g.lineTo(xm, lowFrac > 0 ? bot1 : top1);
+      if (lowFrac > 0 && lowFrac < 1) { g.lineTo(xm, top1); } g.lineTo(x1, lowFrac >= 1 ? bot1 : top1);
+      if (k < 2 && lowFrac > 0 && lowFrac < 1) g.lineTo(x1, bot1);
+    }
+    g.stroke();
+    g.strokeStyle = purple; g.beginPath();
+    const vTop = top2, vBot = bot2;
+    for (let k = 0; k < 3; k++) {
+      const x0 = pad.l + k * P, xm = x0 + P * lowFrac, x1 = x0 + P;
+      const hiY = on && lowFrac > 0 ? vTop : vBot;
+      g.moveTo(x0, hiY); g.lineTo(xm, hiY);
+      if (lowFrac < 1) { g.lineTo(xm, vBot); g.lineTo(x1, vBot); if (k < 2 && on && lowFrac > 0) g.lineTo(x1, vTop); }
+    }
+    g.stroke();
+    $('hScope').textContent = `analogWrite(3, ${pin.d3}): IN3 LOW ${(lowFrac * 100).toFixed(0)} % of the time`;
+  }
+}
+
+// ---------------------------------------------------------------- readouts
+function readouts() {
+  $('clock').textContent = `t = ${simT.toFixed(1)} s`;
+  $('vocLbl').textContent = (+$('voc').value).toFixed(1) + ' V';
+  $('rintLbl').textContent = (+$('rint').value).toFixed(1) + ' Ω';
+  const hl = (v, t, f) => `<span class="${v ? 'ok' : 'muted'}">${v ? t : f}</span>`;
+  $('pA0').innerHTML = `<b>${A.lastReading}</b> <span class="muted">(${(M.vterm * kRatioPermil / 1000).toFixed(2)} V)</span>`;
+  $('pD13').innerHTML = hl(pin.d13, 'HIGH: RES on', 'LOW');
+  $('pD12').innerHTML = hl(pin.d12, 'HIGH: battery on', 'LOW');
+  $('pD3').innerHTML = `<code>analogWrite(${pin.d3})</code>`;
+  $('pD2').innerHTML = hl(pin.d2, 'HIGH', 'LOW');
+  $('pD4').innerHTML = hl(pin.d4, 'HIGH', 'LOW');
+  $('srcRes').classList.toggle('on', !!pin.d13); $('srcBat').classList.toggle('on', !!pin.d12);
+  $('ledRes').classList.toggle('on', !!pin.d13); $('ledBat').classList.toggle('on', !!pin.d12);
+  $('vOn').textContent = String(A.onBattery);
+  $('vLevel').textContent = `${A.level}  (${(A.level / 2.55).toFixed(0)} %)`;
+  $('vFrom').textContent = A.rampFrom;
+  $('vRamp').textContent = A.level < 255 ? `${millis - A.rampStartMs} ms of ${kRampMs}` : 'ramp done';
+  $('vRead').textContent = A.lastReading;
+  $('vTh').textContent = `${kToBattery} / ${kToRes}`;
+  $('hA0').textContent = `${A.lastReading} → ${A.onBattery ? 'battery' : 'RES'}`;
+  $('hRes').textContent = `${M.vterm.toFixed(1)} V at J3, ${M.voc.toFixed(1)} V open circuit`;
+  $('hDrive').textContent = `level ${A.level}, pump ${M.vout.toFixed(1)} V`;
+  const peak = hist.reduce((m, p) => Math.max(m, p.i), 0);
+  $('hCur').innerHTML = `${M.i.toFixed(2)} A now, peak <span class="${peak > 2.5 ? 'bad' : ''}">${peak.toFixed(2)} A</span>`;
+}
+
+// ---------------------------------------------------------------- running
+let running = true, last = performance.now(), recordAcc = 0;
+function reset(msg) {
+  pin.d13 = pin.d12 = pin.d2 = pin.d4 = 0; pin.d3 = 255; pin.outputs = false;
+  Object.assign(A, { onBattery:false, level:0, rampFrom:0, rampStartMs:0, lastSampleMs:0 });
+  M.omega = 0; M.i = 0; M.vterm = M.voc;
+  millis = 0;
+  if (msg) log(msg);
+  setup();
+}
+function frame(now) {
+  const dtReal = Math.min(0.1, (now - last) / 1000); last = now;
+  if (running) {
+    const simDt = dtReal * +$('speed').value;
+    const steps = Math.max(1, Math.round(simDt * 1000));
+    for (let k = 0; k < steps; k++) {
+      simT += 0.001; millis += 1;
+      physics(0.001);
+      loop();
+      recordAcc += 1;
+      if (recordAcc >= 20) { recordAcc = 0; record(); }
+    }
+  }
+  drawCharts(); readouts(); showCode();
+  requestAnimationFrame(frame);
+}
+
+// ---------------------------------------------------------------- controls
+$('voc').addEventListener('input', () => { M.vocTarget = +$('voc').value; });
+$('rint').addEventListener('input', () => { M.rint = +$('rint').value; });
+$('noramp').addEventListener('change', () => { noRamp = $('noramp').checked; log(noRamp ? 'What if: no ramp. startRamp() now jumps to full drive; reset to see a direct start.' : 'Ramp restored.'); });
+$('pause').addEventListener('click', () => { running = !running; $('pause').textContent = running ? '❚❚ Pause' : '▶ Run'; });
+$('reset').addEventListener('click', () => reset('Reset: the pins are inputs until setup() runs.'));
+let scen = null;
+function scenario(steps, name) {          // steps: [[after seconds, open-circuit volts], ...]
+  if (scen) scen.forEach(clearTimeout);
+  log(`Scenario: ${name}.`);
+  scen = [];
+  // run the steps on simulated time
+  const start = simT;
+  const pending = steps.map(s => ({ at: start + s[0], v: s[1], gust: s[2] }));
+  const tick = () => {
+    while (pending.length && simT >= pending[0].at) {
+      const s = pending.shift();
+      M.vocTarget = s.v; $('voc').value = s.v;
+      if (s.gust !== undefined) $('gust').checked = s.gust;
+    }
+    if (pending.length) scen.push(setTimeout(tick, 50));
+  };
+  tick();
+}
+$('sCloud').addEventListener('click', () => scenario([[0, 12, false], [3, 7], [11, 12]], 'a cloud passes (12 V → 7 V for 8 s → 12 V)'));
+$('sGust').addEventListener('click', () => scenario([[0, 8.3, true]], 'gusty wind around 8 V: the dead band stops the chatter'));
+$('sHigh').addEventListener('click', () => scenario([[0, 16, false]], 'strong wind, 16 V: higher than the battery'));
+$('sNight').addEventListener('click', () => { scenario([[0, 0, false]], 'power-up at night, no RES'); M.voc = 0; M.vterm = 0; reset('Reset at night.'); });
+
+// start with the RES at 12 V
+M.vocTarget = 12;
+reset('Power-up with the RES at 12 V.');
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
