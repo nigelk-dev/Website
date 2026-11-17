@@ -128,7 +128,8 @@ voltage](03-read-input-voltage.md#or-measure-the-reading)):
 1. Apply a known RES voltage to **J3**, e.g. 12.0 V from a bench supply, measured
    with a multimeter.
 2. Measure the voltage at **TP1**, e.g. 3.60 V.
-3. $k = 3.60 / 12.0 = 0.300$: use it in the code as `const float kRatio = 0.300;`.
+3. $k = 3.60 / 12.0 = 0.300$. The code keeps it as a whole number of thousandths,
+   so it needs no `float`: `const long kRatioPermil = 300;`.
 
 Measure again whenever the trimmer is moved.
 
@@ -305,21 +306,25 @@ the two hardware functions, `setPump()` and `changeSupply()`, differ.
  *   D13 = renewableOn, D12 = batteryOn (both active-HIGH),
  *   D3 = InC (L298N IN3, PWM), D2 = InD (IN4), D4 = Enable (EnB).
  * Jumpers JP1/JP2 set to the L298N outputs.
+ * Whole numbers only: there is no float anywhere in this sketch.
  */
 
-const uint8_t  kSensePin   = A0;
-const uint8_t  kResOnPin   = 13;      // renewableOn
-const uint8_t  kBatOnPin   = 12;      // batteryOn
-const uint8_t  kIn3Pin     = 3;       // InC: a PWM pin
-const uint8_t  kIn4Pin     = 2;       // InD
-const uint8_t  kEnablePin  = 4;       // Enable (EnB)
+const uint8_t  kSensePin    = A0;
+const uint8_t  kResOnPin    = 13;     // renewableOn
+const uint8_t  kBatOnPin    = 12;     // batteryOn
+const uint8_t  kIn3Pin      = 3;      // InC: a PWM pin
+const uint8_t  kIn4Pin      = 2;      // InD
+const uint8_t  kEnablePin   = 4;      // Enable (EnB)
 
-const float    kRatio      = 0.300;   // fraction of the RES voltage at A0, measured at TP1
-const float    kBatteryV   = 12.0;    // battery voltage (measure yours)
-const float    kToBatteryV = 8.0;     // RES volts: switch to the battery below this ...
-const float    kToResV     = 9.0;     // ... and back to the RES only above this
-const float    kAdcVref    = 5.0;
-const float    kAdcMax     = 1023.0;
+// Measured values, kept as whole numbers.
+const long     kRatioPermil = 300;    // divider fraction in thousandths, measured at TP1:
+                                      //   3.60 V / 12.0 V = 0.300 -> 300
+const int      kBatteryMv   = 12000;  // battery voltage in millivolts (measure yours)
+
+// Hysteresis thresholds: RES millivolts, turned into analogRead values by the
+// compiler (RES mV x fraction = A0 mV, then x 1023 / 5000).
+const int      kToBattery   = 8000L * kRatioPermil / 1000 * 1023 / 5000;  // 8 V -> 491
+const int      kToRes       = 9000L * kRatioPermil / 1000 * 1023 / 5000;  // 9 V -> 552
 
 const unsigned long kRampMs   = 2000; // time to reach full drive after a ramp starts
 const unsigned long kSampleMs = 100;  // time between RES readings
@@ -330,9 +335,10 @@ uint8_t       rampFrom     = 0;       // drive level when the current ramp start
 unsigned long rampStartMs  = 0;
 unsigned long lastSampleMs = 0;
 
-// The RES voltage, from the A0 reading and the measured divider fraction.
-float readResVolts() {
-  return analogRead(kSensePin) * (kAdcVref / kAdcMax) / kRatio;
+// The RES voltage in millivolts, from an A0 reading. The sums are done in a
+// long, because 1023 x 5000 is far too big for an int.
+int resMillivolts(int reading) {
+  return (long)reading * 5000 / 1023 * 1000 / kRatioPermil;
 }
 
 // Drive the pump at 'lvl' (0 to 255). IN4 is held HIGH, so IN3 LOW drives the
@@ -363,11 +369,12 @@ void updateRamp(unsigned long now) {
 
 // Change supply. If the new supply is higher, first cut the drive so the pump's
 // average voltage stays about the same, then let it ramp back up.
-void changeSupply(bool toBattery, float vRes) {
-  float vOld = toBattery ? vRes : kBatteryV;
-  float vNew = toBattery ? kBatteryV : vRes;
-  if (vNew > vOld) {
-    startRamp((uint8_t)(level * vOld / vNew));
+void changeSupply(bool toBattery, int reading) {
+  int resMv = resMillivolts(reading);
+  int oldMv = toBattery ? resMv : kBatteryMv;
+  int newMv = toBattery ? kBatteryMv : resMv;
+  if (newMv > oldMv) {
+    startRamp((long)level * oldMv / newMv);
   }
   // Make before break: diodes D1/D2 stop the supplies feeding each other.
   digitalWrite(toBattery ? kBatOnPin : kResOnPin, HIGH);
@@ -386,7 +393,7 @@ void setup() {
   setPump(0);                         // no drive yet
   digitalWrite(kEnablePin, HIGH);     // L298N channel B on
 
-  onBattery = readResVolts() < kToBatteryV;
+  onBattery = analogRead(kSensePin) < kToBattery;
   digitalWrite(onBattery ? kBatOnPin : kResOnPin, HIGH);
   startRamp(0);                       // slow start from standstill
 }
@@ -396,11 +403,11 @@ void loop() {
 
   if (now - lastSampleMs >= kSampleMs) {
     lastSampleMs = now;
-    float vRes = readResVolts();
-    if (!onBattery && vRes < kToBatteryV) {
-      changeSupply(true, vRes);       // RES clearly too low
-    } else if (onBattery && vRes > kToResV) {
-      changeSupply(false, vRes);      // RES clearly recovered
+    int reading = analogRead(kSensePin);
+    if (!onBattery && reading < kToBattery) {
+      changeSupply(true, reading);    // RES clearly too low
+    } else if (onBattery && reading > kToRes) {
+      changeSupply(false, reading);   // RES clearly recovered
     }
   }
 
@@ -429,11 +436,11 @@ The code is split into small functions, each doing one thing:
 
 | Function | Job | Called from |
 |---|---|---|
-| `readResVolts()` | Turn the A0 reading into the RES voltage | `setup()`, `loop()` |
+| `resMillivolts(reading)` | Turn an A0 reading into the RES voltage in millivolts | `changeSupply()` |
 | `setPump(lvl)` | Set the pump's drive level on the L298N | `startRamp()`, `updateRamp()`, `setup()` |
 | `startRamp(from)` | Begin a ramp from a given level | `setup()`, `changeSupply()` |
 | `updateRamp(now)` | Move the ramp on by the time that has passed | every pass of `loop()` |
-| `changeSupply(toBattery, vRes)` | Switch the MOSFETs, cutting the drive first if needed | `loop()` |
+| `changeSupply(toBattery, reading)` | Switch the MOSFETs, cutting the drive first if needed | `loop()` |
 
 #### The constants: pins and settings
 
@@ -441,11 +448,16 @@ The code is split into small functions, each doing one thing:
   (D13), `kBatOnPin` is `batteryOn` (D12), and the three L298N pins are `InC`
   (D3), `InD` (D2) and `Enable` (D4). If a board revision moves a net, only these
   lines change.
-- **`kRatio`** is the divider fraction you measured at TP1 ([Section
-  4](#reading-the-input-on-the-board)). **`kBatteryV`** is your battery's voltage.
-- **`kToBatteryV` and `kToResV`** are the two hysteresis thresholds, in RES volts:
-  below 8 V switch to the battery, above 9 V switch back. Between them nothing
-  changes.
+- **`kRatioPermil`** is the divider fraction you measured at TP1 ([Section
+  4](#reading-the-input-on-the-board)), in **thousandths**: 0.300 is stored as
+  300. **`kBatteryMv`** is your battery's voltage in **millivolts**. Whole units
+  like these keep every sum in whole numbers.
+- **`kToBattery` and `kToRes`** are the two hysteresis thresholds, worked out by
+  the compiler as `analogRead` values: 8 V from the RES puts
+  $8000 	imes 0.300 = 2400$ mV on A0, a reading of $2400 	imes 1023 / 5000 = 491$;
+  9 V gives 552. Below 491 switch to the battery, above 552 switch back; between
+  them nothing changes. The `L` in `8000L` makes the compiler use `long` maths,
+  because $8000 	imes 300 = 2\,400\,000$ does not fit in an `int`.
 - **`kRampMs`** is how long a ramp from 0 to full drive takes; **`kSampleMs`** is
   how often the RES is read.
 
@@ -462,23 +474,33 @@ The code is split into small functions, each doing one thing:
 They are declared outside any function (**global**), so they keep their values
 from one pass of `loop()` to the next.
 
-#### `readResVolts()`: from reading to RES volts
+#### No `float`: readings for decisions, millivolts for sums
+
+The sketch never needs a `float`:
+
+- **The decision** compares the raw reading with `kToBattery` and `kToRes`, as in
+  [Read input voltage](03-read-input-voltage.md#why-whole-numbers-are-better). No
+  conversion is needed at all.
+- **The drive scaling** at a switch-over compares the RES and battery *voltages*,
+  so `resMillivolts()` turns the reading into whole millivolts:
 
 ```cpp
-return analogRead(kSensePin) * (kAdcVref / kAdcMax) / kRatio;
+return (long)reading * 5000 / 1023 * 1000 / kRatioPermil;
 ```
 
-Two steps in one line: the reading becomes the voltage at A0 (× 5 / 1023), and
-dividing by the divider fraction gives the voltage at J3. With a 12.0 V RES and
-`kRatio = 0.300`:
+Step by step, for a 12.0 V RES (a reading of about 736):
 
-$$V_{A0} = 12.0 \times 0.300 = 3.60\ \text{V} \;\rightarrow\; \text{reading} \approx 736
-\;\rightarrow\; \frac{736 \times 5 / 1023}{0.300} \approx 12.0\ \text{V}$$
+| Step | Sum | Result |
+|---|---|---|
+| Reading → mV at A0 | $736 \times 5000 / 1023$ | 3597 mV |
+| A0 mV → RES mV | $3597 \times 1000 / 300$ | 11 990 mV, about 12.0 V |
 
-This sketch works in volts, with `float`, because `changeSupply()` compares the
-RES and battery *voltages* to scale the drive. The switching decision alone could
-use whole-number readings, as in [Read input voltage](03-read-input-voltage.md):
-`kToBatteryV = 8.0` is a reading of $8.0 \times 0.300 \times 1023 / 5 \approx 491$.
+`(long)` makes the whole line use `long` maths: $736 \times 5000 = 3\,680\,000$
+would overflow an `int`. **Multiply before dividing** in each step, or the whole
+number division would throw the precision away (`5000 / 1023` alone is 4).
+
+Leaving out `float` saves well over 1 KB of program memory, and every sum runs in
+a few microseconds ([Read input voltage](03-read-input-voltage.md#why-whole-numbers-are-better)).
 
 #### `setPump()`: the inverted PWM
 
@@ -539,18 +561,20 @@ type](05-pump-drive-type.md#a-switch-over-causes-a-surge-too)), so the function
 first compares the old and new supply:
 
 ```cpp
-float vOld = toBattery ? vRes : kBatteryV;
-float vNew = toBattery ? kBatteryV : vRes;
-if (vNew > vOld) {
-  startRamp((uint8_t)(level * vOld / vNew));
+int resMv = resMillivolts(reading);
+int oldMv = toBattery ? resMv : kBatteryMv;
+int newMv = toBattery ? kBatteryMv : resMv;
+if (newMv > oldMv) {
+  startRamp((long)level * oldMv / newMv);
 }
 ```
 
 `? :` picks one of two values: going *to* the battery, the old supply is the RES
 and the new one the battery; going back, the other way round.
 
-- **RES → battery** with the pump at full drive on a 7.8 V RES: the new supply is
-  higher, so the drive is cut to $255 \times 7.8 / 12 \approx 165$. The pump's
+- **RES → battery** with the pump at full drive on a 7.8 V RES (7800 mV): the new
+  supply is higher, so the drive is cut to $255 \times 7800 / 12000 = 165$, in
+  `long` maths because $255 \times 7800$ is too big for an `int`. The pump's
   average voltage stays at about 7.8 V, so there is no surge, and the ramp then
   takes it up to 12 V.
 - **Battery → RES** at 9.2 V: the new supply is lower, so there is no surge and no
@@ -578,8 +602,8 @@ The order of the lines matters:
 2. **IN4 HIGH, then `setPump(0)`**: the direction is set and the pump is not driven
    (IN3 held HIGH) *before* the L298N is enabled.
 3. **Enable HIGH**: the L298N's channel B is on, but with no drive yet.
-4. **Choose a supply.** If the RES is below `kToBatteryV`, start on the battery;
-   otherwise on the RES.
+4. **Choose a supply.** If the reading is below `kToBattery` (491), start on the
+   battery; otherwise on the RES.
 5. **`startRamp(0)`**: the pump starts with a slow start from standstill, never a
    direct start.
 
@@ -595,11 +619,13 @@ about 49 days.
 
 Inside it, the hysteresis test uses `onBattery`:
 
-- **On the RES**, only one thing matters: has it dropped below 8 V? If so, change to
-  the battery.
-- **On the battery**, only: has the RES recovered above 9 V? If so, change back.
+- **On the RES**, only one thing matters: has the reading dropped below 491 (8 V)?
+  If so, change to the battery.
+- **On the battery**, only: has it recovered above 552 (9 V)? If so, change back.
 
-A RES wobbling between 8 and 9 V therefore causes no switching at all. Finally,
+A RES wobbling between 8 and 9 V therefore causes no switching at all. The
+reading is passed on to `changeSupply()`, so the decision and the drive scaling
+use the same sample. Finally,
 outside the 100 ms test, **`updateRamp(now)`** runs on every pass, so a ramp keeps
 moving even while the RES is being read.
 
@@ -607,12 +633,12 @@ moving even while the RES is being read.
 
 | When | What the RES does | What the sketch does |
 |---|---|---|
-| Power-up | 12 V | `setup()` picks the RES (12 V is above 8 V) and starts a ramp from 0 |
+| Power-up | 12 V (reading 736) | `setup()` picks the RES (736 is not below 491) and starts a ramp from 0 |
 | 0–2 s | 12 V | `updateRamp()` takes the drive from 0 to 255; the RES is read every 100 ms and nothing changes |
-| 30 s | Drops to 8.5 V | Still above 8 V: no change (in the dead band) |
-| 31 s | Drops to 7.8 V | Below 8 V: `changeSupply(true, 7.8)`. The battery is higher, so the drive is cut to 165, the battery switched in, then the RES out; the ramp takes 165 back to 255 |
-| 40 s | Recovers to 8.8 V | On the battery, and not yet above 9 V: no change |
-| 41 s | Recovers to 9.2 V | Above 9 V: `changeSupply(false, 9.2)`. The RES is lower, so no ramp: switch the RES in, the battery out; the pump carries on at full drive, a little slower |
+| 30 s | Drops to 8.5 V (522) | Not below 491: no change (in the dead band) |
+| 31 s | Drops to 7.8 V (478) | Below 491: `changeSupply(true, 478)`, about 7790 mV. The battery is higher, so the drive is cut to 165, the battery switched in, then the RES out; the ramp takes 165 back to 255 |
+| 40 s | Recovers to 8.8 V (540) | On the battery, and not above 552: no change |
+| 41 s | Recovers to 9.2 V (564) | Above 552: `changeSupply(false, 564)`. The RES is lower, so no ramp: switch the RES in, the battery out; the pump carries on at full drive, a little slower |
 
 **What differs from the breadboard sketch**
 
@@ -623,7 +649,8 @@ moving even while the RES is being read.
 | Switch-over order | Break before make | Make before break |
 | PWM pin | ENB on D9 | IN3 on D3 (EnB on D4 held HIGH) |
 | `setPump()` | `analogWrite(9, level)` | `analogWrite(3, 255 - level)` |
-| Divider fraction | Calculated from R1, R2 (or measured) | Measured at TP1 |
+| Divider fraction | Calculated from R1, R2 (or measured) | Measured at TP1, stored in thousandths |
+| Numbers | `float` volts | Whole numbers only: readings and millivolts |
 
 For **direct drive**, move JP1/JP2 to the direct positions: the L298N is then
 bypassed, and only the supply switching matters.
