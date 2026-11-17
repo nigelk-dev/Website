@@ -295,11 +295,11 @@ to 255, write the inverse: `analogWrite(3, 255 - level)`.
 
 This combines everything: reading the RES on A0, the switch-over with hysteresis
 using the MOSFET switches (make before break), and the pump drive through the
-board's L298N with the inverted PWM on IN3: a **slow start on the RES**, and
-**direct drive on the battery**. It has the same structure as the
-sketch in [Pump drive type](05-pump-drive-type.md#the-code), including the slow
-start on the RES only; only the pins, the divider constant and the two hardware
-functions, `setPump()` and `changeSupply()`, differ.
+board's L298N with the inverted PWM on IN3, with a **slow start on both
+supplies**. It has the same structure as the sketch in [Pump drive
+type](05-pump-drive-type.md#the-code); the pins, the divider constant and the two
+hardware functions, `setPump()` and `changeSupply()`, differ, and the board ramps
+on the battery as well as on the RES.
 
 ```cpp
 /*
@@ -369,24 +369,20 @@ void updateRamp(unsigned long now) {
   }
 }
 
-// Change supply. The slow start is only for the RES: the battery can supply the
-// pump's start-up surge, so on the battery the pump is driven directly.
+// Change supply, on either supply the same way. If the new supply is higher,
+// first cut the drive so the pump's average voltage stays about the same, then
+// let it ramp back up. A lower supply causes no surge, so needs no ramp.
 void changeSupply(bool toBattery, int reading) {
-  if (!toBattery) {
-    // To the RES. If it is higher than the battery, first cut the drive so the
-    // pump's average voltage stays about the same, then let it ramp back up.
-    int resMv = resMillivolts(reading);
-    if (resMv > kBatteryMv) {
-      startRamp((long)level * kBatteryMv / resMv);
-    }
+  int resMv = resMillivolts(reading);
+  int oldMv = toBattery ? resMv : kBatteryMv;
+  int newMv = toBattery ? kBatteryMv : resMv;
+  if (newMv > oldMv) {
+    startRamp((long)level * oldMv / newMv);
   }
   // Make before break: diodes D1/D2 stop the supplies feeding each other.
   digitalWrite(toBattery ? kBatOnPin : kResOnPin, HIGH);
   digitalWrite(toBattery ? kResOnPin : kBatOnPin, LOW);
   onBattery = toBattery;
-  if (onBattery) {
-    setPump(255);                     // battery: direct drive, full drive at once
-  }
 }
 
 void setup() {
@@ -402,11 +398,7 @@ void setup() {
 
   onBattery = analogRead(kSensePin) < kToBattery;
   digitalWrite(onBattery ? kBatOnPin : kResOnPin, HIGH);
-  if (onBattery) {
-    setPump(255);                     // battery: direct drive
-  } else {
-    startRamp(0);                     // RES: slow start from standstill
-  }
+  startRamp(0);                       // slow start from standstill, on either supply
 }
 
 void loop() {
@@ -433,15 +425,18 @@ void loop() {
 The sketch has two jobs, and it must never stop doing either of them:
 
 1. **Watch the RES** and choose the supply: every 100 ms.
-2. **Ramp the pump** up smoothly when it runs from the RES: on every pass of
-   `loop()`.
+2. **Ramp the pump** up smoothly whenever it starts, or its supply steps up to a
+   higher voltage: on every pass of `loop()`.
 
-**Slow start on the RES only.** The surge a pump draws at start-up is a problem
-for the RES, whose voltage sags under it and can trigger a false switch-over
-([Pump drive type](05-pump-drive-type.md#why-the-surge-matters-in-this-project)).
-The battery is a stiff supply that delivers the surge without sagging, so on the
-battery the sketch uses **direct drive**: full drive at once, and full flow with no
-two-second wait.
+**A slow start on both supplies.** On the RES, the start-up surge would make its
+voltage sag and could trigger a false switch-over ([Pump drive
+type](05-pump-drive-type.md#why-the-surge-matters-in-this-project)). On the
+battery, which doesn't sag, the surge would instead go through the L298N and the
+sense resistor R1, which can't carry it ([Direct drive on the battery and the
+L298N](05-pump-drive-type.md#direct-drive-on-the-battery-and-the-l298n)). So the
+board ramps the pump on **both** supplies: the current never jumps far above its
+running value, whichever supply is switched in. The price is a two-second wait
+for full flow after a start.
 
 There is no `delay()` anywhere. Instead, `loop()` runs many thousands of times a
 second, and each job checks the time with `millis()` to decide whether it has
@@ -455,10 +450,10 @@ The code is split into small functions, each doing one thing:
 | Function | Job | Called from |
 |---|---|---|
 | `resMillivolts(reading)` | Turn an A0 reading into the RES voltage in millivolts | `changeSupply()` |
-| `setPump(lvl)` | Set the pump's drive level on the L298N | `startRamp()`, `updateRamp()`, `changeSupply()`, `setup()` |
-| `startRamp(from)` | Begin a ramp from a given level (RES only) | `setup()`, `changeSupply()` |
+| `setPump(lvl)` | Set the pump's drive level on the L298N | `startRamp()`, `updateRamp()`, `setup()` |
+| `startRamp(from)` | Begin a ramp from a given level | `setup()`, `changeSupply()` |
 | `updateRamp(now)` | Move the ramp on by the time that has passed | every pass of `loop()` |
-| `changeSupply(toBattery, reading)` | Switch the MOSFETs: direct drive on the battery, a ramp on the RES if needed | `loop()` |
+| `changeSupply(toBattery, reading)` | Switch the MOSFETs, cutting the drive first if the new supply is higher | `loop()` |
 
 #### The constants: pins and settings
 
@@ -484,7 +479,7 @@ The code is split into small functions, each doing one thing:
 | Variable | Remembers | Why it's needed |
 |---|---|---|
 | `onBattery` | Which supply is switched in | The hysteresis test depends on it: the threshold to cross is different on each supply |
-| `level` | The pump's drive level now, 0 to 255 | `changeSupply()` scales it when switching to a higher RES; `updateRamp()` stops when it reaches 255, which is where it stays on the battery |
+| `level` | The pump's drive level now, 0 to 255 | `changeSupply()` scales it when switching to a higher supply, and `updateRamp()` stops when it reaches 255 |
 | `rampFrom` | The level the current ramp started at | A ramp after a switch-over starts part-way up, not from 0 |
 | `rampStartMs` | When the current ramp started | `updateRamp()` works the level out from the time since then |
 | `lastSampleMs` | When the RES was last read | So it is read every 100 ms, not on every pass |
@@ -572,39 +567,41 @@ Three details make it work:
 - **`if (level == 255) return;`** Once the pump is at full drive, there is nothing
   to do, so `updateRamp()` returns straight away on every later pass.
 
-#### `changeSupply()`: slow start on the RES, direct drive on the battery
+#### `changeSupply()`: switching without a surge
 
-The two directions are handled differently:
+Only a step **up** in supply voltage causes a surge ([Pump drive
+type](05-pump-drive-type.md#a-switch-over-causes-a-surge-too)), so the function
+first compares the old and new supply, the same way in both directions:
 
 ```cpp
-if (!toBattery) {
-  int resMv = resMillivolts(reading);
-  if (resMv > kBatteryMv) {
-    startRamp((long)level * kBatteryMv / resMv);
-  }
+int resMv = resMillivolts(reading);
+int oldMv = toBattery ? resMv : kBatteryMv;
+int newMv = toBattery ? kBatteryMv : resMv;
+if (newMv > oldMv) {
+  startRamp((long)level * oldMv / newMv);
 }
 ```
 
-- **Battery → RES.** Only a step **up** in supply voltage causes a surge ([Pump
-  drive type](05-pump-drive-type.md#a-switch-over-causes-a-surge-too)). Usually the
-  RES is lower than the battery (it has only just recovered past 9 V), so there is
-  nothing to do: the pump simply slows a little. If the RES were higher, say
-  16 V, the drive is first cut to $255 \times 12000 / 16000 = 191$, so the pump's
-  average voltage stays at about 12 V, and the ramp takes it up from there. The
-  sum is in `long` maths because $255 \times 12000$ is too big for an `int`.
-- **RES → battery.** No ramp. After the switch, `setPump(255)` gives full drive at
-  once: **direct drive**. Any ramp still in progress ends there, because
-  `updateRamp()` does nothing once `level` is 255.
+`? :` picks one of two values: going *to* the battery, the old supply is the RES
+and the new one the battery; going back, the other way round.
 
-Then the switch itself, **make before break**, and on the battery, full drive:
+- **RES → battery** with the pump at full drive on a 7.8 V RES (a reading of 478,
+  about 7790 mV): the battery is higher, so the drive is first cut to
+  $255 \times 7786 / 12000 = 165$. The pump's average voltage stays at about
+  7.8 V, so there is no surge through the L298N or R1, and the ramp then takes it
+  up to 12 V. The sum is in `long` maths because $255 \times 7786$ is too big for
+  an `int`.
+- **Battery → RES** at 9.2 V: the RES is lower, so there is no surge and no ramp.
+  The pump simply slows a little.
+- **Battery → RES** at 16 V: the RES is higher, so the drive is cut to
+  $255 \times 12000 / 16000 = 191$, about 12 V average, then ramped.
+
+The drive is cut *before* the switch, so the higher supply never meets the pump
+at the old drive level. Then the switch itself, **make before break**:
 
 ```cpp
 digitalWrite(toBattery ? kBatOnPin : kResOnPin, HIGH);   // new supply on ...
 digitalWrite(toBattery ? kResOnPin : kBatOnPin, LOW);    // ... then old supply off
-onBattery = toBattery;
-if (onBattery) {
-  setPump(255);                     // battery: direct drive, full drive at once
-}
 ```
 
 For a few microseconds both MOSFETs are on. That is safe on this board because
@@ -612,20 +609,6 @@ diodes D1 and D2 stop either supply pushing current into the other, and it means
 the pump never loses its supply during a switch-over. With the relay module this
 order would short the RES to the battery: that is why the Chapter 4 and 5
 sketches do it the other way round.
-
-`setPump(255)` comes *after* the switch, so full drive is only applied once the
-battery is connected.
-
-> ⚠️ **Direct drive on the battery puts the pump's full start-up surge through U1,
-> the L298N**: up to $12 / R$ for a winding resistance $R$, 6 A for a 2 Ω pump.
-> The L298N has no current limit, and for a surge its safe limit is about
-> 2–2.5 A. On this board the surge also flows through **R1**, the 0.2 Ω sense
-> resistor: 6 A in it is $6^2 \times 0.2 = 7.2$ W while the surge lasts, far more
-> than a small surface-mount resistor is rated for. Check your pump as described in
-> [Direct drive on the battery and the
-> L298N](05-pump-drive-type.md#direct-drive-on-the-battery-and-the-l298n): R1 makes
-> that easy, since an oscilloscope across it shows the surge directly
-> (0.2 V per amp).
 
 #### `setup()`: a safe start
 
@@ -638,8 +621,9 @@ The order of the lines matters:
 3. **Enable HIGH**: the L298N's channel B is on, but with no drive yet.
 4. **Choose a supply.** If the reading is below `kToBattery` (491), start on the
    battery; otherwise on the RES.
-5. **Start the pump** to suit the supply: on the RES, `startRamp(0)` gives a slow
-   start from standstill; on the battery, `setPump(255)` starts it directly.
+5. **`startRamp(0)`**: the pump starts with a slow start from standstill, on
+   whichever supply was chosen. Even on the battery, it is never a direct start,
+   so the start-up surge never goes through the L298N and R1.
 
 #### `loop()`: watching and ramping
 
@@ -661,8 +645,8 @@ A RES wobbling between 8 and 9 V therefore causes no switching at all. The
 reading is passed on to `changeSupply()`, so the decision and the drive scaling
 use the same sample. Finally,
 outside the 100 ms test, **`updateRamp(now)`** runs on every pass, so a ramp keeps
-moving even while the RES is being read. On the battery the drive is already 255,
-so it returns at once.
+moving even while the RES is being read. Once a ramp has finished, the drive is
+255 and `updateRamp()` returns at once.
 
 #### A run-through
 
@@ -671,7 +655,7 @@ so it returns at once.
 | Power-up | 12 V (reading 736) | `setup()` picks the RES (736 is not below 491) and starts a ramp from 0 |
 | 0–2 s | 12 V | `updateRamp()` takes the drive from 0 to 255; the RES is read every 100 ms and nothing changes |
 | 30 s | Drops to 8.5 V (522) | Not below 491: no change (in the dead band) |
-| 31 s | Drops to 7.8 V (478) | Below 491: `changeSupply(true, 478)`. The battery is switched in, then the RES out, and `setPump(255)` keeps full drive: direct drive on the battery, no ramp |
+| 31 s | Drops to 7.8 V (478) | Below 491: `changeSupply(true, 478)`, about 7790 mV. The battery is higher, so the drive is cut to 165, the battery switched in, then the RES out; the ramp takes 165 back to 255 by 33 s (a ramp always takes `kRampMs`) |
 | 40 s | Recovers to 8.8 V (540) | On the battery, and not above 552: no change |
 | 41 s | Recovers to 9.2 V (564) | Above 552: `changeSupply(false, 564)`, about 9190 mV. That is below the battery's 12 000 mV, so no ramp: switch the RES in, the battery out; the pump carries on at full drive, a little slower |
 
@@ -685,11 +669,12 @@ so it returns at once.
 | PWM pin | ENB on D9 | IN3 on D3 (EnB on D4 held HIGH) |
 | `setPump()` | `analogWrite(9, level)` | `analogWrite(3, 255 - level)` |
 | Divider fraction | From the two resistors, `kR1` and `kR2` | Measured at TP1, stored in thousandths |
+| Slow start | On the RES only; direct drive on the battery | On both supplies |
 
-The sketch's direct drive on the battery is still through the L298N, just at full
-drive. To bypass the L298N altogether, move JP1/JP2 to the **Direct** positions:
-the pump is then on VPump on both supplies, the PWM has no effect, and only the
-supply switching matters.
+The ramp needs the L298N. To bypass it altogether, move JP1/JP2 to the
+**Direct** positions: the pump is then on VPump on both supplies, the PWM has no
+effect, and only the supply switching matters (plain direct drive, with its
+full start-up surge, now through the MOSFETs and diodes instead).
 
 ---
 
