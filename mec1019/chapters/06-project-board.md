@@ -419,7 +419,7 @@ void loop() {
 }
 ```
 
-> ▶️ **[Run it: Example 6.1 in the board simulator](applets/board-sim.html)** — the sketch running on a model of the board: change the RES and watch the A0 reading, the supply switching, the ramp and the pump current. Tick "What if: no ramp" and reset to see the surge the ramp prevents.
+> ▶️ **[Run it: Example 6.1 in the board simulator](applets/board-sim.html)** — the sketch running on a model of the board, with each line highlighted as it runs: change the RES and watch the A0 reading, the supply switching, the ramp and the pump current. Pause and step through one pass of `loop()` at a time, or tick "What if: no ramp" and reset to see the surge the ramp prevents.
 
 ### How the code works
 

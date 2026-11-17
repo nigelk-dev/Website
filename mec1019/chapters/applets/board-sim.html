@@ -33,8 +33,13 @@
   .code { font: .78rem/1.5 var(--font-mono); margin:0; padding:8px 0; counter-reset: ln; white-space:pre; }
   .code .ln { display:block; padding:0 12px 0 0; }
   .code .ln::before { counter-increment: ln; content: counter(ln); display:inline-block; width:3.2em; padding-right:.9em; text-align:right; color:var(--muted); opacity:.6; }
-  .code .ln.active { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
-  .code .ln.flash { background: rgba(229,57,53,.13); box-shadow: inset 3px 0 0 var(--bad); }
+  .code .ln.hot { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); font-weight: 600; }
+  .code .ln.warm { background: color-mix(in srgb, var(--accent) calc(var(--fade) * 9%), transparent); box-shadow: inset 3px 0 0 color-mix(in srgb, var(--accent) calc(var(--fade) * 60%), transparent); }
+  .code .ln.flash { background: rgba(229,57,53,.15); box-shadow: inset 3px 0 0 var(--bad); }
+  .key { display:inline-block; width:22px; height:10px; border-radius:2px; vertical-align:-1px; margin-right:4px; }
+  .key.hot { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+  .key.warm { background: color-mix(in srgb, var(--accent) 5%, transparent); box-shadow: inset 3px 0 0 color-mix(in srgb, var(--accent) 35%, transparent); }
+  .key.flash { background: rgba(229,57,53,.15); box-shadow: inset 3px 0 0 var(--bad); }
   .log { height: 150px; overflow:auto; font: .76rem/1.45 var(--font-mono); background:var(--editor); border:1px solid var(--line); border-radius:6px; padding:8px 10px; white-space:pre-wrap; }
   .legend { display:flex; gap:14px; flex-wrap:wrap; font-size:.78rem; color:var(--muted); margin-top:4px; }
   .legend i { display:inline-block; width:14px; height:3px; vertical-align:middle; margin-right:5px; border-radius:2px; }
@@ -55,7 +60,7 @@
         <span class="row">
           <button id="pause" class="secondary">❚❚ Pause</button>
           <select id="speed" style="width:auto" aria-label="Speed">
-            <option value="0.5">½×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="5">5×</option>
+            <option value="0.01">1/100× (slow motion)</option><option value="0.1">1/10×</option><option value="0.5">½×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="5">5×</option>
           </select>
         </span>
       </div>
@@ -129,9 +134,14 @@
 
 <div class="grid" style="margin-top:18px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
   <div class="card">
-    <h2>Example 6.1: the sketch</h2>
+    <h2>Example 6.1: the sketch, as it runs</h2>
+    <div class="row" style="margin-bottom:8px">
+      <button id="step1" class="secondary" disabled>Step: one pass of loop()</button>
+      <button id="stepRead" class="secondary" disabled>Step to the next RES reading</button>
+      <label style="margin:0 0 0 auto"><input id="follow" type="checkbox" checked> Follow the code</label>
+    </div>
     <div class="code-wrap" id="codeWrap"><pre class="code" id="code"></pre></div>
-    <p class="note">Highlighted: the function the Arduino is busy with. Red flashes: a call that just happened (<code>setup()</code>, <code>changeSupply()</code>).</p>
+    <p class="note"><span class="key hot"></span>running now · <span class="key warm"></span>ran in the last 2 s, fading · <span class="key flash"></span><code>setup()</code> or <code>changeSupply()</code>: a decision that just happened. <code>loop()</code> runs once every millisecond; it reads the RES on one pass in 100. Pause, then step through one pass at a time, or use slow motion.</p>
   </div>
   <div class="card">
     <h2>What happened</h2>
@@ -161,63 +171,104 @@ const kToBattery = trunc(trunc(toBatMv * kRatioPermil / 1000) * 1023 / 5000);
 const kToRes     = trunc(trunc(toResMv * kRatioPermil / 1000) * 1023 / 5000);
 
 // ---------------------------------------------------------------- the sketch, ported line for line
+// Each statement calls L(function, text of its line in the sketch), which lights
+// that line in the code panel, so the highlight follows the code as it runs.
 const A = { onBattery:false, level:0, rampFrom:0, rampStartMs:0, lastSampleMs:0, lastReading:0 };
 const pin = { d13:0, d12:0, d3:255, d2:0, d4:0, outputs:false };
 let millis = 0, simT = 0, noRamp = false;
-let bootAt = 0;                                   // millis() restarts at 0 on reset
 
-function resMillivolts(reading) {                 // (long)reading * 5000 / 1023 * 1000 / kRatioPermil
+function resMillivolts(reading) {
+  L('resMillivolts', 'int resMillivolts(int reading) {');
+  L('resMillivolts', 'return (long)reading * 5000 / 1023 * 1000 / kRatioPermil;');
   return trunc(trunc(trunc(reading * 5000 / 1023) * 1000) / kRatioPermil);
 }
-function setPump(lvl) { A.level = lvl; pin.d3 = 255 - lvl; }
+function setPump(lvl) {
+  L('setPump', 'void setPump(uint8_t lvl) {');
+  L('setPump', 'level = lvl;'); A.level = lvl;
+  L('setPump', 'analogWrite(kIn3Pin, 255 - lvl);'); pin.d3 = 255 - lvl;
+}
 function startRamp(from) {
+  L('startRamp', 'void startRamp(uint8_t from) {');
   if (noRamp) { setPump(255); return; }           // the "what if" change
-  setPump(from); A.rampFrom = from; A.rampStartMs = millis;
-  mark('startRamp');
+  L('startRamp', 'setPump(from);'); setPump(from);
+  L('startRamp', 'rampFrom = from;'); A.rampFrom = from;
+  L('startRamp', 'rampStartMs = millis();'); A.rampStartMs = millis;
 }
 function updateRamp(now) {
+  L('updateRamp', 'void updateRamp(unsigned long now) {');
+  L('updateRamp', 'if (level == 255) return;');
   if (A.level === 255) return;
-  mark('updateRamp');
+  L('updateRamp', 'unsigned long t = now - rampStartMs;');
   const t = now - A.rampStartMs;
-  if (t >= kRampMs) setPump(255);
-  else setPump(A.rampFrom + trunc((255 - A.rampFrom) * t / kRampMs));
+  L('updateRamp', 'if (t >= kRampMs) {');
+  if (t >= kRampMs) { L('updateRamp', 'setPump(255);'); setPump(255); }
+  else {
+    L('updateRamp', '} else {');
+    L('updateRamp', 'setPump(rampFrom + (255UL - rampFrom) * t / kRampMs);');
+    setPump(A.rampFrom + trunc((255 - A.rampFrom) * t / kRampMs));
+  }
 }
 function changeSupply(toBattery, reading) {
-  flash('changeSupply');
+  event('changeSupply');
+  L('changeSupply', 'void changeSupply(bool toBattery, int reading) {');
+  L('changeSupply', 'int resMv = resMillivolts(reading);');
   const resMv = resMillivolts(reading);
+  L('changeSupply', 'int oldMv = toBattery ? resMv : kBatteryMv;');
   const oldMv = toBattery ? resMv : kBatteryMv;
+  L('changeSupply', 'int newMv = toBattery ? kBatteryMv : resMv;');
   const newMv = toBattery ? kBatteryMv : resMv;
   const before = A.level;
-  if (newMv > oldMv) startRamp(trunc(A.level * oldMv / newMv));
-  if (toBattery) { pin.d12 = 1; pin.d13 = 0; } else { pin.d13 = 1; pin.d12 = 0; }   // make before break
-  A.onBattery = toBattery;
+  L('changeSupply', 'if (newMv > oldMv) {');
+  if (newMv > oldMv) { L('changeSupply', 'startRamp((long)level * oldMv / newMv);'); startRamp(trunc(A.level * oldMv / newMv)); }
+  L('changeSupply', 'digitalWrite(toBattery ? kBatOnPin : kResOnPin, HIGH);');
+  if (toBattery) pin.d12 = 1; else pin.d13 = 1;                     // make ...
+  L('changeSupply', 'digitalWrite(toBattery ? kResOnPin : kBatOnPin, LOW);');
+  if (toBattery) pin.d13 = 0; else pin.d12 = 0;                     // ... before break
+  L('changeSupply', 'onBattery = toBattery;'); A.onBattery = toBattery;
   log(`changeSupply(${toBattery}, ${reading}): RES about ${resMv} mV, ${toBattery ? 'to the battery' : 'back to the RES'}. ` +
       (newMv > oldMv ? (noRamp ? 'Higher supply: no ramp (what if), full drive.' : `Higher supply: drive cut ${before} → ${trunc(before * oldMv / newMv)}, then ramped.`)
                      : 'Lower supply: no ramp needed.'));
+  endEvent();
 }
 function setup() {
-  flash('setup');
+  event('setup');
+  L('setup', 'void setup() {');
+  for (const n of ['kResOnPin', 'kBatOnPin', 'kIn3Pin', 'kIn4Pin', 'kEnablePin']) L('setup', `pinMode(${n}, OUTPUT);`);
   pin.outputs = true;
-  pin.d2 = 1;                                     // IN4 HIGH: direction
-  setPump(0);                                     // no drive yet
-  pin.d4 = 1;                                     // Enable
+  L('setup', 'digitalWrite(kIn4Pin, HIGH);'); pin.d2 = 1;          // IN4 HIGH: direction
+  L('setup', 'setPump(0);'); setPump(0);                            // no drive yet
+  L('setup', 'digitalWrite(kEnablePin, HIGH);'); pin.d4 = 1;       // Enable
+  L('setup', 'onBattery = analogRead(kSensePin) < kToBattery;');
   const r = analogRead();
   A.lastReading = r;
   A.onBattery = r < kToBattery;
+  L('setup', 'digitalWrite(onBattery ? kBatOnPin : kResOnPin, HIGH);');
   if (A.onBattery) pin.d12 = 1; else pin.d13 = 1;
-  startRamp(0);
+  L('setup', 'startRamp(0);'); startRamp(0);
+  endEvent();
   log(`setup(): reading ${r} ${A.onBattery ? '<' : '≥'} ${kToBattery}, so starting on the ${A.onBattery ? 'battery' : 'RES'}${noRamp ? ', full drive at once (what if)' : ', ramp from 0'}.`);
 }
+let sampled = false;                              // did this pass read the RES?
 function loop() {
+  L('loop', 'void loop() {');
+  L('loop', 'unsigned long now = millis();');
   const now = millis;
+  L('loop', 'if (now - lastSampleMs >= kSampleMs) {');
+  sampled = false;
   if (now - A.lastSampleMs >= kSampleMs) {
-    A.lastSampleMs = now;
+    sampled = true;
+    L('loop', 'lastSampleMs = now;'); A.lastSampleMs = now;
+    L('loop', 'int reading = analogRead(kSensePin);');
     const reading = analogRead();
     A.lastReading = reading;
-    if (!A.onBattery && reading < kToBattery) changeSupply(true, reading);
-    else if (A.onBattery && reading > kToRes) changeSupply(false, reading);
+    L('loop', 'if (!onBattery && reading < kToBattery) {');
+    if (!A.onBattery && reading < kToBattery) { L('loop', 'changeSupply(true, reading);'); changeSupply(true, reading); }
+    else {
+      L('loop', '} else if (onBattery && reading > kToRes) {');
+      if (A.onBattery && reading > kToRes) { L('loop', 'changeSupply(false, reading);'); changeSupply(false, reading); }
+    }
   }
-  updateRamp(now);
+  L('loop', 'updateRamp(now);'); updateRamp(now);
 }
 
 // ---------------------------------------------------------------- the hardware model
@@ -270,18 +321,44 @@ lines.forEach((l, k) => {
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 $('code').innerHTML = lines.map((l, k) => `<span class="ln" data-k="${k}">${esc(l) || ' '}</span>`).join('');
 const lineEls = [...document.querySelectorAll('#code .ln')];
-const marks = {}, flashes = {};
-function mark(fn) { marks[fn] = performance.now(); }
-function flash(fn) { flashes[fn] = performance.now(); }
+// L(): find a line of the sketch, within one function, ignoring spacing and
+// comments, and stamp it with the time it ran.
+const norm = t => t.replace(/\/\/.*$/, '').replace(/\s+/g, '');
+const lineCache = {}, ranAt = new Float64Array(lines.length), ranPass = new Float64Array(lines.length), inEvent = new Uint8Array(lines.length);
+let pass = 0, hotFrom = 0, eventFn = null, eventAt = -1e9;   // lines run since pass hotFrom are 'running now'
+function L(fn, text) {
+  const key = fn + '|' + text;
+  let k = lineCache[key];
+  if (k === undefined) {
+    const r = fnRange[fn] || [0, lines.length - 1], want = norm(text);
+    k = -1;
+    for (let i = r[0]; i <= r[1]; i++) if (norm(lines[i]) === want || norm(lines[i]).startsWith(want)) { k = i; break; }
+    lineCache[key] = k;
+    if (k < 0) console.warn('board-sim: no line for', fn, text);
+  }
+  if (k >= 0) { ranAt[k] = viewNow(); ranPass[k] = pass; inEvent[k] = eventFn ? 1 : 0; }
+}
+function event(fn) { eventFn = fn; eventAt = viewNow(); if ($('follow').checked) followTo = fn; }
+function endEvent() { eventFn = null; }
+let pausedAt = 0, followTo = null;
+const viewNow = () => running ? performance.now() : pausedAt;
 function showCode() {
-  const now = performance.now();
-  const active = new Set(), fl = new Set();
-  for (const [fn, t] of Object.entries(marks)) if (now - t < 250) active.add(fn);
-  for (const [fn, t] of Object.entries(flashes)) if (now - t < 1500) fl.add(fn);
-  active.add('loop');
-  lineEls.forEach(e => e.classList.remove('active', 'flash'));
-  for (const fn of active) { const r = fnRange[fn]; if (r) for (let k = r[0]; k <= r[1]; k++) lineEls[k].classList.add('active'); }
-  for (const fn of fl) { const r = fnRange[fn]; if (r) for (let k = r[0]; k <= r[1]; k++) { lineEls[k].classList.remove('active'); lineEls[k].classList.add('flash'); } }
+  const now = viewNow();
+  for (let k = 0; k < lines.length; k++) {
+    const age = now - ranAt[k], e = lineEls[k];
+    const hot = ranAt[k] > 0 && ranPass[k] >= hotFrom;
+    const warm = !hot && ranAt[k] > 0 && age < 2000;
+    const flash = inEvent[k] && age < 2500;
+    e.classList.toggle('hot', hot && !flash);
+    e.classList.toggle('flash', flash);
+    e.classList.toggle('warm', warm && !flash);
+    e.style.setProperty('--fade', warm ? (1 - age / 2000).toFixed(2) : 1);
+  }
+  if (followTo && fnRange[followTo]) {
+    const wrap = $('codeWrap'), el = lineEls[fnRange[followTo][0]];
+    wrap.scrollTo({ top: el.offsetTop - 8, behavior: 'smooth' });
+    followTo = null;
+  }
 }
 
 // ---------------------------------------------------------------- log
@@ -422,8 +499,9 @@ function readouts() {
 }
 
 // ---------------------------------------------------------------- running
-let running = true, last = performance.now(), recordAcc = 0;
+var running = true; let last = performance.now(), recordAcc = 0;
 function reset(msg) {
+  pass++; hotFrom = pass;
   pin.d13 = pin.d12 = pin.d2 = pin.d4 = 0; pin.d3 = 255; pin.outputs = false;
   Object.assign(A, { onBattery:false, level:0, rampFrom:0, rampStartMs:0, lastSampleMs:0 });
   M.omega = 0; M.i = 0; M.vterm = M.voc;
@@ -431,18 +509,20 @@ function reset(msg) {
   if (msg) log(msg);
   setup();
 }
+function step() {                                // one millisecond: one pass of loop()
+  simT += 0.001; millis += 1; pass++;
+  physics(0.001);
+  loop();
+  recordAcc += 1;
+  if (recordAcc >= 20) { recordAcc = 0; record(); }
+}
 function frame(now) {
   const dtReal = Math.min(0.1, (now - last) / 1000); last = now;
   if (running) {
+    hotFrom = pass + 1;
     const simDt = dtReal * +$('speed').value;
     const steps = Math.max(1, Math.round(simDt * 1000));
-    for (let k = 0; k < steps; k++) {
-      simT += 0.001; millis += 1;
-      physics(0.001);
-      loop();
-      recordAcc += 1;
-      if (recordAcc >= 20) { recordAcc = 0; record(); }
-    }
+    for (let k = 0; k < steps; k++) step();
   }
   drawCharts(); readouts(); showCode();
   requestAnimationFrame(frame);
@@ -452,7 +532,16 @@ function frame(now) {
 $('voc').addEventListener('input', () => { M.vocTarget = +$('voc').value; });
 $('rint').addEventListener('input', () => { M.rint = +$('rint').value; });
 $('noramp').addEventListener('change', () => { noRamp = $('noramp').checked; log(noRamp ? 'What if: no ramp. startRamp() now jumps to full drive; reset to see a direct start.' : 'Ramp restored.'); });
-$('pause').addEventListener('click', () => { running = !running; $('pause').textContent = running ? '❚❚ Pause' : '▶ Run'; });
+$('pause').addEventListener('click', () => {
+  running = !running; pausedAt = performance.now();
+  $('pause').textContent = running ? '❚❚ Pause' : '▶ Run';
+  $('step1').disabled = $('stepRead').disabled = running;
+});
+$('step1').addEventListener('click', () => { pausedAt = performance.now(); hotFrom = pass + 1; step(); });
+$('stepRead').addEventListener('click', () => {           // run until loop() next reads the RES
+  pausedAt = performance.now();
+  for (let k = 0; k < kSampleMs + 1; k++) { hotFrom = pass + 1; step(); if (sampled) break; }
+});
 $('reset').addEventListener('click', () => reset('Reset: the pins are inputs until setup() runs.'));
 let scen = null;
 function scenario(steps, name) {          // steps: [[after seconds, open-circuit volts], ...]
