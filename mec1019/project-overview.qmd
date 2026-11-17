@@ -32,7 +32,7 @@ flowchart LR
   end
   RES --> reg["Voltage regulation"]
   reg --> MCU
-  battery --> MCU
+  battery ---> MCU
   dol --> pump["Pump"]
   soft --> pump
 ```
