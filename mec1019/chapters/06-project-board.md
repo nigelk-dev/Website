@@ -616,10 +616,16 @@ sketches do it the other way round.
 `setPump(255)` comes *after* the switch, so full drive is only applied once the
 battery is connected.
 
-> ⚠️ **Direct drive on the battery still goes through the L298N.** The pump's
-> start-up surge flows through U1, so check your pump's start current at 12 V
-> against the L298N's 3 A peak, as in [Pump drive type](05-pump-drive-type.md#the-code).
-> If it is higher, keep a short ramp on the battery as well.
+> ⚠️ **Direct drive on the battery puts the pump's full start-up surge through U1,
+> the L298N**: up to $12 / R$ for a winding resistance $R$, 6 A for a 2 Ω pump.
+> The L298N has no current limit, and for a surge its safe limit is about
+> 2–2.5 A. On this board the surge also flows through **R1**, the 0.2 Ω sense
+> resistor: 6 A in it is $6^2 \times 0.2 = 7.2$ W while the surge lasts, far more
+> than a small surface-mount resistor is rated for. Check your pump as described in
+> [Direct drive on the battery and the
+> L298N](05-pump-drive-type.md#direct-drive-on-the-battery-and-the-l298n): R1 makes
+> that easy, since an oscilloscope across it shows the surge directly
+> (0.2 V per amp).
 
 #### `setup()`: a safe start
 

@@ -586,12 +586,11 @@ void loop() {
 - **Nothing blocks.** Each pass of `loop()` takes well under a millisecond, so the
   RES is checked every 100 ms even in the middle of a ramp.
 
-> ⚠️ **Direct drive on the battery still goes through the L298N.** The pump's full
-> start-up current, $V/R$, flows through it: 6 A for the example pump in section 1,
-> well beyond the L298N's 3 A peak. Measure your pump's winding resistance and
-> work out its start current at 12 V. If it is more than about 3 A, keep a short
-> ramp on the battery too, e.g. replace `setPump(255)` with a 0.5 s ramp from the
-> current level, or use a pump with a smaller start current.
+> ⚠️ **Direct drive on the battery puts the pump's full start-up current through
+> the L298N**, which has no current limit of its own. For the example pump that is
+> up to 6 A, three times the L298N's 2 A rating. Check your pump before you rely on
+> it: see [Direct drive on the battery and the
+> L298N](#direct-drive-on-the-battery-and-the-l298n) below.
 
 **Things to set for your hardware**
 
@@ -602,6 +601,67 @@ void loop() {
 - `kRampMs`: longer means a smaller surge but a slower start. Watch the current
   with an oscilloscope and lengthen the ramp until the peak is close to the
   running current.
+
+### Direct drive on the battery and the L298N
+
+The sketch drives the pump directly on the battery on purpose: the battery doesn't
+sag, and the pump gets full flow at once with no two-second wait. But with the
+pump wired to the L298N, "directly" still means *through the L298N*, now switched
+fully on. The battery can deliver the surge; the question is whether the L298N
+can carry it.
+
+**When the surge happens**
+
+| Situation | Current through the L298N (example pump: 2 Ω, 0.8 A running) |
+|---|---|
+| **Power-up on the battery** (e.g. at night, with no RES), or a restart after the pump has stopped | The full start-up current: $I = 12 / 2 = 6$ A, falling as the pump speeds up |
+| **Switch-over from the RES to the battery** with the pump running on 7.8 V | The running current plus the step: $0.8 + (12 - 7.8)/2 \approx 2.9$ A, falling as the pump speeds up |
+| **Running on the battery** | The running current: 0.8 A |
+
+In practice the peaks are a little lower, because the L298N itself and the wiring
+drop some voltage, but they are the right size. Each surge lasts until the pump
+is up to speed: tens to hundreds of milliseconds.
+
+**Why it matters: the L298N's ratings**
+
+From the L298N datasheet, for each channel:
+
+| Rating | Current |
+|---|---|
+| Continuous (DC) | 2 A |
+| Repeated peaks (80 % on, 10 ms at a time) | 2.5 A |
+| A single peak, lasting no more than 100 µs | 3 A |
+
+A start-up surge lasts about a thousand times longer than that 100 µs, so for a
+surge the limit to use is about **2–2.5 A**, not 3 A. The L298N has **no current
+limiting** of its own: above its rating the output transistors overheat, and
+repeated starts can destroy the chip. A slow start on the RES keeps the current
+low; direct drive on the battery does not.
+
+**Check your pump**
+
+1. With the pump **unpowered**, measure its winding resistance $R$ with a
+   multimeter. Turn the shaft a little and measure again a few times; use the
+   **lowest** reading.
+2. Work out the start current on the battery: $I_{start} \approx 12 / R$.
+3. Compare it with the L298N: **$R$ of 5 Ω or more** keeps the start current to about
+   2.4 A or less, within the repeated-peak rating.
+4. Confirm it by measuring: put a 0.2 Ω sense resistor in the pump's ground
+   return (see [Things to know about the L298N](#things-to-know-about-the-l298n))
+   and look at it with an oscilloscope while the pump starts on the battery:
+   0.2 V per amp, so 2.5 A is 0.5 V.
+
+**If your pump's start current is too high**
+
+The sketch stays as it is; change the hardware instead:
+
+- **Use a smaller pump**, one whose start current at 12 V is within the L298N's
+  rating (winding resistance of 5 Ω or more).
+- **Use a motor driver rated for the start current**, for example a MOSFET-based
+  driver module, with the same sketch: only `setPump()` might change.
+- **Run without the L298N** (pump on the relays' NO outputs, as in section 1). The
+  relay contacts, rated at 10 A, carry the surge easily, but the RES then has no
+  slow start either: it is back to plain direct drive.
 
 ### Advantages and disadvantages of slow start
 
