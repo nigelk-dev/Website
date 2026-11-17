@@ -24,20 +24,24 @@ flowchart LR
     direction TB
     read["Read input voltage"]
     decision["Control decision<br/>(RES or battery)"]
+    switching["Switching circuitry"]
     output["Pump output"]
     split@{ shape: fork }
-    dol["Direct online"]
-    soft["Slow start"]
+    subgraph DRIVE["Pump drive type"]
+      dol["Direct drive"]
+      soft["Slow start"]
+    end
     read --> decision
-    decision --> output
+    read ~~~ switching
+    switching --> output
     output --- split
     split --> dol
     split --> soft
   end
   RES -->|"0–16 V<br/>&nbsp;"| reg["Voltage regulation"]
   reg -->|"0–5 V<br/>&nbsp;"| read
-  RES -----> output
-  BAT ----->|"12 V<br/>&nbsp;"| output
+  RES ----> switching
+  BAT ---->|"12 V<br/>&nbsp;"| switching
   dol --> pump["Pump"]
   soft --> pump
 ```
