@@ -10,38 +10,43 @@ one piece of that system.
 
 ```{=html}
 <figure class="flow-diagram">
+<figcaption>System overview</figcaption>
 <svg viewBox="0 0 1600 370" role="img" aria-labelledby="flow-title" xmlns="http://www.w3.org/2000/svg">
 <title id="flow-title">System overview: solar and wind (the renewable energy source, 0–16 V) pass through voltage regulation (0–5 V) to the microcontroller, which reads the input voltage and decides between the RES and the 12 V backup battery. Both sources feed the switching circuitry, which supplies the pump drive (direct drive or slow start) and then the pump.</title>
-<defs><marker id="flow-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
-<rect class="group" x="10" y="10" width="290" height="200"/>
-<text class="title" x="155" y="32">Renewable Energy Source (RES)</text>
-<rect class="group" x="10" y="240" width="290" height="120"/>
-<text class="title" x="155" y="262">Battery</text>
-<rect class="group" x="640" y="10" width="790" height="350"/>
-<text class="title" x="1035" y="32">Microcontroller system</text>
-<rect class="group" x="1220" y="110" width="180" height="190"/>
-<text class="title" x="1310" y="132">Pump drive type</text>
-<rect class="node" x="55" y="50" width="200" height="50"/>
-<text x="155" y="75">Solar</text>
-<rect class="node" x="55" y="130" width="200" height="50"/>
-<text x="155" y="155">Wind</text>
-<rect class="node" x="55" y="285" width="200" height="50"/>
+<defs><marker id="flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M1,1.5 L9,5 L1,8.5 z"/></marker></defs>
+<rect class="group res" x="10" y="4" width="290" height="206" rx="8"/>
+<rect class="bar res" x="26" y="17" width="4" height="14" rx="2"/>
+<text class="title res" x="38" y="24">Renewable Energy Source (RES)</text>
+<rect class="group bat" x="10" y="240" width="290" height="120" rx="8"/>
+<rect class="bar bat" x="26" y="253" width="4" height="14" rx="2"/>
+<text class="title bat" x="38" y="260">Battery</text>
+<rect class="group mcu" x="640" y="4" width="790" height="356" rx="8"/>
+<rect class="bar mcu" x="656" y="17" width="4" height="14" rx="2"/>
+<text class="title mcu" x="668" y="24">Microcontroller system</text>
+<rect class="group drive" x="1220" y="100" width="180" height="210" rx="8"/>
+<rect class="bar drive" x="1236" y="113" width="4" height="14" rx="2"/>
+<text class="title drive" x="1248" y="120">Pump drive type</text>
+<rect class="node" x="55" y="56" width="200" height="48" rx="6"/>
+<text x="155" y="80">Solar</text>
+<rect class="node" x="55" y="128" width="200" height="48" rx="6"/>
+<text x="155" y="152">Wind</text>
+<rect class="node" x="55" y="285" width="200" height="50" rx="6"/>
 <text x="155" y="310">Backup battery</text>
-<rect class="node" x="400" y="50" width="170" height="50"/>
+<rect class="node solo" x="400" y="50" width="170" height="50" rx="6"/>
 <text x="485" y="75">Voltage regulation</text>
-<rect class="node" x="680" y="50" width="170" height="50"/>
+<rect class="node" x="680" y="50" width="170" height="50" rx="6"/>
 <text x="765" y="75">Read input voltage</text>
-<rect class="node" x="890" y="45" width="170" height="60"/>
+<rect class="node" x="890" y="45" width="170" height="60" rx="6"/>
 <text x="975" y="65">Control decision</text>
-<text x="975" y="85">(RES or battery)</text>
-<rect class="node" x="890" y="175" width="170" height="60"/>
+<text class="sub" x="975" y="85">(RES or battery)</text>
+<rect class="node" x="890" y="175" width="170" height="60" rx="6"/>
 <text x="975" y="195">Switching</text>
 <text x="975" y="215">circuitry</text>
-<rect class="node" x="1240" y="145" width="140" height="50"/>
-<text x="1310" y="170">Direct drive</text>
-<rect class="node" x="1240" y="225" width="140" height="50"/>
-<text x="1310" y="250">Slow start</text>
-<rect class="node" x="1480" y="180" width="100" height="50"/>
+<rect class="node" x="1240" y="143" width="140" height="48" rx="6"/>
+<text x="1310" y="167">Direct drive</text>
+<rect class="node" x="1240" y="219" width="140" height="48" rx="6"/>
+<text x="1310" y="243">Slow start</text>
+<rect class="node solo" x="1480" y="180" width="100" height="50" rx="6"/>
 <text x="1530" y="205">Pump</text>
 <path class="link" d="M300,75 L400,75" marker-end="url(#flow-arrow)"/>
 <text class="elabel" x="345" y="64">0–16 V</text>
@@ -50,7 +55,7 @@ one piece of that system.
 <path class="link" d="M850,75 L890,75" marker-end="url(#flow-arrow)"/>
 <path class="link" d="M975,105 L975,175" marker-end="url(#flow-arrow)"/>
 <path class="link" d="M300,190 L890,190" marker-end="url(#flow-arrow)"/>
-<path class="link" d="M300,310 L860,310 L860,220 L890,220" marker-end="url(#flow-arrow)"/>
+<path class="link" d="M300,310 L852,310 Q860,310 860,302 L860,228 Q860,220 868,220 L890,220" marker-end="url(#flow-arrow)"/>
 <text class="elabel" x="580" y="299">12 V</text>
 <path class="link" d="M1060,205 L1220,205" marker-end="url(#flow-arrow)"/>
 <text class="elabel" x="1136" y="194">RES or battery</text>
