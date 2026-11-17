@@ -9,6 +9,7 @@ a **battery backup** when the RES can no longer supply it. Every chapter adds
 one piece of that system.
 
 ```{mermaid}
+%%{init: {"flowchart": {"curve": "step"}}}%%
 flowchart LR
   subgraph RES["Renewable energy source"]
     direction TB
@@ -30,9 +31,9 @@ flowchart LR
     output --> dol
     output --> soft
   end
-  RES --> reg["Voltage regulation"]
-  reg --> MCU
-  battery ---> MCU
+  RES -->|"0–16 V"| reg["Voltage regulation"]
+  reg -->|"0–5 V"| read
+  battery --->|"12 V"| MCU
   dol --> pump["Pump"]
   soft --> pump
 ```
