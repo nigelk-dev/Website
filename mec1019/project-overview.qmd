@@ -15,9 +15,19 @@ flowchart LR
     solar["Solar"]
     wind["Wind"]
   end
+  subgraph BAT["Battery"]
+    battery["Backup battery"]
+  end
+  subgraph MCU["Microcontroller"]
+    direction TB
+    decision["Control decision"]
+    output["Pump output"]
+    decision --> output
+  end
   RES --> reg["Voltage regulation"]
-  reg --> mcu["Microcontroller"]
-  mcu --> pump["Pump"]
+  BAT --> reg
+  reg --> decision
+  output --> pump["Pump"]
 ```
 
 ## What the finished system does
