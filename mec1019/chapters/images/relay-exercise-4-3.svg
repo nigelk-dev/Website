@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 980" width="1320" height="980" font-family="Helvetica, Arial, sans-serif" font-size="14">
-<title>Exercise 3c wiring: a blue LED and resistor switched by relay 1, powered by a separate battery</title>
+<title>Exercise 4.3 wiring: a blue LED and resistor switched by relay 1, powered by a separate battery</title>
 <rect y="0" width="1320" height="980" fill="#ffffff"/>
 <rect x="9.600000000000001" y="436.0" width="130.4" height="96.0" rx="3" fill="#b8bec7" stroke="#7d848f" stroke-width="2"/>
 <rect x="24.0" y="452.0" width="48.0" height="64.0" rx="2" fill="#8f96a1"/>
@@ -693,5 +693,5 @@
 <text x="918" y="209.0" font-size="11" font-weight="700" fill="#1d1f24" paint-order="stroke" stroke="#e2e0d6" stroke-width="4">blue LED + 220 Ω</text>
 <text x="818" y="404" font-size="13" font-weight="700" fill="#d4a017" paint-order="stroke" stroke="#ffffff" stroke-width="4">NO 1 → blue LED</text>
 <text x="40" y="940" font-size="13" fill="#5d6370">Battery + → + rail → relay 1 COM; relay 1 NO → strip 6 → 220 Ω → blue LED (long leg in strip 10) → strip 11 → − rail → battery −.</text>
-<text x="40" y="960" font-size="13" fill="#5d6370">The Example 3a sketch now switches the LED, but the LED's power comes from the battery, not the Arduino.</text>
+<text x="40" y="960" font-size="13" fill="#5d6370">The Example 4.1 sketch now switches the LED, but the LED's power comes from the battery, not the Arduino.</text>
 </svg>

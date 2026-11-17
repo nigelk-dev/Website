@@ -278,6 +278,7 @@ def mec1019(src, dest, excluded):
         html = page.read_text(encoding="utf-8")
         page.write_text(mec1019_part_refs(html), encoding="utf-8")
     mec1019_runner_extras(dest / "applets")
+    mec1019_applet_labels(dest / "applets")
 
 
 def _chapter_code(after_heading, chapter="04-switching-circuitry.md"):
@@ -310,6 +311,83 @@ def _add_runner_sketch(applets, base, key, code, edits, option_text):
     runner.write_text(html, encoding="utf-8")
 
 
+# The course notes number their examples by the slides' parts (Example 1a,
+# Exercise 7.3 ...). The chapters number them by chapter, in one sequence per
+# chapter (Example 2.1, Example 2.2, Exercise 2.3 ...); the applets follow.
+MEC1019_SKETCH_LABELS = [
+    ("Exercise 1c(2)", "Exercise 2.3 with a struct"),
+    ("Example 1a", "Example 2.1"), ("Example 1b", "Example 2.2"), ("Exercise 1c", "Exercise 2.3"),
+    ("Exercise 7.1", "Exercise 3.1"), ("Exercise 7.2", "Exercise 3.2"),
+    ("Exercise 7.3", "Exercise 3.3"), ("Exercise 7.4", "Exercise 3.4"),
+    ("Example 3a", "Example 4.1"), ("Exercise 3b", "Exercise 4.2"), ("Example 3b", "Exercise 4.2"), ("Exercise 3c", "Exercise 4.3"),
+    ("Exercise 3d", "Exercise 4.4"), ("Exercise 3e", "Exercise 4.5"),
+    ("Exercise 2b", "Exercise 5.2"),
+    (" * Non-blocking blink: the LED toggles", " * Example 2.4: Non-blocking blink. The LED toggles"),
+]
+# The code runner's menu: only the sketches the chapters use, in chapter order.
+# (key, title on the panel, menu text); the other programs stay in the file but
+# are not offered.
+MEC1019_RUNNER_MENU = [
+    ("Chapter 2 — Getting started with the Arduino", [
+        ("ex1a", "Example 2.1", "Example 2.1 — blink an LED"),
+        ("ex1b", "Example 2.2", "Example 2.2 — varying the on-time"),
+        ("ex1c", "Exercise 2.3", "Exercise 2.3 — three LEDs in sequence"),
+        ("ex1c2", "Exercise 2.3 with a struct", "Exercise 2.3 — with a struct, a table and a function"),
+        ("millis", "Example 2.4", "Example 2.4 — non-blocking blink"),
+    ]),
+    ("Chapter 3 — Read input voltage", [
+        ("ex2d", "Exercise 3.1", "Exercise 3.1 — read the pot voltage"),
+        ("ex2d1", "Exercise 3.2", "Exercise 3.2 — dimmer switch"),
+        ("ex2d2int", "Exercise 3.3", "Exercise 3.3 — switch at 2.5 V"),
+        ("ex2eint", "Exercise 3.4", "Exercise 3.4 — three voltage bands"),
+        ("ex2e", "Exercise 3.4, float version", "Exercise 3.4 — the float version, for comparison"),
+    ]),
+    ("Chapter 4 — Switching circuitry", [
+        ("ex3a", "Example 4.1", "Example 4.1 — open and close relay 1"),
+        ("ex3b", "Exercise 4.2", "Exercise 4.2 — alternate relay 1 and relay 2"),
+        ("ex3eint", "Exercise 4.5", "Exercise 4.5 — potentiometer control"),
+        ("p8int", "Example 4.6", "Example 4.6 — the switch-over sketch"),
+        ("p8hys", "Example 4.7", "Example 4.7 — adding hysteresis"),
+    ]),
+    ("Chapter 5 — Pump drive type", [
+        ("ex2bint", "Exercise 5.2", "Exercise 5.2 — a ramp is a fade"),
+    ]),
+]
+
+
+def mec1019_applet_labels(applets):
+    """Give the applets the chapters' example and exercise numbers, and rebuild
+    the code runner's menu by chapter."""
+    for page in list(applets.glob("*.html")) + list(applets.glob("*.js")):
+        text = page.read_text(encoding="utf-8")
+        new = text
+        for old, lab in MEC1019_SKETCH_LABELS:
+            new = new.replace(old, lab)
+        if new != text:
+            page.write_text(new, encoding="utf-8")
+    runner = applets / "code-runner.html"
+    if not runner.exists():
+        return
+    html = runner.read_text(encoding="utf-8")
+    groups = []
+    for group, items in MEC1019_RUNNER_MENU:
+        chapter = group.split(" — ")[0]
+        opts = []
+        for key, title, menu in items:
+            html, n = re.subn(r"(\n  " + key + r": \{\n    title:)'[^']*', where:'[^']*'",
+                              lambda m: m.group(1) + f"'{title}', where:'{chapter}'", html, count=1)
+            if n:
+                opts.append(f'      <option value="{key}">{menu}</option>')
+            else:
+                print(f"warning: code runner has no program {key}", file=sys.stderr)
+        groups.append(f'    <optgroup label="{group}">\n' + "\n".join(opts) + "\n    </optgroup>")
+    html, n = re.subn(r'(<select id="prog">\n).*?(\n  </select>)', lambda m: m.group(1) + "\n".join(groups) + m.group(2),
+                      html, count=1, flags=re.S)
+    if not n:
+        print("warning: code runner menu not in the expected form", file=sys.stderr)
+    runner.write_text(html, encoding="utf-8")
+
+
 def mec1019_runner_extras(applets):
     """Whole-number versions of the sketches the chapters now use.
 
@@ -319,7 +397,7 @@ def mec1019_runner_extras(applets):
     The sketch text comes from the chapter, so the applets always match it."""
     if not (applets / "code-runner.html").exists():
         return
-    _add_runner_sketch(applets, "ex3e", "ex3eint", _chapter_code("### Exercise 3e"), [
+    _add_runner_sketch(applets, "ex3e", "ex3eint", _chapter_code("### Exercise 4.5"), [
         ("title:'Exercise 3e'", "title:'Exercise 3e, integer version'"),
         ("desc:'Move the slider either side of 2.5 V.",
          "desc:'Move the slider either side of 2.5 V: the raw analogRead value is compared with 511, so no float is needed."),
@@ -332,7 +410,7 @@ def mec1019_runner_extras(applets):
          "      yield* io.at('Serial.println(reading);'); io.print(r + '\\n');\n"
          "      yield* io.at('if (reading < kThreshold) {');\n      if (r < 511){"),
     ], "Exercise 3e — the same with whole numbers (no float)")
-    _add_runner_sketch(applets, "p8", "p8int", _chapter_code("### The code"), [
+    _add_runner_sketch(applets, "p8", "p8int", _chapter_code("### Example 4.6"), [
         ("title:'RES / battery switch-over'", "title:'RES / battery switch-over, integer version'"),
         ("pin:'A2', label:'Voltage at A2 (RES after the divider)'", "pin:'A0', label:'Voltage at A0 (RES after the divider)'"),
         ("desc:'Drag the A2 voltage below 2.5 V",
@@ -348,7 +426,7 @@ def mec1019_runner_extras(applets):
          "      yield* io.at('if (reading < kSwitchReading) {');\n      if (r < 511){"),
         ("yield* io.at('useRes();', 2)", "yield* io.at('useRes();', 1)"),
     ], "Switch-over — the same with whole numbers (no float)")
-    _add_runner_sketch(applets, "p8int", "p8hys", _chapter_code("### Adding hysteresis"), [
+    _add_runner_sketch(applets, "p8int", "p8hys", _chapter_code("### Example 4.7"), [
         ("title:'RES / battery switch-over, integer version'", "title:'RES / battery switch-over with hysteresis'"),
         ("desc:'The raw analogRead value is compared with 511 (2.5 V), so no float is needed. Drag the A0 voltage below 2.5 V to switch the load to the battery, and back above it to return to the RES.",
          "desc:'Two thresholds: below 470 (2.3 V) the load goes to the battery, above 552 (2.7 V) it goes back to the RES, and in between nothing changes. Drag the A0 voltage slowly across 2.5 V and back."),
@@ -367,7 +445,7 @@ def mec1019_runner_extras(applets):
          "      else { yield* io.at('} else if (reading > kToRes) {');\n"
          "        if (r > 552){ yield* io.at('useRes();', 2); yield* useRes(); } }\n"),
     ], "Switch-over with hysteresis — two thresholds")
-    _add_runner_sketch(applets, "ex2d2", "ex2d2int", _chapter_code("## 6. Exercise 7.3", "03-read-input-voltage.md"), [
+    _add_runner_sketch(applets, "ex2d2", "ex2d2int", _chapter_code("## 6. Exercise 3.3", "03-read-input-voltage.md"), [
         ("title:'Exercise 7.3'", "title:'Exercise 7.3, integer version'"),
         ("desc:'Move the slider either side of 2.5 V and watch which branch of the if ... else runs.'",
          "desc:'Move the slider either side of 2.5 V: the raw analogRead value is compared with 511, so no float is needed. Watch which branch of the if ... else runs.'"),
@@ -380,7 +458,7 @@ def mec1019_runner_extras(applets):
          "      yield* io.at('Serial.println(reading);'); io.print(r + '\\n');\n"
          "      yield* io.at('if (reading > kThreshold) {');\n      if (r > 511){"),
     ], "Exercise 7.3 — the same with whole numbers (no float)")
-    _add_runner_sketch(applets, "ex2b", "ex2bint", _chapter_code("Exercise 2b brightens", "05-pump-drive-type.md"), [
+    _add_runner_sketch(applets, "ex2b", "ex2bint", _chapter_code("Exercise 5.2 brightens", "05-pump-drive-type.md"), [
         ("title:'Exercise 2b'", "title:'Exercise 2b, integer version'"),
         ("desc:'In loop()", "desc:'Whole analogWrite values only, no float. In loop()"),
         ("      yield* io.at('Serial.begin(9600);');\n      yield* io.at('pinMode(kRedPin, OUTPUT);')",
@@ -410,12 +488,12 @@ def mec1019_res_backup_sketch(page):
     if not m:
         print("warning: res-backup.html sketch not in the expected form; left as it is", file=sys.stderr)
         return
-    code = _chapter_code("### The code")
+    code = _chapter_code("### Example 4.6")
     code = re.sub(r"// Below this reading.*?\nconst int      kSwitchReading = 2500L \* 1023 / 5000;",
                   "// Below this reading the RES is too low: ${th.toFixed(1)} V at A0 -> ${rd(th)}.\n"
                   "// Worked out by the compiler, so the sketch uses no float at all.\n"
                   "const int      kSwitchReading = ${mv(th)}L * 1023 / 5000;", code, flags=re.S)
-    hys = _chapter_code("### Adding hysteresis")
+    hys = _chapter_code("### Example 4.7")
     hys = re.sub(r"// Two thresholds.*?\nconst int      kToBattery  = 2300L \* 1023 / 5000;   // 2.3 V at A0 -> 470\n"
                  r"const int      kToRes      = 2700L \* 1023 / 5000;   // 2.7 V at A0 -> 552",
                  "// Two thresholds, worked out by the compiler: a dead band either side of ${th.toFixed(1)} V.\n"

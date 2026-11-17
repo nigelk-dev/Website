@@ -91,7 +91,7 @@ you want the load on by default and switched *off* by the Arduino.
 
 > ⚠️ **Active-LOW inputs.** On most of these blue opto-isolated modules a **LOW**
 > on `IN1`/`IN2` turns the relay **ON**, and HIGH turns it off. Test yours: upload
-> Example 3a and watch which state lights the module LED.
+> Example 4.1 and watch which state lights the module LED.
 
 > 🔧 **Try it:** [Relay simulator](applets/relay.html) — switch between active-LOW and active-HIGH and between NO/NC wiring.
 
@@ -99,9 +99,9 @@ you want the load on by default and switched *off* by the Arduino.
 
 ## 3. Driving the relays from the Arduino
 
-### Example 3a — open and close relay 1
+### Example 4.1 — open and close relay 1
 
-![Example 3a wiring: the Arduino's 5V pin to the relay module's VCC, GND to GND, and pin 13 to IN1](images/relay-3a.svg)
+![Example 4.1 wiring: the Arduino's 5V pin to the relay module's VCC, GND to GND, and pin 13 to IN1](images/relay-example-4-1.svg)
 
 | Arduino | Relay module |
 |---|---|
@@ -111,7 +111,7 @@ you want the load on by default and switched *off* by the Arduino.
 
 ```cpp
 /*
- * Example 3a: Switch relay 1 on and off every second.
+ * Example 4.1: Switch relay 1 on and off every second.
  * Hardware: Arduino 5 V -> VCC, GND -> GND, D13 -> IN1 on the relay module.
  */
 
@@ -143,17 +143,17 @@ void loop() {
   "off". The other way round briefly outputs `LOW`, which would click the relay on
   for an instant at every reset.
 
-> ▶️ **[Run it: Example 3a in the code runner](applets/code-runner.html#ex3a)** — watch `kRelayOn` (LOW) switch the relay on.
+> ▶️ **[Run it: Example 4.1 in the code runner](applets/code-runner.html#ex3a)** — watch `kRelayOn` (LOW) switch the relay on.
 
-### Exercise 3b — alternate relay 1 and relay 2
+### Exercise 4.2 — alternate relay 1 and relay 2
 
-![Exercise 3b wiring: as Example 3a, plus pin 12 to IN2](images/relay-3b.svg)
+![Exercise 4.2 wiring: as Example 4.1, plus pin 12 to IN2](images/relay-exercise-4-2.svg)
 
 Add **pin 12 → IN2**.
 
 ```cpp
 /*
- * Exercise 3b: Alternate between relay 1 and relay 2.
+ * Exercise 4.2: Alternate between relay 1 and relay 2.
  * Hardware: D13 -> IN1, D12 -> IN2, 5 V -> VCC, GND -> GND.
  */
 
@@ -187,31 +187,31 @@ before switching the new one on. With LEDs it makes no difference, but when the
 relays switch the RES and the battery, it stops the two supplies ever being
 connected together, even for a moment.
 
-> ▶️ **[Run it: Exercise 3b in the code runner](applets/code-runner.html#ex3b)** — see each relay switched off before the other comes on.
+> ▶️ **[Run it: Exercise 4.2 in the code runner](applets/code-runner.html#ex3b)** — see each relay switched off before the other comes on.
 
-### Exercises 3c and 3d — switch LEDs through the relays
+### Exercises 4.3 and 4.4 — switch LEDs through the relays
 
-![Exercise 3c wiring: battery + to the breadboard's bottom + rail and from there to relay 1 COM; relay 1 NO to a 220 Ω resistor and blue LED on the breadboard; the LED to the − rail and back to the battery −](images/relay-3c.svg)
+![Exercise 4.3 wiring: battery + to the breadboard's bottom + rail and from there to relay 1 COM; relay 1 NO to a 220 Ω resistor and blue LED on the breadboard; the LED to the − rail and back to the battery −](images/relay-exercise-4-3.svg)
 
 - A separate **battery** powers an LED circuit; its +ve goes to the breadboard's
   bottom **+ rail**, and a wire from the rail goes to **COM** of relay 1,
-  and **NO** → resistor → blue LED → battery −ve. The Example 3a code now switches
+  and **NO** → resistor → blue LED → battery −ve. The Example 4.1 code now switches
   the LED, but the LED's power comes from the battery, not the Arduino.
-- Wire a green LED through relay 2 the same way and run the Exercise 3b code: the
+- Wire a green LED through relay 2 the same way and run the Exercise 4.2 code: the
   LEDs alternate as the relays alternate.
 
-![Exercise 3d wiring: as Exercise 3c, plus a green LED and resistor switched by relay 2, whose COM also takes its supply from the + rail](images/relay-3d.svg)
+![Exercise 4.4 wiring: as Exercise 4.3, plus a green LED and resistor switched by relay 2, whose COM also takes its supply from the + rail](images/relay-exercise-4-4.svg)
 
-### Exercise 3e — potentiometer control
+### Exercise 4.5 — potentiometer control
 
-![Exercise 3e wiring: as Exercise 3d, plus a potentiometer on the breadboard with its ends on the 5 V and GND rails and its wiper on A1](images/relay-3e.svg)
+![Exercise 4.5 wiring: as Exercise 4.4, plus a potentiometer on the breadboard with its ends on the 5 V and GND rails and its wiper on A1](images/relay-exercise-4-5.svg)
 
 This combines [Read input voltage](03-read-input-voltage.md) with the relays: the
 pot chooses which relay is on.
 
 ```cpp
 /*
- * Exercise 3e: The potentiometer chooses which relay is on.
+ * Exercise 4.5: The potentiometer chooses which relay is on.
  * Below 2.5 V: relay 2 on (green LED). At or above 2.5 V: relay 1 on (blue LED).
  * Hardware: pot wiper -> A1; D13 -> IN1 (blue LED circuit);
  *           D12 -> IN2 (green LED circuit); 5 V -> VCC, GND -> GND.
@@ -257,7 +257,7 @@ void loop() {
 Replace the pot with the divider from the RES and the LEDs with the RES and
 battery supplies, and you have the switch-over system.
 
-> ▶️ **[Run it: Exercise 3e in the code runner](applets/code-runner.html#ex3eint)** — move the pot either side of 2.5 V: the raw `reading` is compared with 511, and `setRelay()` switches the relays.
+> ▶️ **[Run it: Exercise 4.5 in the code runner](applets/code-runner.html#ex3eint)** — move the pot either side of 2.5 V: the raw `reading` is compared with 511, and `setRelay()` switches the relays.
 
 ---
 
@@ -306,11 +306,11 @@ resistor and LED stand in for the pump.
 | Common ground | RES −ve, battery −ve, Arduino GND, load (−) | Breadboard ground rail |
 | Monitoring | RES +ve → R₁ → (A0) → R₂ → ground | Arduino A0 |
 
-### The code
+### Example 4.6 — the switch-over sketch {#example-4-6}
 
 ```cpp
 /*
- * Run the load from the renewable energy source (RES) while its voltage is
+ * Example 4.6: Run the load from the renewable energy source (RES) while its voltage is
  * high enough, and switch to the battery when it drops.
  * Hardware: divider mid-point -> A0; D12 -> IN2 (RES relay);
  *           D13 -> IN1 (battery relay); 5 V -> VCC; all grounds joined.
@@ -370,7 +370,7 @@ void loop() {
   sketch never needs a `float`.
 - **Read, then decide.** Each decision uses the latest reading.
 
-> ▶️ **[Run it: the switch-over sketch in the code runner](applets/code-runner.html#p8int)** — drag the A0 voltage below 2.5 V: the raw `reading` drops below 511 and the load moves to the battery.
+> ▶️ **[Run it: Example 4.6 in the code runner](applets/code-runner.html#p8int)** — drag the A0 voltage below 2.5 V: the raw `reading` drops below 511 and the load moves to the battery.
 
 ### Why hysteresis?
 
@@ -393,15 +393,15 @@ has *clearly* recovered. In between is a **dead band** where nothing changes.
 
 > 🔧 **Try it:** [RES battery-backup simulator](applets/res-backup.html) — tick "Gusty" and set the wind so the trace hovers around the threshold: watch the switch-over count climb. Then tick "Hysteresis": the two dashed lines are the two thresholds, and the supply only changes when the trace leaves the band between them.
 
-### Adding hysteresis
+### Example 4.7 — adding hysteresis {#example-4-7}
 
 The same sketch with two thresholds, 0.2 V either side of 2.5 V at A0:
 
 ```cpp
 /*
- * The switch-over with hysteresis: two thresholds, so the relays don't
+ * Example 4.7: The switch-over with hysteresis: two thresholds, so the relays don't
  * chatter when the RES voltage hovers near the switch-over point.
- * Hardware: as the switch-over sketch above.
+ * Hardware: as Example 4.6.
  */
 
 const uint8_t  kResPin     = A0;       // divider mid-point
@@ -456,7 +456,7 @@ void loop() {
 }
 ```
 
-> ▶️ **[Run it: the switch-over with hysteresis in the code runner](applets/code-runner.html#p8hys)** — drag the A0 voltage slowly down from 3.5 V: nothing happens at 2.5 V, the load moves to the battery only below 2.3 V (470), and comes back only above 2.7 V (552).
+> ▶️ **[Run it: Example 4.7 in the code runner](applets/code-runner.html#p8hys)** — drag the A0 voltage slowly down from 3.5 V: nothing happens at 2.5 V, the load moves to the battery only below 2.3 V (470), and comes back only above 2.7 V (552).
 
 **How the hysteresis is implemented**
 

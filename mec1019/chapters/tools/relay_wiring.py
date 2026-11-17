@@ -1,7 +1,7 @@
 """Usage: python3 mec1019/chapters/tools/relay_wiring.py PATH/TO/uno_svg.py OUT_DIR
 
 Wiring diagrams for the Switching circuitry chapter, in the same style as the
-Example 1a breadboard diagram (breadboard_1a.py): the course notes' Arduino Uno
+Example 2.1 breadboard diagram (breadboard_example_2_1.py): the course notes' Arduino Uno
 drawing (notes/tools/uno_svg.py in nigelk-dev/MEC1019_Sustainable_Processes),
 a half-size breadboard, and a 5 V dual relay module drawn to match.
 """
@@ -277,7 +277,7 @@ def switching_a_load():
 
 
 def ex3a(in2=False, title=None):
-    d = Diagram(title or "Example 3a wiring: Arduino 5V to relay module VCC, GND to GND, pin 13 to IN1", bb=False, h=900, top=290)
+    d = Diagram(title or "Example 4.1 wiring: Arduino 5V to relay module VCC, GND to GND, pin 13 to IN1", bb=False, h=900, top=290)
     d.draw_relay_module()
     d.relay_control(in2=in2)
     return d
@@ -293,9 +293,9 @@ def led_branch(d, c, colour, no_term, route, label, wire_label, wire_label_at):
 
 
 def ex3c(green=False, pot=False):
-    title = ("Exercise 3e wiring: as Exercise 3d, plus a potentiometer on the breadboard with its wiper on A1" if pot else
-             "Exercise 3d wiring: blue LED switched by relay 1 and green LED by relay 2, both powered by a battery" if green else
-             "Exercise 3c wiring: a blue LED and resistor switched by relay 1, powered by a separate battery")
+    title = ("Exercise 4.5 wiring: as Exercise 4.4, plus a potentiometer on the breadboard with its wiper on A1" if pot else
+             "Exercise 4.4 wiring: blue LED switched by relay 1 and green LED by relay 2, both powered by a battery" if green else
+             "Exercise 4.3 wiring: a blue LED and resistor switched by relay 1, powered by a separate battery")
     d = Diagram(title)
     d.draw_relay_module()
     d.relay_control(in2=green, vcc_from="none" if pot else "pin")
@@ -332,7 +332,7 @@ def ex3c(green=False, pot=False):
                 "The LEDs' power comes from the battery, not the Arduino: the Arduino only switches the relays.")
     else:
         foot = ("Battery + → + rail → relay 1 COM; relay 1 NO → strip 6 → 220 Ω → blue LED (long leg in strip 10) → strip 11 → − rail → battery −.",
-                "The Example 3a sketch now switches the LED, but the LED's power comes from the battery, not the Arduino.")
+                "The Example 4.1 sketch now switches the LED, but the LED's power comes from the battery, not the Arduino.")
     return d, foot
 
 
@@ -510,10 +510,10 @@ def mechanism():
 
 
 switching_a_load()
-save("relay-3a", ex3a(), ("Example 3a: 5V → VCC and GND → GND power the relay module; pin 13 → IN1 switches relay 1.",))
-save("relay-3b", ex3a(True, title="Exercise 3b wiring: as Example 3a, plus pin 12 to IN2"),
-     ("Exercise 3b: as Example 3a, plus pin 12 → IN2, so the Arduino can switch relay 2 as well.",))
-for g, p, n in ((False, False, "relay-3c"), (True, False, "relay-3d"), (True, True, "relay-3e")):
+save("relay-example-4-1", ex3a(), ("Example 4.1: 5V → VCC and GND → GND power the relay module; pin 13 → IN1 switches relay 1.",))
+save("relay-exercise-4-2", ex3a(True, title="Exercise 4.2 wiring: as Example 4.1, plus pin 12 to IN2"),
+     ("Exercise 4.2: as Example 4.1, plus pin 12 → IN2, so the Arduino can switch relay 2 as well.",))
+for g, p, n in ((False, False, "relay-exercise-4-3"), (True, False, "relay-exercise-4-4"), (True, True, "relay-exercise-4-5")):
     d, foot = ex3c(g, p)
     save(n, d, foot)
 for s in range(1, 6):

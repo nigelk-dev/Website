@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 290 1320 610" width="1320" height="610" font-family="Helvetica, Arial, sans-serif" font-size="14">
-<title>Exercise 3b wiring: as Example 3a, plus pin 12 to IN2</title>
+<title>Example 4.1 wiring: Arduino 5V to relay module VCC, GND to GND, pin 13 to IN1</title>
 <rect y="290" width="1320" height="610" fill="#ffffff"/>
 <rect x="9.600000000000001" y="436.0" width="130.4" height="96.0" rx="3" fill="#b8bec7" stroke="#7d848f" stroke-width="2"/>
 <rect x="24.0" y="452.0" width="48.0" height="64.0" rx="2" fill="#8f96a1"/>
@@ -207,17 +207,12 @@
 <path d="M291.7 380.0 L291.7 330.0 L668.0 330.0 L668.0 560.0 L784.0 560.0" fill="none" stroke="#8e44ad" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="291.7" cy="380.0" r="4" fill="#8e44ad" stroke="#00000088" stroke-width="1"/>
 <circle cx="784.0" cy="560.0" r="4" fill="#8e44ad" stroke="#00000088" stroke-width="1"/>
-<path d="M312.0 380.0 L312.0 342.0 L656.0 342.0 L656.0 585.0 L784.0 585.0" fill="none" stroke="#00000055" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
-<path d="M312.0 380.0 L312.0 342.0 L656.0 342.0 L656.0 585.0 L784.0 585.0" fill="none" stroke="#e67e22" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="312.0" cy="380.0" r="4" fill="#e67e22" stroke="#00000088" stroke-width="1"/>
-<circle cx="784.0" cy="585.0" r="4" fill="#e67e22" stroke="#00000088" stroke-width="1"/>
 <path d="M364.8 767.2 L364.8 815.0 L700.0 815.0 L700.0 610.0 L784.0 610.0" fill="none" stroke="#00000055" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M364.8 767.2 L364.8 815.0 L700.0 815.0 L700.0 610.0 L784.0 610.0" fill="none" stroke="#d32f2f" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/>
 <circle cx="364.8" cy="767.2" r="4" fill="#d32f2f" stroke="#00000088" stroke-width="1"/>
 <circle cx="784.0" cy="610.0" r="4" fill="#d32f2f" stroke="#00000088" stroke-width="1"/>
 <text x="321.67999999999995" y="325" font-size="13" font-weight="700" fill="#8e44ad" paint-order="stroke" stroke="#ffffff" stroke-width="4">pin 13 → IN1</text>
-<text x="342.0" y="357" font-size="13" font-weight="700" fill="#e67e22" paint-order="stroke" stroke="#ffffff" stroke-width="4">pin 12 → IN2</text>
 <text x="374.8" y="832" font-size="13" font-weight="700" fill="#d32f2f" paint-order="stroke" stroke="#ffffff" stroke-width="4">5V → VCC</text>
 <text x="265.35999999999996" y="312" text-anchor="end" font-size="13" font-weight="700" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">GND → GND</text>
-<text x="40" y="880" font-size="13" fill="#5d6370">Exercise 3b: as Example 3a, plus pin 12 → IN2, so the Arduino can switch relay 2 as well.</text>
+<text x="40" y="880" font-size="13" fill="#5d6370">Example 4.1: 5V → VCC and GND → GND power the relay module; pin 13 → IN1 switches relay 1.</text>
 </svg>

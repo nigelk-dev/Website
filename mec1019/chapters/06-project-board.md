@@ -296,13 +296,15 @@ to 255, write the inverse: `analogWrite(3, 255 - level)`.
 This combines everything: reading the RES on A0, the switch-over with hysteresis
 using the MOSFET switches (make before break), and the pump drive through the
 board's L298N with the inverted PWM on IN3, with a **slow start on both
-supplies**. It has the same structure as the sketch in [Pump drive
-type](05-pump-drive-type.md#the-code); the pins, the divider constant and the two
+supplies**. It has the same structure as Example 5.3 in [Pump drive
+type](05-pump-drive-type.md#example-5-3); the pins, the divider constant and the two
 hardware functions, `setPump()` and `changeSupply()`, differ.
+
+### Example 6.1 — the board sketch {#example-6-1}
 
 ```cpp
 /*
- * RenewableSwitchOver board: supply switch-over with a slow-started pump.
+ * Example 6.1: RenewableSwitchOver board: supply switch-over with a slow-started pump.
  * Pins from the schematic: A0 = AnalogIn (trimmer wiper),
  *   D13 = renewableOn, D12 = batteryOn (both active-HIGH),
  *   D3 = InC (L298N IN3, PWM), D2 = InD (IN4), D4 = Enable (EnB).

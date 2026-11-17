@@ -1,6 +1,6 @@
-"""Usage: python3 mec1019/chapters/tools/breadboard_1a.py PATH/TO/uno_svg.py OUT.svg
+"""Usage: python3 mec1019/chapters/tools/breadboard_example_2_1.py PATH/TO/uno_svg.py OUT.svg
 
-Breadboard wiring for Example 1a (blink an LED on D13), drawn with the
+Breadboard wiring for Example 2.1 (blink an LED on D13), drawn with the
 Arduino and breadboard parts from the course notes' notes/tools/uno_svg.py
 (nigelk-dev/MEC1019_Sustainable_Processes), so it matches their diagrams.
 """
@@ -12,13 +12,13 @@ ns = {"__name__": "uno_svg"}
 exec(compile(src, sys.argv[1], "exec"), ns)
 
 
-def breadboard_1a_svg():
+def breadboard_example_2_1_svg():
     ns["OX"], ns["OY"] = 60, 150
     X, Y, top, TOP_Y = ns["X"], ns["Y"], ns["top"], ns["TOP_Y"]
     INK, MUTED, PWR, GND, HOLE, esc = ns["INK"], ns["MUTED"], ns["PWR"], ns["GND"], ns["HOLE"], ns["esc"]
     CW, CH = 1320, 690
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {CW} {CH}" width="{CW}" height="{CH}" font-family="Helvetica, Arial, sans-serif" font-size="14">',
-           '<title>Example 1a breadboard wiring: Arduino Uno pin 13 to a 220 ohm resistor, the resistor to the long leg of a red LED, '
+           '<title>Example 2.1 breadboard wiring: Arduino Uno pin 13 to a 220 ohm resistor, the resistor to the long leg of a red LED, '
            'and the LED short leg to the breadboard negative rail, which is connected to the Arduino GND pin</title>',
            f'<rect width="{CW}" height="{CH}" fill="#ffffff"/>']
     o = out.append
@@ -124,5 +124,5 @@ def breadboard_1a_svg():
     return "\n".join(out)
 
 
-open(sys.argv[2], "w", encoding="utf-8").write(breadboard_1a_svg())
+open(sys.argv[2], "w", encoding="utf-8").write(breadboard_example_2_1_svg())
 print("ok")

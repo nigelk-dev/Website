@@ -59,7 +59,7 @@
     - text: To save power
 
 - type: cloze
-  q: Complete Exercise 3e, where the pot chooses which relay is on.
+  q: Complete Exercise 4.5, where the pot chooses which relay is on.
   code: |
     float vOut = readVolts(kPotPin);
     if (vOut [[< ~ > ~ ==]] kThreshold) {

@@ -34,7 +34,7 @@
     {r} × 255/1023 ≈ **{=r * 255 / 1023}**. (Dividing by 4 gives almost the same: {=r / 4}.)
 
 - type: mcq
-  q: Why doesn't the dimmer-switch sketch (Exercise 7.2) need a `delay()`?
+  q: Why doesn't the dimmer-switch sketch (Exercise 3.2) need a `delay()`?
   options:
     - text: Without one, the brightness follows the knob immediately
       correct: true
@@ -43,7 +43,7 @@
     - text: It does need one, or the LED won't light
 
 - type: mcq
-  q: A version of Exercise 7.3 used `if (reading < kThreshold)` to switch the blue LED **on**. What's wrong with that?
+  q: A version of Exercise 3.3 used `if (reading < kThreshold)` to switch the blue LED **on**. What's wrong with that?
   options:
     - text: It lights the LED below 2.5 V, but the task asks for it to light above 2.5 V
       correct: true

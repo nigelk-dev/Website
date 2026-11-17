@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 690" width="1320" height="690" font-family="Helvetica, Arial, sans-serif" font-size="14">
-<title>Example 1a breadboard wiring: Arduino Uno pin 13 to a 220 ohm resistor, the resistor to the long leg of a red LED, and the LED short leg to the breadboard negative rail, which is connected to the Arduino GND pin</title>
+<title>Example 2.1 breadboard wiring: Arduino Uno pin 13 to a 220 ohm resistor, the resistor to the long leg of a red LED, and the LED short leg to the breadboard negative rail, which is connected to the Arduino GND pin</title>
 <rect width="1320" height="690" fill="#ffffff"/>
 <rect x="9.600000000000001" y="226.0" width="130.4" height="96.0" rx="3" fill="#b8bec7" stroke="#7d848f" stroke-width="2"/>
 <rect x="24.0" y="242.0" width="48.0" height="64.0" rx="2" fill="#8f96a1"/>

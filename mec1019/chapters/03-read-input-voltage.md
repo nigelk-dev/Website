@@ -75,9 +75,9 @@ All the exercises use the same connection: the pot's outer pins to **5 V** and
 **GND**, its wiper to **A1**. Each LED goes from an Arduino output pin, through a
 220 Ω resistor and the LED, to ground.
 
-![Exercise 7.4 circuit: 5 kΩ pot between 5 V and GND with the wiper on A1; red, green and blue LEDs on D11, D12 and D13, each through 220 Ω to ground](images/circuit-7-4-pot-three-leds.svg)
+![Exercise 3.4 circuit: 5 kΩ pot between 5 V and GND with the wiper on A1; red, green and blue LEDs on D11, D12 and D13, each through 220 Ω to ground](images/circuit-7-4-pot-three-leds.svg)
 
-![Breadboard wiring for Exercise 7.4: Arduino Uno pins 11, 12 and 13 run to three 220 Ω resistors and red, green and blue LEDs; the 5 kΩ pot's outer legs go to the 5 V and GND rails and its middle leg to A1](images/breadboard-7-4-pot-three-leds.svg)
+![Breadboard wiring for Exercise 3.4: Arduino Uno pins 11, 12 and 13 run to three 220 Ω resistors and red, green and blue LEDs; the 5 kΩ pot's outer legs go to the 5 V and GND rails and its middle leg to A1](images/breadboard-7-4-pot-three-leds.svg)
 
 | Exercise | Task | LEDs (each through 220 Ω to GND) |
 |---|---|---|
@@ -86,17 +86,17 @@ All the exercises use the same connection: the pot's outer pins to **5 V** and
 | **7.3** | Blue LED on above 2.5 V, off below | blue on **D13** |
 | **7.4** | Red for 0–2 V, green for > 2–3.5 V, blue for > 3.5–5 V | red **D11**, green **D12**, blue **D13** |
 
-> 🔧 **Try it:** [Potentiometer applet](applets/potentiometer.html) — turn the knob and switch between Exercises 7.1 to 7.4.
+> 🔧 **Try it:** [Potentiometer applet](applets/potentiometer.html) — turn the knob and switch between Exercises 3.1 to 7.4.
 
 ---
 
-## 3. Exercise 7.1 — read the pot voltage
+## 3. Exercise 3.1 — read the pot voltage
 
 ### With a `float`: seeing what the numbers mean
 
 ```cpp
 /*
- * Exercise 7.1: Read the potentiometer voltage and print it in volts.
+ * Exercise 3.1: Read the potentiometer voltage and print it in volts.
  * Hardware: pot outer pins to 5 V and GND, wiper to A1.
  */
 
@@ -125,7 +125,7 @@ Open **Tools › Serial Monitor** and turn the knob: each line shows the raw rea
 and the voltage it stands for, e.g. `512 = 2.50 V`. Write the constants as `5.0`
 and `1023.0`, with decimal points: `5/1023` in whole numbers is **0**.
 
-> ▶️ **[Run it: Exercise 7.1 in the code runner](applets/code-runner.html#ex2d)** — turn the simulated pot and watch the reading and the voltage change together.
+> ▶️ **[Run it: Exercise 3.1 in the code runner](applets/code-runner.html#ex2d)** — turn the simulated pot and watch the reading and the voltage change together.
 
 ### Without a `float`: the better way
 
@@ -134,7 +134,7 @@ The same readout works in whole numbers if the voltage is in **millivolts**:
 
 ```cpp
 /*
- * Exercise 7.1, integer version: read the pot voltage with no float.
+ * Exercise 3.1, integer version: read the pot voltage with no float.
  * Hardware: pot outer pins to 5 V and GND, wiper to A1.
  */
 
@@ -200,9 +200,9 @@ $$\text{reading} = \frac{\text{millivolts} \times 1023}{5000}$$
 
 | Threshold | Volts | Millivolts | As an `analogRead` value |
 |---|---|---|---|
-| Exercise 7.3 switching point | 2.5 V | 2500 | 511 |
-| Exercise 7.4, top of the red band | 2.0 V | 2000 | 409 |
-| Exercise 7.4, top of the green band | 3.5 V | 3500 | 716 |
+| Exercise 3.3 switching point | 2.5 V | 2500 | 511 |
+| Exercise 3.4, top of the red band | 2.0 V | 2000 | 409 |
+| Exercise 3.4, top of the green band | 3.5 V | 3500 | 716 |
 
 Written in the code as `const int kThreshold = 2500L * 1023 / 5000;`, the sum uses
 only constants, so the **compiler** works it out (511) when you press Verify. The
@@ -215,11 +215,11 @@ Arduino never does it. The `L` makes 2500 a `long`, because 2500 × 1023 (about
 
 ---
 
-## 5. Exercise 7.2 — dimmer switch
+## 5. Exercise 3.2 — dimmer switch
 
 ```cpp
 /*
- * Exercise 7.2: Use the potentiometer as a dimmer for a red LED.
+ * Exercise 3.2: Use the potentiometer as a dimmer for a red LED.
  * Hardware: pot wiper to A1; red LED + 220 Ω resistor on D10 (a PWM pin).
  */
 
@@ -246,15 +246,15 @@ void loop() {
   `float` needed.
 - There is **no `delay()`**, so the brightness follows the knob immediately.
 
-> ▶️ **[Run it: Exercise 7.2 in the code runner](applets/code-runner.html#ex2d1)** — turn the simulated pot and watch `map()` set the LED brightness.
+> ▶️ **[Run it: Exercise 3.2 in the code runner](applets/code-runner.html#ex2d1)** — turn the simulated pot and watch `map()` set the LED brightness.
 
 ---
 
-## 6. Exercise 7.3 — switch at 2.5 V
+## 6. Exercise 3.3 — switch at 2.5 V
 
 ```cpp
 /*
- * Exercise 7.3: Blue LED on above 2.5 V, off at or below 2.5 V, with no float.
+ * Exercise 3.3: Blue LED on above 2.5 V, off at or below 2.5 V, with no float.
  * Hardware: pot wiper to A1; blue LED + 220 Ω resistor on D13.
  */
 
@@ -294,15 +294,15 @@ void loop() {
 This **threshold** is exactly what the project uses for its control decision:
 replace the blue LED with "use the RES".
 
-> ▶️ **[Run it: Exercise 7.3 in the code runner](applets/code-runner.html#ex2d2int)** — move the pot either side of 2.5 V: the raw `reading` is compared with 511, and exactly one branch of the `if ... else` runs.
+> ▶️ **[Run it: Exercise 3.3 in the code runner](applets/code-runner.html#ex2d2int)** — move the pot either side of 2.5 V: the raw `reading` is compared with 511, and exactly one branch of the `if ... else` runs.
 
 ---
 
-## 7. Exercise 7.4 — three voltage bands
+## 7. Exercise 3.4 — three voltage bands
 
 ```cpp
 /*
- * Exercise 7.4: Show which voltage band the pot is in, with no float.
+ * Exercise 3.4: Show which voltage band the pot is in, with no float.
  *   0 to 2 V     -> red LED
  *   >2 to 3.5 V  -> green LED
  *   >3.5 to 5 V  -> blue LED
@@ -364,13 +364,13 @@ void loop() {
 | `&&` | AND — both conditions true |
 | `\|\|` | OR — either condition true |
 
-> ▶️ **[Run it: Exercise 7.4 in the code runner](applets/code-runner.html#ex2eint)** — move the pot through the three bands; the Variables panel shows the raw `reading` being compared with 409 and 716. Compare it with [the `float` version](applets/code-runner.html#ex2e).
+> ▶️ **[Run it: Exercise 3.4 in the code runner](applets/code-runner.html#ex2eint)** — move the pot through the three bands; the Variables panel shows the raw `reading` being compared with 409 and 716. Compare it with [the `float` version](applets/code-runner.html#ex2e).
 
 ---
 
 ## 8. The control decision: RES or battery
 
-The decision is Exercise 7.3 with the LED replaced by the supply: if the reading
+The decision is Exercise 3.3 with the LED replaced by the supply: if the reading
 is high enough, use the RES; otherwise use the battery. The functions `useRes()`
 and `useBattery()` switch the supplies; [Switching
 circuitry](04-switching-circuitry.md) writes them for the relay module.
@@ -422,7 +422,7 @@ maths altogether:
 1. Set a bench supply to the switch-over voltage, e.g. 8.0 V, and connect it where
    the RES goes.
 2. Upload a sketch that prints `analogRead(A0)` to the Serial Monitor, as in
-   Exercise 7.1.
+   Exercise 3.1.
 3. Note the number, e.g. 508, and use it: `const int kSwitchReading = 508;`.
 
 If the divider uses a trimmer, measure again whenever it is moved.

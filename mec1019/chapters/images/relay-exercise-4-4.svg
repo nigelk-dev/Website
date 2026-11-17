@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 980" width="1320" height="980" font-family="Helvetica, Arial, sans-serif" font-size="14">
-<title>Exercise 3d wiring: blue LED switched by relay 1 and green LED by relay 2, both powered by a battery</title>
+<title>Exercise 4.4 wiring: blue LED switched by relay 1 and green LED by relay 2, both powered by a battery</title>
 <rect y="0" width="1320" height="980" fill="#ffffff"/>
 <rect x="9.600000000000001" y="436.0" width="130.4" height="96.0" rx="3" fill="#b8bec7" stroke="#7d848f" stroke-width="2"/>
 <rect x="24.0" y="452.0" width="48.0" height="64.0" rx="2" fill="#8f96a1"/>

@@ -83,10 +83,10 @@ circuitry](04-switching-circuitry.md#building-it), then replace the load:
   pump's + terminal). A motor's winding stores energy; when a relay opens, the
   diode gives that energy a path instead of letting it spark across the contacts.
 
-### The demo code
+### Example 5.1 — direct drive {#example-5-1}
 
-The sketch is the switch-over sketch from [Switching
-circuitry](04-switching-circuitry.md#the-code), with the [hysteresis from Read input
+The sketch is Example 4.6, the switch-over sketch from [Switching
+circuitry](04-switching-circuitry.md#example-4-6), with the [hysteresis from Read input
 voltage](03-read-input-voltage.md#hysteresis-stop-the-chatter) added. With a real
 pump the hysteresis matters more than with an LED: a pump that starts on the RES
 can pull the RES voltage down (see below), and a single threshold would then flip
@@ -94,7 +94,7 @@ the supply back and forth.
 
 ```cpp
 /*
- * Direct drive: run the pump from the renewable energy source (RES) while its
+ * Example 5.1: Direct drive. Run the pump from the renewable energy source (RES) while its
  * voltage is high enough, and from the battery when it drops.
  * Hardware: divider (22 kΩ / 10 kΩ) mid-point -> A0; D12 -> IN2 (RES relay);
  *   D13 -> IN1 (battery relay); 5 V -> VCC; NO of both relays -> pump (+);
@@ -168,7 +168,7 @@ void loop() {
 - **Whole numbers only**, as in [Read input
   voltage](03-read-input-voltage.md#why-whole-numbers-are-better).
 
-> ▶️ **[Run it: the switch-over with hysteresis in the code runner](applets/code-runner.html#p8hys)** — the same logic as the demo code, from Switching circuitry: the supply moves to the battery below 2.3 V (470) and back to the RES only above 2.7 V (552).
+> ▶️ **[Run it: Example 4.7 in the code runner](applets/code-runner.html#p8hys)** — the same logic as Example 5.1, from Switching circuitry: the supply moves to the battery below 2.3 V (470) and back to the RES only above 2.7 V (552).
 
 ### The catch: inrush current
 
@@ -247,13 +247,13 @@ smaller current, so they arc less.
 
 **Both supplies need it.** On the RES, a surge makes the voltage sag. The battery
 doesn't sag, but its surge has to pass through the motor driver, which can't carry
-it (section 5 explains why). So the project ramps the pump on **both** supplies.
+it (Section 5 explains why). So the project ramps the pump on **both** supplies.
 
 A slow start needs two things that direct drive doesn't:
 
-1. A way to make a voltage **between** off and full on: **PWM** (section 3).
+1. A way to make a voltage **between** off and full on: **PWM** (Section 3).
 2. Something that can switch the pump's current that fast: a **motor driver**,
-   here the **L298N** (section 4).
+   here the **L298N** (Section 4).
 
 Section 5 puts them together with the relays.
 
@@ -308,14 +308,14 @@ $$\text{duty} = \frac{\text{value}}{255}, \qquad V_{avg} = V_{supply}\times\frac
 
 > 🔧 **Try it:** [PWM visualiser](applets/pwm.html) — drag the slider to see the waveform, duty cycle and average voltage; click pins to check which support PWM.
 
-### A ramp is a fade
+### Exercise 5.2 — a ramp is a fade {#exercise-5-2}
 
-Ramping a pump up is the same code as fading an LED up. Exercise 2b brightens an
+Ramping a pump up is the same code as fading an LED up. Exercise 5.2 brightens an
 LED in steps of 10 (about 0.2 V average) with a `for` loop:
 
 ```cpp
 /*
- * Exercise 2b: Brighten a red LED from 0 V to about 5 V (average) in steps of
+ * Exercise 5.2: Brighten a red LED from 0 V to about 5 V (average) in steps of
  * about 0.2 V, then dim it back down, using for loops. Repeats forever.
  * Hardware: red LED + 220 Ω resistor from D10 (a PWM pin) to GND.
  */
@@ -352,7 +352,7 @@ For the pump that's not acceptable, because the RES must still be watched during
 the ramp. Section 5 does the same ramp with `millis()`, as in [Getting started
 with the Arduino](02-arduino.md#blocking-vs-non-blocking-timing).
 
-> ▶️ **[Run it: Exercise 2b in the code runner](applets/code-runner.html#ex2bint)** — watch `pwm` climb in steps of 10, then fall again (try 4× speed).
+> ▶️ **[Run it: Exercise 5.2 in the code runner](applets/code-runner.html#ex2bint)** — watch `pwm` climb in steps of 10, then fall again (try 4× speed).
 
 ---
 
@@ -402,7 +402,7 @@ The drive level is simply the `analogWrite` value: 0 is off, 255 is full drive.
   total at 1 A (more at higher current). At full drive the pump gets less than in
   direct drive.
 - **Current limit.** 2 A continuous per channel, with a short peak of 3 A. A slow
-  start keeps the pump within it; the 6 A direct start from section 1 would not.
+  start keeps the pump within it; the 6 A direct start from Section 1 would not.
 - **PWM whine.** At about 490 Hz the pump may hum audibly while it ramps.
 - **Seeing the inrush.** Put a small resistor (0.1–0.2 Ω, rated for the current) in
   series with the pump's supply and look at the voltage across it with an
@@ -413,22 +413,22 @@ The drive level is simply the `analogWrite` value: 0 is off, 255 is full drive.
 
 ## 5. Slow start with the L298N
 
-The supply switching is the relay circuit from section 1, with one change: the
+The supply switching is the relay circuit from Section 1, with one change: the
 relays' NO outputs now feed the L298N's **+12V** (motor supply) terminal instead
 of the pump, and the pump moves to the L298N's OUT3 and OUT4. The relays still
 choose the supply; the L298N decides how much of it reaches the pump.
 
-### The code
+### Example 5.3 — slow start {#example-5-3}
 
 The ramp is **non-blocking**: `loop()` keeps checking the RES while the pump
 speeds up, and a switch-over during a ramp is handled straight away. The
-switching part is the direct-drive sketch from section 1 with its hysteresis; the
+switching part is Example 5.1, the direct-drive sketch, with its hysteresis; the
 new parts are `setPump()`, `startRamp()` and `updateRamp()`. The pump is
 slow-started on both supplies.
 
 ```cpp
 /*
- * RES / battery switch-over with a slow-started pump, on either supply.
+ * Example 5.3: RES / battery switch-over with a slow-started pump, on either supply.
  * Hardware: divider mid-point -> A0 (R1 = 22 kΩ, R2 = 10 kΩ);
  *   D12 -> IN2 (RES relay), D13 -> IN1 (battery relay), active-LOW module;
  *   relay NO outputs -> L298N +12V; pump on OUT3/OUT4;
@@ -651,7 +651,7 @@ start-up surge:
   (winding resistance of 5 Ω or more).
 - **A motor driver rated for the start current**, for example a MOSFET-based
   driver module; only `setPump()` might change.
-- **No motor driver** (pump on the relays' NO outputs, as in section 1). The
+- **No motor driver** (pump on the relays' NO outputs, as in Section 1). The
   relay contacts, rated at 10 A, carry the surge easily, but then there is no
   slow start on the RES either: it is plain direct drive on both supplies.
 
@@ -685,7 +685,7 @@ better choice: it protects the source, the switching parts and the pump, and the
 cost (a little voltage, and a second or two to reach full flow) is small. Direct
 drive suits a stiff supply when nothing between it and the pump limits the
 current, or a pump that struggles to start at reduced voltage. With the L298N in
-the circuit, the sketch in section 5 uses the slow start on **both** supplies.
+the circuit, the sketch in Section 5 uses the slow start on **both** supplies.
 
 ---
 

@@ -157,10 +157,10 @@ with the interactive LED circuit explorer.)
 
 ### Wiring the LED on a breadboard
 
-This is the circuit for Example 1a: pin 13 drives a red LED through a 220 Ω
+This is the circuit for Example 2.1: pin 13 drives a red LED through a 220 Ω
 resistor.
 
-![Example 1a wiring: Arduino pin 13 to strip 10 of the breadboard, a 220 Ω resistor from strip 10 to strip 14, a red LED with its long leg in strip 14 and its short leg in strip 15, and a wire from strip 15 to the − rail, which is connected to the Arduino's GND pin](images/breadboard-1a-led-d13.svg)
+![Example 2.1 wiring: Arduino pin 13 to strip 10 of the breadboard, a 220 Ω resistor from strip 10 to strip 14, a red LED with its long leg in strip 14 and its short leg in strip 15, and a wire from strip 15 to the − rail, which is connected to the Arduino's GND pin](images/breadboard-example-2-1.svg)
 
 Follow the current around the circuit:
 
@@ -188,14 +188,14 @@ How the breadboard makes those connections:
 
 When pin 13 goes `HIGH`, it drives about 5 V into strip 10. Current flows through
 the resistor and the LED to ground, and the LED lights. When the pin goes `LOW`
-(0 V), nothing flows and the LED goes out. Example 1a does exactly that, over and
+(0 V), nothing flows and the LED goes out. Example 2.1 does exactly that, over and
 over.
 
-### Example 1a — blink an LED
+### Example 2.1 — blink an LED
 
 ```cpp
 /*
- * Example 1a: Blink an LED at 1 Hz (0.5 s on, 0.5 s off).
+ * Example 2.1: Blink an LED at 1 Hz (0.5 s on, 0.5 s off).
  * Hardware: red LED + 220 Ω resistor from D13 to GND.
  */
 
@@ -259,7 +259,7 @@ number of **bits**, and **_t** for *type*.
   `uint16_t` are the same size everywhere.
 - **When `int` is the right choice:** for values that can be negative, or for loop
   counters that might step below 0 or past 255 (see [Pump drive
-  type](05-pump-drive-type.md#a-ramp-is-a-fade)), a signed `int` is safer.
+  type](05-pump-drive-type.md#exercise-5-2)), a signed `int` is safer.
 
 **The `k` prefix: it marks a constant.**
 
@@ -277,7 +277,7 @@ in many style guides (including Google's C++ style), meaning *constant*.
 Pin 13 also drives the on-board "L" LED, which is a useful check before any
 external wiring.
 
-> ▶️ **[Run it: Example 1a in the code runner](applets/code-runner.html#ex1a)** — the active line is highlighted as the LED blinks.
+> ▶️ **[Run it: Example 2.1 in the code runner](applets/code-runner.html#ex1a)** — the active line is highlighted as the LED blinks.
 
 ---
 
@@ -310,14 +310,14 @@ Good practice:
 
 ## 7. Loops, arrays and functions
 
-### Example 1b — varying the on-time with a `for` loop
+### Example 2.2 — varying the on-time with a `for` loop
 
 Repeating the same four lines for each delay is error-prone. Store the values in
 an array and loop through it:
 
 ```cpp
 /*
- * Example 1b: Blink an LED with on-times stepping from 0.1 s to 1 s.
+ * Example 2.2: Blink an LED with on-times stepping from 0.1 s to 1 s.
  * Hardware: red LED + 220 Ω resistor from D13 to GND.
  */
 
@@ -349,21 +349,21 @@ void loop() {
   is 5 × 2 = 10 bytes and one value is 2 bytes, so `kNumSteps` = 10 ÷ 2 = 5. Add a
   sixth on-time and the count updates by itself.
 
-> ▶️ **[Run it: Example 1b in the code runner](applets/code-runner.html#ex1b)** — watch `i` step through the array and the on-time grow.
+> ▶️ **[Run it: Example 2.2 in the code runner](applets/code-runner.html#ex1b)** — watch `i` step through the array and the on-time grow.
 
-### Exercise 1c — three LEDs in sequence
+### Exercise 2.3 — three LEDs in sequence
 
 **Task:** blink a red LED 2 times, then a green LED 3 times, then a blue LED 4
 times, each blink 0.5 s on and 0.5 s off, and repeat. Use only `digitalWrite()`
 and `delay()` in `loop()`.
 
-Wire each LED as in Example 1a, from its own pin through its own 220 Ω resistor:
+Wire each LED as in Example 2.1, from its own pin through its own 220 Ω resistor:
 red on pin 13, green on pin 12 and blue on pin 11. Every blink is then written out
 as four lines: LED on, wait, LED off, wait. Nine blinks need 36 lines.
 
 ```cpp
 /*
- * Exercise 1c: Blink three LEDs in sequence: red 2 times, green 3 times,
+ * Exercise 2.3: Blink three LEDs in sequence: red 2 times, green 3 times,
  * blue 4 times, each blink 0.5 s on and 0.5 s off. Then repeat.
  * Written out in full using only digitalWrite() and delay() in loop().
  * Hardware: each LED in series with a 220 Ω resistor to GND.
@@ -437,7 +437,7 @@ void loop() {
 }
 ```
 
-> ▶️ **[Run it: Exercise 1c in the code runner](applets/code-runner.html#ex1c)** — step down the long list of `digitalWrite` and `delay` calls and watch the three LEDs.
+> ▶️ **[Run it: Exercise 2.3 in the code runner](applets/code-runner.html#ex1c)** — step down the long list of `digitalWrite` and `delay` calls and watch the three LEDs.
 
 This works, and every step is easy to follow, but it is long and repetitive.
 Changing one LED's count means adding or deleting four lines in exactly the right
@@ -455,7 +455,7 @@ and easy to change:
 
 ```cpp
 /*
- * Exercise 1c(2): the same sequence as Exercise 1c (red 2 times, green
+ * Exercise 2.3 with a struct: the same sequence as Exercise 2.3 (red 2 times, green
  * 3 times, blue 4 times, each blink 0.5 s on and 0.5 s off), using a struct,
  * a table and a function instead of writing every step out.
  * Hardware: each LED in series with a 220 Ω resistor to GND.
@@ -519,7 +519,7 @@ The project code uses the same habits: named constants for every pin and
 threshold, and small functions such as `useBattery()` and `startRamp()` so that
 `loop()` reads like the specification.
 
-> ▶️ **[Run it: Exercise 1c with a struct in the code runner](applets/code-runner.html#ex1c2)** — press **Step** repeatedly: the Variables panel shows `step.pin` and `step.count` change as each row of the table is read.
+> ▶️ **[Run it: Exercise 2.3 with a struct in the code runner](applets/code-runner.html#ex1c2)** — press **Step** repeatedly: the Variables panel shows `step.pin` and `step.count` change as each row of the table is read.
 
 Comparing the two versions:
 
@@ -538,15 +538,17 @@ better as programs grow.
 
 ## 8. Blocking vs non-blocking timing
 
-`delay()` halts the CPU. During the Exercise 1c sequence (9 blinks, about 9 s)
+`delay()` halts the CPU. During the Exercise 2.3 sequence (9 blinks, about 9 s)
 the Arduino can do nothing else. That is unacceptable once it also has to
 monitor the RES voltage and react to it. The standard alternative is to compare
 elapsed time from `millis()` (milliseconds since reset) and act only when an
-interval has passed:
+interval has passed.
+
+### Example 2.4 — non-blocking blink {#example-2-4}
 
 ```cpp
 /*
- * Non-blocking blink: the LED toggles every 500 ms while loop() stays free
+ * Example 2.4: Non-blocking blink. The LED toggles every 500 ms while loop() stays free
  * to run other tasks (e.g. reading the RES voltage) on every pass.
  */
 
