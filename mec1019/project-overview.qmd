@@ -8,6 +8,18 @@ the voltage of a **renewable energy source (RES)** and switches the load over to
 a **battery backup** when the RES can no longer supply it. Every chapter adds
 one piece of that system.
 
+```{mermaid}
+flowchart LR
+  subgraph RES["Renewable energy source"]
+    direction TB
+    solar["Solar"]
+    wind["Wind"]
+  end
+  RES --> reg["Voltage regulation"]
+  reg --> mcu["Microcontroller"]
+  mcu --> pump["Pump"]
+```
+
 ## What the finished system does
 
 - A **voltage divider** scales the RES voltage down into the 0–5 V range the
