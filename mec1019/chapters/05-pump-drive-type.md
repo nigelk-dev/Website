@@ -170,8 +170,6 @@ void loop() {
 
 > ▶️ **[Run it: the switch-over sketch in the code runner](applets/code-runner.html#p8int)** — the single-threshold version from Switching circuitry: drag the A0 voltage below 2.5 V and watch the supply move to the battery.
 
-> 🔧 **Try it:** [RES battery-backup simulator](applets/res-backup.html) — tick "Gusty" and set the wind near the threshold: every flip of the supply is a moment the pump is hit with a new voltage.
-
 ### The catch: inrush current
 
 A small DC pump is a permanent-magnet DC motor. While it turns, it acts as a
