@@ -18,15 +18,15 @@ flowchart LR
   subgraph BAT["Battery"]
     battery["Backup battery"]
   end
-  subgraph MCU["Microcontroller"]
+  subgraph MCU["Microcontroller system"]
     direction TB
     decision["Control decision"]
     output["Pump output"]
     decision --> output
   end
   RES --> reg["Voltage regulation"]
-  BAT --> reg
-  reg --> decision
+  reg --> MCU
+  battery --> MCU
   output --> pump["Pump"]
 ```
 
