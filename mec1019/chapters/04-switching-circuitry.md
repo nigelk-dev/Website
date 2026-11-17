@@ -12,8 +12,8 @@ Arduino, then building the complete RES / battery switch-over on a breadboard.
 ```{=html}
 <figure class="flow-diagram">
 <figcaption>System overview · Switching circuitry</figcaption>
-<a class="fd-light" href="images/system-switching-light.png"><img src="images/system-switching-light.png" width="1600" height="370" alt="Project overview diagram with the switching circuitry highlighted, fed by the renewable energy source, the 12 V backup battery and the control decision; everything else is faded."></a>
-<a class="fd-dark" href="images/system-switching-dark.png"><img src="images/system-switching-dark.png" width="1600" height="370" alt="Project overview diagram with the switching circuitry highlighted, fed by the renewable energy source, the 12 V backup battery and the control decision; everything else is faded."></a>
+<a class="fd-light" href="images/system-switching-light.png"><img src="images/system-switching-light.png" width="1600" height="370" alt="Project overview diagram with the switching circuitry highlighted, fed by the renewable energy source and the 12 V backup battery; everything else is faded."></a>
+<a class="fd-dark" href="images/system-switching-dark.png"><img src="images/system-switching-dark.png" width="1600" height="370" alt="Project overview diagram with the switching circuitry highlighted, fed by the renewable energy source and the 12 V backup battery; everything else is faded."></a>
 </figure>
 ```
 
