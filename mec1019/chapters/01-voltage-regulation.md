@@ -24,6 +24,7 @@ By the end of this chapter you should be able to:
 - Calculate the current and output voltage of a voltage divider
 - Choose divider resistors from a source's maximum voltage
 - Work out the current and power a resistor choice gives, and pick a safe standard value
+- Size an LED's series resistor from its forward voltage, and explain why the supply must leave enough voltage for the resistor
 - Use a potentiometer as an adjustable divider, and set one up safely to monitor a source
 
 ---
@@ -237,17 +238,62 @@ That is why Section 4 recommends around 10 kΩ for $R_2$.
 
 ### Current through an LED
 
-An LED is the clearest example of why the resistor value matters. An LED's
-current rises **exponentially** with voltage, so it can't limit its own current:
-the series resistor does. Above the knee of its curve the LED's voltage is
-roughly its forward voltage $V_f$, so:
+An LED is the clearest example of why the resistor value matters.
 
-$$R = \frac{V_s - V_f}{I_F}$$
+![LED polarity: the long leg is the anode (+); the short leg and the flat edge of the lens mark the cathode (−). Current flows from anode to cathode.](images/led-polarity.svg)
 
-With a 9 V supply and a red LED ($V_f \approx 2$ V) at 20 mA,
+- **Polarity.** The **anode** (+, long leg) must be at the higher voltage and the
+  **cathode** (−, short leg, flat edge on the lens) at the lower. Reversed, an LED
+  doesn't conduct, and most are only rated to about 5 V in reverse.
+- **It can't limit its own current.** An LED is a diode: its current rises
+  **exponentially** with voltage. A change of a few tens of millivolts across it
+  changes the current several times over, so connected straight to a supply the
+  current is limited only by the supply's internal resistance, and the LED burns
+  out within seconds. The **series resistor** sets the current.
+
+### Forward voltage
+
+Once an LED is conducting, the voltage across it stays roughly constant at its
+**forward voltage**, $V_f$. The rest of the supply voltage, $V_s - V_f$, is across
+the resistor, so:
+
+$$I = \frac{V_s - V_f}{R} \qquad\Longrightarrow\qquad R = \frac{V_s - V_f}{I_F}$$
+
+where $I_F$ is the current you want (typically 10–20 mA; most small LEDs are rated
+at 20 mA, with a 30 mA maximum). $V_f$ depends mainly on the **colour**, because
+it is set by the semiconductor material:
+
+| LED colour | Typical $V_f$ | Resistor for ≤ 20 mA from 5 V | Resistor for ≤ 20 mA from 9 V |
+|---|---|---|---|
+| Red | 2.0 V | 150 Ω (20.0 mA) | 390 Ω (17.9 mA) |
+| Yellow | 2.1 V | 150 Ω (19.3 mA) | 390 Ω (17.7 mA) |
+| Green (standard) | 2.2 V | 150 Ω (18.7 mA) | 390 Ω (17.4 mA) |
+| Blue, white, bright green | 3.2 V | 100 Ω (18.0 mA) | 330 Ω (17.6 mA) |
+
+**Worked example:** a 9 V supply and a red LED at 20 mA:
 $R = (9 - 2)/0.020 = 350\ \Omega$, which is not a standard value. Round **up** to
-390 Ω, giving 17.9 mA. Rounding down to 330 Ω would give 21.2 mA, over the
-rating.
+390 Ω, giving 17.9 mA. Rounding down to 330 Ω would give 21.2 mA, over the rating.
+
+### Leave enough voltage for the resistor
+
+$V_f$ is only a typical figure. It varies from one LED to the next (often
+±0.2 V), and it falls slightly as the LED warms up. The resistor's voltage,
+$V_s - V_f$, absorbs that variation, so the more voltage is left for the
+resistor, the less the current changes:
+
+| Supply and LED | Left for the resistor | Current change if $V_f$ is 0.2 V lower |
+|---|---|---|
+| 9 V, red | 7 V | about 3 % |
+| 5 V, red | 3 V | about 7 % |
+| 5 V, white | 1.8 V | about 11 % |
+| 3.3 V, white | 0.1 V | **current doubles or more**: unpredictable |
+
+Keep at least a volt or two across the resistor. A white or blue LED from a 3.3 V
+supply leaves almost nothing, so its brightness depends on the individual LED;
+use the 5 V supply instead.
+
+**Power check.** The resistor also dissipates power: at 390 Ω and 17.9 mA,
+$P = I^2R = 0.0179^2 \times 390 \approx 125$ mW, half of a ¼ W rating.
 
 > ▶️ **[LED circuit explorer](applets/led-circuit.html)** — choose a supply and LED colour, slide through the standard resistor values and watch the current. Pick a resistor that is too small and the LED burns out.
 
@@ -260,6 +306,8 @@ first, then press **Replace the LED**)
 3. Switch to a **blue LED**. Why does the smallest safe resistor change?
 4. At the resistor you found in task 1, how much power does the resistor
    dissipate? Is a standard ¼ W resistor enough?
+5. Try the **3.3 V** supply with a **white LED**. The explorer finds a resistor
+   that works, so why is this still a poor combination?
 
 <details>
 <summary>Answers</summary>
@@ -268,6 +316,7 @@ first, then press **Replace the LED**)
 2. With no resistor, only the battery's small internal resistance limits the current, so it tries to reach amps, far past the 30 mA maximum, and the LED burns out.
 3. A blue LED has a higher forward voltage (3.2 V), so the resistor has less voltage across it: $(9 - 3.2)/0.020 = 290\ \Omega$, so the smallest safe standard value is **330 Ω**.
 4. $P = V_R^2/R = 7^2/390 \approx 126\ \text{mW}$: about half of a ¼ W (250 mW) rating, which is acceptable.
+5. Only $3.3 - 3.2 = 0.1\ \text{V}$ is left across the resistor. The explorer recommends 10 Ω because it assumes $V_f$ is exactly 3.2 V. Real white LEDs vary from about 3.0 to 3.4 V: at 3.0 V a 10 Ω resistor passes $(3.3 - 3.0)/10 = 30\ \text{mA}$, the maximum, and at 3.4 V the LED doesn't light at all. Use the 5 V supply instead.
 
 </details>
 
@@ -390,6 +439,9 @@ reading back into the RES voltage, using the fraction you measure here.
 - Every resistor sets a **current**: $I = V/R$, $P = I^2R$. Round to a standard value
   in the safe direction and keep within the power rating. Large divider values
   waste far less energy.
+- An LED needs a series resistor: $R = (V_s - V_f)/I_F$, with $V_f$ set by its
+  colour (about 2 V red, 3.2 V blue or white). Leave a volt or two across the
+  resistor so variations in $V_f$ don't change the current much.
 - Design from the **maximum** source voltage: $R_1 = (V_{max}/5 - 1)\,R_2$, with
   $R_2$ around 10 kΩ, rounding $R_1$ up.
 - A potentiometer or trimmer is an adjustable divider. Before connecting it to the

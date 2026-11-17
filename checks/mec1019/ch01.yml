@@ -198,3 +198,14 @@
   solution: |
     I = {V} / ({R1} + {R2}) kΩ = **{=V / (R1 + R2)} mA**; P = {V} × {=V / (R1 + R2)} mA = **{=V * V / (R1 + R2)} mW**.
     Smaller resistors with the same ratio give the same pin voltage but waste far more.
+
+- type: mcq
+  q: A white LED ($V_f \approx 3.2$ V) is run from a **3.3 V** supply through a 10 Ω resistor. Why is that a poor design?
+  options:
+    - text: Only about 0.1 V is left across the resistor, so small differences in $V_f$ between LEDs change the current enormously
+      correct: true
+    - text: White LEDs can't run below 5 V
+      why: It may light, but its current depends on the individual LED's forward voltage.
+    - text: The resistor will overheat
+      why: At 10 mA, a 10 Ω resistor dissipates only 1 mW.
+    - text: The LED will be reverse-biased
