@@ -23,7 +23,7 @@ flowchart LR
   subgraph MCU["Microcontroller system"]
     direction TB
     read["Read input voltage"]
-    decision["Control decision"]
+    decision["Control decision<br/>(RES or battery)"]
     output["Pump output"]
     split@{ shape: fork }
     dol["Direct online"]
@@ -36,7 +36,8 @@ flowchart LR
   end
   RES -->|"0–16 V<br/>&nbsp;"| reg["Voltage regulation"]
   reg -->|"0–5 V<br/>&nbsp;"| read
-  BAT --->|"12 V<br/>&nbsp;"| MCU
+  RES -----> output
+  BAT ----->|"12 V<br/>&nbsp;"| output
   dol --> pump["Pump"]
   soft --> pump
 ```
