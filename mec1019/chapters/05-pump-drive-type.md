@@ -1,18 +1,20 @@
 # Pump drive type
 
 The last block in the [project overview](../project-overview.qmd) is the **pump
-drive type**: how the selected supply is applied to the pump. There are two
-ways to do it:
+drive type**: how the selected supply is applied to the pump. This chapter starts
+with the simplest way, the one the relay prototype already uses:
 
-- **Direct drive:** the pump is connected straight to the switched supply, at full
-  voltage, the moment the supply is switched in.
+- **Direct drive:** the pump is connected straight to the supply the relays
+  select, so it gets the full voltage the moment that supply is switched in.
+
+Direct drive needs nothing more than the relays and the switch-over sketch, so it
+is where the project starts. Its weak point is the **inrush current**: the surge
+a motor draws when it starts, or when its supply suddenly jumps. The second half
+of the chapter shows the fix:
+
 - **Slow start:** the pump is driven through a motor driver (an **L298N
   H-bridge** module), and the Arduino ramps its voltage up with **PWM** over a
   second or two.
-
-The difference that matters most is the **inrush current**: the surge a motor
-draws when it starts, or when its supply suddenly jumps. This chapter explains
-where that surge comes from, then compares the two drive types.
 
 ```{=html}
 <figure class="flow-diagram">
@@ -26,16 +28,151 @@ where that surge comes from, then compares the two drive types.
 
 By the end of this chapter you should be able to:
 
+- Explain what direct drive is, and wire a pump for direct drive through the
+  relay module
+- Write and explain a direct-drive switch-over sketch with hysteresis
 - Explain why a DC motor draws a large inrush current at start-up and when its
-  supply voltage steps up
-- Describe the advantages and disadvantages of direct drive
+  supply voltage steps up, and describe the advantages and disadvantages of
+  direct drive
 - Use PWM and `analogWrite` to vary the average voltage applied to a load
 - Wire and control an L298N motor driver module
 - Write a non-blocking slow-start ramp, and compare it with direct drive
 
 ---
 
-## 1. Inrush current
+## 1. Direct drive
+
+In **direct drive** the pump is connected straight to the switched supply. There
+is no motor driver and no speed control: the relays decide *which* supply the
+pump gets, and the pump runs at whatever voltage that supply gives.
+
+- RES selected → the pump runs at the RES voltage (e.g. 8–10 V, varying with
+  the wind or sun).
+- Battery selected → the pump runs at the battery voltage (e.g. 12 V).
+- Neither selected → the pump stops.
+
+It is exactly the switch-over circuit from [Switching
+circuitry](04-switching-circuitry.md#the-switch-over-with-relays), with the pump
+in place of the LED that stood in for it.
+
+### Wiring the pump to the relays
+
+Build the switch-over circuit as in [Switching
+circuitry](04-switching-circuitry.md#building-it), then replace the load:
+
+![The switch-over circuit from Switching circuitry. For direct drive, the pump takes the place of the LED and resistor on the load rail fed by both relays' NO terminals.](images/switchover-step5.svg)
+
+| Connection | From | To |
+|---|---|---|
+| RES supply | RES +ve | COM, RES relay (relay 2) |
+| Battery supply | Battery +ve | COM, battery relay (relay 1) |
+| **Pump supply** | **NO of both relays** (joined) | **Pump (+)** |
+| **Pump return** | **Pump (−)** | The common ground rail |
+| Common ground | RES −ve, battery −ve, Arduino GND, pump (−) | Breadboard ground rail |
+| Relay control | Arduino pins 13 and 12 | IN1 (battery), IN2 (RES) |
+| Monitoring | RES +ve → 22 kΩ → (A0) → 10 kΩ → ground | Arduino A0 |
+
+- **Both NO terminals feed the pump.** Only one relay is on at a time, so the pump
+  sees either the RES or the battery, never both. With both relays off, the pump
+  is disconnected.
+- **Check the ratings.** The pump current flows through the relay contacts. The
+  usual SRD-05VDC relays are rated 10 A at 30 V DC, plenty for a small pump; the
+  breadboard is not, so run the pump wires to the relay terminals directly, not
+  through breadboard strips.
+- **Fit a flyback diode across the pump** (e.g. a 1N4007, its stripe towards the
+  pump's + terminal). A motor's winding stores energy; when a relay opens, the
+  diode gives that energy a path instead of letting it spark across the contacts.
+
+### The demo code
+
+The sketch is the switch-over sketch from [Switching
+circuitry](04-switching-circuitry.md#the-code), with the [hysteresis from Read input
+voltage](03-read-input-voltage.md#hysteresis-stop-the-chatter) added. With a real
+pump the hysteresis matters more than with an LED: a pump that starts on the RES
+can pull the RES voltage down (see below), and a single threshold would then flip
+the supply back and forth.
+
+```cpp
+/*
+ * Direct drive: run the pump from the renewable energy source (RES) while its
+ * voltage is high enough, and from the battery when it drops.
+ * Hardware: divider (22 kΩ / 10 kΩ) mid-point -> A0; D12 -> IN2 (RES relay);
+ *   D13 -> IN1 (battery relay); 5 V -> VCC; NO of both relays -> pump (+);
+ *   pump (-) and all grounds joined.
+ */
+
+const uint8_t  kResPin     = A0;       // divider mid-point
+const uint8_t  kResRelay   = 12;       // IN2: connects the RES to the pump
+const uint8_t  kBatRelay   = 13;       // IN1: connects the battery to the pump
+const uint16_t kSampleMs   = 100;
+const uint8_t  kRelayOn    = LOW;      // the relay module is active-LOW
+const uint8_t  kRelayOff   = HIGH;
+
+// Two thresholds (hysteresis), as analogRead values worked out by the compiler.
+const int      kToBattery  = 2300L * 1023 / 5000;   // 2.3 V at A0 -> 470
+const int      kToRes      = 2700L * 1023 / 5000;   // 2.7 V at A0 -> 552
+
+// Run the pump from the RES. The battery is disconnected first.
+void useRes() {
+  digitalWrite(kBatRelay, kRelayOff);
+  digitalWrite(kResRelay, kRelayOn);
+}
+
+// Run the pump from the battery. The RES is disconnected first.
+void useBattery() {
+  digitalWrite(kResRelay, kRelayOff);
+  digitalWrite(kBatRelay, kRelayOn);
+}
+
+void setup() {
+  Serial.begin(9600);
+  digitalWrite(kResRelay, kRelayOff);    // pump off until we decide
+  digitalWrite(kBatRelay, kRelayOff);
+  pinMode(kResRelay, OUTPUT);
+  pinMode(kBatRelay, OUTPUT);
+
+  if (analogRead(kResPin) < kToRes) {    // start on the battery unless the
+    useBattery();                        // RES is clearly good enough
+  } else {
+    useRes();
+  }
+}
+
+void loop() {
+  int reading = analogRead(kResPin);     // 1. read the RES ...
+  Serial.println(reading);
+
+  if (reading < kToBattery) {            // 2. ... then decide
+    useBattery();                        // clearly too low
+  } else if (reading > kToRes) {
+    useRes();                            // clearly recovered
+  }
+  // Between 470 and 552 nothing changes: the pump stays on its supply.
+
+  delay(kSampleMs);
+}
+```
+
+**How it works**
+
+- **The pump is just the load.** Nothing in the code drives the pump itself: it
+  runs whenever a relay connects a supply. Direct drive *is* the switching code.
+- **Off before on.** `useRes()` and `useBattery()` disconnect the old supply
+  before connecting the new one, so the RES and the battery are never joined, and
+  the pump is without power for only the few milliseconds the relays take to move.
+- **Hysteresis.** Below 470 the pump goes to the battery; above 552 it goes back
+  to the RES; in between it stays where it is. With the 22 kΩ / 10 kΩ divider
+  those readings are about 7.4 V and 8.6 V from the RES.
+- **A decision in `setup()`.** The pump starts on a supply straight away: the
+  RES if it is clearly good, otherwise the battery.
+- **Whole numbers only**, as in [Read input
+  voltage](03-read-input-voltage.md#why-whole-numbers-are-better).
+
+> ▶️ **[Run it: the switch-over sketch in the code runner](applets/code-runner.html#p8int)** — the single-threshold version from Switching circuitry: drag the A0 voltage below 2.5 V and watch the supply move to the battery.
+
+> 🔧 **Try it:** [RES battery-backup simulator](applets/res-backup.html) — tick "Gusty" and set the wind near the threshold: every flip of the supply is a moment the pump is hit with a new voltage.
+
+### The catch: inrush current
 
 A small DC pump is a permanent-magnet DC motor. While it turns, it acts as a
 generator as well as a motor: it produces a **back-EMF**, $E$, that opposes the
@@ -51,17 +188,17 @@ $$I = \frac{V - E}{R}$$
   $$I_{start} = \frac{V}{R}$$
 
 **Example:** a 12 V pump with a winding resistance of 2 Ω that runs at 0.8 A.
-At switch-on it draws $12 / 2 = 6$ A: **more than seven times** its running
-current, until it speeds up and the back-EMF builds. Measure your own pump's
-winding resistance with a multimeter (with the pump unpowered) to estimate its
-start-up current.
+With direct drive, the moment the relay closes it draws $12 / 2 = 6$ A: **more
+than seven times** its running current, until it speeds up and the back-EMF
+builds. Measure your own pump's winding resistance with a multimeter (with the
+pump unpowered) to estimate its start-up current.
 
-### A supply step causes a surge too
+#### A switch-over causes a surge too
 
 The same thing happens when the pump is already running and its supply jumps.
-Running from the RES at 8 V, the pump's back-EMF settles a little below 8 V.
-Switch to the 12 V battery and the extra 4 V appears straight across the winding
-resistance:
+Running from the RES at 8 V, the pump's back-EMF settles a little below 8 V. The
+relays switch to the 12 V battery, and the extra 4 V appears straight across the
+winding resistance:
 
 $$\Delta I \approx \frac{V_{new} - V_{old}}{R} = \frac{12 - 8}{2} = 2\ \text{A}$$
 
@@ -69,7 +206,7 @@ on top of the running current, until the pump speeds up to match. Switching to a
 *lower* voltage does the opposite: the current briefly falls (it can even reverse
 for a moment) while the pump slows down. Only a step **up** causes a surge.
 
-### Why the surge matters in this project
+#### Why the surge matters in this project
 
 - **The RES voltage sags.** A solar panel or small turbine can't deliver amps
   without its voltage dropping. A start-up surge can pull the RES below the
@@ -77,20 +214,11 @@ for a moment) while the pump slows down. Only a step **up** causes a surge.
   it switches back, and the pump is hit again: an oscillation that hysteresis
   alone may not stop.
 - **Stress on the parts.** The relay contacts, the battery, connectors and wiring
-  all carry the peak, and relay contacts that switch a surge arc and wear. A
-  typical L298N module is rated at 2 A continuous per channel, with a short peak
-  of 3 A: a 6 A start is well beyond it.
+  all carry the peak, and relay contacts that switch a surge arc and wear.
 - **Mechanical shock.** A pump that jumps to full speed jolts its mounting and can
   cause **water hammer** in the pipework.
 
----
-
-## 2. Direct drive
-
-In direct drive the pump is connected straight to the switched supply: in the
-relay circuit of [Switching circuitry](04-switching-circuitry.md#the-switch-over-with-relays),
-the pump is the load on the relays' NO outputs. It runs at full voltage whenever
-a supply is switched in, and the switching code is all it needs.
+### Advantages and disadvantages of direct drive
 
 | Advantages | Disadvantages |
 |---|---|
@@ -98,7 +226,34 @@ a supply is switched in, and the switching code is all it needs.
 | **No extra voltage loss:** the pump gets the full supply voltage | **A surge at every switch-over** to a higher supply |
 | **Full torque immediately**, useful for a pump that needs a kick to start | Surges can **sag the RES** below the threshold and cause repeated switching |
 | **Silent:** no PWM whine | **Stresses** the relay contacts, battery and wiring; mechanical shock and water hammer |
-| Keeps working even if the code stops | **No speed control**: the pump runs at whatever the supply voltage gives |
+| The relays stay as they are if the code stops | **No speed control**: the pump runs at whatever the supply voltage gives |
+
+---
+
+## 2. Slow start: the idea
+
+A **slow start** (soft start) raises the pump's average voltage gradually, so
+the back-EMF can build as the pump speeds up and the current never jumps far
+above its running value.
+
+- **At start-up:** ramp the drive from 0 to 100 % over a set time, e.g. 2 s.
+- **At a switch-over to a higher supply:** first **reduce** the drive so the
+  pump's average voltage stays about the same, switch the supply, then ramp back
+  up to 100 %. For example, running flat out on an 8 V RES and switching to a 12 V
+  battery, drop the drive to $255 \times 8/12 = 170$ (about 8 V average from 12 V),
+  switch, then ramp.
+- **At a switch-over to a lower supply:** no surge, so no ramp is needed.
+
+Cutting the drive before a switch-over also means the relay contacts switch a
+smaller current, so they arc less.
+
+A slow start needs two things that direct drive doesn't:
+
+1. A way to make a voltage **between** off and full on: **PWM** (section 3).
+2. Something that can switch the pump's current that fast: a **motor driver**,
+   here the **L298N** (section 4).
+
+Section 5 puts them together with the relays.
 
 ---
 
@@ -244,8 +399,8 @@ The drive level is simply the `analogWrite` value: 0 is off, 255 is full drive.
 - **Voltage loss.** The L298N uses bipolar transistors, which drop about 2 V in
   total at 1 A (more at higher current). At full drive the pump gets less than in
   direct drive.
-- **Current limit.** 2 A continuous per channel. A slow start keeps the pump
-  within it; a direct start through the L298N would not.
+- **Current limit.** 2 A continuous per channel, with a short peak of 3 A. A slow
+  start keeps the pump within it; the 6 A direct start from section 1 would not.
 - **PWM whine.** At about 490 Hz the pump may hum audibly while it ramps.
 - **Seeing the inrush.** Put a small resistor (0.1–0.2 Ω, rated for the current) in
   series with the pump's supply and look at the voltage across it with an
@@ -254,30 +409,19 @@ The drive level is simply the `analogWrite` value: 0 is off, 255 is full drive.
 
 ---
 
-## 5. Slow start
+## 5. Slow start with the L298N
 
-A **slow start** (soft start) raises the pump's average voltage gradually, so
-the back-EMF can build as the pump speeds up and the current never jumps far
-above its running value.
-
-- **At start-up:** ramp the drive from 0 to 100 % over a set time, e.g. 2 s.
-- **At a switch-over to a higher supply:** first **reduce** the drive so the
-  pump's average voltage stays about the same, switch the supply, then ramp back
-  up to 100 %. For example, running flat out on an 8 V RES and switching to a 12 V
-  battery, drop the drive to $255 \times 8/12 = 170$ (about 8 V average from 12 V),
-  switch, then ramp.
-- **At a switch-over to a lower supply:** no surge, so no ramp is needed.
-
-Cutting the drive before a switch-over also means the relay contacts switch a
-smaller current, so they arc less.
+The supply switching is the relay circuit from section 1, with one change: the
+relays' NO outputs now feed the L298N's **+12V** (motor supply) terminal instead
+of the pump, and the pump moves to the L298N's OUT3 and OUT4. The relays still
+choose the supply; the L298N decides how much of it reaches the pump.
 
 ### The code
 
 The ramp is **non-blocking**: `loop()` keeps checking the RES while the pump
-speeds up, and a switch-over during a ramp is handled straight away. The supply
-switching is the relay circuit from [Switching
-circuitry](04-switching-circuitry.md#the-switch-over-with-relays), with the
-relays' NO outputs feeding the L298N's motor supply instead of the pump.
+speeds up, and a switch-over during a ramp is handled straight away. The
+switching part is the direct-drive sketch from section 1 with its hysteresis; the
+new parts are `setPump()`, `startRamp()` and `updateRamp()`.
 
 ```cpp
 /*
@@ -419,7 +563,7 @@ void loop() {
   with an oscilloscope and lengthen the ramp until the peak is close to the
   running current.
 
-### Advantages and disadvantages
+### Advantages and disadvantages of slow start
 
 | Advantages | Disadvantages |
 |---|---|
@@ -454,11 +598,13 @@ start at reduced voltage.
 
 ## Key points
 
-- A DC motor's current is $I = (V - E)/R$. At standstill $E = 0$, so the **inrush
-  current** is $V/R$, often several times the running current. A sudden step **up**
-  in supply voltage causes a surge too.
-- **Direct drive** is simple and loses no extra voltage, but takes the full surge at
-  every start and every switch-over to a higher supply.
+- **Direct drive** connects the pump straight to the supply the relays select: the
+  pump is the load on both relays' NO terminals, and the switch-over sketch (with
+  hysteresis) is all the code it needs.
+- Direct drive is simple and loses no voltage, but a DC motor's current is
+  $I = (V - E)/R$: at standstill $E = 0$, so the **inrush current** is $V/R$,
+  often several times the running current. A switch-over to a higher supply causes
+  a surge too.
 - **PWM** sets an average voltage: $V_{avg} = V_{supply} \times \text{value}/255$.
 - An **L298N** drives the pump: IN3 and IN4 set the direction, and `analogWrite` on
   ENB sets the drive level.
