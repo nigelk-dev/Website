@@ -191,15 +191,16 @@ connected together, even for a moment.
 
 ### Exercises 3c and 3d — switch LEDs through the relays
 
-![Exercise 3c wiring: battery + to relay 1 COM; relay 1 NO to a 220 Ω resistor and blue LED on the breadboard; the LED to the − rail and back to the battery −](images/relay-3c.svg)
+![Exercise 3c wiring: battery + to the breadboard's bottom + rail and from there to relay 1 COM; relay 1 NO to a 220 Ω resistor and blue LED on the breadboard; the LED to the − rail and back to the battery −](images/relay-3c.svg)
 
-- A separate **battery** powers an LED circuit; its +ve goes to **COM** of relay 1,
+- A separate **battery** powers an LED circuit; its +ve goes to the breadboard's
+  bottom **+ rail**, and a wire from the rail goes to **COM** of relay 1,
   and **NO** → resistor → blue LED → battery −ve. The Example 3a code now switches
   the LED, but the LED's power comes from the battery, not the Arduino.
 - Wire a green LED through relay 2 the same way and run the Exercise 3b code: the
   LEDs alternate as the relays alternate.
 
-![Exercise 3d wiring: as Exercise 3c, plus a green LED and resistor switched by relay 2, whose COM is joined to relay 1's COM](images/relay-3d.svg)
+![Exercise 3d wiring: as Exercise 3c, plus a green LED and resistor switched by relay 2, whose COM also takes its supply from the + rail](images/relay-3d.svg)
 
 ### Exercise 3e — potentiometer control
 

@@ -1,67 +1,69 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 100 1320 440" width="1320" height="440" font-family="Helvetica, Arial, sans-serif" font-size="14">
-<title>The 5 V dual relay module: the control side (VCC, GND, IN1, IN2) connects to the Arduino; the operating side (NC, COM, NO screw terminals for each relay) connects to the circuit being switched</title>
-<rect y="100" width="1320" height="440" fill="#ffffff"/>
-<rect x="470" y="200" width="380" height="200" rx="10" fill="#22324d" stroke="#16223a" stroke-width="3"/>
-<rect x="525" y="250" width="140" height="92" rx="4" fill="#2f6fd0" stroke="#1d4f9e" stroke-width="2"/>
-<text x="595" y="292" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Relay 1</text>
-<text x="595" y="312" text-anchor="middle" font-size="11" fill="#dbe7fb">SRD-05VDC</text>
-<circle cx="653" cy="360" r="5" fill="#e53935"/>
-<rect x="526" y="200" width="28" height="34" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
-<circle cx="540" cy="217" r="8" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
-<line x1="535" y1="217" x2="545" y2="217" stroke="#555" stroke-width="2"/>
-<text x="540" y="248" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">NC</text>
-<rect x="560" y="200" width="28" height="34" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
-<circle cx="574" cy="217" r="8" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
-<line x1="569" y1="217" x2="579" y2="217" stroke="#555" stroke-width="2"/>
-<text x="574" y="248" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">COM</text>
-<rect x="594" y="200" width="28" height="34" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
-<circle cx="608" cy="217" r="8" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
-<line x1="603" y1="217" x2="613" y2="217" stroke="#555" stroke-width="2"/>
-<text x="608" y="248" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">NO</text>
-<rect x="700" y="250" width="140" height="92" rx="4" fill="#2f6fd0" stroke="#1d4f9e" stroke-width="2"/>
-<text x="770" y="292" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Relay 2</text>
-<text x="770" y="312" text-anchor="middle" font-size="11" fill="#dbe7fb">SRD-05VDC</text>
-<circle cx="828" cy="360" r="5" fill="#e53935"/>
-<rect x="701" y="200" width="28" height="34" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
-<circle cx="715" cy="217" r="8" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
-<line x1="710" y1="217" x2="720" y2="217" stroke="#555" stroke-width="2"/>
-<text x="715" y="248" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">NC</text>
-<rect x="735" y="200" width="28" height="34" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
-<circle cx="749" cy="217" r="8" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
-<line x1="744" y1="217" x2="754" y2="217" stroke="#555" stroke-width="2"/>
-<text x="749" y="248" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">COM</text>
-<rect x="769" y="200" width="28" height="34" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
-<circle cx="783" cy="217" r="8" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
-<line x1="778" y1="217" x2="788" y2="217" stroke="#555" stroke-width="2"/>
-<text x="783" y="248" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">NO</text>
-<rect x="540" y="352" width="34" height="16" rx="2" fill="#111" stroke="#555"/>
-<rect x="715" y="352" width="34" height="16" rx="2" fill="#111" stroke="#555"/>
-<rect x="479" y="245" width="10" height="10" fill="#1b1b1b" stroke="#999" stroke-width="1"/>
-<text x="496" y="254" font-size="11" font-weight="700" fill="#ffffff">GND</text>
-<rect x="479" y="270" width="10" height="10" fill="#1b1b1b" stroke="#999" stroke-width="1"/>
-<text x="496" y="279" font-size="11" font-weight="700" fill="#ffffff">IN1</text>
-<rect x="479" y="295" width="10" height="10" fill="#1b1b1b" stroke="#999" stroke-width="1"/>
-<text x="496" y="304" font-size="11" font-weight="700" fill="#ffffff">IN2</text>
-<rect x="479" y="320" width="10" height="10" fill="#1b1b1b" stroke="#999" stroke-width="1"/>
-<text x="496" y="329" font-size="11" font-weight="700" fill="#ffffff">VCC</text>
-<text x="660.0" y="384" text-anchor="middle" font-size="13" fill="#c9d4e6">5 V dual relay module (active-LOW)</text>
-<rect x="474" y="238" width="48" height="100" rx="6" fill="none" stroke="#2f6fd0" stroke-width="2.5" stroke-dasharray="6 4"/>
-<text x="450" y="260" text-anchor="end" font-size="13" font-weight="700" fill="#2f6fd0" paint-order="stroke" stroke="#ffffff" stroke-width="4">Control side (low voltage)</text>
-<text x="450" y="277" text-anchor="end" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">VCC → Arduino 5 V</text>
-<text x="450" y="294" text-anchor="end" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">GND → Arduino GND</text>
-<text x="450" y="311" text-anchor="end" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">IN1, IN2 → two digital pins</text>
-<rect x="520" y="194" width="283" height="60" rx="6" fill="none" stroke="#c62828" stroke-width="2.5" stroke-dasharray="6 4"/>
-<text x="661.5" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#c62828" paint-order="stroke" stroke="#ffffff" stroke-width="4">Operating side (the switched circuit)</text>
-<text x="661.5" y="147" text-anchor="middle" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">NC, COM, NO screw terminals for each relay → RES, battery, pump</text>
-<path d="M557 368 L330 450" fill="none" stroke="#5d6370" stroke-width="1.5" stroke-dasharray="4 3"/>
-<circle cx="557" cy="368" r="3.5" fill="#5d6370"/>
-<text x="336" y="454" text-anchor="start" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">Opto-isolators: the Arduino's signal lights an LED inside,</text>
-<text x="336" y="471" text-anchor="start" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">so the Arduino isn't electrically connected to the coils</text>
-<path d="M653 365 L685 500" fill="none" stroke="#5d6370" stroke-width="1.5" stroke-dasharray="4 3"/>
-<circle cx="653" cy="365" r="3.5" fill="#5d6370"/>
-<text x="691" y="504" text-anchor="start" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">Indicator LED: lights when that relay is on</text>
-<path d="M815 342 L910 450" fill="none" stroke="#5d6370" stroke-width="1.5" stroke-dasharray="4 3"/>
-<circle cx="815" cy="342" r="3.5" fill="#5d6370"/>
-<text x="916" y="454" text-anchor="start" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">Relay: a coil and a switch;</text>
-<text x="916" y="471" text-anchor="start" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">contacts rated 10 A at 250 VAC / 30 VDC</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 430" width="1320" height="430" font-family="Helvetica, Arial, sans-serif" font-size="14">
+<title>The 5 V dual relay module: the control side (GND, IN1, IN2, VCC) at one end connects to the Arduino; the operating side (NO, COM and NC screw terminals for each relay) at the other end connects to the circuit being switched</title>
+<rect y="0" width="1320" height="430" fill="#ffffff"/>
+<rect x="470" y="70" width="330" height="290" rx="10" fill="#22324d" stroke="#16223a" stroke-width="3"/>
+<rect x="479" y="160" width="10" height="10" fill="#1b1b1b" stroke="#999" stroke-width="1"/>
+<text x="496" y="169" font-size="11" font-weight="700" fill="#ffffff">GND</text>
+<rect x="479" y="185" width="10" height="10" fill="#1b1b1b" stroke="#999" stroke-width="1"/>
+<text x="496" y="194" font-size="11" font-weight="700" fill="#ffffff">IN1</text>
+<rect x="479" y="210" width="10" height="10" fill="#1b1b1b" stroke="#999" stroke-width="1"/>
+<text x="496" y="219" font-size="11" font-weight="700" fill="#ffffff">IN2</text>
+<rect x="479" y="235" width="10" height="10" fill="#1b1b1b" stroke="#999" stroke-width="1"/>
+<text x="496" y="244" font-size="11" font-weight="700" fill="#ffffff">VCC</text>
+<rect x="532" y="140" width="16" height="34" rx="2" fill="#111" stroke="#555"/>
+<rect x="532" y="260" width="16" height="34" rx="2" fill="#111" stroke="#555"/>
+<rect x="565" y="92" width="150" height="110" rx="4" fill="#2f6fd0" stroke="#1d4f9e" stroke-width="2"/>
+<text x="640" y="144" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Relay 1</text>
+<text x="640" y="164" text-anchor="middle" font-size="11" fill="#dbe7fb">SRD-05VDC</text>
+<circle cx="552" cy="192" r="5" fill="#e53935"/>
+<rect x="770" y="97" width="30" height="30" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
+<circle cx="785" cy="112" r="9" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
+<line x1="780" y1="112" x2="790" y2="112" stroke="#555" stroke-width="2"/>
+<text x="763" y="116" text-anchor="end" font-size="11" font-weight="700" fill="#ffffff">NO</text>
+<rect x="770" y="131" width="30" height="30" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
+<circle cx="785" cy="146" r="9" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
+<line x1="780" y1="146" x2="790" y2="146" stroke="#555" stroke-width="2"/>
+<text x="763" y="150" text-anchor="end" font-size="11" font-weight="700" fill="#ffffff">COM</text>
+<rect x="770" y="165" width="30" height="30" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
+<circle cx="785" cy="180" r="9" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
+<line x1="780" y1="180" x2="790" y2="180" stroke="#555" stroke-width="2"/>
+<text x="763" y="184" text-anchor="end" font-size="11" font-weight="700" fill="#ffffff">NC</text>
+<rect x="565" y="228" width="150" height="110" rx="4" fill="#2f6fd0" stroke="#1d4f9e" stroke-width="2"/>
+<text x="640" y="280" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Relay 2</text>
+<text x="640" y="300" text-anchor="middle" font-size="11" fill="#dbe7fb">SRD-05VDC</text>
+<circle cx="552" cy="328" r="5" fill="#e53935"/>
+<rect x="770" y="233" width="30" height="30" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
+<circle cx="785" cy="248" r="9" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
+<line x1="780" y1="248" x2="790" y2="248" stroke="#555" stroke-width="2"/>
+<text x="763" y="252" text-anchor="end" font-size="11" font-weight="700" fill="#ffffff">NO</text>
+<rect x="770" y="267" width="30" height="30" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
+<circle cx="785" cy="282" r="9" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
+<line x1="780" y1="282" x2="790" y2="282" stroke="#555" stroke-width="2"/>
+<text x="763" y="286" text-anchor="end" font-size="11" font-weight="700" fill="#ffffff">COM</text>
+<rect x="770" y="301" width="30" height="30" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>
+<circle cx="785" cy="316" r="9" fill="#c9ccd2" stroke="#777" stroke-width="1"/>
+<line x1="780" y1="316" x2="790" y2="316" stroke="#555" stroke-width="2"/>
+<text x="763" y="320" text-anchor="end" font-size="11" font-weight="700" fill="#ffffff">NC</text>
+<text x="635.0" y="350" text-anchor="middle" font-size="12" fill="#c9d4e6">5 V dual relay module (active-LOW)</text>
+<rect x="474" y="150" width="52" height="106" rx="6" fill="none" stroke="#2f6fd0" stroke-width="2.5" stroke-dasharray="6 4"/>
+<text x="450" y="174" text-anchor="end" font-size="13" font-weight="700" fill="#2f6fd0" paint-order="stroke" stroke="#ffffff" stroke-width="4">Control side (low voltage)</text>
+<text x="450" y="191" text-anchor="end" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">GND → Arduino GND</text>
+<text x="450" y="208" text-anchor="end" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">IN1, IN2 → two digital pins</text>
+<text x="450" y="225" text-anchor="end" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">VCC → Arduino 5 V</text>
+<rect x="736" y="88" width="68" height="250" rx="6" fill="none" stroke="#c62828" stroke-width="2.5" stroke-dasharray="6 4"/>
+<text x="820" y="130" text-anchor="start" font-size="13" font-weight="700" fill="#c62828" paint-order="stroke" stroke="#ffffff" stroke-width="4">Operating side (the switched circuit)</text>
+<text x="820" y="147" text-anchor="start" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">Relay 1: NO, COM, NC</text>
+<text x="820" y="164" text-anchor="start" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">Relay 2: NO, COM, NC</text>
+<text x="820" y="181" text-anchor="start" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">→ RES, battery, pump</text>
+<path d="M540 294 L410 370" fill="none" stroke="#5d6370" stroke-width="1.5" stroke-dasharray="4 3"/>
+<circle cx="540" cy="294" r="3.5" fill="#5d6370"/>
+<text x="404" y="374" text-anchor="end" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">Opto-isolators: the Arduino's signal lights an LED inside,</text>
+<text x="404" y="391" text-anchor="end" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">so the Arduino isn't electrically connected to the coils</text>
+<path d="M552 328 L600 400" fill="none" stroke="#5d6370" stroke-width="1.5" stroke-dasharray="4 3"/>
+<circle cx="552" cy="328" r="3.5" fill="#5d6370"/>
+<text x="606" y="404" text-anchor="start" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">Indicator LED: lights when that relay is on</text>
+<path d="M670 332 L830 370" fill="none" stroke="#5d6370" stroke-width="1.5" stroke-dasharray="4 3"/>
+<circle cx="670" cy="332" r="3.5" fill="#5d6370"/>
+<text x="836" y="374" text-anchor="start" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">Relay: a coil and a switch;</text>
+<text x="836" y="391" text-anchor="start" font-size="13" font-weight="400" fill="#1d1f24" paint-order="stroke" stroke="#ffffff" stroke-width="4">contacts rated 10 A at 250 VAC / 30 VDC</text>
 </svg>

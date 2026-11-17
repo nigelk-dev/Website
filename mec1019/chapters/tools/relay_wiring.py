@@ -29,7 +29,7 @@ class Diagram:
         self.wires = []                       # drawn last, on top of the parts
         self.texts = []
         self.by0 = 30                         # breadboard top edge
-        self.mx, self.my, self.mw, self.mh = 770, 470, 380, 200   # relay module
+        self.mx, self.my, self.mw, self.mh = 770, 440, 330, 290   # relay module
         if uno:
             self.draw_uno()
         if bb:
@@ -157,36 +157,39 @@ class Diagram:
 
     # ---------------------------------------------------------------- relay module
     def term(self, relay, name):
-        """Screw terminal position (x, top edge y): relay 1 on the left, NC / COM / NO left to right."""
-        base = self.mx + 70 + (relay - 1) * 175
-        return base + {"NC": 0, "COM": 34, "NO": 68}[name], self.my
+        """Screw terminal (x, y) on the module's right-hand end, where its wire attaches.
+        Relay 1's block is at the top and relay 2's below it, each NO / COM / NC from the top."""
+        y = self.my + (42 if relay == 1 else 178) + {"NO": 0, "COM": 34, "NC": 68}[name]
+        return self.mx + self.mw - 15, y
 
     def hdr(self, name):
-        return self.mx + 14, self.my + 50 + {"GND": 0, "IN1": 25, "IN2": 50, "VCC": 75}[name]
+        """Control-side header pin (x, y) on the module's left-hand end."""
+        return self.mx + 14, self.my + 95 + {"GND": 0, "IN1": 25, "IN2": 50, "VCC": 75}[name]
 
     def draw_relay_module(self):
         mx, my, mw, mh = self.mx, self.my, self.mw, self.mh
         self.o(f'<rect x="{mx}" y="{my}" width="{mw}" height="{mh}" rx="10" fill="#22324d" stroke="#16223a" stroke-width="3"/>')
-        for k in (0, 1):
-            rx = mx + 55 + k * 175
-            self.o(f'<rect x="{rx}" y="{my+50}" width="140" height="92" rx="4" fill="#2f6fd0" stroke="#1d4f9e" stroke-width="2"/>')
-            self.o(f'<text x="{rx+70}" y="{my+92}" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Relay {k+1}</text>')
-            self.o(f'<text x="{rx+70}" y="{my+112}" text-anchor="middle" font-size="11" fill="#dbe7fb">SRD-05VDC</text>')
-            self.o(f'<circle cx="{rx+128}" cy="{my+160}" r="5" fill="#e53935"/>')
-            for name in ("NC", "COM", "NO"):
-                tx, ty = self.term(k + 1, name)
-                self.o(f'<rect x="{tx-14}" y="{ty}" width="28" height="34" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>')
-                self.o(f'<circle cx="{tx}" cy="{ty+17}" r="8" fill="#c9ccd2" stroke="#777" stroke-width="1"/>')
-                self.o(f'<line x1="{tx-5}" y1="{ty+17}" x2="{tx+5}" y2="{ty+17}" stroke="#555" stroke-width="2"/>')
-                self.o(f'<text x="{tx}" y="{ty+48}" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">{name}</text>')
-        for k in (0, 1):                      # opto-isolators
-            ox = mx + 70 + k * 175
-            self.o(f'<rect x="{ox}" y="{my+152}" width="34" height="16" rx="2" fill="#111" stroke="#555"/>')
+        # control side: header pins on the left-hand end
         for name in ("GND", "IN1", "IN2", "VCC"):
             hx, hy = self.hdr(name)
             self.o(f'<rect x="{hx-5}" y="{hy-5}" width="10" height="10" fill="#1b1b1b" stroke="#999" stroke-width="1"/>')
             self.o(f'<text x="{hx+12}" y="{hy+4}" font-size="11" font-weight="700" fill="#ffffff">{name}</text>')
-        self.o(f'<text x="{mx+mw/2}" y="{my+mh-16}" text-anchor="middle" font-size="13" fill="#c9d4e6">5 V dual relay module (active-LOW)</text>')
+        for k in (0, 1):                      # opto-isolators, one per channel
+            self.o(f'<rect x="{mx+62}" y="{my+70+k*120}" width="16" height="34" rx="2" fill="#111" stroke="#555"/>')
+        for k in (0, 1):
+            ry = my + 22 + k * 136
+            self.o(f'<rect x="{mx+95}" y="{ry}" width="150" height="110" rx="4" fill="#2f6fd0" stroke="#1d4f9e" stroke-width="2"/>')
+            self.o(f'<text x="{mx+170}" y="{ry+52}" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Relay {k+1}</text>')
+            self.o(f'<text x="{mx+170}" y="{ry+72}" text-anchor="middle" font-size="11" fill="#dbe7fb">SRD-05VDC</text>')
+            self.o(f'<circle cx="{mx+82}" cy="{ry+100}" r="5" fill="#e53935"/>')        # indicator LED
+            # operating side: three screw terminals on the right-hand end
+            for name in ("NO", "COM", "NC"):
+                tx, ty = self.term(k + 1, name)
+                self.o(f'<rect x="{tx-15}" y="{ty-15}" width="30" height="30" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>')
+                self.o(f'<circle cx="{tx}" cy="{ty}" r="9" fill="#c9ccd2" stroke="#777" stroke-width="1"/>')
+                self.o(f'<line x1="{tx-5}" y1="{ty}" x2="{tx+5}" y2="{ty}" stroke="#555" stroke-width="2"/>')
+                self.o(f'<text x="{tx-22}" y="{ty+4}" text-anchor="end" font-size="11" font-weight="700" fill="#ffffff">{name}</text>')
+        self.o(f'<text x="{mx+mw/2}" y="{my+mh-10}" text-anchor="middle" font-size="12" fill="#c9d4e6">5 V dual relay module (active-LOW)</text>')
 
     def relay_control(self, in2=True, vcc_from="pin"):
         """Arduino -> relay module: GND, pin 13 -> IN1, pin 12 -> IN2, 5 V -> VCC."""
@@ -206,7 +209,7 @@ class Diagram:
                       "5V → VCC", (vx + 10, 832))
         else:                                   # from the top + rail, which the Arduino's 5V feeds
             self.wire([(self.rail_x(1), self.rail("tp")), (686, self.rail("tp")), (686, self.hdr("VCC")[1]), (hx, self.hdr("VCC")[1])],
-                      COL["5V"], "+ rail → VCC", (692, 640))
+                      COL["5V"], "+ rail → VCC", (692, 668))
         self.texts.append(f'<text x="{gx-6}" y="312" text-anchor="end" font-size="13" font-weight="700" fill="{INK}" '
                           f'paint-order="stroke" stroke="#ffffff" stroke-width="4">GND → GND</text>')
 
@@ -235,7 +238,7 @@ class Diagram:
         self.o(f'<circle cx="{x}" cy="{y}" r="22" fill="#fff4c2" stroke="#c9a227" stroke-width="2.5"/>')
         self.o(f'<path d="M{x-10} {y+6} Q{x-5} {y-10} {x} {y+6} Q{x+5} {y-10} {x+10} {y+6}" fill="none" stroke="#b07a00" stroke-width="2"/>')
         self.o(f'<rect x="{x-11}" y="{y+20}" width="22" height="16" rx="3" fill="#9a9a9a"/>')
-        self.note(x, y + 58, [("lamp (or LED + resistor)", True, INK)], "middle", 12)
+        self.note(x + 32, y + 4, [("lamp (or LED + resistor)", True, INK)], "start", 12)
         return (x - 6, y + 36), (x + 6, y + 36)
 
 
@@ -248,15 +251,15 @@ def save(name, d, footnotes=()):
 
 def switching_a_load():
     d = Diagram("Switching a load: battery positive to relay 1 COM, relay 1 NO to a lamp, lamp back to the battery negative",
-                uno=False, bb=False, h=600)
-    d.mx, d.my = 470, 250
+                uno=False, bb=False, h=460)
+    d.mx, d.my = 300, 60
     d.draw_relay_module()
-    bp, bn = d.battery(150, 120)
-    lp, ln = d.lamp(1000, 150)
-    com, no = d.term(1, "COM"), d.term(1, "NO")
-    d.wire([bp, (bp[0], 80), (com[0], 80), com], COL["BAT"], "battery + → COM", (com[0] + 12, 72))
-    d.wire([no, (no[0], 215), (lp[0], 215), lp], COL["LOAD"], "NO → lamp", (no[0] + 30, 207))
-    d.wire([bn, (bn[0], 96), (110, 96), (110, 500), (ln[0], 500), ln], COL["GND"], "lamp → battery −", (520, 492))
+    no, com = d.term(1, "NO"), d.term(1, "COM")
+    lp, ln = d.lamp(900, 80)
+    bp, bn = d.battery(760, 250)
+    d.wire([com, (bp[0], com[1]), bp], COL["BAT"], "COM → battery +", (com[0] + 30, com[1] - 8))
+    d.wire([no, (860, no[1]), (860, 150), (lp[0], 150), lp], COL["LOAD"], "NO → lamp", (com[0] + 30, no[1] - 8))
+    d.wire([bn, (bn[0], 200), (ln[0], 200), ln], COL["GND"], "battery − → lamp", (bn[0] + 30, 194))
     return save("relay-switching-a-load", d, (
         "When relay 1 is energised, COM connects to NO and the lamp lights; when it is released, COM goes back to NC and the lamp goes out.",
         "Wire the lamp to NC instead to have it on by default and switched off by the Arduino.",
@@ -270,12 +273,12 @@ def ex3a(in2=False, title=None):
     return d
 
 
-def led_branch(d, c, colour, no_term, wire_y, label, wire_label, wire_label_at):
+def led_branch(d, c, colour, no_term, route, label, wire_label, wire_label_at):
     """Relay NO -> strip c (row j); 220 ohm h(c)-h(c+4); LED f(c+4)/f(c+5); j(c+5) -> bottom - rail."""
     d.resistor(c, c + 4, "h")
     d.led(c + 4, c + 5, colour)
     d.gap_label(c + 6, label)
-    d.wire([no_term, (no_term[0], wire_y), (d.cx(c), wire_y), (d.cx(c), d.row("j"))], COL["LOAD"], wire_label, wire_label_at)
+    d.wire([no_term] + route + [(d.cx(c), d.row("j"))], COL["LOAD"], wire_label, wire_label_at)
     d.wire([(d.cx(c + 5), d.row("j")), (d.rail_x(c + 5), d.rail("bn"))], COL["GND"])
 
 
@@ -286,15 +289,19 @@ def ex3c(green=False, pot=False):
     d = Diagram(title)
     d.draw_relay_module()
     d.relay_control(in2=green, vcc_from="rail" if pot else "pin")
-    bp, bn = d.battery(1180, 500)
-    com1, no1 = d.term(1, "COM"), d.term(1, "NO")
-    d.wire([bp, (bp[0], 448), (com1[0], 448), com1], COL["BAT"], "battery + → COM 1", (1000, 440))
-    d.wire([bn, (bn[0], 395), (d.rail_x(29), 395), (d.rail_x(29), d.rail("bn"))], COL["GND"], "battery − → − rail", (1160, 390))
-    led_branch(d, 6, "#4d8dff", no1, 420, "blue LED + 220 Ω", "NO 1 → blue LED", (d.cx(6) - 40, 438))
+    # the battery feeds the bottom rails; the relays' COM terminals take their supply from the + rail
+    bp, bn = d.battery(1190, 790)
+    d.wire([bp, (bp[0], d.rail("bp"))], COL["BAT"], "battery + → + rail", (bp[0] - 140, 770))
+    d.wire([bn, (bn[0], 372), (d.rail_x(29), 372), (d.rail_x(29), d.rail("bn"))], COL["GND"], "battery − → − rail", (bn[0] - 120, 905))
+    no1, com1 = d.term(1, "NO"), d.term(1, "COM")
+    d.wire([(d.rail_x(25), d.rail("bp")), (d.rail_x(25), com1[1]), com1], COL["BAT"], "+ rail → COM 1", (d.rail_x(25) + 6, 470))
+    led_branch(d, 6, "#4d8dff", no1, [(1104, no1[1]), (1104, 410), (d.cx(6), 410)], "blue LED + 220 Ω",
+               "NO 1 → blue LED", (d.cx(6) + 8, 404))
     if green:
-        com2, no2 = d.term(2, "COM"), d.term(2, "NO")
-        d.wire([com1, (com1[0], 460), (com2[0], 460), com2], COL["BAT"])
-        led_branch(d, 15, "#34c759", no2, 408, "green LED + 220 Ω", "NO 2 → green LED", (d.cx(15) + 10, 400))
+        no2, com2 = d.term(2, "NO"), d.term(2, "COM")
+        d.wire([(d.rail_x(27), d.rail("bp")), (d.rail_x(27), com2[1]), com2], COL["BAT"], "+ rail → COM 2", (d.rail_x(27) + 6, 640))
+        led_branch(d, 15, "#34c759", no2, [(1175, no2[1]), (1175, 318), (d.cx(15), 318)], "green LED + 220 Ω",
+                   "NO 2 → green LED", (1040, 312))
     if pot:
         pc = 5
         d.pot(pc)
@@ -311,12 +318,12 @@ def ex3c(green=False, pot=False):
                "pot wiper → A1", (ax + 12, 892))
     if pot:
         foot = ("The pot (ends to the top + and − rails, wiper to A1) chooses which relay is on: below 2.5 V relay 2 (green), otherwise relay 1 (blue).",
-                "The Arduino's 5V and GND feed the top rails, which power the pot and the relay module; the LEDs are powered by the battery.")
+                "The Arduino's 5V and GND feed the top rails (the pot and the relay module); the battery feeds the bottom rails (the LEDs).")
     elif green:
-        foot = ("The battery feeds both COM terminals (a short wire joins COM 1 to COM 2); each relay's NO output lights its own LED.",
+        foot = ("The battery feeds the bottom + rail, which supplies both COM terminals; each relay's NO output lights its own LED.",
                 "The LEDs' power comes from the battery, not the Arduino: the Arduino only switches the relays.")
     else:
-        foot = ("Battery + → relay 1 COM; relay 1 NO → strip 6 → 220 Ω → blue LED (long leg in strip 10) → strip 11 → − rail → battery −.",
+        foot = ("Battery + → + rail → relay 1 COM; relay 1 NO → strip 6 → 220 Ω → blue LED (long leg in strip 10) → strip 11 → − rail → battery −.",
                 "The Example 3a sketch now switches the LED, but the LED's power comes from the battery, not the Arduino.")
     return d, foot
 
@@ -331,14 +338,13 @@ def switchover(step):
     d.draw_relay_module()
     d.relay_control(in2=True)
     d.note(40, 26, [(titles[step], True, INK)], "start", 16)
-    com1, no1 = d.term(1, "COM"), d.term(1, "NO")
-    com2, no2 = d.term(2, "COM"), d.term(2, "NO")
+    no1, com1 = d.term(1, "NO"), d.term(1, "COM")
+    no2, com2 = d.term(2, "NO"), d.term(2, "COM")
     if step >= 2:
-        rp, rn = d.res_source(1180, 650)
-        d.wire([rp, (rp[0], 630), (1165, 630), (1165, 455), (com2[0], 455), com2], COL["RES"], "RES + → COM 2", (1060, 447) if step == 2 else None)
-        d.wire([no2, (no2[0], 420), (d.rail_x(23), 420), (d.rail_x(23), d.rail("bp"))], COL["LOAD"], "NO 2 → + rail", (no2[0] + 8, 412))
-        d.wire([rn, (rn[0], 628), (1312, 628), (1312, 385), (d.rail_x(29), 385), (d.rail_x(29), d.rail("bn"))], COL["GND"],
-               "RES − → − rail", (1200, 380))
+        rp, rn = d.res_source(1180, 830)
+        d.wire([rp, (rp[0], 805), (1165, 805), (1165, com2[1]), com2], COL["RES"], "RES + → COM 2", (1052, 800))
+        d.wire([no2, (d.rail_x(23), no2[1]), (d.rail_x(23), d.rail("bp"))], COL["LOAD"], "NO 2 → + rail", (d.rail_x(23) + 6, 600))
+        d.wire([rn, (rn[0], 812), (1300, 812), (1300, 365), (d.rail_x(29), 365), (d.rail_x(29), d.rail("bn"))], COL["GND"])
         c = 4
         d.wire([(d.rail_x(3), d.rail("bp")), (d.cx(c), d.row("j"))], COL["LOAD"])
         d.resistor(c, c + 4, "h")
@@ -346,13 +352,13 @@ def switchover(step):
         d.gap_label(c + 6, "load: LED + 220 Ω (stands in for the pump)")
         d.wire([(d.cx(c + 5), d.row("j")), (d.rail_x(c + 5), d.rail("bn"))], COL["GND"])
     if step >= 3:
-        bp, bn = d.battery(1180, 480, "battery")
-        d.wire([bp, (bp[0], 440), (com1[0], 440), com1], COL["BAT"], "battery + → COM 1", (1095, 434))
-        d.wire([no1, (no1[0], 430), (d.rail_x(17), 430), (d.rail_x(17), d.rail("bp"))], COL["LOAD"], "NO 1 → + rail", (918, 424))
-        d.wire([bn, (bn[0], 400), (d.rail_x(27), 400), (d.rail_x(27), d.rail("bn"))], COL["GND"])
+        bp, bn = d.battery(1180, 700, "battery")
+        d.wire([bp, (bp[0], com1[1]), com1], COL["BAT"], "battery + → COM 1", (1180, 508))
+        d.wire([no1, (d.rail_x(22), no1[1]), (d.rail_x(22), d.rail("bp"))], COL["LOAD"], "NO 1 → + rail", (d.rail_x(22) - 100, 400))
+        d.wire([bn, (bn[0], 380), (d.rail_x(28), 380), (d.rail_x(28), d.rail("bn"))], COL["GND"])
     if step >= 4:
-        rp = (1210, 650)
-        d.wire([rp, (1210, 640), (1300, 640), (1300, 14), (d.cx(20), 14), (d.cx(20), d.row("a"))], COL["RES"], "RES + → divider", (1080, 10))
+        rp = (1210, 830)
+        d.wire([rp, (1210, 820), (1314, 820), (1314, 14), (d.cx(20), 14), (d.cx(20), d.row("a"))], COL["RES"], "RES + → divider", (1080, 10))
         d.resistor(20, 24, "c", ("#c62828", "#c62828", "#ff9800"), "R1 22 kΩ")
         d.resistor(24, 28, "d", ("#6d4c41", "#222222", "#ff9800"))
         d.note(d.cx(26), d.row("d") + 26, [("R2 10 kΩ", True, INK)], "middle", 12)
@@ -383,26 +389,27 @@ def callout(d, x1, y1, x2, y2, lines, anchor="start"):
 
 
 def module_sides():
-    d = Diagram("The 5 V dual relay module: the control side (VCC, GND, IN1, IN2) connects to the Arduino; the operating side "
-                "(NC, COM, NO screw terminals for each relay) connects to the circuit being switched", uno=False, bb=False, h=540, top=100)
-    d.mx, d.my = 470, 200
+    d = Diagram("The 5 V dual relay module: the control side (GND, IN1, IN2, VCC) at one end connects to the Arduino; the operating "
+                "side (NO, COM and NC screw terminals for each relay) at the other end connects to the circuit being switched",
+                uno=False, bb=False, h=430)
+    d.mx, d.my = 470, 70
     d.draw_relay_module()
-    mx, my = d.mx, d.my
-    # control side bracket
-    d.texts.append(f'<rect x="{mx+4}" y="{my+38}" width="48" height="100" rx="6" fill="none" stroke="#2f6fd0" stroke-width="2.5" stroke-dasharray="6 4"/>')
-    d.note(mx - 20, my + 60, [("Control side (low voltage)", True, "#2f6fd0"), ("VCC → Arduino 5 V", False, INK),
-                             ("GND → Arduino GND", False, INK), ("IN1, IN2 → two digital pins", False, INK)], "end")
-    # operating side bracket
-    t1 = d.term(1, "NC")[0] - 20
-    t2 = d.term(2, "NO")[0] + 20
-    d.texts.append(f'<rect x="{t1}" y="{my-6}" width="{t2-t1}" height="60" rx="6" fill="none" stroke="#c62828" stroke-width="2.5" stroke-dasharray="6 4"/>')
-    d.note((t1 + t2) / 2, my - 70, [("Operating side (the switched circuit)", True, "#c62828"),
-                                    ("NC, COM, NO screw terminals for each relay → RES, battery, pump", False, INK)], "middle")
-    callout(d, mx + 87, my + 168, mx - 140, my + 250, [("Opto-isolators: the Arduino's signal lights an LED inside,", False, INK),
-                                                       ("so the Arduino isn't electrically connected to the coils", False, INK)], "start")
-    callout(d, mx + 183, my + 165, mx + 215, my + 300, [("Indicator LED: lights when that relay is on", False, INK)], "start")
-    callout(d, mx + 345, my + 142, mx + 440, my + 250, [("Relay: a coil and a switch;", False, INK),
-                                                        ("contacts rated 10 A at 250 VAC / 30 VDC", False, INK)], "start")
+    mx, my, mw, mh = d.mx, d.my, d.mw, d.mh
+    # control side
+    d.texts.append(f'<rect x="{mx+4}" y="{my+80}" width="52" height="106" rx="6" fill="none" stroke="#2f6fd0" stroke-width="2.5" stroke-dasharray="6 4"/>')
+    d.note(mx - 20, my + 104, [("Control side (low voltage)", True, "#2f6fd0"), ("GND → Arduino GND", False, INK),
+                              ("IN1, IN2 → two digital pins", False, INK), ("VCC → Arduino 5 V", False, INK)], "end")
+    # operating side
+    x0 = mx + mw - 64
+    d.texts.append(f'<rect x="{x0}" y="{my+18}" width="68" height="250" rx="6" fill="none" stroke="#c62828" stroke-width="2.5" stroke-dasharray="6 4"/>')
+    d.note(mx + mw + 20, my + 60, [("Operating side (the switched circuit)", True, "#c62828"),
+                                   ("Relay 1: NO, COM, NC", False, INK), ("Relay 2: NO, COM, NC", False, INK),
+                                   ("→ RES, battery, pump", False, INK)], "start")
+    callout(d, mx + 70, my + 224, mx - 60, my + 300, [("Opto-isolators: the Arduino's signal lights an LED inside,", False, INK),
+                                                      ("so the Arduino isn't electrically connected to the coils", False, INK)], "end")
+    callout(d, mx + 82, my + 258, mx + 130, my + 330, [("Indicator LED: lights when that relay is on", False, INK)], "start")
+    callout(d, mx + 200, my + 262, mx + mw + 30, my + 300, [("Relay: a coil and a switch;", False, INK),
+                                                            ("contacts rated 10 A at 250 VAC / 30 VDC", False, INK)], "start")
     return save("relay-module-sides", d)
 
 
