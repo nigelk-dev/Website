@@ -35,7 +35,13 @@ By the end of this chapter you should be able to:
 
 [![The RenewableSwitchOver schematic (KiCad). Click it to open it full size.](images/renewable-switchover-schematic.png)](images/renewable-switchover-schematic.png)
 
-A few things help when reading it:
+![An illustration of the RenewableSwitchOver shield, drawn from the schematic on an Arduino Uno outline: the L298N pump driver with C1, C2, the R1 current-sense resistor and jumpers JP1 and JP2 on the left; the battery switch (R3, Q1, R5, Q3, D1, JP3) and the RES switch (R4, Q2, R6, Q4, D2, JP4) in the middle; the Battery ON and Renew ON LEDs with R8 and R9; R7 and the SwitchOverADJ trimmer with TP1; screw terminals J2 (battery), J3 (renewable) and J1 (pump) along the right-hand edge; R2 and TP2 on the left. Part positions are illustrative.](images/renewable-switchover-shield.svg)
+
+The illustration above places the schematic's parts on the shield, grouped by
+the blocks of the project diagram. It is drawn from the schematic, so the parts
+and connectors are right, but the real board's layout may differ.
+
+A few things help when reading the schematic:
 
 - **Net labels.** A wire ending in a name such as `batteryOn` or `VPump` is
   connected to every other wire with the same name. That is how the Arduino (top
