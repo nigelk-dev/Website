@@ -1,0 +1,60 @@
+---
+title: "Project Overview"
+subtitle: "Introduction to microcontrollers"
+---
+
+Over the eight chapters you build one working system: an Arduino that watches
+the voltage of a **renewable energy source (RES)** and switches the load over to
+a **battery backup** when the RES can no longer supply it. Every chapter adds
+one piece of that system.
+
+## What the finished system does
+
+- A **voltage divider** scales the RES voltage down into the 0–5 V range the
+  Arduino can measure.
+- The Arduino reads that voltage on analogue pin **A0** with `analogRead`.
+- An `if/else` **threshold** in the code decides whether the RES voltage is high
+  enough.
+- Two **relays** connect the load to either the RES or the battery, and never
+  to both at once.
+
+## How the chapters build up to it
+
+### Part I: Arduino basics
+
+1. [Arduino basics and LEDs](notes/01-arduino-basics-and-leds.md): the board,
+   digital outputs and your first circuits.
+2. [analogWrite, dividers, pots](notes/02-analogwrite-dividers-and-potentiometers.md):
+   variable outputs and a first look at voltage dividers and potentiometers.
+3. [Loops, PWM and alarms](notes/03-loops-pwm-and-alarms.md): repeating actions,
+   pulse-width modulation and simple alarms.
+
+### Part II: Measuring voltages
+
+4. [Voltage dividers](notes/05-voltage-dividers.md): scaling a voltage safely
+   into the Arduino's input range.
+5. [Potentiometers](notes/06-potentiometers.md): reading a varying voltage
+   with `analogRead`.
+
+### Part III: Switching and the final system
+
+6. [Relays](notes/07-relays.md): switching a separate circuit from an Arduino pin.
+7. [RES with battery backup](notes/08-res-battery-switchover.md): putting the
+   divider, threshold and relays together.
+8. [Finished circuit](notes/finished-circuit.md): the complete wiring and
+   Arduino code.
+
+## Building it
+
+The final circuit is built in this order:
+
+1. Power and signals from the Arduino to the relay module.
+2. RES power in through its relay.
+3. Battery power in through its relay.
+4. The monitoring system (the voltage divider).
+5. All the grounds connected together: RES −ve, battery −ve, Arduino GND and
+   the load. Without a shared ground, `analogRead` has no reference and the
+   readings are meaningless.
+
+Each chapter ends with a knowledge check, and the interactive applets let you
+try every circuit before you build it.

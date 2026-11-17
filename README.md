@@ -19,7 +19,9 @@ the notes refer to it:
 
 On the site every course is shown the same way: numbered chapters grouped
 into parts (in the sidebar and in each page's "Chapter N · Part X" subtitle),
-with no course overview pages and no mention of lectures. Each applet is
+with no mention of lectures. The only overview page is Introduction to
+microcontrollers' *Project Overview* (`mec1019/project-overview.qmd`), which
+lives in this repository and sits at the top of that course in the sidebar. Each applet is
 embedded in the notes after the section it illustrates; `scripts/notes.py`
 holds where each one goes (`MEC1002_PLACES`, `MEC1043_1062_PLACES`). The old
 course overview addresses redirect to each course's first chapter.

@@ -26,6 +26,8 @@ website:
           text: Home
         - section: "Introduction to microcontrollers"
           contents:
+            - href: mec1019/project-overview.qmd
+              text: "Project Overview"
             - section: "Arduino basics"
               contents:
                 - href: mec1019/notes/01-arduino-basics-and-leds.md
