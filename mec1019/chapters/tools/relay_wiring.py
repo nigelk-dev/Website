@@ -422,43 +422,76 @@ def module_sides():
 
 
 def mechanism():
-    d = Diagram("Inside a relay: with the coil off, the switch arm connects COM to NC; with the coil energised, the magnetic "
-                "field pulls the arm across so COM connects to NO", uno=False, bb=False, h=430)
+    d = Diagram("Inside relay 1. Left, pin 13 HIGH: the coil is off, a spring holds the switch arm up and COM is connected "
+                "to NC. Right, pin 13 LOW: the coil is energised, its magnetic field pulls the arm down and COM is connected "
+                "to NO.", uno=False, bb=False, h=470)
+    LIVE, OPEN = "#00807F", "#9aa5ad"
+
+    def terminal(x, y, name, side):
+        d.o(f'<rect x="{x-15}" y="{y-15}" width="30" height="30" rx="3" fill="#2a7fd6" stroke="#185a9e" stroke-width="1.5"/>')
+        d.o(f'<circle cx="{x}" cy="{y}" r="9" fill="#c9ccd2" stroke="#777" stroke-width="1"/>')
+        d.o(f'<line x1="{x-5}" y1="{y}" x2="{x+5}" y2="{y}" stroke="#555" stroke-width="2"/>')
+        tx = x + 24 if side == "right" else x - 24
+        d.note(tx, y + 5, [(name, True, INK)], "start" if side == "right" else "end", 14)
+
     def panel(x0, on):
-        d.o(f'<rect x="{x0}" y="20" width="600" height="360" rx="14" fill="#f7f9fa" stroke="#c8d1d7" stroke-width="2"/>')
-        d.note(x0 + 300, 52, [("Relay off: coil not energised" if not on else "Relay on: coil energised", True, INK)], "middle", 16)
-        # coil
-        cx0, cy0 = x0 + 120, 210
-        d.o(f'<rect x="{cx0-30}" y="{cy0-10}" width="60" height="120" rx="6" fill="#b5651d" stroke="#7a4210" stroke-width="2"/>')
-        for k in range(8):
-            d.o(f'<line x1="{cx0-30}" y1="{cy0+4+k*14}" x2="{cx0+30}" y2="{cy0+4+k*14}" stroke="#7a4210" stroke-width="2"/>')
-        d.o(f'<rect x="{cx0-8}" y="{cy0-26}" width="16" height="16" fill="#8a8f98"/>')       # iron core
-        d.note(cx0, cy0 + 136, [("coil (electromagnet)", False, MUTED)], "middle", 12)
+        d.note(x0 + 310, 34, [("Relay off: pin 13 HIGH" if not on else "Relay on: pin 13 LOW", True, INK)], "middle", 17)
+        d.note(x0 + 310, 56, [("coil not energised" if not on else "coil energised (the module is active-LOW)", False, MUTED)],
+               "middle", 13)
+        # the relay's case, drawn open
+        d.o(f'<rect x="{x0+95}" y="80" width="415" height="300" rx="10" fill="#eef4fc" stroke="#2f6fd0" stroke-width="2.5"/>')
+        d.o(f'<text x="{x0+110}" y="102" font-size="12" font-weight="700" fill="#2f6fd0">Relay 1 (SRD-05VDC), opened up</text>')
+        # indicator LED on the module
         if on:
-            for r in (22, 36):
-                d.o(f'<path d="M{cx0-r} {cy0-30} A{r} {r} 0 0 1 {cx0+r} {cy0-30}" fill="none" stroke="#2f6fd0" stroke-width="2" stroke-dasharray="5 4"/>')
-            d.note(cx0, cy0 - 74, [("magnetic field", False, "#2f6fd0")], "middle", 12)
-        # contacts and arm
-        pivot = (x0 + 220, 160)
-        nc, no = (x0 + 420, 110), (x0 + 420, 190)
-        for (px, py), name in ((nc, "NC"), (no, "NO")):
-            d.o(f'<rect x="{px}" y="{py-6}" width="40" height="12" rx="3" fill="#c9a227"/>')
-            d.o(f'<line x1="{px+40}" y1="{py}" x2="{x0+540}" y2="{py}" stroke="#555" stroke-width="3"/>')
-            d.o(f'<circle cx="{x0+548}" cy="{py}" r="9" fill="#c9ccd2" stroke="#777"/>')
-            d.note(x0 + 548, py - 16, [(name, True, INK)], "middle", 13)
-        end = nc if not on else no
-        d.o(f'<line x1="{pivot[0]}" y1="{pivot[1]}" x2="{end[0]+4}" y2="{end[1]+(6 if not on else -6)}" stroke="#2f6fd0" stroke-width="7" stroke-linecap="round"/>')
-        d.o(f'<circle cx="{pivot[0]}" cy="{pivot[1]}" r="8" fill="#555"/>')
-        d.o(f'<line x1="{pivot[0]}" y1="{pivot[1]}" x2="{pivot[0]}" y2="300" stroke="#555" stroke-width="3"/>')
-        d.o(f'<line x1="{pivot[0]}" y1="300" x2="{x0+540}" y2="300" stroke="#555" stroke-width="3"/>')
-        d.o(f'<circle cx="{x0+548}" cy="300" r="9" fill="#c9ccd2" stroke="#777"/>')
-        d.note(x0 + 548, 284, [("COM", True, INK)], "middle", 13)
-        d.note(pivot[0] + 14, pivot[1] + 28, [("switch arm", False, MUTED)], "start", 12)
-        d.note(x0 + 390, 360, [("COM connected to NC" if not on else "COM connected to NO: you hear a click", True,
-                                "#c62828" if not on else "#119a45")], "middle", 14)
-    panel(20, False)
+            d.o(f'<circle cx="{x0+488}" cy="98" r="11" fill="#e5393533"/>')
+        d.o(f'<circle cx="{x0+488}" cy="98" r="6" fill="{"#e53935" if on else "#d9dde1"}" stroke="{"#b71c1c" if on else "#9aa5ad"}"/>')
+        d.note(x0 + 474, 102, [("LED " + ("on" if on else "off"), False, MUTED)], "end", 11)
+
+        piv, tip_x = (x0 + 150, 170), x0 + 404
+        nc_y, no_y = 130, 210
+        tip = (tip_x, nc_y + 9) if not on else (tip_x, no_y - 9)
+        arm_y = lambda x: piv[1] + (tip[1] - piv[1]) * (x - piv[0]) / (tip[0] - piv[0])
+
+        # coil and iron core, below the arm
+        cx = x0 + 290
+        d.o(f'<rect x="{cx-12}" y="232" width="24" height="16" fill="#8a8f98" stroke="#6b7077"/>')
+        d.o(f'<rect x="{cx-30}" y="248" width="60" height="100" rx="6" fill="#b87333" stroke="#7a4210" stroke-width="2"/>')
+        for k in range(7):
+            d.o(f'<line x1="{cx-30}" y1="{260+k*13}" x2="{cx+30}" y2="{260+k*13}" stroke="#7a4210" stroke-width="1.5"/>')
+        d.note(cx + 42, 300, [("coil", True, INK), ("(electromagnet)", False, MUTED)], "start", 12)
+        if on:
+            for r in (24, 38):
+                d.o(f'<path d="M{cx-r} 236 A{r} {r*0.75} 0 0 1 {cx+r} 236" fill="none" stroke="#2f6fd0" stroke-width="2" stroke-dasharray="5 4"/>')
+            d.note(cx + 46, 238, [("magnetic field", False, "#2f6fd0")], "start", 12)
+        # spring holding the arm up
+        sx = x0 + 215
+        sy = arm_y(sx)
+        zig = " ".join(f"L{sx + (8 if k % 2 else -8)} {112 + (sy - 112) * (k + 0.5) / 8:.1f}" for k in range(8))
+        d.o(f'<path d="M{sx} 112 {zig} L{sx} {sy:.1f}" fill="none" stroke="#6b7077" stroke-width="2"/>')
+        d.o(f'<line x1="{sx-14}" y1="112" x2="{sx+14}" y2="112" stroke="#6b7077" stroke-width="3"/>')
+        d.note(sx + 14, 128, [("spring", False, MUTED)], "start", 12)
+
+        # fixed contacts and their leads to the NC and NO terminals
+        for y, name in ((nc_y, "NC"), (no_y, "NO")):
+            live = (name == "NO") == on
+            d.o(f'<rect x="{tip_x-6}" y="{y-6}" width="36" height="12" rx="3" fill="#c9a227" stroke="#9c7c12"/>')
+            d.wire([(tip_x + 30, y), (x0 + 555, y)], LIVE if live else OPEN)
+            terminal(x0 + 570, y, name, "right")
+        # switch arm (COM)
+        d.wire([(x0 + 70, piv[1]), piv], LIVE)
+        terminal(x0 + 55, piv[1], "COM", "left")
+        d.o(f'<line x1="{piv[0]}" y1="{piv[1]}" x2="{tip[0]+4}" y2="{tip[1]}" stroke="{LIVE}" stroke-width="8" stroke-linecap="round"/>')
+        d.o(f'<circle cx="{piv[0]}" cy="{piv[1]}" r="8" fill="#555"/>')
+        d.note(piv[0] + 6, piv[1] + 32, [("switch arm", False, MUTED)], "start", 12)
+        if on:                                        # the pull on the arm
+            d.o(f'<path d="M{cx} 196 L{cx} 214 M{cx-6} 207 L{cx} 214 L{cx+6} 207" fill="none" stroke="#2f6fd0" stroke-width="2.5"/>')
+
+        d.note(x0 + 310, 420, [("COM connected to NC" if not on else "COM connected to NO: you hear a click", True, LIVE)],
+               "middle", 15)
+
+    panel(30, False)
     panel(680, True)
-    return save("relay-mechanism", d)
+    return save("relay-mechanism", d, ("Teal shows the connected path. The other contact is open: no current can flow through it.",))
 
 
 switching_a_load()

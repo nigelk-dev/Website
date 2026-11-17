@@ -72,7 +72,7 @@ Inside each relay is an **electromagnet (coil)** and a **switch arm**:
 | **NC** | Normally Closed — connected to COM when the relay is **off** (coil not energised) |
 | **NO** | Normally Open — connected to COM only when the relay is **on** (coil energised) |
 
-![Inside a relay. Left, relay off: the coil is not energised and the switch arm connects COM to NC. Right, relay on: the coil's magnetic field pulls the arm across, so COM connects to NO.](images/relay-mechanism.svg)
+![Inside relay 1. Left, pin 13 HIGH: the coil is off, a spring holds the switch arm against NC, so COM connects to NC. Right, pin 13 LOW: the coil is energised (the module is active-LOW), its magnetic field pulls the arm down onto NO, so COM connects to NO and the indicator LED lights.](images/relay-mechanism.svg)
 
 When the coil is energised, its magnetic field pulls the arm from NC across to
 NO: you hear a **click** and the module's indicator LED lights.
