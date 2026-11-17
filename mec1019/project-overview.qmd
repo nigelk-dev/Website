@@ -20,14 +20,21 @@ flowchart LR
   end
   subgraph MCU["Microcontroller system"]
     direction TB
+    read["Read input voltage"]
     decision["Control decision"]
     output["Pump output"]
+    dol["Direct online"]
+    soft["Slow start"]
+    read --> decision
     decision --> output
+    output --> dol
+    output --> soft
   end
   RES --> reg["Voltage regulation"]
   reg --> MCU
   battery --> MCU
-  output --> pump["Pump"]
+  dol --> pump["Pump"]
+  soft --> pump
 ```
 
 ## What the finished system does
