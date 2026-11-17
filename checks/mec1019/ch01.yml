@@ -1,4 +1,4 @@
-# Introduction to microcontrollers · Chapter 1 · Voltage regulation
+# Introduction to microcontrollers · Chapter 1 · Voltage measurement
 - type: mcq
   q: Why can't the renewable source (RES) be connected straight to an Arduino analogue input?
   options:
@@ -148,7 +148,7 @@
   explain: $R_1 = 2.172\,R_2$; for example 22 kΩ and 10 kΩ give 4.96 V at 0.5 mA.
 
 - type: mcq
-  q: The project's **voltage regulation** block is a voltage divider, not a voltage regulator such as a 7805. Why?
+  q: The project's **voltage scaling** block is a voltage divider, not a voltage regulator such as a 7805. Why?
   options:
     - text: A regulator holds its output at a fixed 5 V whatever the RES does, so the Arduino could no longer tell how big the RES voltage is
       correct: true

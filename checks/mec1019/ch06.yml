@@ -1,6 +1,6 @@
 # Introduction to microcontrollers · Chapter 6 · Advanced: the RenewableSwitchOver board
 - type: mcq
-  q: On the board, which parts form the **voltage regulation** block of the project diagram?
+  q: On the board, which parts form the **voltage scaling** block of the project diagram?
   options:
     - text: R7 (10 kΩ) and the SwitchOverADJ trimmer, with the wiper on A0 and TP1
       correct: true

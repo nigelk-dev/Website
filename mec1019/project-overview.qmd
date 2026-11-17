@@ -16,8 +16,8 @@ purpose-made circuit board.
 ```{=html}
 <figure class="flow-diagram">
 <figcaption>System overview</figcaption>
-<a class="fd-light" href="../assets/project-overview-diagram-light.png"><img src="../assets/project-overview-diagram-light.png" width="1566" height="363" alt="System overview: solar and wind (the renewable energy source, 0–16 V) pass through voltage regulation (0–5 V) to the microcontroller, which reads the input voltage and decides between the RES and the 12 V backup battery. Both sources feed the switching circuitry, which supplies the pump drive (direct drive or slow start) and then the pump."></a>
-<a class="fd-dark" href="../assets/project-overview-diagram-dark.png"><img src="../assets/project-overview-diagram-dark.png" width="1566" height="363" alt="System overview: solar and wind (the renewable energy source, 0–16 V) pass through voltage regulation (0–5 V) to the microcontroller, which reads the input voltage and decides between the RES and the 12 V backup battery. Both sources feed the switching circuitry, which supplies the pump drive (direct drive or slow start) and then the pump."></a>
+<a class="fd-light" href="../assets/project-overview-diagram-light.png"><img src="../assets/project-overview-diagram-light.png" width="1600" height="370" alt="System overview: solar and wind (the renewable energy source, 0–16 V) pass through voltage scaling (0–5 V) to the microcontroller, which reads the input voltage and decides between the RES and the 12 V backup battery. Both sources feed the switching circuitry, which supplies the pump drive (direct drive or slow start) and then the pump."></a>
+<a class="fd-dark" href="../assets/project-overview-diagram-dark.png"><img src="../assets/project-overview-diagram-dark.png" width="1600" height="370" alt="System overview: solar and wind (the renewable energy source, 0–16 V) pass through voltage scaling (0–5 V) to the microcontroller, which reads the input voltage and decides between the RES and the 12 V backup battery. Both sources feed the switching circuitry, which supplies the pump drive (direct drive or slow start) and then the pump."></a>
 </figure>
 ```
 
@@ -31,13 +31,13 @@ the sun and the wind, from 0 V up to about **16 V**. A **12 V battery** is the
 backup. Their negatives share one ground with the Arduino, so the RES voltage can
 be measured.
 
-## 1 · Voltage regulation
+## 1 · Voltage measurement
 
 The Arduino can only measure 0–5 V, so the RES voltage is scaled down in
 proportion by a **voltage divider**: two resistors, or a resistor and a trimmer
 that is set with a multimeter so the RES maximum gives just under 5 V.
 
-**Chapter 1: [Voltage regulation](notes/01-voltage-regulation.md)**: why the
+**Chapter 1: [Voltage measurement](notes/01-voltage-regulation.md)**: why the
 voltage must be scaled, the divider equation, choosing resistors, potentiometers,
 and setting an adjustable divider safely.
 

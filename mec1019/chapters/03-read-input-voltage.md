@@ -48,7 +48,7 @@ the whole range of 1024 steps is used.
 
 A **potentiometer** across 5 V gives a voltage from 0 to 5 V that you can change
 by hand: a safe stand-in for the RES while you write and test the code. (See
-[Voltage regulation](01-voltage-regulation.md#potentiometers-an-adjustable-divider)
+[Voltage measurement](01-voltage-regulation.md#potentiometers-an-adjustable-divider)
 for how it works.)
 
 ![Turning a breadboard potentiometer](images/p6-04.png)
@@ -385,7 +385,7 @@ voltage is always measured *relative to* something: without a shared ground,
 ### Measure the fraction
 
 Resistor tolerances, or an adjustable divider
-([Voltage regulation](01-voltage-regulation.md#setting-an-adjustable-divider-safely)),
+([Voltage measurement](01-voltage-regulation.md#setting-an-adjustable-divider-safely)),
 mean the real fraction can differ from the calculated one. Measure it instead:
 
 1. Apply a known voltage across the divider, e.g. 12.0 V from a bench supply,

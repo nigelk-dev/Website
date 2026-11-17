@@ -62,7 +62,7 @@ the **Microchip ATmega328P**:
 | Feature | Function |
 |---|---|
 | USB connector (with a USB–serial converter) | Powers the board, uploads firmware via the bootloader, carries `Serial` data |
-| External power jack / Vin | 7–12 V input to the on-board **5 V linear regulator** (see [Voltage regulation](01-voltage-regulation.md)) |
+| External power jack / Vin | 7–12 V input to the on-board **5 V linear regulator** (see [Voltage measurement](01-voltage-regulation.md)) |
 | 3.3 V regulator | Low-current (≈ 50 mA) 3.3 V output for 3.3 V sensors |
 | 16 MHz crystal | Clock source; sets timing accuracy for `millis()`, serial baud rates and PWM |
 | Reset button / pin | Restarts the program from `setup()` |

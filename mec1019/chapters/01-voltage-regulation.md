@@ -1,11 +1,19 @@
-# Voltage regulation
+# Voltage measurement
 
 The first block after the renewable energy source (RES) in the
-[project overview](../project-overview.qmd) is **voltage regulation**. Its job
+[project overview](../project-overview.qmd) is **voltage scaling**. Its job
 is to bring the RES voltage, which can be anywhere from 0 V to about 16 V, into
 the 0–5 V range that an Arduino analogue input can safely measure. This chapter
 explains why that matters, how a **voltage divider** does it, and how to set
 up an adjustable divider safely.
+
+```{=html}
+<figure class="flow-diagram">
+<figcaption>System overview · Voltage scaling</figcaption>
+<a class="fd-light" href="images/system-voltage-scaling-light.png"><img src="images/system-voltage-scaling-light.png" width="1600" height="370" alt="Project overview diagram with the renewable energy source (solar and wind, 0–16 V) and the voltage scaling block highlighted; the microcontroller, battery, switching circuitry and pump drive are faded."></a>
+<a class="fd-dark" href="images/system-voltage-scaling-dark.png"><img src="images/system-voltage-scaling-dark.png" width="1600" height="370" alt="Project overview diagram with the renewable energy source (solar and wind, 0–16 V) and the voltage scaling block highlighted; the microcontroller, battery, switching circuitry and pump drive are faded."></a>
+</figure>
+```
 
 ## Learning outcomes
 
@@ -43,8 +51,8 @@ Arduino can still tell a weak source from a strong one.
 
 ### Measuring is not the same as powering
 
-"Voltage regulation" can mean two different things, and the project needs to
-keep them apart:
+This block **measures** the RES voltage; it doesn't **regulate** it. The two are
+easily confused, and the project needs to keep them apart:
 
 | | Scaling for **measurement** | Regulating for **power** |
 |---|---|---|
@@ -58,8 +66,8 @@ RES does, so the Arduino would learn nothing. A divider is no use for powering
 anything: as soon as a load draws current from it, its output collapses. The
 Arduino Uno has its own **5 V linear regulator** for its supply (7–12 V on the
 barrel jack or Vin); above about 12 V that regulator wastes
-$P = (V_{in} - 5)\,I$ as heat. The **voltage regulation** block in the project
-is a measurement divider.
+$P = (V_{in} - 5)\,I$ as heat. The **voltage scaling** block in the project
+is a divider, not a regulator.
 
 ### Using the whole range
 
@@ -304,7 +312,7 @@ reading back into the RES voltage, using the fraction you measure here.
 - Arduino analogue inputs must stay within **0–5 V**. A higher source voltage must
   be scaled down, in proportion, before it reaches a pin.
 - A **divider** scales a voltage for measurement; a **regulator** holds a supply
-  steady for power. The project's voltage regulation block is a divider.
+  steady for power. The project's voltage scaling block is a divider.
 - $V_{out} = V_s R_2/(R_1+R_2)$. The ratio sets the voltage; the total resistance
   sets the current and the power wasted.
 - Design from the **maximum** source voltage: $R_1 = (V_{max}/5 - 1)\,R_2$, with

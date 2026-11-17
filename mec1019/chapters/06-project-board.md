@@ -13,7 +13,7 @@ By the end of this chapter you should be able to:
 
 - Read the RenewableSwitchOver schematic and find each block of the project
   diagram on it
-- Set the board's voltage regulation trimmer safely and measure its divider
+- Set the board's voltage measurement trimmer safely and measure its divider
   fraction
 - Explain how the board's high-side P-MOSFET switches, NPN level shifters and
   diodes select the supply, and compare them with relays
@@ -47,7 +47,7 @@ A few things help when reading it:
 |---|---|---|---|
 | Renewable energy source (RES) | [Project overview](../project-overview.qmd) | RES wired to the breadboard rails | Screw terminal **J3** (Renew): +ve is the net **Vdrive** |
 | Battery | [Project overview](../project-overview.qmd) | Battery wired to the breadboard rails | Screw terminal **J2** (Batt): +ve is **+12V** |
-| Voltage regulation | [1 · Voltage regulation](01-voltage-regulation.md) | Fixed divider, e.g. 22 kΩ + 10 kΩ | **R7** (10 kΩ) and the **SwitchOverADJ** trimmer; test point **TP1** |
+| Voltage scaling | [1 · Voltage measurement](01-voltage-regulation.md) | Fixed divider, e.g. 22 kΩ + 10 kΩ | **R7** (10 kΩ) and the **SwitchOverADJ** trimmer; test point **TP1** |
 | Microcontroller system | [2 · Getting started with the Arduino](02-arduino.md) | Arduino Uno | Arduino Uno **A1**, plugged into the board |
 | Read input voltage, control decision | [3 · Read input voltage](03-read-input-voltage.md) | Divider mid-point to A0 | Trimmer wiper (net **AnalogIn**) to **A0** |
 | Switching circuitry | [4 · Switching circuitry](04-switching-circuitry.md) | Dual relay module, active-LOW | P-MOSFETs **Q3**, **Q4** driven by NPN transistors **Q1**, **Q2**, active-HIGH; diodes **D1**, **D2**; LEDs **D3**, **D4** |
@@ -73,10 +73,10 @@ enable pin.
 
 ---
 
-## 3. Voltage regulation on the board
+## 3. Voltage measurement on the board
 
 The board's divider is the fixed-resistor-plus-trimmer arrangement from
-[Voltage regulation](01-voltage-regulation.md#setting-an-adjustable-divider-safely):
+[Voltage measurement](01-voltage-regulation.md#setting-an-adjustable-divider-safely):
 
 | Part | Connection |
 |---|---|
@@ -412,7 +412,7 @@ bypassed, and only the supply switching matters.
 
 - The board is the same system as Chapters 1–5: every block of the project diagram
   has a matching group of parts on the schematic.
-- **Voltage regulation:** R7 and the SwitchOverADJ trimmer feed A0. Set it at TP1 so
+- **Voltage measurement:** R7 and the SwitchOverADJ trimmer feed A0. Set it at TP1 so
   the RES maximum gives just under 5 V, and measure the fraction there.
 - **Switching:** each supply has a **high-side P-MOSFET** (Q3, Q4) driven through an
   **NPN level shifter** (Q1, Q2): D12 HIGH connects the battery, D13 HIGH connects

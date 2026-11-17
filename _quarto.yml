@@ -29,7 +29,7 @@ website:
             - href: mec1019/project-overview.qmd
               text: "Project Overview"
             - href: mec1019/notes/01-voltage-regulation.md
-              text: "1 · Voltage regulation"
+              text: "1 · Voltage measurement"
             - href: mec1019/notes/02-arduino.md
               text: "2 · Getting started with the Arduino"
             - href: mec1019/notes/03-read-input-voltage.md
