@@ -32,7 +32,7 @@ flowchart LR
     end
     read --> decision
     decision --> switching
-    switching --> DRIVE
+    switching -->|"RES or battery<br/>&nbsp;"| DRIVE
   end
   RES -->|"0–16 V<br/>&nbsp;"| reg["Voltage regulation"]
   reg -->|"0–5 V<br/>&nbsp;"| read
