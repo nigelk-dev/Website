@@ -374,8 +374,6 @@ void loop() {
 
 > ▶️ **[Run it: the switch-over sketch in the code runner](applets/code-runner.html#p8int)** — drag the A0 voltage below 2.5 V: the raw `reading` drops below 511 and the load moves to the battery.
 
-> 🔧 **Try it:** [RES battery-backup simulator](applets/res-backup.html) — vary the wind, the divider and the threshold, and watch the Arduino switch the load between the RES and the battery.
-
 ---
 
 ## Key points
