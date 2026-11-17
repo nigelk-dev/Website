@@ -41,8 +41,6 @@ By the end of this chapter you should be able to:
 
 ## 2. The relay module
 
-![5 V dual relay module](images/p7-03.png)
-
 A **5 V dual relay module** has two independent relays on one board, each
 controlled by an Arduino digital pin. It contains **opto-isolators**: the
 Arduino's signal drives an LED inside the opto-isolator, which switches the relay
@@ -51,7 +49,7 @@ relay coil, which protects it from the coil's voltage spikes.
 
 ### Control side vs operating side
 
-![Relay module: control voltage and current, Arduino inputs, opto-isolators, operating voltage](images/p7-04.png)
+![The 5 V dual relay module: the control side (VCC, GND, IN1, IN2) connects to the Arduino; the operating side (NC, COM and NO screw terminals for each relay) connects to the circuit being switched. Opto-isolators separate the two, and an indicator LED shows when each relay is on.](images/relay-module-sides.svg)
 
 | Side | Pins | Connects to |
 |---|---|---|
@@ -61,10 +59,8 @@ relay coil, which protects it from the coil's voltage spikes.
 The relay contacts on these modules are rated up to **10 A at 250 VAC / 30 VDC**,
 far beyond anything an Arduino pin could switch directly.
 
-![Relay connections: Relay 1 and 2 NC, COM, NO; JD-VCC, VCC, GND; GND, IN1, IN2, VCC](images/p7-05.png)
-
-The jumper between **JD-VCC** and **VCC** lets the relay coils share the
-Arduino's 5 V supply; leave it in place.
+Many modules also have a jumper between **JD-VCC** and **VCC**, which lets the
+relay coils share the Arduino's 5 V supply; leave it in place.
 
 ### The relay mechanism
 
@@ -76,9 +72,7 @@ Inside each relay is an **electromagnet (coil)** and a **switch arm**:
 | **NC** | Normally Closed — connected to COM when the relay is **off** (coil not energised) |
 | **NO** | Normally Open — connected to COM only when the relay is **on** (coil energised) |
 
-| Relay off (de-energised): COM → NC | Relay on (energised): COM → NO |
-|---|---|
-| ![Relay de-energised: COM connected to NC](images/p7-06.png) | ![Relay energised: COM connected to NO](images/p7-07.png) |
+![Inside a relay. Left, relay off: the coil is not energised and the switch arm connects COM to NC. Right, relay on: the coil's magnetic field pulls the arm across, so COM connects to NO.](images/relay-mechanism.svg)
 
 When the coil is energised, its magnetic field pulls the arm from NC across to
 NO: you hear a **click** and the module's indicator LED lights.
@@ -93,9 +87,7 @@ To switch a lamp (or pump, or LED) from a battery:
 The lamp then lights only when the relay is energised. Wire to **NC** instead if
 you want the load on by default and switched *off* by the Arduino.
 
-| | |
-|---|---|
-| ![Battery, lamp and relay — lamp wired through the relay](images/p7-08.png) | ![Battery, lamp and relay — alternate wiring](images/p7-09.png) |
+![Switching a load: the battery's + terminal goes to COM of relay 1, relay 1's NO terminal goes to the lamp, and the lamp's other side goes back to the battery's − terminal](images/relay-switching-a-load.svg)
 
 > ⚠️ **Active-LOW inputs.** On most of these blue opto-isolated modules a **LOW**
 > on `IN1`/`IN2` turns the relay **ON**, and HIGH turns it off. Test yours: upload
@@ -109,16 +101,13 @@ you want the load on by default and switched *off* by the Arduino.
 
 ### Example 3a — open and close relay 1
 
-![Circuit 3a: VCC, pin 13 to IN1, ground](images/p7-11.png)
+![Example 3a wiring: the Arduino's 5V pin to the relay module's VCC, GND to GND, and pin 13 to IN1](images/relay-3a.svg)
 
 | Arduino | Relay module |
 |---|---|
 | 5 V | VCC |
 | GND | GND |
 | Pin 13 | IN1 |
-
-> ⚠️ The diagram above labels the supply wire "3.5V to vcc". The Arduino has no
-> 3.5 V pin, and the relay coils are rated at 5 V: connect **VCC to the 5 V pin**.
 
 ```cpp
 /*
@@ -158,7 +147,7 @@ void loop() {
 
 ### Exercise 3b — alternate relay 1 and relay 2
 
-![Circuit 3b: pin 13 to IN1, pin 12 to IN2](images/p7-13.png)
+![Exercise 3b wiring: as Example 3a, plus pin 12 to IN2](images/relay-3b.svg)
 
 Add **pin 12 → IN2**.
 
@@ -202,7 +191,7 @@ connected together, even for a moment.
 
 ### Exercises 3c and 3d — switch LEDs through the relays
 
-![Exercise 3c: blue LED switched by the relay, separate battery](images/p7-16.png)
+![Exercise 3c wiring: battery + to relay 1 COM; relay 1 NO to a 220 Ω resistor and blue LED on the breadboard; the LED to the − rail and back to the battery −](images/relay-3c.svg)
 
 - A separate **battery** powers an LED circuit; its +ve goes to **COM** of relay 1,
   and **NO** → resistor → blue LED → battery −ve. The Example 3a code now switches
@@ -210,11 +199,11 @@ connected together, even for a moment.
 - Wire a green LED through relay 2 the same way and run the Exercise 3b code: the
   LEDs alternate as the relays alternate.
 
-![Exercise 3d: blue LED on relay 1, green LED on relay 2](images/p7-18.png)
+![Exercise 3d wiring: as Exercise 3c, plus a green LED and resistor switched by relay 2, whose COM is joined to relay 1's COM](images/relay-3d.svg)
 
 ### Exercise 3e — potentiometer control
 
-![Exercise 3e: pot added to A-pin to choose which relay is on](images/p7-20.png)
+![Exercise 3e wiring: as Exercise 3d, plus a potentiometer on the breadboard with its ends on the 5 V and GND rails and its wiper on A1](images/relay-3e.svg)
 
 This combines [Read input voltage](03-read-input-voltage.md) with the relays: the
 pot chooses which relay is on.
@@ -278,31 +267,31 @@ resistor and LED stand in for the pump.
 
 ### Building it
 
-![Step 1: 5 V to VCC, pin 13 to IN1, pin 12 to IN2, ground](images/p8-02.png)
+![Step 1: the Arduino's 5V to VCC, GND to GND, pin 13 to IN1 (battery relay) and pin 12 to IN2 (RES relay)](images/switchover-step1.svg)
 
 1. **Power and signals from the Arduino to the relay module:** 5 V → VCC,
    GND → GND, pin 13 → IN1 (**battery** relay), pin 12 → IN2 (**RES** relay).
 2. **RES power in through its relay:** RES +ve → COM of the RES relay; its **NO**
    → the breadboard rail that feeds the load; RES −ve → the ground rail.
 
-   ![Step 2: +ve RES into a relay COM terminal, −ve RES to the breadboard](images/p8-03.png)
+   ![Step 2: RES + to COM of relay 2, relay 2 NO to the + rail feeding the load (an LED and resistor), RES − to the − rail](images/switchover-step2.svg)
 
 3. **Battery power in through its relay:** battery +ve → COM of the battery
    relay; its **NO** joins the same load rail; battery −ve → the ground rail.
 
-   ![Step 3: +ve battery into the other relay's COM, −ve battery to ground](images/p8-04.png)
+   ![Step 3: battery + to COM of relay 1, relay 1 NO to the same + rail, battery − to the − rail](images/switchover-step3.svg)
 
 4. **The monitoring system:** the voltage divider across the RES, with its
    mid-point to an analogue input (see [Voltage
    regulation](01-voltage-regulation.md)).
 
-   ![Monitoring voltage divider from the RES to the Arduino analogue pin](images/p8-05.png)
+   ![Step 4: a 22 kΩ and 10 kΩ divider across the RES on the breadboard, with its mid-point wired to A0](images/switchover-step4.svg)
 
 5. **All the grounds connected together:** RES −ve, battery −ve, Arduino GND and
    the load's −ve on one rail. Without a shared ground, `analogRead` has no
    reference.
 
-   ![Don't forget to ground: Arduino GND to the breadboard ground rail](images/p8-06.png)
+   ![Step 5: the Arduino's GND wired to the − rails, so every part shares one ground](images/switchover-step5.svg)
 
 | Connection | From | To |
 |---|---|---|
