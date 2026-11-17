@@ -561,8 +561,15 @@ function reset(msg) {
   Object.assign(A, { onBattery:false, level:0, rampFrom:0, rampStartMs:0, lastSampleMs:0 });
   M.omega = 0; M.i = 0; M.vterm = M.voc;
   millis = 0;
+  // a fresh start: clear the graphs and restart their time axis at 0, and stop
+  // any scenario, whose timings belong to the old run
+  hist.length = 0; simT = 0; recordAcc = 0;
+  if (scen) { scen.forEach(clearTimeout); scen = null; }
+  const el = $('log');
+  if (el.textContent) el.textContent += '──────── reset: graphs cleared, time restarts at 0 ────────\n';
   if (msg) log(msg);
   setup();
+  record();
 }
 function step() {                                // one millisecond: one pass of loop()
   simT += 0.001; millis += 1; pass++;
