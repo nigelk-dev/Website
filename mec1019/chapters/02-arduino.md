@@ -148,26 +148,48 @@ to ≈ 5 V and `LOW` to ≈ 0 V.
 
 ### LEDs need a series resistor
 
-The **anode** (+, long leg) of an LED must be at the higher potential, the
-**cathode** (−, short leg, flat edge on the lens) at the lower.
-
-![LED polarity: the long leg is the anode (+); the short leg and the flat edge of the lens mark the cathode (−). Current flows from anode to cathode.](images/led-polarity.svg)
-
-An LED is a diode: its current rises **exponentially** with voltage, so it
-cannot set its own current. Connected straight to a supply, the current is
-limited only by the supply's internal resistance and the LED burns out. A series
-resistor sets the current. Above the knee of its curve the LED's voltage is
-roughly its forward voltage $V_f$, so:
-
-$$R = \frac{V_s - V_f}{I_F}$$
-
+An LED can't limit its own current, so it always goes in series with a resistor.
 From a 5 V pin, a red LED ($V_f \approx 2$ V) at 15 mA needs
 $R = (5 - 2)/0.015 = 200\ \Omega$ → use the next standard value up, **220 Ω**.
-Always round **up**, and check the resistor's power, $P = I^2R$.
+(LED polarity, forward voltage and choosing the resistor are covered in [Voltage
+measurement](01-voltage-regulation.md#current-choosing-the-right-resistor-value),
+with the interactive LED circuit explorer.)
 
-Choosing that resistor, and what happens when it is too small, is covered with
-the interactive LED circuit explorer in [Voltage
-measurement](01-voltage-regulation.md#current-choosing-the-right-resistor-value).
+### Wiring the LED on a breadboard
+
+This is the circuit for Example 1a: pin 13 drives a red LED through a 220 Ω
+resistor.
+
+![Example 1a wiring: Arduino pin 13 to strip 10 of the breadboard, a 220 Ω resistor from strip 10 to strip 14, a red LED with its long leg in strip 14 and its short leg in strip 15, and a wire from strip 15 to the − rail, which is connected to the Arduino's GND pin](images/breadboard-1a-led-d13.svg)
+
+Follow the current around the circuit:
+
+| Step | From | To | How it's connected |
+|---|---|---|---|
+| 1 | Arduino **pin 13** | Breadboard strip 10 (hole a10) | Purple jumper wire |
+| 2 | Strip 10 (c10) | Strip 14 (c14) | The **220 Ω resistor**: either way round |
+| 3 | Strip 14 (e14) | Strip 15 (e15) | The **LED**: long leg (+, anode) in strip 14, short leg (−, cathode) in strip 15 |
+| 4 | Strip 15 (a15) | Top **− rail** | Black jumper wire |
+| 5 | Top − rail | Arduino **GND** | Black jumper wire |
+
+How the breadboard makes those connections:
+
+- **Each numbered column of five holes is one strip.** a10–e10 are joined inside the
+  board, so the wire in a10 and the resistor leg in c10 are connected. The same goes
+  for strips 14 and 15 (outlined in the diagram).
+- **Strips don't join each other.** Strip 14 and strip 15 are separate, so the only
+  way from one to the other is *through* the LED. If both LED legs were in the same
+  strip, it would be short-circuited and never light.
+- **The rails run along the board.** Every hole on the top − rail is connected, so it
+  becomes a ground connection that any part can reach with a short wire.
+- **The order of the resistor and LED doesn't matter**, as long as they are in series:
+  the same current flows through both. The LED's **direction** does matter: long leg
+  towards the pin, short leg towards ground.
+
+When pin 13 goes `HIGH`, it drives about 5 V into strip 10. Current flows through
+the resistor and the LED to ground, and the LED lights. When the pin goes `LOW`
+(0 V), nothing flows and the LED goes out. Example 1a does exactly that, over and
+over.
 
 ### Example 1a — blink an LED
 
