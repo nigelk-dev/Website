@@ -1,161 +1,180 @@
-# Introduction to microcontrollers · Chapter 1 · Arduino basics and LEDs
-- type: multi
-  q: Which statements about a solderless **breadboard** are true? Select all that apply.
-  options:
-    - text: Each half-column of five holes (a–e or f–j) is one connected clip
-      correct: true
-    - text: The centre channel isolates the two halves, so a DIP IC can straddle it
-      correct: true
-    - text: The power rails run along the board's length
-      correct: true
-    - text: It is fine for motor currents of several amps
-      why: The clips are rated at roughly 1 A; move power circuits to screw terminals or a soldered board.
-
-- type: cloze
-  q: |
-    An LED's **anode** is the [[long ~ short]] leg and must be at the [[higher ~ lower]] potential; the **cathode** has the flat
-    edge on the lens.
-
+# Introduction to microcontrollers · Chapter 1 · Voltage regulation
 - type: mcq
-  q: Why can't an LED be connected straight across a 9 V battery?
+  q: Why can't the renewable source (RES) be connected straight to an Arduino analogue input?
   options:
-    - text: Its current rises exponentially with voltage, so nothing but the battery's internal resistance limits it, and it burns out
+    - text: The inputs only accept 0–5 V, and the RES may produce 9 V, 12 V or more, which would damage the board
       correct: true
-      why: A series resistor adds a linear element that sets the current.
-    - text: LEDs only work on AC
-    - text: 9 V is too low to light an LED
-    - text: The LED would light, but dimly
+    - text: The RES is AC
+    - text: The Arduino needs at least 20 V to read a voltage
+    - text: Analogue inputs can only read currents
 
 - type: numeric
-  q: An LED with $V_f$ = {Vf} V is to run at {I} mA from a {Vs} V supply. What series resistance gives exactly that current?
+  q: A {Vs} V supply drives two {R} Ω resistors in series. Find the current and the voltage across one resistor.
   vars:
-    Vs: [9, 5, 12, 1]
-    Vf: [2, 1.8, 3.2, 0.2]
-    I: [20, 10, 20, 5]
-  answer: (Vs - Vf) / (I / 1000)
-  unit: Ω
-  hint: $R = \dfrac{V_s - V_f}{I_F}$, with the current in amps.
-  solution: |
-    R = ({Vs} − {Vf}) / {=I / 1000} A = **{=(Vs - Vf) / (I / 1000)} Ω**. Then round **up** to the next standard (E12) value.
-
-- type: mcq
-  q: Exactly 20 mA from 9 V through a red LED ($V_f$ = 2.0 V) needs 350 Ω, which isn't a standard value. Which E12 resistor should you fit?
-  options:
-    - text: 390 Ω
-      correct: true
-      why: Round **up**, giving 17.9 mA, safely under the 20 mA rating even with a 5 % low resistor.
-    - text: 330 Ω
-      why: That gives 21.2 mA, over the rating; the LED runs hot and wears out sooner.
-    - text: 270 Ω
-      why: 25.9 mA, well over the rating.
-    - text: No resistor
-      why: The LED would burn out.
-
-- type: numeric
-  q: A {R} Ω resistor carries {I} mA. How much power does it dissipate?
-  vars:
-    R: [390, 100, 1000, 10]
-    I: [17.9, 5, 25, 0.1]
-  answer: (I / 1000) ** 2 * R * 1000
-  unit: mW
-  solution: |
-    P = I²R = ({=I / 1000})² × {R} = **{=(I / 1000) ** 2 * R * 1000} mW**, which you compare with the resistor's rating (¼ W = 250 mW), allowing 50 % derating.
-
-- type: cloze
-  q: |
-    On the Arduino Uno, each I/O pin should carry at most [[20]] mA (recommended), with an absolute maximum of [[40]] mA.
-    The ATmega328P has only [[2]] KB of SRAM for variables. The PWM pins, marked `~`, are 3, 5, 6, 9, 10 and [[11]].
-
-- type: cloze
-  q: Complete the blink sketch so the LED on pin 13 flashes at 1 Hz.
-  code: |
-    const uint8_t  kLedPin       = 13;
-    const uint16_t kHalfPeriodMs = [[500]];
-
-    void [[setup]]() {
-      pinMode(kLedPin, [[OUTPUT]]);
-    }
-
-    void loop() {
-      digitalWrite(kLedPin, [[HIGH]]);
-      delay(kHalfPeriodMs);
-      digitalWrite(kLedPin, [[LOW]]);
-      delay(kHalfPeriodMs);
-    }
-  explain: 1 Hz means one full on–off cycle per second, so 500 ms on and 500 ms off. `setup()` runs once; `loop()` runs forever.
-
-- type: mcq
-  q: Why is the pin number declared as `const uint8_t` rather than plain `int`?
-  options:
-    - text: "`const` stops it being changed by mistake, and `uint8_t` uses 1 byte instead of 2, which matters with only 2 KB of SRAM"
-      correct: true
-    - text: "`int` can't hold the number 13"
-    - text: "`uint8_t` makes the pin switch faster"
-    - text: Arduino requires all pin numbers to be `const`
-
-- type: mcq
-  q: Which data type should hold a timestamp from `millis()`?
-  options:
-    - text: "`unsigned long`"
-      correct: true
-      why: It holds 0 to about 4.29 × 10⁹, and its arithmetic stays correct when `millis()` wraps round after about 49.7 days.
-    - text: "`int`"
-      why: An `int` overflows after 32.8 seconds' worth of milliseconds.
-    - text: "`uint8_t`"
-    - text: "`float`"
-
-- type: numeric
-  q: An array holds {n} values of type `uint16_t`. What do `sizeof(array)` and `sizeof(array) / sizeof(array[0])` give?
-  vars:
-    n: [5, 2, 12, 1]
+    Vs: [12, 5, 24, 1]
+    R: [330, 100, 1000, 10]
   parts:
-    - label: "sizeof(array):"
-      answer: 2 * n
-      unit: bytes
-      tol: 0
-    - label: "Number of values:"
-      answer: n
-      tol: 0
+    - label: "Current:"
+      answer: Vs / (2 * R) * 1000
+      unit: mA
+    - label: "Voltage across one:"
+      answer: Vs / 2
+      unit: V
   solution: |
-    Each `uint16_t` is 2 bytes, so the array is {n} × 2 = **{=2 * n} bytes**, and {=2 * n} ÷ 2 = **{n}** values.
+    R_T = 2 × {R} = {=2 * R} Ω; I = {Vs} / {=2 * R} = **{=Vs / (2 * R) * 1000} mA**; V₁ = I R₁ = **{=Vs / 2} V** (equal resistors split the voltage equally).
 
-- type: cloze
-  q: Complete the non-blocking blink, which toggles the LED every 500 ms without stopping `loop()`.
-  code: |
-    const unsigned long kIntervalMs = 500;
-    unsigned long lastToggleMs = 0;
-    bool ledOn = false;
+- type: numeric
+  q: Two {R} Ω resistors in series are connected across {Vs} V. What voltage appears across the bottom resistor?
+  vars:
+    Vs: [9, 5, 15, 1]
+    R: [220, 100, 1000, 10]
+  answer: Vs / 2
+  unit: V
+  solution: |
+    Equal resistors split the voltage equally: {Vs} × {R}/(2 × {R}) = **{=Vs / 2} V**
 
-    void loop() {
-      const unsigned long now = [[millis()|millis]];
-      if (now - [[lastToggleMs]] >= kIntervalMs) {
-        lastToggleMs = now;
-        ledOn = [[!ledOn]];
-        digitalWrite(13, ledOn ? HIGH : LOW);
-      }
-    }
-  explain: Writing the test as `now - lastToggleMs >= interval` stays correct when `millis()` wraps round; `now >= lastToggleMs + interval` does not.
+- type: numeric
+  q: A divider with $R_1$ = {R1} Ω (top) and $R_2$ = {R2} Ω (bottom) is fed from {Vs} V. Find the current and $V_{out}$.
+  vars:
+    R1: [330, 100, 1000, 10]
+    R2: [100, 100, 1000, 10]
+    Vs: [9, 5, 15, 1]
+  parts:
+    - label: "Current:"
+      answer: Vs / (R1 + R2) * 1000
+      unit: mA
+    - label: "V_out ="
+      answer: Vs * R2 / (R1 + R2)
+      unit: V
+  solution: |
+    I = {Vs} / ({R1} + {R2}) = **{=Vs / (R1 + R2) * 1000} mA**; V_out = I R₂ = **{=Vs * R2 / (R1 + R2)} V**
+
+- type: numeric
+  q: A voltage divider has $R_1$ = {R1} Ω and $R_2$ = {R2} Ω across {Vs} V. What is $V_{out}$, measured across $R_2$?
+  vars:
+    R1: [100, 100, 10000, 100]
+    R2: [100, 100, 10000, 100]
+    Vs: [12, 5, 24, 1]
+  answer: Vs * R2 / (R1 + R2)
+  unit: V
+  solution: |
+    V_out = V_s R₂/(R₁ + R₂) = {Vs} × {R2} / ({R1} + {R2}) = **{=Vs * R2 / (R1 + R2)} V**
 
 - type: mcq
-  q: Why should a buzzer have **its own output pin** rather than being wired in series with an LED?
+  q: The ratio $R_1/R_2$ fixes $V_{out}$. What does the **absolute size** of the resistors set?
   options:
-    - text: In series neither device gets its rated voltage, and they can't be controlled independently
+    - text: The current, and so the power the monitoring circuit wastes
       correct: true
-    - text: Buzzers only work on analogue pins
-    - text: It saves current
-    - text: The LED would make the buzzer louder
+      why: Larger resistors waste less energy, but very large values make the readings noisy; around 10 kΩ for $R_2$ is a good compromise.
+    - text: The output voltage
+    - text: The Arduino's reference voltage
+    - text: Nothing
+
+- type: numeric
+  q: |
+    The RES can produce up to {Vm} V, and the Arduino must see 5 V at that maximum. With $R_2$ = 10 kΩ, what value of $R_1$ is needed?
+  vars:
+    Vm: [15.86, 8, 30, 0.01]
+  answer: (Vm / 5 - 1) * 10
+  unit: kΩ
+  hint: Set $5 = V_{max}\,R_2/(R_1 + R_2)$ and rearrange to $R_1 = (V_{max}/5 - 1)\,R_2$.
+  solution: |
+    R₁ = ({Vm}/5 − 1) × R₂ = {=Vm / 5 - 1|4} × 10 kΩ = **{=(Vm / 5 - 1) * 10} kΩ**. Round **up** to the next standard value so V_out stays just under 5 V.
+
+- type: numeric
+  q: Design a divider giving {Vo} V at {I} mA from a {Vs} V battery. Find $R_1$ and $R_2$.
+  vars:
+    Vs: [12, 9, 24, 1]
+    Vo: [6, 1, 8, 1]
+    I: [60, 10, 100, 10]
+  parts:
+    - label: "R₁ ="
+      answer: (Vs - Vo) / (I / 1000)
+      unit: Ω
+    - label: "R₂ ="
+      answer: Vo / (I / 1000)
+      unit: Ω
+  hint: Total resistance $R_T = V_s/I$; $R_2 = V_{out}/I$; $R_1 = R_T - R_2$.
+  solution: |
+    R_T = {Vs} / {=I / 1000} = {=Vs / (I / 1000)} Ω; R₂ = {Vo} / {=I / 1000} = **{=Vo / (I / 1000)} Ω**; R₁ = R_T − R₂ = **{=(Vs - Vo) / (I / 1000)} Ω**
 
 - type: tune
   q: |
-    A red LED ($V_f$ = 2.0 V) runs from a **9 V battery**. Choose the series resistor so the LED current is **between 15 and 20 mA**,
-    and check the resistor's power stays well inside a ¼ W (250 mW) rating.
+    Design a voltage divider from a **12 V** battery whose output is **6 V (±0.2)** while drawing **about 60 mA (±5)**.
   controls:
-    - {name: R, label: Series resistor, min: 100, max: 1000, step: 10, value: 220, unit: Ω}
+    - {name: R1, label: R1 (top), min: 20, max: 400, step: 10, value: 300, unit: Ω}
+    - {name: R2, label: R2 (bottom), min: 20, max: 400, step: 10, value: 100, unit: Ω}
   readouts:
-    - {label: LED current, expr: "(9 - 2) / R * 1000", unit: mA, min: 0, max: 40}
-    - {label: Resistor power, expr: "((9 - 2) / R) ** 2 * R * 1000", unit: mW, min: 0, max: 250}
+    - {label: V_out, expr: "12 * R2 / (R1 + R2)", unit: V, min: 0, max: 12}
+    - {label: Current, expr: "12 / (R1 + R2) * 1000", unit: mA, min: 0, max: 150}
   target:
-    - {readout: 0, min: 15, max: 20}
-    - {readout: 1, max: 150}
-  explain: |
-    $R = (V_s - V_f)/I$: 350–470 Ω gives 15–20 mA. In practice you'd fit the standard 390 Ω (17.9 mA, about 125 mW).
+    - {readout: 0, min: 5.8, max: 6.2}
+    - {readout: 1, min: 55, max: 65}
+  explain: The ratio sets $V_{out}$ (equal resistors halve the voltage); the total, $R_T = 12/0.06 = 200$ Ω, sets the current.
+
+- type: cloze
+  q: |
+    A potentiometer's two outer pins are the ends of a fixed resistance [[track]], and the middle pin is the [[wiper]], which
+    splits the track into $R_1$ and $R_2$. With 5 V across it, the pot is an adjustable voltage [[divider]].
+
+- type: numeric
+  q: A {Rt} kΩ pot has 5 V across it, and the wiper gives $R_2$ = {R2} kΩ. Find the current through the track and the wiper voltage.
+  vars:
+    Rt: [5, 5, 10, 5]
+    R2: [2.5, 0, 5, 0.5]
+  parts:
+    - label: "Current:"
+      answer: 5 / Rt
+      unit: mA
+    - label: "V_out ="
+      answer: 5 * R2 / Rt
+      unit: V
+  solution: |
+    I = 5 V / {Rt} kΩ = **{=5 / Rt} mA**; V_out = I × R₂ = {=5 / Rt} mA × {R2} kΩ = **{=5 * R2 / Rt} V**
+
+- type: tune
+  q: |
+    The RES can reach **15.86 V**. Choose $R_1$ and $R_2$ so the Arduino sees **between 4.5 and 5 V** at that maximum, while the divider
+    draws **under 1 mA** (to waste little energy).
+  controls:
+    - {name: R1, label: R1 (top), min: 1, max: 50, step: 1, value: 10, unit: kΩ}
+    - {name: R2, label: R2 (bottom), min: 1, max: 50, step: 1, value: 10, unit: kΩ}
+  readouts:
+    - {label: Pin voltage at 15.86 V, expr: "15.86 * R2 / (R1 + R2)", unit: V, min: 0, max: 16}
+    - {label: Divider current, expr: "15.86 / (R1 + R2)", unit: mA, min: 0, max: 8}
+  target:
+    - {readout: 0, min: 4.5, max: 5}
+    - {readout: 1, max: 1}
+  explain: $R_1 = 2.172\,R_2$; for example 22 kΩ and 10 kΩ give 4.96 V at 0.5 mA.
+
+- type: mcq
+  q: The project's **voltage regulation** block is a voltage divider, not a voltage regulator such as a 7805. Why?
+  options:
+    - text: A regulator holds its output at a fixed 5 V whatever the RES does, so the Arduino could no longer tell how big the RES voltage is
+      correct: true
+    - text: A regulator can't work from a renewable source
+    - text: A divider can power the pump, a regulator can't
+      why: A divider can't power anything; its output collapses as soon as a load draws current.
+    - text: Regulators only work on AC
+
+- type: numeric
+  q: |
+    On the board, R7 (10 kΩ) feeds the top of a {Rt} kΩ SwitchOverADJ trimmer. With the trimmer turned **fully up** (wiper at the
+    top of its track) and the RES at {Vm} V, what voltage reaches A0?
+  vars:
+    Rt: [10, 5, 20, 5]
+    Vm: [16, 12, 18, 1]
+  answer: Vm * Rt / (10 + Rt)
+  unit: V
+  hint: With the wiper at the top, the whole trimmer is the bottom resistor of the divider and R7 is the top one.
+  solution: |
+    V_A0 = {Vm} × {Rt} / (10 + {Rt}) = **{=Vm * Rt / (10 + Rt)} V**. Anything over 5 V is above the Arduino's limit, so set the
+    trimmer at TP1 before connecting the Arduino.
+
+- type: order
+  q: Put the steps for setting the SwitchOverADJ trimmer safely in order.
+  items:
+    - Connect the largest voltage the RES can produce (or a bench supply set to it) to J3
+    - Measure the voltage from TP1 to ground with a multimeter
+    - Adjust the trimmer until TP1 reads just under 5 V
+    - Connect the Arduino

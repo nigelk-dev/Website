@@ -1,91 +1,200 @@
-# Introduction to microcontrollers · Chapter 3 · Loops, PWM and alarms
+# Introduction to microcontrollers · Chapter 3 · Read input voltage
 - type: cloze
   q: |
-    In Exercise 1d the delay changes to 1 s and red moves from pin 13 to pin 10. With named constants this is a two-line change:
-    `kHalfPeriodMs = [[1000]]` and `kRedPin = [[10]]`.
-
-- type: cloze
-  q: Complete `blink()` so the buzzer sounds only when `withAlarm` is true.
-  code: |
-    void blink(uint8_t pin, uint8_t count, [[bool]] withAlarm) {
-      for (uint8_t i = 1; i <= count; ++i) {
-        digitalWrite(pin, HIGH);
-        [[if]] (withAlarm) {
-          digitalWrite(kBuzzerPin, [[HIGH]]);
-        }
-        delay(kHalfPeriodMs);
-        digitalWrite(pin, LOW);
-        digitalWrite(kBuzzerPin, [[LOW]]);
-        delay(kHalfPeriodMs);
-      }
-    }
-  explain: Switching the buzzer off every time is simpler than a second `if`; writing LOW to a pin that is already LOW changes nothing.
+    The analogue pins have a [[10]]-bit converter, giving 2¹⁰ = [[1024]] levels: 0 V reads as 0 and 5 V reads as [[1023]].
+    About 2.5 V reads as [[512|511|513]].
 
 - type: numeric
-  q: A PWM signal is on for {on} ms and off for {off} ms. What is its duty cycle, and the average voltage from a 5 V pin?
+  q: "`analogRead` returns {r}. What voltage is that? (Use `reading × 5.0 / 1023.0`.)"
   vars:
-    on: [7.5, 0.5, 9.5, 0.5]
-    off: [2.5, 0.5, 9.5, 0.5]
-  parts:
-    - label: "Duty cycle:"
-      answer: 100 * on / (on + off)
-      unit: "%"
-    - label: "Average voltage:"
-      answer: 5 * on / (on + off)
-      unit: V
+    r: [512, 0, 1023, 1]
+  answer: r * 5 / 1023
+  unit: V
+  tol: 1
   solution: |
-    Period = {on} + {off} = {=on + off} ms; duty = {on}/{=on + off} = **{=100 * on / (on + off)} %**; V_avg = duty × 5 V = **{=5 * on / (on + off)} V**
-
-- type: numeric
-  q: What duty cycle and average voltage does `analogWrite(pin, {v})` give?
-  vars:
-    v: [191, 0, 255, 1]
-  parts:
-    - label: "Duty cycle:"
-      answer: 100 * v / 255
-      unit: "%"
-      tol: 1
-    - label: "Average voltage:"
-      answer: 5 * v / 255
-      unit: V
-      tol: 1
-  solution: |
-    duty = {v}/255 = **{=100 * v / 255} %**; V_avg = 5 × {v}/255 = **{=5 * v / 255} V**
-
-- type: multi
-  q: What is PWM used for? Select all that apply.
-  options:
-    - text: Motor speed control
-      correct: true
-    - text: LED dimming
-      correct: true
-    - text: Audio signal generation
-      correct: true
-    - text: Reading an analogue sensor
-      why: That's `analogRead`, the ADC, not PWM.
+    {r} × 5.0 / 1023.0 = **{=r * 5 / 1023} V**
 
 - type: mcq
-  q: Why does an LED on a 50 % PWM signal look steadily **dimmer** rather than flickering?
+  q: In C++, what does `5/1023` evaluate to?
   options:
-    - text: It switches about 490 times a second, far too fast for the eye to follow, so we see the average
+    - text: "0"
       correct: true
-    - text: The LED's voltage is really 2.5 V all the time
-      why: The pin is only ever at 5 V or 0 V; it's the average that is 2.5 V.
-    - text: The resistor smooths the pulses
-    - text: LEDs can't turn off quickly
+      why: Both are whole numbers, so it's integer division. Write `5.0/1023.0` for the fractional result.
+    - text: "0.00489"
+    - text: "1"
+    - text: An error
+
+- type: numeric
+  q: "`analogRead` returns {r}. What does `map(reading, 0, 1023, 0, 255)` give (to the nearest whole number), roughly?"
+  vars:
+    r: [512, 0, 1023, 1]
+  answer: r * 255 / 1023
+  tol: 1
+  solution: |
+    {r} × 255/1023 ≈ **{=r * 255 / 1023}**. (Dividing by 4 gives almost the same: {=r / 4}.)
+
+- type: mcq
+  q: Why doesn't the dimmer-switch sketch (Exercise 7.2) need a `delay()`?
+  options:
+    - text: Without one, the brightness follows the knob immediately
+      correct: true
+    - text: "`analogWrite` has its own delay built in"
+    - text: Delays aren't allowed with analogue pins
+    - text: It does need one, or the LED won't light
+
+- type: mcq
+  q: Exercise 7.3 used `if (Vout < 2.5)` to switch the blue LED **on**. What's wrong with that?
+  options:
+    - text: It lights the LED below 2.5 V, but the task asks for it to light above 2.5 V
+      correct: true
+    - text: "`if` can't compare floats"
+    - text: It should use `==`
+      why: An exact `==` on a measured voltage would almost never be true.
+    - text: Nothing
 
 - type: cloze
-  q: The PWM pins on the Uno are ~3, ~5, ~6, ~[[9]], ~10 and ~[[11]]. They run at about [[490]] Hz, except pins 5 and 6 at about 980 Hz.
+  q: Complete the three-band logic (red 0–2 V, green above 2 to 3.5 V, blue above 3.5 V).
+  code: |
+    float vOut = readVolts(kPotPin);
+    if (vOut [[<=]] kLowMax) {
+      setLeds(true, false, false);
+    } [[else if]] (vOut <= kMidMax) {
+      setLeds(false, true, false);
+    } [[else]] {
+      setLeds(false, false, true);
+    }
+  explain: The chain runs only the **first** branch whose test is true, so exactly one LED is ever lit, and the second test doesn't need to repeat "above 2 V".
 
 - type: tune
-  q: Adjust the on-time and off-time of a 5 V PWM signal to give a **75 % duty cycle** with a **10 ms period**.
+  q: |
+    The pot (5 kΩ, across 5 V) feeds the three-band sketch: red for 0–2 V, green above 2 to 3.5 V, blue above 3.5 V.
+    Turn the knob so that **only the green LED** is lit.
   controls:
-    - {name: on, label: On time, min: 0.5, max: 10, step: 0.5, value: 5, unit: ms}
-    - {name: off, label: Off time, min: 0.5, max: 10, step: 0.5, value: 5, unit: ms}
+    - {name: R2, label: Wiper position (R2), min: 0, max: 5, step: 0.1, value: 0.5, unit: kΩ}
   readouts:
-    - {label: Duty cycle, expr: "100 * on / (on + off)", unit: "%", min: 0, max: 100}
-    - {label: Period, expr: "on + off", unit: ms, min: 0, max: 20}
+    - {label: Wiper voltage, expr: "R2", unit: V, min: 0, max: 5}
+    - {label: Red, kind: lamp, expr: "R2", between: [-1, 2]}
+    - {label: Green, kind: lamp, expr: "R2", between: [2, 3.5]}
+    - {label: Blue, kind: lamp, expr: "R2", between: [3.5, 6]}
   target:
-    - {readout: 0, min: 74.9, max: 75.1}
-    - {readout: 1, min: 9.9, max: 10.1}
-  view: {kind: pwm, duty: "on / (on + off)", vmax: "5", ymax: 5}
+    - {readout: 2, on: true}
+  explain: With 1 mA through the track, $V_{out} = 1\text{ mA} \times R_2$, so 2.1–3.5 kΩ puts it in the green band.
+
+- type: numeric
+  q: |
+    A divider with $R_1$ = 22 kΩ and $R_2$ = 10 kΩ feeds A0, and `analogRead` returns {r}. What is the RES voltage?
+  vars:
+    r: [800, 100, 1000, 1]
+  answer: r * 5 / 1023 / (10 / 32)
+  unit: V
+  tol: 1
+  hint: Convert the reading to the pin voltage ($\times 5/1023$), then undo the divider by dividing by $R_2/(R_1 + R_2)$.
+  solution: |
+    V_pin = {r} × 5 / 1023 = {=r * 5 / 1023} V; ratio = 10/32 = 0.3125; V_RES = {=r * 5 / 1023} / 0.3125 = **{=r * 5 / 1023 / (10 / 32)} V**
+
+- type: cloze
+  q: Complete the lines that turn a reading back into the RES voltage.
+  code: |
+    const float kRatio = kR2 / ([[kR1 + kR2|kR1+kR2|kR2 + kR1]]);
+    int   reading = [[analogRead]](kResPin);
+    float vPin    = reading * (5.0 / [[1023.0|1023]]);
+    float vRes    = vPin [[/ ~ * ~ +]] kRatio;
+
+- type: multi
+  q: What else must be done for the divider reading to be correct? Select all that apply.
+  options:
+    - text: Connect the RES negative to the Arduino GND (a shared ground)
+      correct: true
+    - text: Allow for resistor tolerance; ±5 % resistors give up to ±5 % error
+      correct: true
+    - text: Use the measured resistor values in `kR1` and `kR2` for better accuracy
+      correct: true
+    - text: Set the analogue pin with `pinMode(A0, OUTPUT)`
+      why: An analogue input must stay an input.
+
+- type: numeric
+  q: |
+    The divider has $R_1$ = {k} × $R_2$, and the code switches to the battery when the pin voltage falls below {Vp} V.
+    What RES voltage does that threshold correspond to?
+  vars:
+    k: [2.172, 1, 4, 0.001]
+    Vp: [2.5, 2, 4, 0.1]
+  answer: Vp * (1 + k)
+  unit: V
+  hint: $V_{RES} = V_{pin} \div \dfrac{R_2}{R_1 + R_2} = V_{pin}\,(1 + R_1/R_2)$
+  solution: |
+    V_RES = {Vp} × (1 + {k}) = **{=Vp * (1 + k)} V**
+
+- type: graph
+  q: |
+    With $R_1 = 2.172\,R_2$, the pin voltage is plotted against the RES voltage, and the sketch switches to the battery when the pin
+    falls below **2.5 V** (dashed). Move the cursor to the **RES voltage** at which it switches.
+  x: {min: 0, max: 16, label: "RES voltage (V)"}
+  y: {min: 0, max: 5.5, label: "pin voltage (V)"}
+  curves:
+    - {expr: "x / 3.172", label: "pin voltage"}
+    - {expr: "2.5 + 0 * x", label: "threshold"}
+  answer: {x: 7.93, tol: 0.25, start: 13}
+  explain: $V_{RES} = 2.5 \times (1 + 2.172) \approx 7.9$ V.
+
+- type: mcq
+  q: Why add **hysteresis** (two thresholds, e.g. 2.3 V and 2.7 V)?
+  options:
+    - text: So the relays don't chatter on and off when the RES voltage hovers around a single threshold
+      correct: true
+      why: Between the two thresholds the load stays on whichever source it already had.
+    - text: To make the system respond faster
+    - text: To measure two different sources
+    - text: To double the measurement resolution
+
+- type: cloze
+  q: Complete the hysteresis version of `loop()`.
+  code: |
+    float vPin = readVolts(kResPin);
+    if (vPin < [[kToBatteryV ~ kToResV]]) {
+      useBattery();
+    } else if (vPin > [[kToResV ~ kToBatteryV]]) {
+      useRes();
+    }
+  explain: There is no final `else`. Inside the dead band, `loop()` does nothing.
+
+- type: mcq
+  q: Which everyday device uses the same two-threshold idea?
+  options:
+    - text: A home heating thermostat
+      correct: true
+    - text: A light switch
+    - text: A doorbell
+    - text: A fuse
+
+- type: tune
+  q: |
+    With hysteresis the sketch switches to the battery below 2.3 V and back to the RES only above 2.7 V. Set the pin voltage to a
+    value where the load **stays on whichever source it already had**.
+  controls:
+    - {name: v, label: Pin voltage, min: 0, max: 5, step: 0.05, value: 3.5, unit: V}
+  readouts:
+    - {label: Switches to battery, kind: lamp, expr: "v", between: [-1, 2.2999]}
+    - {label: Dead band, no change, kind: lamp, expr: "v", between: [2.2999, 2.7]}
+    - {label: Switches back to RES, kind: lamp, expr: "v", between: [2.7, 6]}
+  target:
+    - {readout: 1, on: true}
+  explain: Between 2.3 and 2.7 V `loop()` does nothing, so small wobbles in the RES voltage no longer make the relays chatter.
+
+- type: reveal
+  q: How would you choose a sensible threshold for switching to the battery?
+  answer: |
+    Start from the **minimum RES voltage the load needs** to work properly, then scale it through the divider:
+    $V_{pin} = V_{RES}\,R_2/(R_1 + R_2)$. Use that as the threshold, ideally with a little hysteresis either side so the relays
+    don't chatter.
+
+- type: numeric
+  q: |
+    With {Vr} V applied to J3, a multimeter reads {Vt} V at TP1. What divider fraction $k$ should go in the code as `kRatio`?
+  vars:
+    Vr: [12, 9, 16, 0.5]
+    Vt: [3.6, 2, 4.8, 0.1]
+  answer: Vt / Vr
+  unit: ""
+  solution: |
+    k = V_TP1 / V_RES = {Vt} / {Vr} = **{=Vt / Vr|3}**

@@ -14,6 +14,7 @@ it full screen.
 """
 import json
 import re
+import shutil
 import sys
 from html import escape, unescape
 from pathlib import Path
@@ -164,23 +165,49 @@ def with_checks(course, num, text):
 MEC1019_PAGES = re.compile(r"https://nigelk-dev\.github\.io/MEC1019_Sustainable_Processes/notes/applets/")
 
 
-# The notes are numbered by the original parts 1-3 and 5-8 (there is no part 4),
-# plus the finished circuit. On the site they are chapters 1-8.
-MEC1019_FILES = ["01-arduino-basics-and-leds.md", "02-analogwrite-dividers-and-potentiometers.md",
-                 "03-loops-pwm-and-alarms.md", "05-voltage-dividers.md", "06-potentiometers.md",
-                 "07-relays.md", "08-res-battery-switchover.md", "finished-circuit.md"]
-MEC1019_CHAPTER_OF_PART = {1: 1, 2: 2, 3: 3, 5: 4, 6: 5, 7: 6, 8: 7}
-MEC1019_PARTS = [(1, "Part I: Arduino Basics"), (4, "Part II: Measuring Voltages"),
-                 (6, "Part III: Switching and the Final System")]
+# Introduction to microcontrollers is written in this repository
+# (mec1019/chapters/), one chapter per block of the project overview diagram.
+# Only the images and applets come from the course repository; the chapters'
+# own images (e.g. the board schematic) are in mec1019/chapters/images/.
+MEC1019_CHAPTERS = Path(__file__).resolve().parent.parent / "mec1019" / "chapters"
+MEC1019_FILES = ["01-voltage-regulation.md", "02-arduino.md", "03-read-input-voltage.md",
+                 "04-switching-circuitry.md", "05-pump-drive-type.md"]
+MEC1019_SUBTITLE = "Introduction to microcontrollers"
+# The pages that used to be built from the course notes redirect to the
+# chapter that now covers their topic.
+MEC1019_OLD_PAGES = {
+    "01-voltage-regulation.md": ["02-analogwrite-dividers-and-potentiometers", "05-voltage-dividers"],
+    "02-arduino.md": ["01-arduino-basics-and-leds"],
+    "03-read-input-voltage.md": ["06-potentiometers"],
+    "04-switching-circuitry.md": ["07-relays", "08-res-battery-switchover", "finished-circuit"],
+    "05-pump-drive-type.md": ["03-loops-pwm-and-alarms"],
+}
+# The applets still label their sketches by the course notes' parts
+# ("Part 6, section 5"). Each part is mapped to the chapter that now has its
+# material: the code runner's analogWrite fades (Part 2) are in chapter 5, the
+# divider examples in the divider lab (Parts 2 and 5) in chapter 1.
+MEC1019_CHAPTER_OF_PART = {1: 2, 2: 5, 3: 2, 5: 3, 6: 3, 7: 4, 8: 4}
+MEC1019_APPLET_LABELS = {
+    "Part 1 — Arduino basics and LEDs": "Chapter 2 — Getting started with the Arduino",
+    "Part 2 — analogWrite": "Chapter 5 — PWM and analogWrite",
+    "Part 3 — loops and alarms": "Chapter 2 — loops and alarms",
+    "Part 5 — voltage dividers": "Chapter 3 — reading the RES voltage",
+    "Part 6 — potentiometers": "Chapter 3 — potentiometers and analogRead",
+    "Part 7 — relays": "Chapter 4 — relays",
+    "Part 8 and finished circuit": "Chapter 4 — switch-over with relays",
+    "Part 8 — RES / battery switch-over": "RES / battery switch-over",
+    "Finished circuit notes": "Chapter 4",
+    "(Part 2)": "(Chapter 1)",
+    "(Part 5)": "(Chapter 1)",
+}
 
 
 def mec1019_part_refs(text):
-    """"Part 5" -> "Chapter 4", "Parts 3, 5 and 6" -> "Chapters 3, 4 and 5"."""
-    def nums(m):
-        word = "Chapters" if m.group(1) == "Parts" else "Chapter"
-        mapped = re.sub(r"\d+", lambda d: str(MEC1019_CHAPTER_OF_PART.get(int(d.group()), d.group())), m.group(2))
-        return f"{word} {mapped}"
-    return re.sub(r"\b(Parts?) (\d+(?:(?:, | and |–)\d+)*)\b", nums, text)
+    """Applet labels: "Part 6, section 5" -> "Chapter 3" (the sections no longer match)."""
+    for old, new in MEC1019_APPLET_LABELS.items():
+        text = text.replace(old, new)
+    return re.sub(r"\bPart (\d)(?:, (?:section \d+|Exercise [\d.]+))?",
+                  lambda m: f"Chapter {MEC1019_CHAPTER_OF_PART.get(int(m.group(1)), m.group(1))}", text)
 
 
 def mec1019_note(path, excluded):
@@ -230,21 +257,23 @@ def mec1019_note(path, excluded):
     text = re.sub(r"^\[!\[[^\]]*\]\([^)]*\)\]\(applets/[^)]+\)\s*$", drop_if_embedded, text, flags=re.M)
     text = re.sub(r"^> \*\*Interactive applets for this part\*\*\n(?:>.*\n?)*", drop_if_embedded, text, flags=re.M)
     text = re.sub(r" \(from `[^`]+\.(?:pdf|pptx)`\)", "", text)
-    text = no_lectures(mec1019_part_refs(text))
+    text = no_lectures(text)
     text = re.sub(r"\n{3,}", "\n\n", text).strip("\n")
     return title, text
 
 
 def mec1019(src, dest, excluded):
+    """src (the course notes) is only used by fetch-mec1019.sh, which copies its
+    images and applets into dest before this runs."""
     dest = Path(dest)
+    shutil.copytree(MEC1019_CHAPTERS / "images", dest / "images", dirs_exist_ok=True)
     for num, name in enumerate(MEC1019_FILES, 1):
-        title, text = mec1019_note(Path(src) / name, excluded)
+        title, text = mec1019_note(MEC1019_CHAPTERS / name, excluded)
         text = with_checks("mec1019", num, text)
-        aliases = ["/mec1019/index.html", "/mec1019/applets.html"] if num == 1 else None
-        fm = chapter_front_matter(title, num, part_of(MEC1019_PARTS, num), aliases)
+        aliases = [f"/mec1019/notes/{old}.html" for old in MEC1019_OLD_PAGES.get(name, [])]
+        fm = chapter_front_matter(title, num, MEC1019_SUBTITLE, aliases)
         (dest / name).write_text(fm + text + "\n", encoding="utf-8")
-    # The applets refer to the notes by part ("Part 1, section 6")
-    for page in (dest / "applets").glob("*.html"):
+    for page in list((dest / "applets").glob("*.html")) + list((dest / "applets").glob("*.js")):
         html = page.read_text(encoding="utf-8")
         page.write_text(mec1019_part_refs(html), encoding="utf-8")
 

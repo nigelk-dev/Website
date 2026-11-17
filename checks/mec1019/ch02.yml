@@ -1,140 +1,152 @@
-# Introduction to microcontrollers · Chapter 2 · analogWrite, voltage dividers and potentiometers
-- type: numeric
-  q: What `analogWrite` value gives an average of {V} V from a 5 V pin? (Round to a whole number.)
-  vars:
-    V: [1.5, 0.5, 4.5, 0.1]
-  answer: round(255 / 5 * V)
-  tol: 0
-  hint: value = (255 / 5 V) × V, rounded to the nearest whole number.
-  solution: |
-    value = (255 / 5) × {V} = {=255 / 5 * V|4} → **{=round(255 / 5 * V)}**
+# Introduction to microcontrollers · Chapter 2 · Getting started with the Arduino
+- type: multi
+  q: Which statements about a solderless **breadboard** are true? Select all that apply.
+  options:
+    - text: Each half-column of five holes (a–e or f–j) is one connected clip
+      correct: true
+    - text: The centre channel isolates the two halves, so a DIP IC can straddle it
+      correct: true
+    - text: The power rails run along the board's length
+      correct: true
+    - text: It is fine for motor currents of several amps
+      why: The clips are rated at roughly 1 A; move power circuits to screw terminals or a soldered board.
 
 - type: cloze
   q: |
-    `analogWrite` uses [[8]] bits, giving 2⁸ = [[256]] levels, so its value runs from 0 to [[255]]. It only works on the PWM pins
-    marked `~`.
+    An LED's **anode** is the [[long ~ short]] leg and must be at the [[higher ~ lower]] potential; the **cathode** has the flat
+    edge on the lens.
 
 - type: mcq
-  q: In C++, what does `255/2` evaluate to?
+  q: Why can't an LED be connected straight across a 9 V battery?
   options:
-    - text: "127"
+    - text: Its current rises exponentially with voltage, so nothing but the battery's internal resistance limits it, and it burns out
       correct: true
-      why: Both numbers are whole numbers, so C++ does **integer division** and throws the remainder away. Write `255.0/2` to get 127.5.
-    - text: "127.5"
-    - text: "128"
-      why: Integer division truncates; it doesn't round.
-    - text: An error
+      why: A series resistor adds a linear element that sets the current.
+    - text: LEDs only work on AC
+    - text: 9 V is too low to light an LED
+    - text: The LED would light, but dimly
+
+- type: numeric
+  q: An LED with $V_f$ = {Vf} V is to run at {I} mA from a {Vs} V supply. What series resistance gives exactly that current?
+  vars:
+    Vs: [9, 5, 12, 1]
+    Vf: [2, 1.8, 3.2, 0.2]
+    I: [20, 10, 20, 5]
+  answer: (Vs - Vf) / (I / 1000)
+  unit: Ω
+  hint: $R = \dfrac{V_s - V_f}{I_F}$, with the current in amps.
+  solution: |
+    R = ({Vs} − {Vf}) / {=I / 1000} A = **{=(Vs - Vf) / (I / 1000)} Ω**. Then round **up** to the next standard (E12) value.
 
 - type: mcq
-  q: Why does `voltsToPwm()` add 0.5 before converting to `(uint8_t)`?
+  q: Exactly 20 mA from 9 V through a red LED ($V_f$ = 2.0 V) needs 350 Ω, which isn't a standard value. Which E12 resistor should you fit?
   options:
-    - text: "`(uint8_t)` keeps only the whole-number part, so adding 0.5 first rounds to the nearest whole number"
+    - text: 390 Ω
       correct: true
-    - text: To make the LED a little brighter
-    - text: Because `analogWrite` needs an odd number
-    - text: To avoid dividing by zero
+      why: Round **up**, giving 17.9 mA, safely under the 20 mA rating even with a 5 % low resistor.
+    - text: 330 Ω
+      why: That gives 21.2 mA, over the rating; the LED runs hot and wears out sooner.
+    - text: 270 Ω
+      why: 25.9 mA, well over the rating.
+    - text: No resistor
+      why: The LED would burn out.
+
+- type: numeric
+  q: A {R} Ω resistor carries {I} mA. How much power does it dissipate?
+  vars:
+    R: [390, 100, 1000, 10]
+    I: [17.9, 5, 25, 0.1]
+  answer: (I / 1000) ** 2 * R * 1000
+  unit: mW
+  solution: |
+    P = I²R = ({=I / 1000})² × {R} = **{=(I / 1000) ** 2 * R * 1000} mW**, which you compare with the resistor's rating (¼ W = 250 mW), allowing 50 % derating.
 
 - type: cloze
-  q: Complete the loop that brightens the LED from 0 to 250 in steps of 10.
+  q: |
+    On the Arduino Uno, each I/O pin should carry at most [[20]] mA (recommended), with an absolute maximum of [[40]] mA.
+    The ATmega328P has only [[2]] KB of SRAM for variables. The PWM pins, marked `~`, are 3, 5, 6, 9, 10 and [[11]].
+
+- type: cloze
+  q: Complete the blink sketch so the LED on pin 13 flashes at 1 Hz.
   code: |
-    for (int pwm = 0; pwm [[<=]] kTopPwm; pwm [[+=]] kPwmStep) {
-      analogWrite(kRedPin, [[pwm]]);
-      delay(kOnMs);
+    const uint8_t  kLedPin       = 13;
+    const uint16_t kHalfPeriodMs = [[500]];
+
+    void [[setup]]() {
+      pinMode(kLedPin, [[OUTPUT]]);
     }
 
+    void loop() {
+      digitalWrite(kLedPin, [[HIGH]]);
+      delay(kHalfPeriodMs);
+      digitalWrite(kLedPin, [[LOW]]);
+      delay(kHalfPeriodMs);
+    }
+  explain: 1 Hz means one full on–off cycle per second, so 500 ms on and 500 ms off. `setup()` runs once; `loop()` runs forever.
+
 - type: mcq
-  q: Why is the loop counter an `int` rather than a `uint8_t` when testing `pwm <= 255`?
+  q: Why is the pin number declared as `const uint8_t` rather than plain `int`?
   options:
-    - text: A `uint8_t` holds only 0–255, so 260 would wrap round to 4 and the loop would never end
+    - text: "`const` stops it being changed by mistake, and `uint8_t` uses 1 byte instead of 2, which matters with only 2 KB of SRAM"
       correct: true
-    - text: "`analogWrite` only accepts `int`"
-    - text: "`int` is faster on the Arduino"
-    - text: "`uint8_t` can't be used in a `for` loop"
+    - text: "`int` can't hold the number 13"
+    - text: "`uint8_t` makes the pin switch faster"
+    - text: Arduino requires all pin numbers to be `const`
+
+- type: mcq
+  q: Which data type should hold a timestamp from `millis()`?
+  options:
+    - text: "`unsigned long`"
+      correct: true
+      why: It holds 0 to about 4.29 × 10⁹, and its arithmetic stays correct when `millis()` wraps round after about 49.7 days.
+    - text: "`int`"
+      why: An `int` overflows after 32.8 seconds' worth of milliseconds.
+    - text: "`uint8_t`"
+    - text: "`float`"
 
 - type: numeric
-  q: A {Vs} V supply drives two {R} Ω resistors in series. Find the current and the voltage across one resistor.
+  q: An array holds {n} values of type `uint16_t`. What do `sizeof(array)` and `sizeof(array) / sizeof(array[0])` give?
   vars:
-    Vs: [12, 5, 24, 1]
-    R: [330, 100, 1000, 10]
+    n: [5, 2, 12, 1]
   parts:
-    - label: "Current:"
-      answer: Vs / (2 * R) * 1000
-      unit: mA
-    - label: "Voltage across one:"
-      answer: Vs / 2
-      unit: V
+    - label: "sizeof(array):"
+      answer: 2 * n
+      unit: bytes
+      tol: 0
+    - label: "Number of values:"
+      answer: n
+      tol: 0
   solution: |
-    R_T = 2 × {R} = {=2 * R} Ω; I = {Vs} / {=2 * R} = **{=Vs / (2 * R) * 1000} mA**; V₁ = I R₁ = **{=Vs / 2} V** (equal resistors split the voltage equally).
+    Each `uint16_t` is 2 bytes, so the array is {n} × 2 = **{=2 * n} bytes**, and {=2 * n} ÷ 2 = **{n}** values.
 
-- type: numeric
-  q: A voltage divider has $R_1$ = {R1} Ω and $R_2$ = {R2} Ω across {Vs} V. What is $V_{out}$, measured across $R_2$?
-  vars:
-    R1: [100, 100, 10000, 100]
-    R2: [100, 100, 10000, 100]
-    Vs: [12, 5, 24, 1]
-  answer: Vs * R2 / (R1 + R2)
-  unit: V
-  solution: |
-    V_out = V_s R₂/(R₁ + R₂) = {Vs} × {R2} / ({R1} + {R2}) = **{=Vs * R2 / (R1 + R2)} V**
+- type: cloze
+  q: Complete the non-blocking blink, which toggles the LED every 500 ms without stopping `loop()`.
+  code: |
+    const unsigned long kIntervalMs = 500;
+    unsigned long lastToggleMs = 0;
+    bool ledOn = false;
 
-- type: numeric
-  q: Design a divider giving {Vo} V at {I} mA from a {Vs} V battery. Find $R_1$ and $R_2$.
-  vars:
-    Vs: [12, 9, 24, 1]
-    Vo: [6, 1, 8, 1]
-    I: [60, 10, 100, 10]
-  parts:
-    - label: "R₁ ="
-      answer: (Vs - Vo) / (I / 1000)
-      unit: Ω
-    - label: "R₂ ="
-      answer: Vo / (I / 1000)
-      unit: Ω
-  hint: Total resistance $R_T = V_s/I$; $R_2 = V_{out}/I$; $R_1 = R_T - R_2$.
-  solution: |
-    R_T = {Vs} / {=I / 1000} = {=Vs / (I / 1000)} Ω; R₂ = {Vo} / {=I / 1000} = **{=Vo / (I / 1000)} Ω**; R₁ = R_T − R₂ = **{=(Vs - Vo) / (I / 1000)} Ω**
-
-- type: numeric
-  q: A {Rt} kΩ potentiometer has 5 V across it, with the wiper set so that $R_2$ = {R2} kΩ. What is $V_{out}$?
-  vars:
-    Rt: [5, 5, 10, 5]
-    R2: [2.5, 0, 5, 0.5]
-  answer: 5 * R2 / Rt
-  unit: V
-  solution: |
-    I = 5 V / {Rt} kΩ = {=5 / Rt} mA; V_out = I R₂ = {=5 / Rt} mA × {R2} kΩ = **{=5 * R2 / Rt} V**
-
-- type: numeric
-  q: "`analogRead` returns {r}. What voltage is that? (Use `reading × 5.0 / 1023.0`.)"
-  vars:
-    r: [512, 0, 1023, 1]
-  answer: r * 5 / 1023
-  unit: V
-  tol: 1
-  solution: |
-    {r} × 5.0 / 1023.0 = **{=r * 5 / 1023} V**
-
-- type: tune
-  q: Set the `analogWrite` value so the LED's pin gives an average of **3 V (±0.05)**.
-  controls:
-    - {name: v, label: "analogWrite value", min: 0, max: 255, step: 1, value: 64, unit: ""}
-  readouts:
-    - {label: Average voltage, expr: "5 * v / 255", unit: V, min: 0, max: 5}
-  target:
-    - {readout: 0, min: 2.95, max: 3.05}
-  view: {kind: pwm, duty: "v / 255", vmax: "5", ymax: 5}
-  explain: value = 255/5 × 3 = 153. The pin is only ever 5 V or 0 V; the dashed line is the average.
+    void loop() {
+      const unsigned long now = [[millis()|millis]];
+      if (now - [[lastToggleMs]] >= kIntervalMs) {
+        lastToggleMs = now;
+        ledOn = [[!ledOn]];
+        digitalWrite(13, ledOn ? HIGH : LOW);
+      }
+    }
+  explain: Writing the test as `now - lastToggleMs >= interval` stays correct when `millis()` wraps round; `now >= lastToggleMs + interval` does not.
 
 - type: tune
   q: |
-    Design a voltage divider from a **12 V** battery whose output is **6 V (±0.2)** while drawing **about 60 mA (±5)**.
+    A red LED ($V_f$ = 2.0 V) runs from a **9 V battery**. Choose the series resistor so the LED current is **between 15 and 20 mA**,
+    and check the resistor's power stays well inside a ¼ W (250 mW) rating.
   controls:
-    - {name: R1, label: R1 (top), min: 20, max: 400, step: 10, value: 300, unit: Ω}
-    - {name: R2, label: R2 (bottom), min: 20, max: 400, step: 10, value: 100, unit: Ω}
+    - {name: R, label: Series resistor, min: 100, max: 1000, step: 10, value: 220, unit: Ω}
   readouts:
-    - {label: V_out, expr: "12 * R2 / (R1 + R2)", unit: V, min: 0, max: 12}
-    - {label: Current, expr: "12 / (R1 + R2) * 1000", unit: mA, min: 0, max: 150}
+    - {label: LED current, expr: "(9 - 2) / R * 1000", unit: mA, min: 0, max: 40}
+    - {label: Resistor power, expr: "((9 - 2) / R) ** 2 * R * 1000", unit: mW, min: 0, max: 250}
   target:
-    - {readout: 0, min: 5.8, max: 6.2}
-    - {readout: 1, min: 55, max: 65}
-  explain: The ratio sets $V_{out}$ (equal resistors halve the voltage); the total, $R_T = 12/0.06 = 200$ Ω, sets the current.
+    - {readout: 0, min: 15, max: 20}
+    - {readout: 1, max: 150}
+  explain: |
+    $R = (V_s - V_f)/I$: 350–470 Ω gives 15–20 mA. In practice you'd fit the standard 390 Ω (17.9 mA, about 125 mW).

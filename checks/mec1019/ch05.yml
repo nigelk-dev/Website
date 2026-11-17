@@ -1,96 +1,204 @@
-# Introduction to microcontrollers · Chapter 5 · Potentiometers
-- type: cloze
-  q: |
-    A potentiometer's two outer pins are the ends of a fixed resistance [[track]], and the middle pin is the [[wiper]], which
-    splits the track into $R_1$ and $R_2$. With 5 V across it, the pot is an adjustable voltage [[divider]].
-
+# Introduction to microcontrollers · Chapter 5 · Pump drive type
 - type: numeric
-  q: A {Rt} kΩ pot has 5 V across it, and the wiper gives $R_2$ = {R2} kΩ. Find the current through the track and the wiper voltage.
+  q: A PWM signal is on for {on} ms and off for {off} ms. What is its duty cycle, and the average voltage from a 5 V pin?
   vars:
-    Rt: [5, 5, 10, 5]
-    R2: [2.5, 0, 5, 0.5]
+    on: [7.5, 0.5, 9.5, 0.5]
+    off: [2.5, 0.5, 9.5, 0.5]
   parts:
-    - label: "Current:"
-      answer: 5 / Rt
-      unit: mA
-    - label: "V_out ="
-      answer: 5 * R2 / Rt
+    - label: "Duty cycle:"
+      answer: 100 * on / (on + off)
+      unit: "%"
+    - label: "Average voltage:"
+      answer: 5 * on / (on + off)
       unit: V
   solution: |
-    I = 5 V / {Rt} kΩ = **{=5 / Rt} mA**; V_out = I × R₂ = {=5 / Rt} mA × {R2} kΩ = **{=5 * R2 / Rt} V**
-
-- type: cloze
-  q: |
-    The analogue pins have a [[10]]-bit converter, giving 2¹⁰ = [[1024]] levels: 0 V reads as 0 and 5 V reads as [[1023]].
-    About 2.5 V reads as [[512|511|513]].
-
-- type: mcq
-  q: In C++, what does `5/1023` evaluate to?
-  options:
-    - text: "0"
-      correct: true
-      why: Both are whole numbers, so it's integer division. Write `5.0/1023.0` for the fractional result.
-    - text: "0.00489"
-    - text: "1"
-    - text: An error
+    Period = {on} + {off} = {=on + off} ms; duty = {on}/{=on + off} = **{=100 * on / (on + off)} %**; V_avg = duty × 5 V = **{=5 * on / (on + off)} V**
 
 - type: numeric
-  q: "`analogRead` returns {r}. What does `map(reading, 0, 1023, 0, 255)` give (to the nearest whole number), roughly?"
+  q: What duty cycle and average voltage does `analogWrite(pin, {v})` give?
   vars:
-    r: [512, 0, 1023, 1]
-  answer: r * 255 / 1023
-  tol: 1
+    v: [191, 0, 255, 1]
+  parts:
+    - label: "Duty cycle:"
+      answer: 100 * v / 255
+      unit: "%"
+      tol: 1
+    - label: "Average voltage:"
+      answer: 5 * v / 255
+      unit: V
+      tol: 1
   solution: |
-    {r} × 255/1023 ≈ **{=r * 255 / 1023}**. (Dividing by 4 gives almost the same: {=r / 4}.)
+    duty = {v}/255 = **{=100 * v / 255} %**; V_avg = 5 × {v}/255 = **{=5 * v / 255} V**
 
-- type: mcq
-  q: The slide's Exercise 2d2 used `if (Vout < 2.5)` to switch the blue LED **on**. What's wrong with that?
-  options:
-    - text: It lights the LED below 2.5 V, but the task asks for it to light above 2.5 V
-      correct: true
-    - text: "`if` can't compare floats"
-    - text: It should use `==`
-      why: An exact `==` on a measured voltage would almost never be true.
-    - text: Nothing
-
-- type: cloze
-  q: Complete the three-band logic (red 0–2 V, green above 2 to 3.5 V, blue above 3.5 V).
-  code: |
-    float vOut = readVolts(kPotPin);
-    if (vOut [[<=]] kLowMax) {
-      setLeds(true, false, false);
-    } [[else if]] (vOut <= kMidMax) {
-      setLeds(false, true, false);
-    } [[else]] {
-      setLeds(false, false, true);
-    }
-  explain: The chain runs only the **first** branch whose test is true, so exactly one LED is ever lit, and the second test doesn't need to repeat "above 2 V".
+- type: numeric
+  q: What `analogWrite` value gives an average of {V} V from a 5 V pin? (Round to a whole number.)
+  vars:
+    V: [1.5, 0.5, 4.5, 0.1]
+  answer: round(255 / 5 * V)
+  tol: 0
+  hint: value = (255 / 5 V) × V, rounded to the nearest whole number.
+  solution: |
+    value = (255 / 5) × {V} = {=255 / 5 * V|4} → **{=round(255 / 5 * V)}**
 
 - type: cloze
   q: |
-    In C++, `==` means [[equal to|equals|is equal to]], `&&` means [[AND ~ OR ~ NOT]], and `||` means [[OR ~ AND ~ NOT]].
-    The ternary expression `red ? HIGH : LOW` gives HIGH when `red` is [[true ~ false]].
+    `analogWrite` uses [[8]] bits, giving 2⁸ = [[256]] levels, so its value runs from 0 to [[255]]. It only works on the PWM pins
+    marked `~`.
+
+- type: multi
+  q: What is PWM used for? Select all that apply.
+  options:
+    - text: Motor speed control
+      correct: true
+    - text: LED dimming
+      correct: true
+    - text: Audio signal generation
+      correct: true
+    - text: Reading an analogue sensor
+      why: That's `analogRead`, the ADC, not PWM.
 
 - type: mcq
-  q: Why doesn't the dimmer-switch sketch (Exercise 2d1) need a `delay()`?
+  q: Why does an LED on a 50 % PWM signal look steadily **dimmer** rather than flickering?
   options:
-    - text: Without one, the brightness follows the knob immediately
+    - text: It switches about 490 times a second, far too fast for the eye to follow, so we see the average
       correct: true
-    - text: "`analogWrite` has its own delay built in"
-    - text: Delays aren't allowed with analogue pins
-    - text: It does need one, or the LED won't light
+    - text: The LED's voltage is really 2.5 V all the time
+      why: The pin is only ever at 5 V or 0 V; it's the average that is 2.5 V.
+    - text: The resistor smooths the pulses
+    - text: LEDs can't turn off quickly
+
+- type: cloze
+  q: The PWM pins on the Uno are ~3, ~5, ~6, ~[[9]], ~10 and ~[[11]]. They run at about [[490]] Hz, except pins 5 and 6 at about 980 Hz.
+
+- type: tune
+  q: Adjust the on-time and off-time of a 5 V PWM signal to give a **75 % duty cycle** with a **10 ms period**.
+  controls:
+    - {name: on, label: On time, min: 0.5, max: 10, step: 0.5, value: 5, unit: ms}
+    - {name: off, label: Off time, min: 0.5, max: 10, step: 0.5, value: 5, unit: ms}
+  readouts:
+    - {label: Duty cycle, expr: "100 * on / (on + off)", unit: "%", min: 0, max: 100}
+    - {label: Period, expr: "on + off", unit: ms, min: 0, max: 20}
+  target:
+    - {readout: 0, min: 74.9, max: 75.1}
+    - {readout: 1, min: 9.9, max: 10.1}
+  view: {kind: pwm, duty: "on / (on + off)", vmax: "5", ymax: 5}
+
+- type: tune
+  q: Set the `analogWrite` value so the LED's pin gives an average of **3 V (±0.05)**.
+  controls:
+    - {name: v, label: "analogWrite value", min: 0, max: 255, step: 1, value: 64, unit: ""}
+  readouts:
+    - {label: Average voltage, expr: "5 * v / 255", unit: V, min: 0, max: 5}
+  target:
+    - {readout: 0, min: 2.95, max: 3.05}
+  view: {kind: pwm, duty: "v / 255", vmax: "5", ymax: 5}
+  explain: value = 255/5 × 3 = 153. The pin is only ever 5 V or 0 V; the dashed line is the average.
+
+- type: cloze
+  q: Complete the loop that brightens the LED from 0 to 250 in steps of 10.
+  code: |
+    for (int pwm = 0; pwm [[<=]] kTopPwm; pwm [[+=]] kPwmStep) {
+      analogWrite(kRedPin, [[pwm]]);
+      delay(kOnMs);
+    }
+
+- type: mcq
+  q: Why is the loop counter an `int` rather than a `uint8_t` when testing `pwm <= 255`?
+  options:
+    - text: A `uint8_t` holds only 0–255, so 260 would wrap round to 4 and the loop would never end
+      correct: true
+    - text: "`analogWrite` only accepts `int`"
+    - text: "`int` is faster on the Arduino"
+    - text: "`uint8_t` can't be used in a `for` loop"
+
+- type: numeric
+  q: |
+    A {V} V pump has a winding resistance of {R} Ω and runs at {Ir} A. Estimate its current at the moment it is switched on, and
+    how many times its running current that is.
+  vars:
+    V: [12, 6, 16, 1]
+    R: [2, 1, 5, 0.5]
+    Ir: [0.8, 0.3, 1.5, 0.1]
+  parts:
+    - label: "Start-up current:"
+      answer: V / R
+      unit: A
+    - label: "Times the running current:"
+      answer: V / R / Ir
+      unit: "×"
+  hint: At standstill the back-EMF is zero, so only the winding resistance limits the current.
+  solution: |
+    I_start = {V} / {R} = **{=V / R} A**, which is {=V / R / Ir|2} × the running current of {Ir} A.
+
+- type: numeric
+  q: |
+    The pump (winding resistance {R} Ω) is running from the RES at {Vo} V when the board switches it straight to the battery at
+    {Vn} V. Roughly how big is the extra current surge?
+  vars:
+    R: [2, 1, 5, 0.5]
+    Vo: [8, 5, 10, 0.5]
+    Vn: [12, 11, 14, 0.5]
+  answer: (Vn - Vo) / R
+  unit: A
+  solution: |
+    ΔI ≈ ({Vn} − {Vo}) / {R} = **{=(Vn - Vo) / R} A**, on top of the running current, until the pump speeds up.
+
+- type: numeric
+  q: |
+    The pump is at full drive (255) on a {Vo} V RES. Before switching to a {Vn} V battery, the slow-start code cuts the drive so
+    the pump's average voltage stays the same. To what level?
+  vars:
+    Vo: [8, 5, 11, 0.5]
+    Vn: [12, 12, 14, 0.5]
+  answer: 255 * Vo / Vn
+  unit: ""
+  tol: 1
+  solution: |
+    level = 255 × {Vo} / {Vn} = **{=255 * Vo / Vn|3}**, i.e. {Vo} V average from the {Vn} V supply. Then it ramps back up to 255.
+
+- type: mcq
+  q: With EnB HIGH and IN4 HIGH, what happens when IN3 is **LOW**?
+  options:
+    - text: OUT4 is at VPump and OUT3 at ground, so the pump is driven (M1 positive, as in direct drive)
+      correct: true
+    - text: Both outputs are at VPump, so the pump brakes
+      why: That's IN3 HIGH, the same as IN4.
+    - text: The outputs are disconnected and the pump coasts
+      why: That's EnB LOW.
+    - text: The pump runs backwards at full speed
 
 - type: tune
   q: |
-    The pot (5 kΩ, across 5 V) feeds the three-band sketch: red for 0–2 V, green above 2 to 3.5 V, blue above 3.5 V.
-    Turn the knob so that **only the green LED** is lit.
+    On the board, IN4 is held HIGH and the PWM goes on IN3, so the pump is driven while IN3 is **LOW**. Set the
+    `analogWrite` value on IN3 so the pump gets **75 % drive (±1)**.
   controls:
-    - {name: R2, label: Wiper position (R2), min: 0, max: 5, step: 0.1, value: 0.5, unit: kΩ}
+    - {name: v, label: analogWrite value on IN3, min: 0, max: 255, step: 1, value: 128}
   readouts:
-    - {label: Wiper voltage, expr: "R2", unit: V, min: 0, max: 5}
-    - {label: Red, kind: lamp, expr: "R2", between: [-1, 2]}
-    - {label: Green, kind: lamp, expr: "R2", between: [2, 3.5]}
-    - {label: Blue, kind: lamp, expr: "R2", between: [3.5, 6]}
+    - {label: Pump drive, expr: "(255 - v) / 255 * 100", unit: "%", min: 0, max: 100}
   target:
-    - {readout: 2, on: true}
-  explain: With 1 mA through the track, $V_{out} = 1\text{ mA} \times R_2$, so 2.1–3.5 kΩ puts it in the green band.
+    - {readout: 0, min: 74, max: 76}
+  explain: The drive is the time IN3 spends LOW, so write the inverse, `analogWrite(3, 255 - level)`; 75 % drive is 191, written as 64.
+
+- type: multi
+  q: Which are advantages of a **slow start** over direct drive? Select all that apply.
+  options:
+    - text: A much smaller inrush current at start-up
+      correct: true
+    - text: No surge to drag the RES below the threshold and cause false switch-overs
+      correct: true
+    - text: Keeps the L298N within its 2 A rating
+      correct: true
+    - text: The pump gets a higher voltage at full speed
+      why: The L298N drops about 2 V, so the pump gets less than in direct drive.
+    - text: Fewer parts and less code
+      why: It needs the H-bridge and non-blocking ramp code.
+
+- type: mcq
+  q: Why is the slow-start ramp written with `millis()` rather than a `for` loop with `delay()`?
+  options:
+    - text: So `loop()` keeps reading the RES and can switch supplies during the ramp
+      correct: true
+    - text: Because `delay()` can't be used with `analogWrite`
+    - text: Because `millis()` makes the PWM frequency higher
+    - text: Because a `for` loop can't count past 255
+      why: An `int` counter can; the problem is that the loop blocks everything else.

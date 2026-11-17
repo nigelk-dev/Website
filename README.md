@@ -8,8 +8,10 @@ push, daily, or on manual run; only `main` is deployed) and turned into one page
 file by `scripts/notes.py`, with every interactive applet embedded live where
 the notes refer to it:
 
-- **MEC1019: Sustainable Processes** from
-  nigelk-dev/MEC1019_Sustainable_Processes (`scripts/fetch-mec1019.sh`)
+- **MEC1019: Sustainable Processes** (Introduction to microcontrollers): the
+  chapters are written in this repository, in `mec1019/chapters/`; only their
+  images and applets come from nigelk-dev/MEC1019_Sustainable_Processes
+  (`scripts/fetch-mec1019.sh`)
 - **MEC1002: Electrical Power and Electromechanical Systems** from
   nigelk-dev/ElectricalPowerNotes (`scripts/fetch-mec1002.sh`)
 - **MEC1043/1062: Manufacturing Automation for Assembly and Inspection** from
@@ -17,14 +19,26 @@ the notes refer to it:
   chapter's "Suggested interactive applets" table is replaced by the built
   applets from its `applets/chNN.html` page, one live frame per applet.
 
-On the site every course is shown the same way: numbered chapters grouped
-into parts (in the sidebar and in each page's "Chapter N · Part X" subtitle),
-with no mention of lectures. The only overview page is Introduction to
-microcontrollers' *Project Overview* (`mec1019/project-overview.qmd`), which
-lives in this repository and sits at the top of that course in the sidebar. Each applet is
-embedded in the notes after the section it illustrates; `scripts/notes.py`
-holds where each one goes (`MEC1002_PLACES`, `MEC1043_1062_PLACES`). The old
-course overview addresses redirect to each course's first chapter.
+On the site every course is shown as numbered chapters (in the sidebar and in
+each page's "Chapter N · ..." subtitle), with no mention of lectures. Electrical
+drives and Manufacturing Automation group their chapters into parts.
+
+Introduction to microcontrollers is structured around its project instead: the
+*Project Overview* page (`mec1019/project-overview.qmd`) shows the system
+diagram, and there is one chapter per block of it (voltage regulation, the
+Arduino, read input voltage, switching circuitry, pump drive type). The chapters
+are Markdown files in `mec1019/chapters/`, written in the same style as the
+course notes: `images/...` and `applets/...` links, and a line starting
+`> ▶️` or `> 🔧` with an applet link becomes a live embedded applet. Their own
+images (e.g. the RenewableSwitchOver schematic) are in
+`mec1019/chapters/images/`. `scripts/notes.py` builds the pages from them, adds
+the knowledge checks, and redirects the old chapter addresses.
+
+For the other two courses, each applet is embedded in the notes after the
+section it illustrates; `scripts/notes.py` holds where each one goes
+(`MEC1002_PLACES`, `MEC1043_1062_PLACES`). The old course overview addresses
+redirect to each course's first chapter (for Introduction to microcontrollers,
+to the Project Overview).
 
 All three repositories are private, so the publish workflow needs a repository
 secret `NOTES_TOKEN`: a fine-grained personal access token with read-only

@@ -28,28 +28,16 @@ website:
           contents:
             - href: mec1019/project-overview.qmd
               text: "Project Overview"
-            - section: "Arduino basics"
-              contents:
-                - href: mec1019/notes/01-arduino-basics-and-leds.md
-                  text: "1 · Arduino basics and LEDs"
-                - href: mec1019/notes/02-analogwrite-dividers-and-potentiometers.md
-                  text: "2 · analogWrite, dividers, pots"
-                - href: mec1019/notes/03-loops-pwm-and-alarms.md
-                  text: "3 · Loops, PWM and alarms"
-            - section: "Measuring voltages"
-              contents:
-                - href: mec1019/notes/05-voltage-dividers.md
-                  text: "4 · Voltage dividers"
-                - href: mec1019/notes/06-potentiometers.md
-                  text: "5 · Potentiometers"
-            - section: "Switching and the final system"
-              contents:
-                - href: mec1019/notes/07-relays.md
-                  text: "6 · Relays"
-                - href: mec1019/notes/08-res-battery-switchover.md
-                  text: "7 · RES with battery backup"
-                - href: mec1019/notes/finished-circuit.md
-                  text: "8 · Finished circuit"
+            - href: mec1019/notes/01-voltage-regulation.md
+              text: "1 · Voltage regulation"
+            - href: mec1019/notes/02-arduino.md
+              text: "2 · Getting started with the Arduino"
+            - href: mec1019/notes/03-read-input-voltage.md
+              text: "3 · Read input voltage"
+            - href: mec1019/notes/04-switching-circuitry.md
+              text: "4 · Switching circuitry"
+            - href: mec1019/notes/05-pump-drive-type.md
+              text: "5 · Pump drive type"
         - section: "Electrical drives"
           contents:
             - section: "DC machines"

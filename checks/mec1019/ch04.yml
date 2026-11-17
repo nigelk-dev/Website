@@ -1,103 +1,189 @@
-# Introduction to microcontrollers · Chapter 4 · Voltage dividers
+# Introduction to microcontrollers · Chapter 4 · Switching circuitry
 - type: mcq
-  q: Why can't the renewable source (RES) be connected straight to an Arduino analogue input?
+  q: What does the **opto-isolator** on the relay module do?
   options:
-    - text: The inputs only accept 0–5 V, and the RES may produce 9 V, 12 V or more, which would damage the board
+    - text: The Arduino's signal drives an LED inside it, so the Arduino is connected to the relay driver by light, not electrically, protecting it from spikes
       correct: true
-    - text: The RES is AC
-    - text: The Arduino needs at least 20 V to read a voltage
-    - text: Analogue inputs can only read currents
-
-- type: numeric
-  q: Two {R} Ω resistors in series are connected across {Vs} V. What voltage appears across the bottom resistor?
-  vars:
-    Vs: [9, 5, 15, 1]
-    R: [220, 100, 1000, 10]
-  answer: Vs / 2
-  unit: V
-  solution: |
-    Equal resistors split the voltage equally: {Vs} × {R}/(2 × {R}) = **{=Vs / 2} V**
-
-- type: numeric
-  q: A divider with $R_1$ = {R1} Ω (top) and $R_2$ = {R2} Ω (bottom) is fed from {Vs} V. Find the current and $V_{out}$.
-  vars:
-    R1: [330, 100, 1000, 10]
-    R2: [100, 100, 1000, 10]
-    Vs: [9, 5, 15, 1]
-  parts:
-    - label: "Current:"
-      answer: Vs / (R1 + R2) * 1000
-      unit: mA
-    - label: "V_out ="
-      answer: Vs * R2 / (R1 + R2)
-      unit: V
-  solution: |
-    I = {Vs} / ({R1} + {R2}) = **{=Vs / (R1 + R2) * 1000} mA**; V_out = I R₂ = **{=Vs * R2 / (R1 + R2)} V**
-
-- type: numeric
-  q: |
-    The RES can produce up to {Vm} V, and the Arduino must see 5 V at that maximum. With $R_2$ = 10 kΩ, what value of $R_1$ is needed?
-  vars:
-    Vm: [15.86, 8, 30, 0.01]
-  answer: (Vm / 5 - 1) * 10
-  unit: kΩ
-  hint: Set $5 = V_{max}\,R_2/(R_1 + R_2)$ and rearrange to $R_1 = (V_{max}/5 - 1)\,R_2$.
-  solution: |
-    R₁ = ({Vm}/5 − 1) × R₂ = {=Vm / 5 - 1|4} × 10 kΩ = **{=(Vm / 5 - 1) * 10} kΩ**. Round **up** to the next standard value so V_out stays just under 5 V.
-
-- type: mcq
-  q: The ratio $R_1/R_2$ fixes $V_{out}$. What does the **absolute size** of the resistors set?
-  options:
-    - text: The current, and so the power the monitoring circuit wastes
-      correct: true
-      why: Larger resistors waste less energy, but very large values make the readings noisy; around 10 kΩ for $R_2$ is a good compromise.
-    - text: The output voltage
-    - text: The Arduino's reference voltage
-    - text: Nothing
-
-- type: numeric
-  q: |
-    A divider with $R_1$ = 22 kΩ and $R_2$ = 10 kΩ feeds A0, and `analogRead` returns {r}. What is the RES voltage?
-  vars:
-    r: [800, 100, 1000, 1]
-  answer: r * 5 / 1023 / (10 / 32)
-  unit: V
-  tol: 1
-  hint: Convert the reading to the pin voltage ($\times 5/1023$), then undo the divider by dividing by $R_2/(R_1 + R_2)$.
-  solution: |
-    V_pin = {r} × 5 / 1023 = {=r * 5 / 1023} V; ratio = 10/32 = 0.3125; V_RES = {=r * 5 / 1023} / 0.3125 = **{=r * 5 / 1023 / (10 / 32)} V**
+    - text: It amplifies the Arduino's signal to 250 V
+    - text: It measures the current through the load
+    - text: It makes the relay switch faster
 
 - type: cloze
-  q: Complete the lines that turn a reading back into the RES voltage.
-  code: |
-    const float kRatio = kR2 / ([[kR1 + kR2|kR1+kR2|kR2 + kR1]]);
-    int   reading = [[analogRead]](kResPin);
-    float vPin    = reading * (5.0 / [[1023.0|1023]]);
-    float vRes    = vPin [[/ ~ * ~ +]] kRatio;
+  q: |
+    On the relay module, the control side has the pins VCC, GND, [[IN1]] and IN2, which connect to the Arduino. The operating side
+    has a screw terminal set for each relay: COM, NC and NO. The contacts are rated up to [[10]] A at 250 VAC / 30 VDC.
 
-- type: multi
-  q: What else must be done for the divider reading to be correct? Select all that apply.
+- type: cloze
+  q: |
+    **COM** is the moving contact. With the relay **off** (coil not energised), COM is connected to [[NC ~ NO]];
+    with the relay **on**, COM is connected to [[NO ~ NC]].
+
+- type: mcq
+  q: You want a lamp to light **only when the Arduino energises the relay**. How should it be wired?
   options:
-    - text: Connect the RES negative to the Arduino GND (a shared ground)
+    - text: Battery +ve to COM, and NO through the lamp to ground
       correct: true
-    - text: Allow for resistor tolerance; ±5 % resistors give up to ±5 % error
+    - text: Battery +ve to COM, and NC through the lamp to ground
+      why: Then the lamp would be on by default and switched **off** by the relay.
+    - text: Battery +ve to NO, and NC through the lamp to ground
+    - text: Arduino pin straight to the lamp
+      why: A pin can only supply about 20 mA.
+
+- type: mcq
+  q: The relay module is **active-LOW**. What does `digitalWrite(kRelay1Pin, LOW)` do?
+  options:
+    - text: Switches relay 1 on
       correct: true
-    - text: Use the measured resistor values in `kR1` and `kR2` for better accuracy
+    - text: Switches relay 1 off
+    - text: Nothing; LOW is ignored
+  explain: Naming the levels `kRelayOn = LOW` and `kRelayOff = HIGH` hides the back-to-front logic in two lines.
+
+- type: mcq
+  q: Why does `setup()` call `digitalWrite(pin, kRelayOff)` **before** `pinMode(pin, OUTPUT)`?
+  options:
+    - text: So the pin goes straight to "off"; the other way round it briefly outputs LOW, clicking the relay on at every reset
       correct: true
-    - text: Set the analogue pin with `pinMode(A0, OUTPUT)`
-      why: An analogue input must stay an input.
+    - text: "`pinMode` only works after `digitalWrite`"
+    - text: It saves memory
+    - text: It doesn't matter which comes first
+      why: On an active-LOW module, the order decides whether the relay clicks on briefly at start-up.
+
+- type: mcq
+  q: When changing from one relay to the other, why switch the old relay **off before** switching the new one on?
+  options:
+    - text: If both are on at once, the two power sources are connected directly together, even if only for a moment
+      correct: true
+      why: This is "break before make"; it matters once the relays switch the RES and the battery.
+    - text: The Arduino can only drive one pin at a time
+    - text: Relays can't be switched on while another is on
+    - text: To save power
+
+- type: cloze
+  q: Complete Exercise 3e, where the pot chooses which relay is on.
+  code: |
+    float vOut = readVolts(kPotPin);
+    if (vOut [[< ~ > ~ ==]] kThreshold) {
+      setRelay(kBlueRelay, [[false]]);
+      setRelay(kGreenRelay, true);
+    } else {
+      setRelay(kGreenRelay, false);
+      setRelay(kBlueRelay, [[true]]);
+    }
+  explain: Below 2.5 V the green LED's relay is on; otherwise the blue one. Each branch switches the other relay off first.
 
 - type: tune
   q: |
-    The RES can reach **15.86 V**. Choose $R_1$ and $R_2$ so the Arduino sees **between 4.5 and 5 V** at that maximum, while the divider
-    draws **under 1 mA** (to waste little energy).
+    The dual relay module is **active-LOW**. Relay 1 switches the blue LED (through NO) and relay 2 the green LED.
+    Set the two Arduino outputs so **only the blue LED** is lit.
   controls:
-    - {name: R1, label: R1 (top), min: 1, max: 50, step: 1, value: 10, unit: kΩ}
-    - {name: R2, label: R2 (bottom), min: 1, max: 50, step: 1, value: 10, unit: kΩ}
+    - {name: IN1, label: "Pin 13 → IN1 HIGH", kind: switch, value: 1}
+    - {name: IN2, label: "Pin 12 → IN2 HIGH", kind: switch, value: 0}
   readouts:
-    - {label: Pin voltage at 15.86 V, expr: "15.86 * R2 / (R1 + R2)", unit: V, min: 0, max: 16}
-    - {label: Divider current, expr: "15.86 / (R1 + R2)", unit: mA, min: 0, max: 8}
+    - {label: Blue LED (relay 1), kind: lamp, logic: "!IN1"}
+    - {label: Green LED (relay 2), kind: lamp, logic: "!IN2"}
   target:
-    - {readout: 0, min: 4.5, max: 5}
-    - {readout: 1, max: 1}
-  explain: $R_1 = 2.172\,R_2$; for example 22 kΩ and 10 kΩ give 4.96 V at 0.5 mA.
+    - {readout: 0, on: true}
+    - {readout: 1, on: false}
+  explain: On an active-LOW module, LOW energises the relay. So IN1 must be LOW (switch off) and IN2 HIGH (switch on).
+
+- type: order
+  q: Put the build steps in the order used in the notes.
+  items:
+    - Power and signals from the Arduino to the relay module
+    - RES power in through its relay
+    - Battery power in through its relay
+    - Add the monitoring system (the voltage divider)
+    - Connect all the grounds together
+
+- type: mcq
+  q: Why must the Arduino GND be connected to the RES and battery ground rail?
+  options:
+    - text: A voltage is measured relative to something; without a shared ground, `analogRead` has no reference and returns meaningless values
+      correct: true
+    - text: To power the Arduino from the battery
+    - text: To make the relays click louder
+    - text: It isn't needed if the divider is accurate
+
+- type: cloze
+  q: Complete `useBattery()`, which must never connect both sources at once.
+  code: |
+    void useBattery() {
+      digitalWrite(kResRelay, [[kRelayOff ~ kRelayOn]]);
+      digitalWrite(kBatRelay, [[kRelayOn ~ kRelayOff]]);
+    }
+  explain: Disconnect the old source **before** connecting the new one.
+
+- type: cloze
+  q: |
+    In the finished circuit, Arduino pin [[13]] drives IN1, the **battery** relay, and pin [[12]] drives IN2, the **RES** relay.
+    The divider's mid-point goes to analogue pin [[A0]].
+
+- type: mcq
+  q: In the finished circuit, where does the **NO** output of each relay go?
+  options:
+    - text: Both NO outputs join the load supply
+      correct: true
+      why: Only one relay is energised at a time, so the load is fed from one source or the other.
+    - text: To the Arduino 5 V pin
+    - text: To ground
+    - text: To the divider
+
+- type: cloze
+  q: |
+    On the RenewableSwitchOver board, Arduino pin [[12]] is **batteryOn** and pin [[13]] is **renewableOn**. Writing
+    [[HIGH ~ LOW]] to a pin switches that supply **on**, because the switches are active-[[HIGH ~ LOW]].
+
+- type: mcq
+  q: Why does each P-MOSFET (Q3, Q4) need an NPN transistor (Q1, Q2) between its gate and the Arduino pin?
+  options:
+    - text: The gate must swing between the supply voltage (12–16 V) and about 0 V; a 5 V pin can't pull it high enough to turn the MOSFET off, and must not see 12 V
+      correct: true
+    - text: The MOSFET gate needs about 1 A to switch
+      why: A MOSFET gate draws almost no steady current; the problem is the voltage, not the current.
+    - text: The NPN transistor makes the switch active-LOW
+      why: The board's switches are active-HIGH.
+    - text: The NPN transistor limits the pump current
+
+- type: numeric
+  q: |
+    batteryOn drives Q1's base through R3 = {R} kΩ. With the pin at 5 V and 0.7 V across the base–emitter junction, what base
+    current flows?
+  vars:
+    R: [2.4, 1, 4.7, 0.1]
+  answer: (5 - 0.7) / R
+  unit: mA
+  solution: |
+    I_B = (5 − 0.7) / {R} kΩ = **{=(5 - 0.7) / R} mA**, well within the pin's 20 mA.
+
+- type: multi
+  q: What do the diodes D1 and D2 do on the board? Select all that apply.
+  options:
+    - text: Stop current flowing back from VPump through a switched-off MOSFET's body diode into the lower supply
+      correct: true
+    - text: Let VPump be fed by whichever switched-in supply is higher
+      correct: true
+    - text: Make it safe for both supplies to be switched on at the same moment
+      correct: true
+    - text: Raise the pump voltage by about 0.9 V
+      why: They drop about 0.9 V; the pump gets slightly less than the supply.
+
+- type: numeric
+  q: |
+    The "Battery ON" LED (forward voltage 2 V) is fed from {V} V through R8 = {R} Ω. What current does it draw?
+  vars:
+    V: [12, 9, 16, 1]
+    R: [360, 220, 1000, 10]
+  answer: (V - 2) / R * 1000
+  unit: mA
+  solution: |
+    I = ({V} − 2) / {R} = **{=(V - 2) / R * 1000} mA**. Compare it with the LED's rating (often 20 mA).
+
+- type: mcq
+  q: The relay code switches the old supply **off before** the new one on. Why can the board's code switch the new supply on **first**?
+  options:
+    - text: Diodes D1/D2 stop the two supplies feeding each other, so both on for a moment is safe, and the pump never loses power
+      correct: true
+    - text: MOSFETs switch too fast for it to matter
+      why: "Speed doesn't help. With no diodes, two supplies joined even briefly would drive current into each other."
+    - text: The battery and RES are always at the same voltage
+    - text: The Arduino can't switch two pins at once
