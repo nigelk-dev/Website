@@ -24,26 +24,24 @@ flowchart LR
     direction TB
     read["Read input voltage"]
     decision["Control decision<br/>(RES or battery)"]
-    switching["Switching circuitry"]
+    switching["Switching<br/>circuitry"]
     output["Pump output"]
-    split@{ shape: fork }
     subgraph DRIVE["Pump drive type"]
+      direction LR
       dol["Direct drive"]
       soft["Slow start"]
     end
     read --> decision
-    read ~~~ switching
+    decision --> switching
     switching --> output
-    output --- split
-    split --> dol
-    split --> soft
+    output --> DRIVE
   end
   RES -->|"0–16 V<br/>&nbsp;"| reg["Voltage regulation"]
   reg -->|"0–5 V<br/>&nbsp;"| read
-  RES ----> switching
-  BAT ---->|"12 V<br/>&nbsp;"| switching
-  dol --> pump["Pump"]
-  soft --> pump
+  RES -----> switching
+  BAT ----->|"12 V<br/>&nbsp;"| switching
+  DRIVE --> pump["Pump"]
+  linkStyle 4,6 interpolate stepBefore
 ```
 
 ## What the finished system does
