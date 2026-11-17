@@ -9,7 +9,7 @@ a **battery backup** when the RES can no longer supply it. Every chapter adds
 one piece of that system.
 
 ```{mermaid}
-%%{init: {"flowchart": {"curve": "stepAfter"}, "themeCSS": ".edgeLabel, .edgeLabel p, .labelBkg { background-color: transparent !important; } .state-start { fill: #333 !important; stroke: #333 !important; }"}}%%
+%%{init: {"flowchart": {"curve": "stepAfter"}, "themeCSS": ".edgeLabel, .edgeLabel p, .labelBkg { background-color: transparent !important; }"}}%%
 flowchart LR
   subgraph RES["Renewable energy source"]
     direction LR
@@ -25,7 +25,7 @@ flowchart LR
     read["Read input voltage"]
     decision["Control decision"]
     output["Pump output"]
-    split@{ shape: sm-circ }
+    split@{ shape: fork }
     dol["Direct online"]
     soft["Slow start"]
     read --> decision
