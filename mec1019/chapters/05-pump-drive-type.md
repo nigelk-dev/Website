@@ -168,7 +168,7 @@ void loop() {
 - **Whole numbers only**, as in [Read input
   voltage](03-read-input-voltage.md#why-whole-numbers-are-better).
 
-> ▶️ **[Run it: the switch-over sketch in the code runner](applets/code-runner.html#p8int)** — the single-threshold version from Switching circuitry: drag the A0 voltage below 2.5 V and watch the supply move to the battery.
+> ▶️ **[Run it: the switch-over with hysteresis in the code runner](applets/code-runner.html#p8hys)** — the same logic as the demo code, from Switching circuitry: the supply moves to the battery below 2.3 V (470) and back to the RES only above 2.7 V (552).
 
 ### The catch: inrush current
 
