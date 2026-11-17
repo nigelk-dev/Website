@@ -270,11 +270,11 @@ $$\text{Duty cycle (\%)} = \frac{\text{on time}}{\text{period}} \times 100$$
 
 **50 % duty cycle** — on 5 ms, off 5 ms, period 10 ms: $\frac{5}{10}\times100 = 50\%$
 
-![PWM signal with 50 % duty cycle](images/p3-10.png)
+![PWM signal with a 50 % duty cycle: on for 5 ms and off for 5 ms in every 10 ms period, so the average is 2.5 V](images/pwm-50.svg)
 
 **75 % duty cycle** — on 7.5 ms, off 2.5 ms: $\frac{7.5}{10}\times100 = 75\%$
 
-![PWM signal with 75 % duty cycle](images/p3-11.png)
+![PWM signal with a 75 % duty cycle: on for 7.5 ms and off for 2.5 ms in every 10 ms period, so the average is 3.75 V](images/pwm-75.svg)
 
 The **average** voltage is $V_{avg} = \text{duty} \times V_{supply}$. An LED
 switching this fast looks steadily dimmer; a motor's inertia and inductance
@@ -348,7 +348,7 @@ For the pump that's not acceptable, because the RES must still be watched during
 the ramp. Section 5 does the same ramp with `millis()`, as in [Getting started
 with the Arduino](02-arduino.md#blocking-vs-non-blocking-timing).
 
-> ▶️ **[Run it: Exercise 2b in the code runner](applets/code-runner.html#ex2b)** — watch `pwm` climb in steps of 10, then fall again (try 4× speed).
+> ▶️ **[Run it: Exercise 2b in the code runner](applets/code-runner.html#ex2bint)** — watch `pwm` climb in steps of 10, then fall again (try 4× speed).
 
 ---
 

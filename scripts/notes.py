@@ -280,9 +280,9 @@ def mec1019(src, dest, excluded):
     mec1019_runner_extras(dest / "applets")
 
 
-def _chapter_code(after_heading):
-    """The first C++ block after a heading in the Switching circuitry chapter."""
-    md = (MEC1019_CHAPTERS / "04-switching-circuitry.md").read_text(encoding="utf-8")
+def _chapter_code(after_heading, chapter="04-switching-circuitry.md"):
+    """The first C++ block after a heading in a chapter (Switching circuitry by default)."""
+    md = (MEC1019_CHAPTERS / chapter).read_text(encoding="utf-8")
     return re.search(re.escape(after_heading) + r".*?```cpp\n(.*?)\n```", md, re.S).group(1)
 
 
@@ -367,6 +367,35 @@ def mec1019_runner_extras(applets):
          "      else { yield* io.at('} else if (reading > kToRes) {');\n"
          "        if (r > 552){ yield* io.at('useRes();', 2); yield* useRes(); } }\n"),
     ], "Switch-over with hysteresis — two thresholds")
+    _add_runner_sketch(applets, "ex2d2", "ex2d2int", _chapter_code("## 6. Exercise 7.3", "03-read-input-voltage.md"), [
+        ("title:'Exercise 7.3'", "title:'Exercise 7.3, integer version'"),
+        ("desc:'Move the slider either side of 2.5 V and watch which branch of the if ... else runs.'",
+         "desc:'Move the slider either side of 2.5 V: the raw analogRead value is compared with 511, so no float is needed. Watch which branch of the if ... else runs.'"),
+        ("      yield* io.at('float vOut = readVolts(kPotPin);');\n      const v = yield* readVoltsShort('A1');\n"
+         "      setVars({vOut:f2(v), 'vOut > kThreshold': v > 2.5});\n"
+         "      yield* io.at('Serial.println(vOut);'); io.print(f2(v) + '\\n');\n"
+         "      yield* io.at('if (vOut > kThreshold) {');\n      if (v > 2.5){",
+         "      yield* io.at('int reading = analogRead(kPotPin);'); const r = io.analogRead('A1');\n"
+         "      setVars({reading:r, kThreshold:511, 'reading > kThreshold': r > 511});\n"
+         "      yield* io.at('Serial.println(reading);'); io.print(r + '\\n');\n"
+         "      yield* io.at('if (reading > kThreshold) {');\n      if (r > 511){"),
+    ], "Exercise 7.3 — the same with whole numbers (no float)")
+    _add_runner_sketch(applets, "ex2b", "ex2bint", _chapter_code("Exercise 2b brightens", "05-pump-drive-type.md"), [
+        ("title:'Exercise 2b'", "title:'Exercise 2b, integer version'"),
+        ("desc:'In loop()", "desc:'Whole analogWrite values only, no float. In loop()"),
+        ("      yield* io.at('Serial.begin(9600);');\n      yield* io.at('pinMode(kRedPin, OUTPUT);')",
+         "      yield* io.at('pinMode(kRedPin, OUTPUT);')"),
+        ("        setVars({pwm, 'pwm <= kTopPwm': pwm <= 250, volts: f2(pwm*5/255)});",
+         "        setVars({pwm, 'pwm <= kTopPwm': pwm <= 250});"),
+        ("        yield* io.at('showPwm(pwm);', 1); yield* this.showPwm(pwm);",
+         "        yield* io.at('analogWrite(kRedPin, pwm);', 1); io.aw(10, pwm);\n"
+         "        yield* io.delay(500, 'delay(kStepMs);', 1);"),
+        ("        setVars({pwm, 'pwm > 0': pwm > 0, volts: f2(pwm*5/255)});",
+         "        setVars({pwm, 'pwm > 0': pwm > 0});"),
+        ("        yield* io.at('showPwm(pwm);', 2); yield* this.showPwm(pwm);",
+         "        yield* io.at('analogWrite(kRedPin, pwm);', 2); io.aw(10, pwm);\n"
+         "        yield* io.delay(500, 'delay(kStepMs);', 2);"),
+    ], "Exercise 2b — the same with whole numbers (no float)")
     mec1019_res_backup_sketch(applets / "res-backup.html")
 
 

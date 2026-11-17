@@ -294,7 +294,7 @@ void loop() {
 This **threshold** is exactly what the project uses for its control decision:
 replace the blue LED with "use the RES".
 
-> ▶️ **[Run it: Exercise 7.3 in the code runner](applets/code-runner.html#ex2d2)** — the code runner shows the `float` version of this exercise: compare `vOut > 2.5` there with `reading > 511` here. Both switch at exactly the same knob position.
+> ▶️ **[Run it: Exercise 7.3 in the code runner](applets/code-runner.html#ex2d2int)** — move the pot either side of 2.5 V: the raw `reading` is compared with 511, and exactly one branch of the `if ... else` runs.
 
 ---
 
