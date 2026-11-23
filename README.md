@@ -8,9 +8,8 @@ push, daily, or on manual run; only `main` is deployed) and turned into one page
 file by `scripts/notes.py`, with every interactive applet embedded live where
 the notes refer to it:
 
-- **MEC1019: Sustainable Processes** (Introduction to microcontrollers): the
-  chapters are written in this repository, in `mec1019/chapters/`; only their
-  images and applets come from nigelk-dev/MEC1019_Sustainable_Processes
+- **MEC1019: Sustainable Processes** (Introduction to microcontrollers) from
+  the `notes/` folder of nigelk-dev/MEC1019_Sustainable_Processes
   (`scripts/fetch-mec1019.sh`)
 - **MEC1002: Electrical Power and Electromechanical Systems** from
   nigelk-dev/ElectricalPowerNotes (`scripts/fetch-mec1002.sh`)
@@ -29,13 +28,12 @@ diagram, and there is one chapter per block of it (voltage measurement, the
 Arduino, read input voltage, switching circuitry, pump drive type), built on a
 breadboard with a relay module and an L298N module. A sixth, advanced chapter
 covers the RenewableSwitchOver board and its schematic; the first five don't
-mention it. The chapters
-are Markdown files in `mec1019/chapters/`, written in the same style as the
-course notes: `images/...` and `applets/...` links, and a line starting
-`> ▶️` or `> 🔧` with an applet link becomes a live embedded applet. Their own
-images (e.g. the RenewableSwitchOver schematic) are in
-`mec1019/chapters/images/`. `scripts/notes.py` builds the pages from them, adds
-the knowledge checks, and redirects the old chapter addresses.
+mention it. The chapters are the Markdown files `notes/01-...md` to
+`notes/06-...md` in the course repository, with their images, applets and the
+scripts that draw their diagrams alongside: `images/...` and `applets/...`
+links, and a line starting `> ▶️` or `> 🔧` with an applet link becomes a live
+embedded applet. Edit the chapters there; `scripts/notes.py` builds the pages
+from them, adds the knowledge checks, and redirects the old chapter addresses.
 
 For the other two courses, each applet is embedded in the notes after the
 section it illustrates; `scripts/notes.py` holds where each one goes

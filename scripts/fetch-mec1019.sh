@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Copy the Markdown notes, images and interactive applets from a checkout of
-# nigelk-dev/MEC1019_Sustainable_Processes into mec1019/notes/ so Quarto can
-# render them. The lecture PDFs and PowerPoint are not used.
+# Copy the images and interactive applets from a checkout of
+# nigelk-dev/MEC1019_Sustainable_Processes (its notes/ folder) into
+# mec1019/notes/ so Quarto can render them. The lecture PDFs, PowerPoint and
+# KiCad files are not used.
 #
-# scripts/notes.py then writes one page per note, with every applet embedded
-# live where the notes refer to it.
+# scripts/notes.py then writes one page per chapter (notes/01-...md to
+# 06-...md), with every applet embedded live where the chapter refers to it.
 #
 # Usage: scripts/fetch-mec1019.sh [path-to-MEC1019-checkout]
 # Without an argument, the repo is cloned into a temporary directory.

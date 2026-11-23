@@ -14,7 +14,6 @@ it full screen.
 """
 import json
 import re
-import shutil
 import sys
 from html import escape, unescape
 from pathlib import Path
@@ -165,12 +164,10 @@ def with_checks(course, num, text):
 MEC1019_PAGES = re.compile(r"https://nigelk-dev\.github\.io/MEC1019_Sustainable_Processes/notes/applets/")
 
 
-# Introduction to microcontrollers is written in this repository
-# (mec1019/chapters/): one chapter per block of the project overview diagram,
-# then an advanced chapter on the RenewableSwitchOver board.
-# Only the images and applets come from the course repository; the chapters'
-# own images (e.g. the board schematic) are in mec1019/chapters/images/.
-MEC1019_CHAPTERS = Path(__file__).resolve().parent.parent / "mec1019" / "chapters"
+# Introduction to microcontrollers: one chapter per block of the project
+# overview diagram, then an advanced chapter on the RenewableSwitchOver board.
+# The chapters, their images and the applets are in the course repository's
+# notes/ folder, as the other courses' notes are in theirs.
 MEC1019_FILES = ["01-voltage-regulation.md", "02-arduino.md", "03-read-input-voltage.md",
                  "04-switching-circuitry.md", "05-pump-drive-type.md", "06-project-board.md"]
 MEC1019_SUBTITLE = "Introduction to microcontrollers"
@@ -183,32 +180,6 @@ MEC1019_OLD_PAGES = {
     "04-switching-circuitry.md": ["07-relays", "08-res-battery-switchover", "finished-circuit"],
     "05-pump-drive-type.md": ["03-loops-pwm-and-alarms"],
 }
-# The applets still label their sketches by the course notes' parts
-# ("Part 6, section 5"). Each part is mapped to the chapter that now has its
-# material: the code runner's analogWrite fades (Part 2) are in chapter 5, the
-# divider examples in the divider lab (Parts 2 and 5) in chapter 1.
-MEC1019_CHAPTER_OF_PART = {1: 2, 2: 5, 3: 2, 5: 3, 6: 3, 7: 4, 8: 4}
-MEC1019_APPLET_LABELS = {
-    "Part 1 — Arduino basics and LEDs": "Chapter 2 — Getting started with the Arduino",
-    "Part 2 — analogWrite": "Chapter 5 — PWM and analogWrite",
-    "Part 3 — loops and alarms": "Chapter 2 — loops and alarms",
-    "Part 5 — voltage dividers": "Chapter 3 — reading the RES voltage",
-    "Part 6 — potentiometers": "Chapter 3 — potentiometers and analogRead",
-    "Part 7 — relays": "Chapter 4 — relays",
-    "Part 8 and finished circuit": "Chapter 4 — switch-over with relays",
-    "Part 8 — RES / battery switch-over": "RES / battery switch-over",
-    "Finished circuit notes": "Chapter 4",
-    "(Part 2)": "(Chapter 1)",
-    "(Part 5)": "(Chapter 1)",
-}
-
-
-def mec1019_part_refs(text):
-    """Applet labels: "Part 6, section 5" -> "Chapter 3" (the sections no longer match)."""
-    for old, new in MEC1019_APPLET_LABELS.items():
-        text = text.replace(old, new)
-    return re.sub(r"\bPart (\d)(?:, (?:section \d+|Exercise [\d.]+))?",
-                  lambda m: f"Chapter {MEC1019_CHAPTER_OF_PART.get(int(m.group(1)), m.group(1))}", text)
 
 
 def mec1019_note(path, excluded):
@@ -264,316 +235,15 @@ def mec1019_note(path, excluded):
 
 
 def mec1019(src, dest, excluded):
-    """src (the course notes) is only used by fetch-mec1019.sh, which copies its
-    images and applets into dest before this runs."""
-    dest = Path(dest)
-    shutil.copytree(MEC1019_CHAPTERS / "images", dest / "images", dirs_exist_ok=True)
+    """src is the course repository's notes/ folder; fetch-mec1019.sh has
+    already copied its images and applets into dest."""
+    src, dest = Path(src), Path(dest)
     for num, name in enumerate(MEC1019_FILES, 1):
-        title, text = mec1019_note(MEC1019_CHAPTERS / name, excluded)
+        title, text = mec1019_note(src / name, excluded)
         text = with_checks("mec1019", num, text)
         aliases = [f"/mec1019/notes/{old}.html" for old in MEC1019_OLD_PAGES.get(name, [])]
         fm = chapter_front_matter(title, num, MEC1019_SUBTITLE, aliases)
         (dest / name).write_text(fm + text + "\n", encoding="utf-8")
-    for page in list((dest / "applets").glob("*.html")) + list((dest / "applets").glob("*.js")):
-        html = page.read_text(encoding="utf-8")
-        page.write_text(mec1019_part_refs(html), encoding="utf-8")
-    mec1019_runner_extras(dest / "applets")
-    mec1019_applet_labels(dest / "applets")
-    mec1019_own_applets(dest / "applets")
-
-
-def _chapter_code(after_heading, chapter="04-switching-circuitry.md"):
-    """The first C++ block after a heading in a chapter (Switching circuitry by default)."""
-    md = (MEC1019_CHAPTERS / chapter).read_text(encoding="utf-8")
-    return re.search(re.escape(after_heading) + r".*?```cpp\n(.*?)\n```", md, re.S).group(1)
-
-
-def _add_runner_sketch(applets, base, key, code, edits, option_text):
-    """Add a variant of the code runner's sketch `base` as `key`: the sketch text
-    is `code` (from the chapter) and the step-through program is the base one
-    with the (old, new) text `edits` applied."""
-    runner, sketches = applets / "code-runner.html", applets / "sketches.js"
-    js, html = sketches.read_text(encoding="utf-8"), runner.read_text(encoding="utf-8")
-    if f"\n  {key}: {{" in html:
-        return
-    block = re.search(r"\n  " + base + r": \{.*?\n  \},\n", html, re.S).group(0)
-    new = block.replace(f"{base}: {{", f"{key}: {{", 1)
-    for old, rep in edits:
-        if old not in new:                    # the notes' program changed: leave the runner as it is
-            print(f"warning: code runner {base} not in the expected form; {key} not added", file=sys.stderr)
-            return
-        new = new.replace(old, rep)
-    js = re.sub(r'(\n  "' + base + r'": .*?",)\n', lambda m: m.group(1) + f'\n  "{key}": ' + json.dumps(code, ensure_ascii=False) + ",\n",
-                js, count=1, flags=re.S)
-    html = html.replace(block, block + new[1:], 1)
-    html = re.sub(r'(<option value="' + base + r'">[^<]*</option>)', lambda m: m.group(1) +
-                  f'\n      <option value="{key}">{option_text}</option>', html, count=1)
-    sketches.write_text(js, encoding="utf-8")
-    runner.write_text(html, encoding="utf-8")
-
-
-# The course notes number their examples by the slides' parts (Example 1a,
-# Exercise 7.3 ...). The chapters number them by chapter, in one sequence per
-# chapter (Example 2.1, Example 2.2, Exercise 2.3 ...); the applets follow.
-MEC1019_SKETCH_LABELS = [
-    ("Exercise 1c(2)", "Exercise 2.3 with a struct"),
-    ("Example 1a", "Example 2.1"), ("Example 1b", "Example 2.2"), ("Exercise 1c", "Exercise 2.3"),
-    ("Exercise 7.1", "Exercise 3.1"), ("Exercise 7.2", "Exercise 3.2"),
-    ("Exercise 7.3", "Exercise 3.3"), ("Exercise 7.4", "Exercise 3.4"),
-    ("Example 3a", "Example 4.1"), ("Exercise 3b", "Exercise 4.2"), ("Example 3b", "Exercise 4.2"), ("Exercise 3c", "Exercise 4.3"),
-    ("Exercise 3d", "Exercise 4.4"), ("Exercise 3e", "Exercise 4.5"),
-    ("Exercise 2b", "Exercise 5.2"),
-    (" * Non-blocking blink: the LED toggles", " * Example 2.4: Non-blocking blink. The LED toggles"),
-]
-# The code runner's menu: only the sketches the chapters use, in chapter order.
-# (key, title on the panel, menu text); the other programs stay in the file but
-# are not offered.
-MEC1019_RUNNER_MENU = [
-    ("Chapter 2 — Getting started with the Arduino", [
-        ("ex1a", "Example 2.1", "Example 2.1 — blink an LED"),
-        ("ex1b", "Example 2.2", "Example 2.2 — varying the on-time"),
-        ("ex1c", "Exercise 2.3", "Exercise 2.3 — three LEDs in sequence"),
-        ("ex1c2", "Exercise 2.3 with a struct", "Exercise 2.3 — with a struct, a table and a function"),
-        ("millis", "Example 2.4", "Example 2.4 — non-blocking blink"),
-    ]),
-    ("Chapter 3 — Read input voltage", [
-        ("ex2d", "Exercise 3.1", "Exercise 3.1 — read the pot voltage"),
-        ("ex2d1", "Exercise 3.2", "Exercise 3.2 — dimmer switch"),
-        ("ex2d2int", "Exercise 3.3", "Exercise 3.3 — switch at 2.5 V"),
-        ("ex2eint", "Exercise 3.4", "Exercise 3.4 — three voltage bands"),
-        ("ex2e", "Exercise 3.4, float version", "Exercise 3.4 — the float version, for comparison"),
-    ]),
-    ("Chapter 4 — Switching circuitry", [
-        ("ex3a", "Example 4.1", "Example 4.1 — open and close relay 1"),
-        ("ex3b", "Exercise 4.2", "Exercise 4.2 — alternate relay 1 and relay 2"),
-        ("ex3eint", "Exercise 4.5", "Exercise 4.5 — potentiometer control"),
-        ("p8int", "Example 4.6", "Example 4.6 — the switch-over sketch"),
-        ("p8hys", "Example 4.7", "Example 4.7 — adding hysteresis"),
-    ]),
-    ("Chapter 5 — Pump drive type", [
-        ("ex2bint", "Exercise 5.2", "Exercise 5.2 — a ramp is a fade"),
-    ]),
-]
-
-
-def mec1019_applet_labels(applets):
-    """Give the applets the chapters' example and exercise numbers, and rebuild
-    the code runner's menu by chapter."""
-    for page in list(applets.glob("*.html")) + list(applets.glob("*.js")):
-        text = page.read_text(encoding="utf-8")
-        new = text
-        for old, lab in MEC1019_SKETCH_LABELS:
-            new = new.replace(old, lab)
-        if new != text:
-            page.write_text(new, encoding="utf-8")
-    runner = applets / "code-runner.html"
-    if not runner.exists():
-        return
-    html = runner.read_text(encoding="utf-8")
-    groups = []
-    for group, items in MEC1019_RUNNER_MENU:
-        chapter = group.split(" — ")[0]
-        opts = []
-        for key, title, menu in items:
-            html, n = re.subn(r"(\n  " + key + r": \{\n    title:)'[^']*', where:'[^']*'",
-                              lambda m: m.group(1) + f"'{title}', where:'{chapter}'", html, count=1)
-            if n:
-                opts.append(f'      <option value="{key}">{menu}</option>')
-            else:
-                print(f"warning: code runner has no program {key}", file=sys.stderr)
-        groups.append(f'    <optgroup label="{group}">\n' + "\n".join(opts) + "\n    </optgroup>")
-    html, n = re.subn(r'(<select id="prog">\n).*?(\n  </select>)', lambda m: m.group(1) + "\n".join(groups) + m.group(2),
-                      html, count=1, flags=re.S)
-    if not n:
-        print("warning: code runner menu not in the expected form", file=sys.stderr)
-    runner.write_text(html, encoding="utf-8")
-
-
-def mec1019_own_applets(applets):
-    """Applets that live with the chapters, not in the course notes: the board
-    simulator for Example 6.1. Its sketch is the chapter's, so they always match."""
-    own = MEC1019_CHAPTERS / "applets"
-    if not own.is_dir():
-        return
-    applets.mkdir(parents=True, exist_ok=True)
-    board = _chapter_code("### Example 6.1", "06-project-board.md")
-    for page in own.glob("*.html"):
-        html = page.read_text(encoding="utf-8")
-        html = html.replace('/*SKETCH*/""', json.dumps(board, ensure_ascii=False))
-        (applets / page.name).write_text(html, encoding="utf-8")
-
-
-def mec1019_runner_extras(applets):
-    """Whole-number versions of the sketches the chapters now use.
-
-    The course notes' code runner and RES battery-backup simulator use float
-    versions of Exercise 3e and the switch-over sketch; the Switching circuitry
-    chapter compares the raw analogRead value with a whole-number threshold.
-    The sketch text comes from the chapter, so the applets always match it."""
-    if not (applets / "code-runner.html").exists():
-        return
-    _add_runner_sketch(applets, "ex3e", "ex3eint", _chapter_code("### Exercise 4.5"), [
-        ("title:'Exercise 3e'", "title:'Exercise 3e, integer version'"),
-        ("desc:'Move the slider either side of 2.5 V.",
-         "desc:'Move the slider either side of 2.5 V: the raw analogRead value is compared with 511, so no float is needed."),
-        ("yield* io.at('float vOut = readVolts(kPotPin);');\n      const v = yield* readVoltsShort('A1');\n"
-         "      setVars({vOut:f2(v), 'vOut < kThreshold': v < 2.5});\n"
-         "      yield* io.at('Serial.println(vOut);'); io.print(f2(v) + '\\n');\n"
-         "      yield* io.at('if (vOut < kThreshold) {');\n      if (v < 2.5){",
-         "yield* io.at('int reading = analogRead(kPotPin);'); const r = io.analogRead('A1');\n"
-         "      setVars({reading:r, kThreshold:511, 'reading < kThreshold': r < 511});\n"
-         "      yield* io.at('Serial.println(reading);'); io.print(r + '\\n');\n"
-         "      yield* io.at('if (reading < kThreshold) {');\n      if (r < 511){"),
-    ], "Exercise 3e — the same with whole numbers (no float)")
-    _add_runner_sketch(applets, "p8", "p8int", _chapter_code("### Example 4.6"), [
-        ("title:'RES / battery switch-over'", "title:'RES / battery switch-over, integer version'"),
-        ("pin:'A2', label:'Voltage at A2 (RES after the divider)'", "pin:'A0', label:'Voltage at A0 (RES after the divider)'"),
-        ("desc:'Drag the A2 voltage below 2.5 V",
-         "desc:'The raw analogRead value is compared with 511 (2.5 V), so no float is needed. Drag the A0 voltage below 2.5 V"),
-        ("      yield* io.at('useRes();', 1); yield* useRes();\n", ""),
-        ("yield* io.at('float vPin = readVolts(kResPin);');\n      const v = yield* readVoltsShort('A2');\n"
-         "      setVars({vPin:f2(v), 'vPin < kThresholdV (2.5)': v < 2.5});\n"
-         "      yield* io.at('Serial.println(vPin);'); io.print(f2(v) + '\\n');\n"
-         "      yield* io.at('if (vPin < kThresholdV) {');\n      if (v < 2.5){",
-         "yield* io.at('int reading = analogRead(kResPin);'); const r = io.analogRead('A0');\n"
-         "      setVars({reading:r, kSwitchReading:511, 'reading < kSwitchReading': r < 511});\n"
-         "      yield* io.at('Serial.println(reading);'); io.print(r + '\\n');\n"
-         "      yield* io.at('if (reading < kSwitchReading) {');\n      if (r < 511){"),
-        ("yield* io.at('useRes();', 2)", "yield* io.at('useRes();', 1)"),
-    ], "Switch-over — the same with whole numbers (no float)")
-    _add_runner_sketch(applets, "p8int", "p8hys", _chapter_code("### Example 4.7"), [
-        ("title:'RES / battery switch-over, integer version'", "title:'RES / battery switch-over with hysteresis'"),
-        ("desc:'The raw analogRead value is compared with 511 (2.5 V), so no float is needed. Drag the A0 voltage below 2.5 V to switch the load to the battery, and back above it to return to the RES.",
-         "desc:'Two thresholds: below 470 (2.3 V) the load goes to the battery, above 552 (2.7 V) it goes back to the RES, and in between nothing changes. Drag the A0 voltage slowly across 2.5 V and back."),
-        ("      yield* io.at('pinMode(kBatRelay, OUTPUT);'); io.pinMode(13);\n",
-         "      yield* io.at('pinMode(kBatRelay, OUTPUT);'); io.pinMode(13);\n"
-         "      yield* io.at('if (analogRead(kResPin) < kToRes) {'); const r0 = io.analogRead('A0');\n"
-         "      if (r0 < 552){ yield* io.at('useBattery();', 1); yield* useBattery(); }\n"
-         "      else { yield* io.at('} else {'); yield* io.at('useRes();', 1); yield* useRes(); }\n"),
-        ("      setVars({reading:r, kSwitchReading:511, 'reading < kSwitchReading': r < 511});\n",
-         "      setVars({reading:r, kToBattery:470, kToRes:552, 'reading < kToBattery': r < 470, 'reading > kToRes': r > 552});\n"),
-        ("      yield* io.at('if (reading < kSwitchReading) {');\n"
-         "      if (r < 511){ yield* io.at('useBattery();'); yield* useBattery(); }\n"
-         "      else { yield* io.at('} else {'); yield* io.at('useRes();', 1); yield* useRes(); }\n",
-         "      yield* io.at('if (reading < kToBattery) {');\n"
-         "      if (r < 470){ yield* io.at('useBattery();', 2); yield* useBattery(); }\n"
-         "      else { yield* io.at('} else if (reading > kToRes) {');\n"
-         "        if (r > 552){ yield* io.at('useRes();', 2); yield* useRes(); } }\n"),
-    ], "Switch-over with hysteresis — two thresholds")
-    _add_runner_sketch(applets, "ex2d2", "ex2d2int", _chapter_code("## 6. Exercise 3.3", "03-read-input-voltage.md"), [
-        ("title:'Exercise 7.3'", "title:'Exercise 7.3, integer version'"),
-        ("desc:'Move the slider either side of 2.5 V and watch which branch of the if ... else runs.'",
-         "desc:'Move the slider either side of 2.5 V: the raw analogRead value is compared with 511, so no float is needed. Watch which branch of the if ... else runs.'"),
-        ("      yield* io.at('float vOut = readVolts(kPotPin);');\n      const v = yield* readVoltsShort('A1');\n"
-         "      setVars({vOut:f2(v), 'vOut > kThreshold': v > 2.5});\n"
-         "      yield* io.at('Serial.println(vOut);'); io.print(f2(v) + '\\n');\n"
-         "      yield* io.at('if (vOut > kThreshold) {');\n      if (v > 2.5){",
-         "      yield* io.at('int reading = analogRead(kPotPin);'); const r = io.analogRead('A1');\n"
-         "      setVars({reading:r, kThreshold:511, 'reading > kThreshold': r > 511});\n"
-         "      yield* io.at('Serial.println(reading);'); io.print(r + '\\n');\n"
-         "      yield* io.at('if (reading > kThreshold) {');\n      if (r > 511){"),
-    ], "Exercise 7.3 — the same with whole numbers (no float)")
-    _add_runner_sketch(applets, "ex2b", "ex2bint", _chapter_code("Exercise 5.2 brightens", "05-pump-drive-type.md"), [
-        ("title:'Exercise 2b'", "title:'Exercise 2b, integer version'"),
-        ("desc:'In loop()", "desc:'Whole analogWrite values only, no float. In loop()"),
-        ("      yield* io.at('Serial.begin(9600);');\n      yield* io.at('pinMode(kRedPin, OUTPUT);')",
-         "      yield* io.at('pinMode(kRedPin, OUTPUT);')"),
-        ("        setVars({pwm, 'pwm <= kTopPwm': pwm <= 250, volts: f2(pwm*5/255)});",
-         "        setVars({pwm, 'pwm <= kTopPwm': pwm <= 250});"),
-        ("        yield* io.at('showPwm(pwm);', 1); yield* this.showPwm(pwm);",
-         "        yield* io.at('analogWrite(kRedPin, pwm);', 1); io.aw(10, pwm);\n"
-         "        yield* io.delay(500, 'delay(kStepMs);', 1);"),
-        ("        setVars({pwm, 'pwm > 0': pwm > 0, volts: f2(pwm*5/255)});",
-         "        setVars({pwm, 'pwm > 0': pwm > 0});"),
-        ("        yield* io.at('showPwm(pwm);', 2); yield* this.showPwm(pwm);",
-         "        yield* io.at('analogWrite(kRedPin, pwm);', 2); io.aw(10, pwm);\n"
-         "        yield* io.delay(500, 'delay(kStepMs);', 2);"),
-    ], "Exercise 2b — the same with whole numbers (no float)")
-    mec1019_res_backup_sketch(applets / "res-backup.html")
-
-
-def mec1019_res_backup_sketch(page):
-    """The RES battery-backup simulator shows a sketch for its settings. Replace
-    its float version with the chapter's whole-number one, with the simulator's
-    threshold turned into an analogRead value."""
-    if not page.exists():
-        return
-    html = page.read_text(encoding="utf-8")
-    m = re.search(r"function code\(th\)\{ return `.*?`; \}", html, re.S)
-    if not m:
-        print("warning: res-backup.html sketch not in the expected form; left as it is", file=sys.stderr)
-        return
-    code = _chapter_code("### Example 4.6")
-    code = re.sub(r"// Below this reading.*?\nconst int      kSwitchReading = 2500L \* 1023 / 5000;",
-                  "// Below this reading the RES is too low: ${th.toFixed(1)} V at A0 -> ${rd(th)}.\n"
-                  "// Worked out by the compiler, so the sketch uses no float at all.\n"
-                  "const int      kSwitchReading = ${mv(th)}L * 1023 / 5000;", code, flags=re.S)
-    hys = _chapter_code("### Example 4.7")
-    hys = re.sub(r"// Two thresholds.*?\nconst int      kToBattery  = 2300L \* 1023 / 5000;   // 2.3 V at A0 -> 470\n"
-                 r"const int      kToRes      = 2700L \* 1023 / 5000;   // 2.7 V at A0 -> 552",
-                 "// Two thresholds, worked out by the compiler: a dead band either side of ${th.toFixed(1)} V.\n"
-                 "const int      kToBattery  = ${mv(th-band)}L * 1023 / 5000;   // ${(th-band).toFixed(1)} V at A0 -> ${rd(th-band)}\n"
-                 "const int      kToRes      = ${mv(th+band)}L * 1023 / 5000;   // ${(th+band).toFixed(1)} V at A0 -> ${rd(th+band)}",
-                 hys, flags=re.S)
-    hys = hys.replace("// Between 470 and 552 nothing changes", "// Between ${rd(th-band)} and ${rd(th+band)} nothing changes")
-    if "${mv(th)}L" not in code or "${mv(th-band)}L" not in hys or "${rd(th-band)} and" not in hys:
-        print("warning: switch-over sketches not in the expected form; res-backup.html left as it is", file=sys.stderr)
-        return
-    q = lambda c: c.replace("\\", "\\\\").replace("`", "\\`")
-    html = html.replace(m.group(0),
-        "const mv = v => Math.round(v*1000), rd = v => Math.floor(mv(v)*1023/5000);\n"
-        "function code(th, hys, band){ return hys ? `" + q(hys) + "` : `" + q(code) + "`; }", 1)
-    html = html.replace("The slide version compares at 2.5 V; adjust the threshold above to see the generated code change.",
-                        "The thresholds are <code>analogRead</code> values worked out by the compiler, so the sketch uses no "
-                        "<code>float</code>; change the threshold or tick Hysteresis above to see the generated code change.")
-    # hysteresis toggle and dead band, under the threshold slider
-    html = html.replace('<p class="note" id="thNote"></p>',
-        '<p class="note" id="thNote"></p>\n'
-        '    <label><input id="hys" type="checkbox"> Hysteresis (two thresholds)</label>\n'
-        '    <label for="band">Dead band either side of the threshold (V): <b id="bandLbl"></b></label>\n'
-        '    <input id="band" type="range" min="0.1" max="1" step="0.1" value="0.2">', 1)
-    html = html.replace('<div class="stat"><span>pin 12 (RES_relay) / pin 13 (BAT_relay)</span><b id="pins"></b></div>',
-        '<div class="stat"><span>pin 12 (kResRelay) / pin 13 (kBatRelay)</span><b id="pins"></b></div>\n'
-        '    <div class="stat"><span>Switch-overs on this chart</span><b id="nsw"></b></div>', 1)
-    html = html.replace('<span>A0 voltage (RES_volt)</span>', '<span>A0 voltage (reading)</span>', 1)
-    # the decision: one threshold, or two with the supply kept in between
-    for old, new in (
-        ("s.textContent += RES_volt.toFixed(2)+'\\n';", "s.textContent += adc+'\\n';"),
-        ("const onBattery = RES_volt < th;",
-         "const hys = $('hys').checked, band = +$('band').value;\n"
-         "  $('band').disabled = !hys; $('bandLbl').textContent = '±' + band.toFixed(1) + ' V';\n"
-         "  if (!hys) onBat = adc < rd(th);\n"
-         "  else if (adc < rd(th-band)) onBat = true;\n"
-         "  else if (adc > rd(th+band)) onBat = false;\n"
-         "  const onBattery = onBat;"),
-        ("let t = 0, noise = 0;", "let t = 0, noise = 0, onBat = false;\nif (location.hash === '#hys') document.getElementById('hys').checked = true;"),
-        ("$('sRES').classList.toggle('on', !onBattery);",
-         "let nsw = 0; for (let i = 1; i < hist.length; i++) if (hist[i][1] !== hist[i-1][1]) nsw++;\n"
-         "  $('nsw').textContent = nsw;\n  $('sRES').classList.toggle('on', !onBattery);"),
-        ("$('va0').innerHTML = a0>5 ? `<span class=\"bad\">${a0.toFixed(2)} V — over 5 V, change the divider!</span>` : RES_volt.toFixed(2)+' V';",
-         "$('va0').innerHTML = a0>5 ? `<span class=\"bad\">${a0.toFixed(2)} V — over 5 V, change the divider!</span>` : RES_volt.toFixed(2)+' V ('+adc+')';"),
-        ("drawChart(th);", "drawChart(th, hys ? band : 0);"),
-        # a real analogRead jitters by a few counts, which is what makes a single threshold chatter
-        ("const adc = Math.min(1023, Math.round(a0/5*1023)),",
-         "const adc = Math.max(0, Math.min(1023, Math.round(a0/5*1023 + (Math.random()-0.5)*8))),"),
-        ("if (th !== lastTh) { lastTh = th; $('code').textContent = code(th); }",
-         "const key = th + '|' + hys + '|' + band;\n"
-         "  if (key !== lastTh) { lastTh = key; $('code').textContent = code(th, hys, band); }"),
-        ("function drawChart(th){", "function drawChart(th, band){"),
-        ("  const yTh = H-pad - th/5*(H-2*pad+10);\n"
-         "  g.strokeStyle='#c98a00'; g.setLineDash([6,4]); g.beginPath(); g.moveTo(pad,yTh); g.lineTo(W-5,yTh); g.stroke(); g.setLineDash([]);\n"
-         "  g.fillStyle='#c98a00'; g.fillText('threshold', W-70, yTh-5);",
-         "  const yOf = v => H-pad - v/5*(H-2*pad+10);\n"
-         "  const lines = band ? [[th+band, 'back to RES', -5], [th-band, 'to battery', 14]] : [[th, 'threshold', -5]];\n"
-         "  if (band){ g.fillStyle='rgba(201,138,0,.10)'; g.fillRect(pad, yOf(th+band), W-5-pad, yOf(th-band)-yOf(th+band)); }\n"
-         "  for (const [v, txt, dy] of lines){ const y = yOf(v);\n"
-         "    g.strokeStyle='#c98a00'; g.setLineDash([6,4]); g.beginPath(); g.moveTo(pad,y); g.lineTo(W-5,y); g.stroke(); g.setLineDash([]);\n"
-         "    g.fillStyle='#c98a00'; g.fillText(txt, W-80, y+dy); }"),
-    ):
-        if old not in html:
-            print(f"warning: res-backup.html: {old[:40]!r} not found", file=sys.stderr)
-        html = html.replace(old, new, 1)
-    page.write_text(html, encoding="utf-8")
 
 
 # ---------------------------------------------------------------- MEC1002
