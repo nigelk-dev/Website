@@ -361,6 +361,26 @@ def mec1002_lecture(md, lec_dir):
 
     text = re.sub(r"^<div data-[^>]*>\n(.*?)\n</div>[ \t]*$", div_block, text, flags=re.S | re.M)
 
+    # 2a. A lone line for one element of the lecture's interactive/index.html,
+    #     where the notes discuss it:
+    #     "*Interactive diagram: name. What it shows. Online: [Name](claude.ai link);
+    #      or open [`interactive/index.html#id`](interactive/index.html#id) in a web browser.*"
+    #     -> that element, live, captioned with its name and what it shows.
+    def element(m):
+        line = m.group(0).strip().strip("*").strip()
+        sec = re.search(r"\]\(interactive/index\.html#([\w-]+)\)", line).group(1)
+        name = re.search(r"Online:\s*\[([^\]]+)\]", line)
+        head = re.match(r"(Interactive [^:]*?):\s*(.*?)\s*Online:", line, flags=re.S)
+        if not head:
+            return m.group(0)
+        kind, body = head.group(1), head.group(2).strip()
+        label, _, desc = body.partition(". ")
+        title = name.group(1) if name else label[:1].upper() + label[1:]
+        caption = f"*{kind}: {label}.* {desc}".strip()
+        return live("index.html", caption, sec, title)
+
+    text = re.sub(r"^\*Interactive [^\n]*\]\(interactive/index\.html#[\w-]+\)[^\n]*\*[ \t]*$", element, text, flags=re.M)
+
     # 2. A lone "*Interactive ...: ... interactive/x.html ...*" line.
     def lone(m):
         line = m.group(0)
